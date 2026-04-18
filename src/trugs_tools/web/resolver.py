@@ -13,6 +13,7 @@ from typing import Optional
 from .extractor import Entity, _entity_metric_level
 
 
+# AGENT claude SHALL DEFINE RECORD resolvedentity AS RECORD class.
 @dataclass
 class ResolvedEntity:
     """An entity after resolution (potentially merged from multiple sources)."""
@@ -26,6 +27,7 @@ class ResolvedEntity:
     mention_count: int = 1
     metadata: dict = field(default_factory=dict)
 
+    # AGENT claude SHALL DEFINE FUNCTION to_node.
     def to_node(self) -> dict:
         """Convert to TRUGS 1.0 node format."""
         metric_level = _entity_metric_level(self.entity_type)
@@ -46,6 +48,7 @@ class ResolvedEntity:
         }
 
 
+# AGENT claude SHALL DEFINE RECORD entityresolver AS RECORD class.
 class EntityResolver:
     """
     Resolves entities across multiple sources.
@@ -73,6 +76,7 @@ class EntityResolver:
             "tensorflow": {"tensor flow", "tf"},
         }
 
+    # AGENT claude SHALL DEFINE FUNCTION resolve.
     def resolve(self, entities: list) -> list:
         """
         Resolve a list of entities, merging duplicates.
@@ -204,6 +208,7 @@ class EntityResolver:
         return id_str[:50]
 
 
+# AGENT claude SHALL DEFINE RECORD crossreferencemapper AS RECORD class.
 class CrossReferenceMapper:
     """
     Maps cross-references between entities and sources.
@@ -215,11 +220,13 @@ class CrossReferenceMapper:
         self.url_to_entity: dict = {}
         self.entity_to_urls: dict = {}
 
+    # AGENT claude SHALL DEFINE FUNCTION map_entity_to_source.
     def map_entity_to_source(self, entity_id: str, source_url: str) -> None:
         """Record that an entity appears in a source."""
         self.url_to_entity.setdefault(source_url, []).append(entity_id)
         self.entity_to_urls.setdefault(entity_id, []).append(source_url)
 
+    # AGENT claude SHALL DEFINE FUNCTION find_cross_references.
     def find_cross_references(self, entities: list) -> list:
         """
         Find entities that appear in multiple sources.
@@ -237,6 +244,7 @@ class CrossReferenceMapper:
                 })
         return cross_refs
 
+    # AGENT claude SHALL DEFINE FUNCTION find_connected_sources.
     def find_connected_sources(self, source_url: str, entities: list) -> list:
         """Find other sources connected through shared entities."""
         entity_ids = self.url_to_entity.get(source_url, [])
@@ -248,6 +256,7 @@ class CrossReferenceMapper:
         return list(connected)
 
 
+# AGENT claude SHALL DEFINE FUNCTION resolve_entities.
 def resolve_entities(entities: list) -> list:
     """
     Convenience function to resolve entities.

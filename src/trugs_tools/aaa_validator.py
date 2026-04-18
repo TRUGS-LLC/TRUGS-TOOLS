@@ -53,12 +53,14 @@ AAA_V1_NODE_TYPES = {
 CORE_NODE_FIELDS = {"id", "type", "properties", "parent_id", "contains", "metric_level", "dimension"}
 CORE_EDGE_FIELDS = {"from_id", "to_id", "relation"}
 
+# AGENT claude SHALL DEFINE FUNCTION parse_sections.
 def parse_sections(content: str) -> List[str]:
     """Extract ## section headers from markdown."""
     pattern = r'^## ([A-Z_\s]+)$'
     sections = re.findall(pattern, content, re.MULTILINE)
     return [s.strip() for s in sections]
 
+# AGENT claude SHALL DEFINE FUNCTION check_issue_trug.
 def check_issue_trug(content: str) -> bool:
     """Check if ARCHITECTURE section contains an Issue TRUG (JSON block with nodes and edges).
 
@@ -82,6 +84,7 @@ def check_issue_trug(content: str) -> bool:
     block_content = json_block_match.group(1)
     return bool(re.search(r'"nodes"', block_content)) and bool(re.search(r'"edges"', block_content))
 
+# AGENT claude SHALL DEFINE FUNCTION check_architecture_content.
 def check_architecture_content(content: str) -> bool:
     """Check if ARCHITECTURE section has meaningful content.
 
@@ -105,6 +108,7 @@ def check_architecture_content(content: str) -> bool:
     ]
     return len(lines) > 0
 
+# AGENT claude SHALL DEFINE FUNCTION validate_aaa.
 def validate_aaa(filepath: Path) -> Tuple[bool, List[str]]:
     """
     Validate AAA.md file.
@@ -139,6 +143,7 @@ def validate_aaa(filepath: Path) -> Tuple[bool, List[str]]:
     return len(errors) == 0, errors
 
 
+# AGENT claude SHALL DEFINE FUNCTION validate_aaa_trug.
 def validate_aaa_trug(trug: Dict[str, Any]) -> Tuple[bool, List[str]]:
     """Validate an AAA TRUG document and aaa_v1 pairing rules."""
     errors: List[str] = []
@@ -202,6 +207,7 @@ def validate_aaa_trug(trug: Dict[str, Any]) -> Tuple[bool, List[str]]:
 
     return len(errors) == 0, errors
 
+# AGENT claude SHALL DEFINE FUNCTION main.
 def main():
     if len(sys.argv) < 2:
         print("Usage: aaa-validate <path/to/AAA.md>")

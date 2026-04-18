@@ -42,6 +42,7 @@ from trugs_tools.filesystem.folder_map import map_folder_trugs
 from trugs_store.persistence.dual_write import write_trug
 
 
+# AGENT claude SHALL DEFINE FUNCTION validate_command.
 def validate_command(args: Optional[list] = None) -> int:
     """Validate TRUG files.
     
@@ -136,6 +137,7 @@ def validate_command(args: Optional[list] = None) -> int:
     return 0 if all_valid else 1
 
 
+# AGENT claude SHALL DEFINE FUNCTION generate_command.
 def generate_command(args: Optional[list] = None) -> int:
     """Generate example TRUG files.
     
@@ -201,6 +203,7 @@ def generate_command(args: Optional[list] = None) -> int:
         return 1
 
 
+# AGENT claude SHALL DEFINE FUNCTION info_command.
 def info_command(args: Optional[list] = None) -> int:
     """Show information about TRUG files.
     
@@ -294,6 +297,7 @@ def info_command(args: Optional[list] = None) -> int:
         return 1
 
 
+# AGENT claude SHALL DEFINE FUNCTION render_command.
 def render_command(args: Optional[list] = None) -> int:
     """Render folder.trug.json into deterministic markdown files.
 
@@ -369,6 +373,7 @@ def render_command(args: Optional[list] = None) -> int:
         return 1
 
 
+# AGENT claude SHALL DEFINE FUNCTION tinit_command.
 def tinit_command(args: Optional[list] = None) -> int:
     """Initialize folder.trug.json in a directory.
 
@@ -432,6 +437,7 @@ def tinit_command(args: Optional[list] = None) -> int:
         return 1
 
 
+# AGENT claude SHALL DEFINE FUNCTION tadd_command.
 def tadd_command(args: Optional[list] = None) -> int:
     """Add files to a TRUG graph.
 
@@ -485,6 +491,7 @@ def tadd_command(args: Optional[list] = None) -> int:
         return 1
 
 
+# AGENT claude SHALL DEFINE FUNCTION tls_command.
 def tls_command(args: Optional[list] = None) -> int:
     """List directory contents with graph enrichment.
 
@@ -537,6 +544,7 @@ def tls_command(args: Optional[list] = None) -> int:
         return 1
 
 
+# AGENT claude SHALL DEFINE FUNCTION tcd_command.
 def tcd_command(args: Optional[list] = None) -> int:
     """Navigate to a node in the TRUG graph.
 
@@ -599,6 +607,7 @@ def tcd_command(args: Optional[list] = None) -> int:
         return 1
 
 
+# AGENT claude SHALL DEFINE FUNCTION tfind_command.
 def tfind_command(args: Optional[list] = None) -> int:
     """Query nodes in a TRUG graph.
 
@@ -665,6 +674,7 @@ def tfind_command(args: Optional[list] = None) -> int:
         return 1
 
 
+# AGENT claude SHALL DEFINE FUNCTION twhere_command.
 def twhere_command(args: Optional[list] = None) -> int:
     """Search across all folder.trug.json files for a concept.
 
@@ -715,6 +725,7 @@ def twhere_command(args: Optional[list] = None) -> int:
         return 1
 
 
+# AGENT claude SHALL DEFINE FUNCTION tmove_command.
 def tmove_command(args: Optional[list] = None) -> int:
     """Move/rename a node in the TRUG graph.
 
@@ -761,6 +772,7 @@ def tmove_command(args: Optional[list] = None) -> int:
         return 1
 
 
+# AGENT claude SHALL DEFINE FUNCTION tlink_command.
 def tlink_command(args: Optional[list] = None) -> int:
     """Create or remove typed edges between nodes.
 
@@ -830,6 +842,7 @@ def tlink_command(args: Optional[list] = None) -> int:
         return 1
 
 
+# AGENT claude SHALL DEFINE FUNCTION tget_command.
 def tget_command(args: Optional[list] = None) -> int:
     """Read full content of a specific node.
 
@@ -883,6 +896,7 @@ def tget_command(args: Optional[list] = None) -> int:
         return 1
 
 
+# AGENT claude SHALL DEFINE FUNCTION tupdate_command.
 def tupdate_command(args: Optional[list] = None) -> int:
     """Update properties on an existing node.
 
@@ -948,6 +962,7 @@ def tupdate_command(args: Optional[list] = None) -> int:
         return 1
 
 
+# AGENT claude SHALL DEFINE FUNCTION tdelete_command.
 def tdelete_command(args: Optional[list] = None) -> int:
     """Remove nodes and connected edges from a TRUG graph.
 
@@ -1010,6 +1025,7 @@ def tdelete_command(args: Optional[list] = None) -> int:
         return 1
 
 
+# AGENT claude SHALL DEFINE FUNCTION tunlink_command.
 def tunlink_command(args: Optional[list] = None) -> int:
     """Remove specific edges from a TRUG graph.
 
@@ -1075,6 +1091,7 @@ def tunlink_command(args: Optional[list] = None) -> int:
         return 1
 
 
+# AGENT claude SHALL DEFINE FUNCTION tdim_command.
 def tdim_command(args: Optional[list] = None) -> int:
     """Manage dimensions in a TRUG graph.
 
@@ -1168,6 +1185,7 @@ def tdim_command(args: Optional[list] = None) -> int:
         return 1
 
 
+# AGENT claude SHALL DEFINE FUNCTION twatch_command.
 def twatch_command(args: Optional[list] = None) -> int:
     """Watch folder.trug.json and auto-regenerate docs.
 
@@ -1217,6 +1235,7 @@ def twatch_command(args: Optional[list] = None) -> int:
         return 1
 
 
+# AGENT claude SHALL DEFINE FUNCTION tsync_command.
 def tsync_command(args: Optional[list] = None) -> int:
     """Synchronize folder.trug.json with directory contents.
 
@@ -1280,6 +1299,7 @@ def tsync_command(args: Optional[list] = None) -> int:
         return 1
 
 
+# AGENT claude SHALL DEFINE FUNCTION folder_check_command.
 def folder_check_command(args: Optional[list] = None) -> int:
     """Validate folder.trug.json files for correctness and staleness.
 
@@ -1360,6 +1380,7 @@ def folder_check_command(args: Optional[list] = None) -> int:
     return 0
 
 
+# AGENT claude SHALL DEFINE FUNCTION folder_render_command.
 def folder_render_command(args: Optional[list] = None) -> int:
     """Render ARCHITECTURE.md from folder.trug.json files.
 
@@ -1489,6 +1510,7 @@ def folder_render_command(args: Optional[list] = None) -> int:
         return 0
 
 
+# AGENT claude SHALL DEFINE FUNCTION folder_init_command.
 def folder_init_command(args: Optional[list] = None) -> int:
     """Generate skeleton folder.trug.json from filesystem scanning.
 
@@ -1610,6 +1632,7 @@ def folder_init_command(args: Optional[list] = None) -> int:
         return 0
 
 
+# AGENT claude SHALL DEFINE FUNCTION folder_sync_command.
 def folder_sync_command(args: Optional[list] = None) -> int:
     """Sync folder.trug.json with current filesystem state.
 
@@ -1731,6 +1754,7 @@ def _print_sync_result(folder: Path, result, dry_run: bool) -> None:
     print(f"  Edges: {result.edges_added} added, {result.edges_total} total")
 
 
+# AGENT claude SHALL DEFINE FUNCTION folder_map_command.
 def folder_map_command(args: Optional[list] = None) -> int:
     """Build root-level graph from all folder.trug.json files.
 
@@ -1788,6 +1812,7 @@ def folder_map_command(args: Optional[list] = None) -> int:
     return 0
 
 
+# AGENT claude SHALL DEFINE FUNCTION aaa_generate_command.
 def aaa_generate_command(args: Optional[list] = None) -> int:
     """Generate AAA.md files from GitHub Issues by folder label.
 
@@ -1816,6 +1841,7 @@ def aaa_generate_command(args: Optional[list] = None) -> int:
         return 1
 
 
+# AGENT claude SHALL DEFINE FUNCTION agent_render_command.
 def agent_render_command(args: Optional[list] = None) -> int:
     """Render .github/agent_instructions.trug.json to .github/copilot-instructions.md.
 
@@ -1868,6 +1894,7 @@ def agent_render_command(args: Optional[list] = None) -> int:
     return 0
 
 
+# AGENT claude SHALL DEFINE FUNCTION claude_render_command.
 def claude_render_command(args: Optional[list] = None) -> int:
     """Render .github/agent_instructions.trug.json to CLAUDE.md.
 
@@ -1920,6 +1947,7 @@ def claude_render_command(args: Optional[list] = None) -> int:
     return 0
 
 
+# AGENT claude SHALL DEFINE FUNCTION folder_export_command.
 def folder_export_command(args: Optional[list] = None) -> int:
     """Export folder.trug.json from PostgreSQL database.
 
@@ -1988,6 +2016,7 @@ def folder_export_command(args: Optional[list] = None) -> int:
             return 1
 
 
+# AGENT claude SHALL DEFINE FUNCTION folder_import_command.
 def folder_import_command(args: Optional[list] = None) -> int:
     """Import folder.trug.json into PostgreSQL database.
 
@@ -2201,6 +2230,7 @@ Use `tg <command> --help` for command-specific help.
 """
 
 
+# AGENT claude SHALL DEFINE FUNCTION main.
 def main() -> int:
     """tg — unified TRUGS CLI. Dispatches top-level verb to the appropriate handler.
     

@@ -17,9 +17,11 @@ pytestmark = pytest.mark.skipif(
 )
 
 
+# AGENT claude SHALL DEFINE RECORD testperagoimport AS A RECORD test_suite.
 class TestPeragoImport:
     """Test that trugs_tools can be imported alongside PERAGO."""
 
+    # AGENT SHALL VALIDATE PROCESS test_trugs_tools_import.
     def test_trugs_tools_import(self):
         """trugs_tools can be imported."""
         import trugs_tools
@@ -27,6 +29,7 @@ class TestPeragoImport:
         assert hasattr(trugs_tools, "validate_trug")
         assert hasattr(trugs_tools, "generate_trug")
 
+    # AGENT SHALL VALIDATE PROCESS test_perago_import.
     def test_perago_import(self):
         """PERAGO src module can be imported."""
         from src.models import TRUGNode, TRUGEdge, TRUGGraph
@@ -35,9 +38,11 @@ class TestPeragoImport:
         assert TRUGGraph is not None
 
 
+# AGENT claude SHALL DEFINE RECORD testperagotrugvalidation AS A RECORD test_suite.
 class TestPeragoTrugValidation:
     """Test that TRUGs generated via trugs_tools validate correctly."""
 
+    # AGENT SHALL VALIDATE PROCESS test_generate_and_validate_python_trug.
     def test_generate_and_validate_python_trug(self):
         """Generate a Python TRUG with trugs_tools and validate it."""
         from trugs_tools import generate_trug, validate_trug
@@ -46,6 +51,7 @@ class TestPeragoTrugValidation:
         result = validate_trug(trug)
         assert result.valid, f"Validation failed: {result.errors}"
 
+    # AGENT SHALL VALIDATE PROCESS test_generate_and_validate_orchestration_trug.
     def test_generate_and_validate_orchestration_trug(self):
         """Generate an Orchestration TRUG (PERAGO-relevant branch) and validate."""
         from trugs_tools import generate_trug, validate_trug
@@ -54,6 +60,7 @@ class TestPeragoTrugValidation:
         result = validate_trug(trug)
         assert result.valid, f"Validation failed: {result.errors}"
 
+    # AGENT SHALL VALIDATE PROCESS test_perago_trug_node_compatibility.
     def test_perago_trug_node_compatibility(self):
         """Verify PERAGO TRUGNode fields are a subset of trugs_tools node fields."""
         from src.models import TRUGNode
@@ -71,6 +78,7 @@ class TestPeragoTrugValidation:
         assert core_overlap.issubset(perago_fields), f"PERAGO missing core fields: {core_overlap - perago_fields}"
         assert core_overlap.issubset(trugs_fields), f"trugs_tools missing core fields: {core_overlap - trugs_fields}"
 
+    # AGENT SHALL VALIDATE PROCESS test_perago_can_construct_trug_graph_from_trugs_tools_output.
     def test_perago_can_construct_trug_graph_from_trugs_tools_output(self):
         """Verify PERAGO TRUGGraph can be constructed from trugs_tools-generated data."""
         from src.models import TRUGNode, TRUGEdge, TRUGGraph
@@ -106,26 +114,31 @@ class TestPeragoTrugValidation:
         assert len(graph.edges) > 0
 
 
+# AGENT claude SHALL DEFINE RECORD testperagodependencyconsumption AS A RECORD test_suite.
 class TestPeragoDependencyConsumption:
     """Test that PERAGO can consume trugs_tools as a dependency."""
 
+    # AGENT SHALL VALIDATE PROCESS test_trugs_tools_version_accessible.
     def test_trugs_tools_version_accessible(self):
         """trugs_tools version is accessible."""
         from trugs_tools import __version__
         assert __version__ == "1.0.0"
 
+    # AGENT SHALL VALIDATE PROCESS test_trugs_tools_validator_accessible.
     def test_trugs_tools_validator_accessible(self):
         """trugs_tools validator module is importable."""
         from trugs_tools.validator import validate_trug, validate_file
         assert callable(validate_trug)
         assert callable(validate_file)
 
+    # AGENT SHALL VALIDATE PROCESS test_trugs_tools_generator_accessible.
     def test_trugs_tools_generator_accessible(self):
         """trugs_tools generator module is importable."""
         from trugs_tools.generator import generate_trug, SUPPORTED_BRANCHES
         assert callable(generate_trug)
         assert len(SUPPORTED_BRANCHES) == 12
 
+    # AGENT SHALL VALIDATE PROCESS test_trugs_tools_schemas_accessible.
     def test_trugs_tools_schemas_accessible(self):
         """trugs_tools schemas module is importable."""
         from trugs_tools.schemas import list_branch_schemas, validate_branch_schema

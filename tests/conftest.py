@@ -76,11 +76,13 @@ def _make_trugs_graph():
     return builder.to_dict()
 
 
+# AGENT claude SHALL DEFINE FUNCTION sample_graph_dict.
 @pytest.fixture
 def sample_graph_dict():
     return _make_trugs_graph()
 
 
+# AGENT claude SHALL DEFINE FUNCTION sample_graph.
 @pytest.fixture
 def sample_graph(sample_graph_dict):
     return GraphLoader().load(sample_graph_dict)

@@ -13,6 +13,7 @@ from trugs_tools.filesystem.utils import TRUG_FILENAME, load_graph
 from trugs_tools.renderer import render_all
 
 
+# AGENT claude SHALL DEFINE FUNCTION twatch.
 def twatch(
     directory: Union[str, Path],
     interval: float = 1.0,

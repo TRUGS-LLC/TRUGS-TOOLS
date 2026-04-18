@@ -3,6 +3,7 @@
 from typing import Optional, Dict, Any
 
 
+# AGENT claude SHALL DEFINE RECORD validationerror AS RECORD class.
 class ValidationError:
     """Represents a validation error in a TRUG file.
     
@@ -42,6 +43,7 @@ class ValidationError:
         
         return " ".join(parts)
     
+    # AGENT claude SHALL DEFINE FUNCTION to_dict.
     def to_dict(self) -> Dict[str, Any]:
         """Convert error to dictionary."""
         return {
@@ -53,6 +55,7 @@ class ValidationError:
         }
 
 
+# AGENT claude SHALL DEFINE RECORD validationresult AS RECORD class.
 class ValidationResult:
     """Result of TRUG validation.
     
@@ -67,6 +70,7 @@ class ValidationResult:
         self.errors: list[ValidationError] = []
         self.warnings: list[ValidationError] = []
     
+    # AGENT claude SHALL DEFINE FUNCTION add_error.
     def add_error(
         self,
         code: str,
@@ -80,6 +84,7 @@ class ValidationResult:
         self.errors.append(error)
         self.valid = False
     
+    # AGENT claude SHALL DEFINE FUNCTION add_warning.
     def add_warning(
         self,
         code: str,
@@ -106,6 +111,7 @@ class ValidationResult:
         else:
             return f"✗ Invalid TRUG ({len(self.errors)} error(s))"
     
+    # AGENT claude SHALL DEFINE FUNCTION to_dict.
     def to_dict(self) -> Dict[str, Any]:
         """Convert result to dictionary."""
         return {

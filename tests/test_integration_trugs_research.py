@@ -26,6 +26,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 
+# AGENT claude SHALL DEFINE FUNCTION get_hub_json_files.
 def get_hub_json_files():
     """Discover all JSON files in TRUGS_RESEARCH/HUBS/."""
     if not os.path.exists(HUBS_DIR):
@@ -33,22 +34,27 @@ def get_hub_json_files():
     return sorted(glob.glob(os.path.join(HUBS_DIR, "*.json")))
 
 
+# AGENT claude SHALL DEFINE RECORD testtrugsresearchavailability AS A RECORD test_suite.
 class TestTrugsResearchAvailability:
     """Test that TRUGS_RESEARCH directory is accessible."""
 
+    # AGENT SHALL VALIDATE PROCESS test_trugs_research_exists.
     def test_trugs_research_exists(self):
         """TRUGS_RESEARCH directory exists."""
         assert os.path.isdir(TRUGS_RESEARCH_DIR)
 
+    # AGENT SHALL VALIDATE PROCESS test_trugs_research_has_specification.
     def test_trugs_research_has_specification(self):
         """TRUGS_RESEARCH has a RESEARCH_BRANCH specification."""
         spec_path = os.path.join(TRUGS_RESEARCH_DIR, "RESEARCH_BRANCH", "SPEC_research_branch.md")
         assert os.path.exists(spec_path), "RESEARCH_BRANCH/SPEC_research_branch.md not found"
 
 
+# AGENT claude SHALL DEFINE RECORD testresearchgraphvalidation AS A RECORD test_suite.
 class TestResearchGraphValidation:
     """Test validation of research-style TRUGs."""
 
+    # AGENT claude SHALL DEFINE FUNCTION research_trug.
     @pytest.fixture
     def research_trug(self):
         """Create a sample research-style TRUG for validation."""
@@ -103,11 +109,13 @@ class TestResearchGraphValidation:
             },
         }
 
+    # AGENT SHALL VALIDATE PROCESS test_research_trug_validates.
     def test_research_trug_validates(self, research_trug):
         """A research-style TRUG passes validation."""
         result = validate_trug(research_trug)
         assert result.valid, f"Validation failed: {result.errors}"
 
+    # AGENT SHALL VALIDATE PROCESS test_research_trug_renders.
     def test_research_trug_renders(self, research_trug, tmp_path):
         """A research-style TRUG can be rendered to markdown."""
         output = render_all(research_trug, output_dir=str(tmp_path), render_date="2026-02-17")
@@ -117,6 +125,7 @@ class TestResearchGraphValidation:
             if isinstance(value, str):
                 assert len(value) > 0
 
+    # AGENT SHALL VALIDATE PROCESS test_validate_hub_files.
     def test_validate_hub_files(self):
         """Validate any existing HUBS/*.json files."""
         hub_files = get_hub_json_files()
@@ -130,9 +139,11 @@ class TestResearchGraphValidation:
             assert result.valid, f"Validation failed for {filepath}: {result.errors}"
 
 
+# AGENT claude SHALL DEFINE RECORD testresearchtoolchainintegration AS A RECORD test_suite.
 class TestResearchToolchainIntegration:
     """Test that trugs_tools can support TRUGS_RESEARCH workflows."""
 
+    # AGENT SHALL VALIDATE PROCESS test_knowledge_branch_generation.
     def test_knowledge_branch_generation(self):
         """Knowledge_v1 branch (merged living+knowledge+research) generates valid TRUGs."""
         for template in ["minimal", "complete"]:
@@ -140,11 +151,13 @@ class TestResearchToolchainIntegration:
             result = validate_trug(trug)
             assert result.valid, f"knowledge/{template} failed: {result.errors}"
 
+    # AGENT SHALL VALIDATE PROCESS test_trugs_validate_cli_available.
     def test_trugs_validate_cli_available(self):
         """trugs-validate CLI command is importable."""
         from trugs_tools.cli import validate_command
         assert callable(validate_command)
 
+    # AGENT SHALL VALIDATE PROCESS test_trugs_render_cli_available.
     def test_trugs_render_cli_available(self):
         """trugs-render CLI command is importable."""
         from trugs_tools.cli import render_command

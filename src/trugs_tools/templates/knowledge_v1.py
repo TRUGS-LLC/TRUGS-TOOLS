@@ -10,6 +10,7 @@ See BRANCHES.md knowledge_v1 section and issue #622/#620.
 from typing import Dict, Any
 
 
+# AGENT claude SHALL DEFINE FUNCTION generate_knowledge_v1_minimal.
 def generate_knowledge_v1_minimal() -> Dict[str, Any]:
     """Generate minimal knowledge_v1 TRUG (4 nodes).
 
@@ -98,6 +99,7 @@ def generate_knowledge_v1_minimal() -> Dict[str, Any]:
     }
 
 
+# AGENT claude SHALL DEFINE FUNCTION generate_knowledge_v1_complete.
 def generate_knowledge_v1_complete() -> Dict[str, Any]:
     """Generate complete knowledge_v1 TRUG with all three origin domains.
 

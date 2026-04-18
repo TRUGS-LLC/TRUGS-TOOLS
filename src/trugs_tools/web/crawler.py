@@ -14,6 +14,7 @@ from typing import Optional
 from urllib.parse import urljoin, urlparse
 
 
+# AGENT claude SHALL DEFINE RECORD source AS RECORD class.
 @dataclass
 class Source:
     """A discovered web source."""
@@ -26,11 +27,13 @@ class Source:
     outbound_links: list = field(default_factory=list)
     metadata: dict = field(default_factory=dict)
 
+    # AGENT claude SHALL DEFINE FUNCTION domain.
     @property
     def domain(self) -> str:
         """Extract domain from URL."""
         return urlparse(self.url).netloc
 
+    # AGENT claude SHALL DEFINE FUNCTION is_academic.
     @property
     def is_academic(self) -> bool:
         """Check if source is likely academic."""
@@ -41,12 +44,14 @@ class Source:
         ]
         return any(d in self.domain for d in academic_domains)
 
+    # AGENT claude SHALL DEFINE FUNCTION is_github.
     @property
     def is_github(self) -> bool:
         """Check if source is a GitHub repo."""
         return self.domain == "github.com" or self.domain.endswith(".github.com")
 
 
+# AGENT claude SHALL DEFINE RECORD sourcediscoverer AS RECORD class.
 class SourceDiscoverer:
     """
     Discovers sources starting from seed URLs.
@@ -67,6 +72,7 @@ class SourceDiscoverer:
         self.user_agent = user_agent
         self._seen_urls: set = set()
 
+    # AGENT claude SHALL DEFINE FUNCTION discover.
     async def discover(
         self,
         seed_urls: list,
@@ -224,6 +230,7 @@ class SourceDiscoverer:
         return "WEB_SOURCE"
 
 
+# AGENT claude SHALL DEFINE FUNCTION discover_sources.
 async def discover_sources(
     seed_urls: list,
     topic: str = "",

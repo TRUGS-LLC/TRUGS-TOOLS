@@ -7,6 +7,7 @@ task delegation, resource access, and escalation paths.
 from typing import Dict, Any
 
 
+# AGENT claude SHALL DEFINE FUNCTION generate_orchestration_minimal.
 def generate_orchestration_minimal() -> Dict[str, Any]:
     """Generate minimal Orchestration TRUG (3 nodes).
 
@@ -73,6 +74,7 @@ def generate_orchestration_minimal() -> Dict[str, Any]:
     }
 
 
+# AGENT claude SHALL DEFINE FUNCTION generate_orchestration_complete.
 def generate_orchestration_complete() -> Dict[str, Any]:
     """Generate complete Orchestration TRUG with delegation and escalation.
 

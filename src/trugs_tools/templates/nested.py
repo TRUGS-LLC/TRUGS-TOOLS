@@ -8,6 +8,7 @@ no ID conflicts between levels.
 from typing import Dict, Any
 
 
+# AGENT claude SHALL DEFINE FUNCTION generate_nested_minimal.
 def generate_nested_minimal() -> Dict[str, Any]:
     """Generate minimal Nested TRUG (3 nodes).
 
@@ -73,6 +74,7 @@ def generate_nested_minimal() -> Dict[str, Any]:
     }
 
 
+# AGENT claude SHALL DEFINE FUNCTION generate_nested_complete.
 def generate_nested_complete() -> Dict[str, Any]:
     """Generate complete Nested TRUG with tasks, subgraphs, and results (7 nodes).
 

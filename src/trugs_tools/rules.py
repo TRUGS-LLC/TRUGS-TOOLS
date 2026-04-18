@@ -4,6 +4,7 @@ from typing import Dict, List, Set, Any, Optional
 from trugs_tools.errors import ValidationResult
 
 
+# AGENT claude SHALL DEFINE FUNCTION validate_rule_1_unique_ids.
 def validate_rule_1_unique_ids(trug: Dict[str, Any], result: ValidationResult) -> None:
     """Rule 1: All node IDs must be unique within the graph.
     
@@ -34,6 +35,7 @@ def validate_rule_1_unique_ids(trug: Dict[str, Any], result: ValidationResult) -
         seen_ids.add(node_id)
 
 
+# AGENT claude SHALL DEFINE FUNCTION validate_rule_2_parent_contains_consistency.
 def validate_rule_2_parent_contains_consistency(
     trug: Dict[str, Any], 
     result: ValidationResult
@@ -109,6 +111,7 @@ def validate_rule_2_parent_contains_consistency(
                     )
 
 
+# AGENT claude SHALL DEFINE FUNCTION validate_rule_3_no_self_containment.
 def validate_rule_3_no_self_containment(
     trug: Dict[str, Any],
     result: ValidationResult
@@ -145,6 +148,7 @@ def validate_rule_3_no_self_containment(
                     contains_graph[from_id].append(to_id)
     
     # DFS to detect cycles
+    # AGENT claude SHALL DEFINE FUNCTION has_cycle.
     def has_cycle(node_id: str, visited: Set[str], rec_stack: Set[str]) -> Optional[List[str]]:
         """Return cycle path if found, None otherwise."""
         visited.add(node_id)
@@ -181,6 +185,7 @@ def validate_rule_3_no_self_containment(
                 return
 
 
+# AGENT claude SHALL DEFINE FUNCTION validate_rule_4_edges_array.
 def validate_rule_4_edges_array(trug: Dict[str, Any], result: ValidationResult) -> None:
     """Rule 4: TRUG must have an 'edges' array.
     
@@ -202,6 +207,7 @@ def validate_rule_4_edges_array(trug: Dict[str, Any], result: ValidationResult) 
         )
 
 
+# AGENT claude SHALL DEFINE FUNCTION validate_rule_5_valid_references.
 def validate_rule_5_valid_references(
     trug: Dict[str, Any],
     result: ValidationResult
@@ -252,6 +258,7 @@ def validate_rule_5_valid_references(
             )
 
 
+# AGENT claude SHALL DEFINE FUNCTION validate_rule_6_required_node_fields.
 def validate_rule_6_required_node_fields(
     trug: Dict[str, Any],
     result: ValidationResult
@@ -279,6 +286,7 @@ def validate_rule_6_required_node_fields(
                 )
 
 
+# AGENT claude SHALL DEFINE FUNCTION validate_rule_7_required_edge_fields.
 def validate_rule_7_required_edge_fields(
     trug: Dict[str, Any],
     result: ValidationResult
@@ -323,6 +331,7 @@ def validate_rule_7_required_edge_fields(
                 )
 
 
+# AGENT claude SHALL DEFINE FUNCTION validate_rule_8_extensions_valid.
 def validate_rule_8_extensions_valid(
     trug: Dict[str, Any],
     result: ValidationResult
@@ -361,6 +370,7 @@ def validate_rule_8_extensions_valid(
                 )
 
 
+# AGENT claude SHALL DEFINE FUNCTION validate_rule_9_metric_level_format.
 def validate_rule_9_metric_level_format(
     trug: Dict[str, Any],
     result: ValidationResult
@@ -429,6 +439,7 @@ def validate_rule_9_metric_level_format(
             )
 
 
+# AGENT claude SHALL DEFINE FUNCTION validate_required_root_fields.
 def validate_required_root_fields(trug: Dict[str, Any], result: ValidationResult) -> None:
     """Validate that TRUG has required root fields.
     
@@ -457,6 +468,7 @@ def validate_required_root_fields(trug: Dict[str, Any], result: ValidationResult
 # ─── Rule 10: Unreachable Nodes ─────────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE FUNCTION validate_rule_10_unreachable_nodes.
 def validate_rule_10_unreachable_nodes(
     trug: Dict[str, Any], result: ValidationResult
 ) -> None:
@@ -488,6 +500,7 @@ def validate_rule_10_unreachable_nodes(
 # ─── Rule 11: Dead Nodes ────────────────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE FUNCTION validate_rule_11_dead_nodes.
 def validate_rule_11_dead_nodes(
     trug: Dict[str, Any], result: ValidationResult
 ) -> None:

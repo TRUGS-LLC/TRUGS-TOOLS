@@ -9,6 +9,7 @@ from trugs_tools import rules
 from trugs_tools.schemas import validate_branch_schema
 
 
+# AGENT claude SHALL DEFINE FUNCTION validate_trug.
 def validate_trug(trug: Union[Dict[str, Any], str, Path]) -> ValidationResult:
     """Validate a TRUG against TRUGS v1.0 specification.
     
@@ -85,6 +86,7 @@ def validate_trug(trug: Union[Dict[str, Any], str, Path]) -> ValidationResult:
     return result
 
 
+# AGENT claude SHALL DEFINE FUNCTION load_trug.
 def load_trug(filepath: Union[str, Path]) -> Dict[str, Any]:
     """Load TRUG from JSON file.
     
@@ -107,6 +109,7 @@ def load_trug(filepath: Union[str, Path]) -> Dict[str, Any]:
         return json.load(f)
 
 
+# AGENT claude SHALL DEFINE FUNCTION validate_file.
 def validate_file(filepath: Union[str, Path]) -> ValidationResult:
     """Validate a TRUG file.
     

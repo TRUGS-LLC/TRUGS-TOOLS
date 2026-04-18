@@ -14,6 +14,7 @@ from trugs_tools.filesystem.utils import (
 )
 
 
+# AGENT claude SHALL DEFINE FUNCTION tdelete.
 def tdelete(
     directory: Union[str, Path],
     node_ids: List[str],

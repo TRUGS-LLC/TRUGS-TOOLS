@@ -20,6 +20,7 @@ from .crawler import Source
 # Data Types
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD entity AS RECORD class.
 @dataclass
 class Entity:
     """An extracted entity (concept, author, claim, tool, etc.)."""
@@ -32,6 +33,7 @@ class Entity:
     source_url: str = ""
     metadata: dict = field(default_factory=dict)
 
+    # AGENT claude SHALL DEFINE FUNCTION to_node.
     def to_node(self) -> dict:
         """Convert to TRUGS 1.0 node format."""
         metric_level = _entity_metric_level(self.entity_type)
@@ -51,6 +53,7 @@ class Entity:
         }
 
 
+# AGENT claude SHALL DEFINE RECORD relation AS RECORD class.
 @dataclass
 class Relation:
     """An extracted relation between entities."""
@@ -62,6 +65,7 @@ class Relation:
     confidence: float = 0.5
     source_url: str = ""
 
+    # AGENT claude SHALL DEFINE FUNCTION to_edge.
     def to_edge(self) -> dict:
         """Convert to TRUGS 1.0 edge format."""
         return {
@@ -84,18 +88,22 @@ def _entity_metric_level(entity_type: str) -> str:
 # LLM Protocol (supports multiple providers)
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD llmclient AS RECORD class.
 @runtime_checkable
 class LLMClient(Protocol):
     """Protocol for LLM clients (Anthropic, OpenAI, Mock)."""
 
+    # AGENT claude SHALL DEFINE FUNCTION complete.
     async def complete(self, prompt: str, max_tokens: int = 1000) -> str:
         """Generate completion for prompt."""
         ...
 
 
+# AGENT claude SHALL DEFINE RECORD mockllmclient AS RECORD class.
 class MockLLMClient:
     """Mock LLM client for testing without API keys."""
 
+    # AGENT claude SHALL DEFINE FUNCTION complete.
     async def complete(self, prompt: str, max_tokens: int = 1000) -> str:
         """Return mock response based on prompt patterns."""
         prompt_lower = prompt.lower()
@@ -121,6 +129,7 @@ class MockLLMClient:
         return "{}"
 
 
+# AGENT claude SHALL DEFINE RECORD anthropicclient AS RECORD class.
 class AnthropicClient:
     """Anthropic Claude client (Haiku for cheap extraction)."""
 
@@ -129,6 +138,7 @@ class AnthropicClient:
         self.model = model
         self._client = None
 
+    # AGENT claude SHALL DEFINE FUNCTION complete.
     async def complete(self, prompt: str, max_tokens: int = 1000) -> str:
         """Generate completion using Claude Haiku."""
         if self._client is None:
@@ -149,6 +159,7 @@ class AnthropicClient:
         return message.content[0].text
 
 
+# AGENT claude SHALL DEFINE RECORD openaiclient AS RECORD class.
 class OpenAIClient:
     """OpenAI client (GPT-3.5 for cheap extraction)."""
 
@@ -157,6 +168,7 @@ class OpenAIClient:
         self.model = model
         self._client = None
 
+    # AGENT claude SHALL DEFINE FUNCTION complete.
     async def complete(self, prompt: str, max_tokens: int = 1000) -> str:
         """Generate completion using GPT-3.5."""
         if self._client is None:
@@ -204,12 +216,14 @@ Return JSON format:
 JSON response:"""
 
 
+# AGENT claude SHALL DEFINE RECORD entityextractor AS RECORD class.
 class EntityExtractor:
     """Extracts entities from source content using an LLM client."""
 
     def __init__(self, llm_client: LLMClient):
         self.llm = llm_client
 
+    # AGENT claude SHALL DEFINE FUNCTION extract.
     async def extract(self, source: Source) -> list:
         """
         Extract entities from a source.
@@ -303,12 +317,14 @@ Return JSON format:
 JSON response:"""
 
 
+# AGENT claude SHALL DEFINE RECORD relationextractor AS RECORD class.
 class RelationExtractor:
     """Extracts relations between entities using an LLM client."""
 
     def __init__(self, llm_client: LLMClient):
         self.llm = llm_client
 
+    # AGENT claude SHALL DEFINE FUNCTION extract.
     async def extract(self, source: Source, entities: list) -> list:
         """
         Extract relations from a source given known entities.
@@ -395,12 +411,14 @@ Return JSON format:
 JSON response:"""
 
 
+# AGENT claude SHALL DEFINE RECORD citationextractor AS RECORD class.
 class CitationExtractor:
     """Specialized extractor for citations and references."""
 
     def __init__(self, llm_client: LLMClient):
         self.llm = llm_client
 
+    # AGENT claude SHALL DEFINE FUNCTION extract.
     async def extract(self, source: Source) -> list:
         """Extract citations from source."""
         content = source.content[:4000]
@@ -432,6 +450,7 @@ class CitationExtractor:
 # Factory Function
 # ============================================================================
 
+# AGENT claude SHALL DEFINE FUNCTION create_extractor.
 def create_extractor(
     provider: str = "mock",
     api_key: Optional[str] = None,

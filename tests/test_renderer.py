@@ -16,7 +16,7 @@ from trugs_tools.renderer import (
 )
 
 
-# ─── Fixtures ─────────────────────────────────────────────────────────
+# AGENT claude SHALL DEFINE FUNCTION minimal_trug.
 
 
 @pytest.fixture
@@ -45,6 +45,7 @@ def minimal_trug():
     }
 
 
+# AGENT claude SHALL DEFINE FUNCTION rich_trug.
 @pytest.fixture
 def rich_trug():
     """Folder TRUG with multiple node types and edges."""
@@ -146,6 +147,7 @@ def rich_trug():
     }
 
 
+# AGENT claude SHALL DEFINE FUNCTION reference_trug_path.
 @pytest.fixture
 def reference_trug_path():
     """Path to real REFERENCE/folder.trug.json."""
@@ -155,6 +157,7 @@ def reference_trug_path():
     pytest.skip("REFERENCE/folder.trug.json not found")
 
 
+# AGENT claude SHALL DEFINE FUNCTION protocol_trug_path.
 @pytest.fixture
 def protocol_trug_path():
     """Path to real TRUGS_PROTOCOL/folder.trug.json."""
@@ -167,26 +170,32 @@ def protocol_trug_path():
 # ─── Helper Tests ──────────────────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE RECORD testhelpers AS A RECORD test_suite.
 class TestHelpers:
+    # AGENT SHALL VALIDATE PROCESS test_get_folder_node.
     def test_get_folder_node(self, minimal_trug):
         node = _get_folder_node(minimal_trug)
         assert node["type"] == "FOLDER"
         assert node["id"] == "folder_root"
 
+    # AGENT SHALL VALIDATE PROCESS test_get_folder_node_missing_raises.
     def test_get_folder_node_missing_raises(self):
         with pytest.raises(ValueError):
             _get_folder_node({"nodes": [{"id": "x", "type": "SOURCE", "parent_id": "y"}]})
 
+    # AGENT SHALL VALIDATE PROCESS test_get_children.
     def test_get_children(self, rich_trug):
         children = _get_children(rich_trug, "folder_root")
         assert len(children) == 5  # spec, 3 generated, 1 source
 
+    # AGENT SHALL VALIDATE PROCESS test_get_children_sorted.
     def test_get_children_sorted(self, rich_trug):
         children = _get_children(rich_trug, "folder_root")
         types = [c["type"] for c in children]
         # GENERATED < SOURCE < SPECIFICATION alphabetically
         assert types == sorted(types)
 
+    # AGENT SHALL VALIDATE PROCESS test_node_name.
     def test_node_name(self):
         assert _node_name({"properties": {"name": "foo"}}) == "foo"
         assert _node_name({"id": "bar"}) == "bar"
@@ -196,50 +205,61 @@ class TestHelpers:
 # ─── AAA.md Render Tests ──────────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE RECORD testrenderaaa AS A RECORD test_suite.
 class TestRenderAAA:
+    # AGENT SHALL VALIDATE PROCESS test_header_present.
     def test_header_present(self, minimal_trug):
         result = render_aaa(minimal_trug)
         assert result.startswith(GENERATED_HEADER)
 
+    # AGENT SHALL VALIDATE PROCESS test_contains_folder_name.
     def test_contains_folder_name(self, minimal_trug):
         result = render_aaa(minimal_trug)
         assert "# MINIMAL/" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_contains_version.
     def test_contains_version(self, minimal_trug):
         result = render_aaa(minimal_trug)
         assert "**Version:** 0.1.0" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_contains_phase.
     def test_contains_phase(self, minimal_trug):
         result = render_aaa(minimal_trug)
         assert "**Phase:** VISION" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_contains_all_seven_phases.
     def test_contains_all_seven_phases(self, minimal_trug):
         result = render_aaa(minimal_trug)
         for phase in ["VISION", "FEASIBILITY", "SPECIFICATIONS", "ARCHITECTURE",
                        "CODING", "TESTING", "DEPLOYMENT"]:
             assert f"## {phase}" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_architecture_phase_has_tree.
     def test_architecture_phase_has_tree(self, rich_trug):
         result = render_aaa(rich_trug)
         assert "**Reference Tree:**" in result
         assert "folder.trug.json (source of truth)" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_architecture_phase_has_relationships.
     def test_architecture_phase_has_relationships(self, rich_trug):
         result = render_aaa(rich_trug)
         assert "**Relationships:**" in result
         assert "IMPLEMENTS" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_metadata_section.
     def test_metadata_section(self, minimal_trug):
         result = render_aaa(minimal_trug)
         assert "## METADATA" in result
         assert '"source": "folder.trug.json"' in result
 
+    # AGENT SHALL VALIDATE PROCESS test_components_listed.
     def test_components_listed(self, rich_trug):
         result = render_aaa(rich_trug)
         assert "### Components" in result
         assert "CORE.md" in result
         assert "main.py" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_generated_nodes_excluded_from_components.
     def test_generated_nodes_excluded_from_components(self, rich_trug):
         result = render_aaa(rich_trug)
         # Find the Components section and check GENERATED nodes aren't listed there
@@ -249,12 +269,14 @@ class TestRenderAAA:
         assert "main.py" in components_section
         assert "CORE.md" in components_section
 
+    # AGENT SHALL VALIDATE PROCESS test_deterministic.
     def test_deterministic(self, rich_trug):
         """Same input → same output."""
         a = render_aaa(rich_trug)
         b = render_aaa(rich_trug)
         assert a == b
 
+    # AGENT SHALL VALIDATE PROCESS test_from_file_path.
     def test_from_file_path(self, tmp_path, minimal_trug):
         f = tmp_path / "test.trug.json"
         f.write_text(json.dumps(minimal_trug))
@@ -265,24 +287,30 @@ class TestRenderAAA:
 # ─── README.md Render Tests ──────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE RECORD testrenderreadme AS A RECORD test_suite.
 class TestRenderReadme:
+    # AGENT SHALL VALIDATE PROCESS test_header_present.
     def test_header_present(self, minimal_trug):
         result = render_readme(minimal_trug)
         assert result.startswith(GENERATED_HEADER)
 
+    # AGENT SHALL VALIDATE PROCESS test_contains_title.
     def test_contains_title(self, minimal_trug):
         result = render_readme(minimal_trug)
         assert "# MINIMAL" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_contains_purpose.
     def test_contains_purpose(self, minimal_trug):
         result = render_readme(minimal_trug)
         assert "A minimal test folder" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_cross_references.
     def test_cross_references(self, minimal_trug):
         result = render_readme(minimal_trug)
         assert "[ARCHITECTURE.md](ARCHITECTURE.md)" in result
         assert "[AAA.md](AAA.md)" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_contents_table.
     def test_contents_table(self, rich_trug):
         result = render_readme(rich_trug)
         assert "## Contents" in result
@@ -290,6 +318,7 @@ class TestRenderReadme:
         assert "CORE.md" in result
         assert "main.py" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_generated_excluded_from_contents.
     def test_generated_excluded_from_contents(self, rich_trug):
         result = render_readme(rich_trug)
         contents_section = result.split("## Contents")[1].split("## ")[0]
@@ -298,21 +327,25 @@ class TestRenderReadme:
         assert "CORE.md" in contents_section
         assert "main.py" in contents_section
 
+    # AGENT SHALL VALIDATE PROCESS test_relationships_section.
     def test_relationships_section(self, rich_trug):
         result = render_readme(rich_trug)
         assert "## How It Fits Together" in result
         assert "implements" in result  # lowercased relation
 
+    # AGENT SHALL VALIDATE PROCESS test_documentation_links.
     def test_documentation_links(self, minimal_trug):
         result = render_readme(minimal_trug)
         assert "## Documentation" in result
         assert "[../AAA.md](../AAA.md)" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_deterministic.
     def test_deterministic(self, rich_trug):
         a = render_readme(rich_trug)
         b = render_readme(rich_trug)
         assert a == b
 
+    # AGENT SHALL VALIDATE PROCESS test_markdown_files_are_linked.
     def test_markdown_files_are_linked(self, rich_trug):
         result = render_readme(rich_trug)
         assert "[CORE.md](CORE.md)" in result
@@ -321,30 +354,37 @@ class TestRenderReadme:
 # ─── ARCHITECTURE.md Render Tests ─────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE RECORD testrenderarchitecture AS A RECORD test_suite.
 class TestRenderArchitecture:
+    # AGENT SHALL VALIDATE PROCESS test_header_present.
     def test_header_present(self, minimal_trug):
         result = render_architecture(minimal_trug)
         assert result.startswith(GENERATED_HEADER)
 
+    # AGENT SHALL VALIDATE PROCESS test_title.
     def test_title(self, minimal_trug):
         result = render_architecture(minimal_trug)
         assert "# MINIMAL Architecture" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_cross_references.
     def test_cross_references(self, minimal_trug):
         result = render_architecture(minimal_trug)
         assert "[AAA.md](AAA.md)" in result
         assert "[README.md](README.md)" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_quick_reference.
     def test_quick_reference(self, minimal_trug):
         result = render_architecture(minimal_trug)
         assert "## Quick Reference" in result
         assert "**What:** A minimal test folder" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_component_hierarchy.
     def test_component_hierarchy(self, rich_trug):
         result = render_architecture(rich_trug)
         assert "## Component Hierarchy" in result
         assert "MY_PROJECT/ (FOLDER," in result
 
+    # AGENT SHALL VALIDATE PROCESS test_node_detail_table.
     def test_node_detail_table(self, rich_trug):
         result = render_architecture(rich_trug)
         assert "## Node Details" in result
@@ -352,47 +392,56 @@ class TestRenderArchitecture:
         assert "`spec_core`" in result
         assert "`src_main`" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_relationships_table.
     def test_relationships_table(self, rich_trug):
         result = render_architecture(rich_trug)
         assert "## Relationships" in result
         assert "IMPLEMENTS" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_node_properties_section.
     def test_node_properties_section(self, rich_trug):
         result = render_architecture(rich_trug)
         assert "## Node Properties" in result
         assert "### CORE.md (SPECIFICATION)" in result
         assert "### main.py (SOURCE)" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_dimensions_shown.
     def test_dimensions_shown(self, rich_trug):
         result = render_architecture(rich_trug)
         assert "**Dimensions:**" in result
         assert "`complexity`" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_capabilities_shown.
     def test_capabilities_shown(self, rich_trug):
         result = render_architecture(rich_trug)
         assert "**Capabilities:**" in result
         assert "project" in result
         assert "containment" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_deterministic.
     def test_deterministic(self, rich_trug):
         a = render_architecture(rich_trug)
         b = render_architecture(rich_trug)
         assert a == b
 
+    # AGENT SHALL VALIDATE PROCESS test_no_dimensions_when_empty.
     def test_no_dimensions_when_empty(self, minimal_trug):
         result = render_architecture(minimal_trug)
         assert "**Dimensions:**" not in result
 
+    # AGENT SHALL VALIDATE PROCESS test_no_capabilities_when_empty.
     def test_no_capabilities_when_empty(self, minimal_trug):
         result = render_architecture(minimal_trug)
         assert "**Capabilities:**" not in result
 
+    # AGENT SHALL VALIDATE PROCESS test_writer_marker_zones_present.
     def test_writer_marker_zones_present(self, minimal_trug):
         result = render_architecture(minimal_trug)
         for zone in ("overview", "component_notes", "hierarchy_notes", "dependency_notes"):
             assert f"<!-- WRITER:BEGIN {zone} -->" in result
             assert f"<!-- WRITER:END {zone} -->" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_writer_marker_zones_empty.
     def test_writer_marker_zones_empty(self, rich_trug):
         result = render_architecture(rich_trug)
         for zone in ("overview", "component_notes", "hierarchy_notes", "dependency_notes"):
@@ -403,6 +452,7 @@ class TestRenderArchitecture:
             between = result[begin_idx + len(begin):end_idx].strip()
             assert between == "", f"Zone {zone} should be empty, got: {between!r}"
 
+    # AGENT SHALL VALIDATE PROCESS test_writer_zone_injects_prose_content.
     def test_writer_zone_injects_prose_content(self, tmp_path, minimal_trug):
         prose_dir = tmp_path / "prose"
         prose_dir.mkdir()
@@ -418,6 +468,7 @@ class TestRenderArchitecture:
         result = render_architecture(trug, repo_root=tmp_path)
         assert "<!-- WRITER:BEGIN overview -->\nInjected overview prose.\n<!-- WRITER:END overview -->" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_writer_zone_missing_prose_file_warns_and_stays_empty.
     def test_writer_zone_missing_prose_file_warns_and_stays_empty(self, tmp_path, minimal_trug):
         trug = json.loads(json.dumps(minimal_trug))
         trug["nodes"].append({
@@ -434,27 +485,33 @@ class TestRenderArchitecture:
         between = result[result.index(begin) + len(begin):result.index(end)].strip()
         assert between == ""
 
+    # AGENT SHALL VALIDATE PROCESS test_writer_zone_no_prose_nodes_repo_root_none_is_backward_compatible.
     def test_writer_zone_no_prose_nodes_repo_root_none_is_backward_compatible(self, minimal_trug):
         assert render_architecture(minimal_trug, repo_root=None) == render_architecture(minimal_trug)
 
+    # AGENT SHALL VALIDATE PROCESS test_writer_marker_zone_order.
     def test_writer_marker_zone_order(self, rich_trug):
         result = render_architecture(rich_trug)
         zones = ["overview", "component_notes", "hierarchy_notes", "dependency_notes"]
         positions = [result.index(f"<!-- WRITER:BEGIN {z} -->") for z in zones]
         assert positions == sorted(positions), "Marker zones must appear in order"
 
+    # AGENT SHALL VALIDATE PROCESS test_writer_overview_before_component_inventory.
     def test_writer_overview_before_component_inventory(self, rich_trug):
         result = render_architecture(rich_trug)
         assert result.index("<!-- WRITER:END overview -->") < result.index("## Component Inventory")
 
+    # AGENT SHALL VALIDATE PROCESS test_writer_component_notes_before_hierarchy.
     def test_writer_component_notes_before_hierarchy(self, rich_trug):
         result = render_architecture(rich_trug)
         assert result.index("<!-- WRITER:END component_notes -->") < result.index("## Component Hierarchy")
 
+    # AGENT SHALL VALIDATE PROCESS test_writer_hierarchy_notes_before_node_details.
     def test_writer_hierarchy_notes_before_node_details(self, rich_trug):
         result = render_architecture(rich_trug)
         assert result.index("<!-- WRITER:END hierarchy_notes -->") < result.index("## Node Details")
 
+    # AGENT SHALL VALIDATE PROCESS test_writer_dependency_notes_after_node_details.
     def test_writer_dependency_notes_after_node_details(self, minimal_trug):
         """When no cross-folder edges, dependency_notes follows Node Details."""
         result = render_architecture(minimal_trug)
@@ -464,33 +521,40 @@ class TestRenderArchitecture:
 # ─── render_all Tests ──────────────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE RECORD testrenderall AS A RECORD test_suite.
 class TestRenderAll:
+    # AGENT SHALL VALIDATE PROCESS test_returns_three_files.
     def test_returns_three_files(self, minimal_trug):
         results = render_all(minimal_trug)
         assert set(results.keys()) == {"AAA.md", "README.md", "ARCHITECTURE.md"}
 
+    # AGENT SHALL VALIDATE PROCESS test_all_have_header.
     def test_all_have_header(self, minimal_trug):
         results = render_all(minimal_trug)
         for filename, content in results.items():
             assert content.startswith(GENERATED_HEADER), f"{filename} missing header"
 
+    # AGENT SHALL VALIDATE PROCESS test_writes_to_disk.
     def test_writes_to_disk(self, tmp_path, minimal_trug):
         render_all(minimal_trug, output_dir=str(tmp_path))
         assert (tmp_path / "AAA.md").exists()
         assert (tmp_path / "README.md").exists()
         assert (tmp_path / "ARCHITECTURE.md").exists()
 
+    # AGENT SHALL VALIDATE PROCESS test_written_content_matches.
     def test_written_content_matches(self, tmp_path, minimal_trug):
         results = render_all(minimal_trug, output_dir=str(tmp_path))
         for filename, content in results.items():
             written = (tmp_path / filename).read_text(encoding="utf-8")
             assert written == content
 
+    # AGENT SHALL VALIDATE PROCESS test_creates_output_dir.
     def test_creates_output_dir(self, tmp_path, minimal_trug):
         out = tmp_path / "sub" / "dir"
         render_all(minimal_trug, output_dir=str(out))
         assert (out / "AAA.md").exists()
 
+    # AGENT SHALL VALIDATE PROCESS test_from_path.
     def test_from_path(self, tmp_path, minimal_trug):
         f = tmp_path / "input.trug.json"
         f.write_text(json.dumps(minimal_trug))
@@ -501,7 +565,9 @@ class TestRenderAll:
 # ─── Integration with real TRUGs ──────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE RECORD testrealtrugs AS A RECORD test_suite.
 class TestRealTRUGs:
+    # AGENT SHALL VALIDATE PROCESS test_reference_trug_renders.
     def test_reference_trug_renders(self, reference_trug_path):
         """REFERENCE/folder.trug.json renders without errors."""
         results = render_all(reference_trug_path)
@@ -509,6 +575,7 @@ class TestRealTRUGs:
             assert content.startswith(GENERATED_HEADER), f"{filename} missing header"
             assert len(content) > 100, f"{filename} too short"
 
+    # AGENT SHALL VALIDATE PROCESS test_protocol_trug_renders.
     def test_protocol_trug_renders(self, protocol_trug_path):
         """TRUGS_PROTOCOL/folder.trug.json renders without errors."""
         results = render_all(protocol_trug_path)
@@ -516,23 +583,26 @@ class TestRealTRUGs:
             assert content.startswith(GENERATED_HEADER), f"{filename} missing header"
             assert len(content) > 100, f"{filename} too short"
 
+    # AGENT SHALL VALIDATE PROCESS test_reference_aaa_has_phases.
     def test_reference_aaa_has_phases(self, reference_trug_path):
         result = render_aaa(reference_trug_path)
         for phase in ["VISION", "FEASIBILITY", "SPECIFICATIONS", "ARCHITECTURE",
                        "CODING", "TESTING", "DEPLOYMENT"]:
             assert f"## {phase}" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_protocol_architecture_has_nodes.
     def test_protocol_architecture_has_nodes(self, protocol_trug_path):
         result = render_architecture(protocol_trug_path)
         assert "## Node Details" in result
         assert "TRUGS_PROTOCOL" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_reference_readme_has_contents.
     def test_reference_readme_has_contents(self, reference_trug_path):
         result = render_readme(reference_trug_path)
         assert "# REFERENCE" in result
 
 
-# ─── Determinism Fixtures ─────────────────────────────────────────────
+# AGENT claude SHALL DEFINE FUNCTION determinism_trug.
 
 
 @pytest.fixture
@@ -647,9 +717,11 @@ def determinism_trug():
 FIXED_DATE = "2026-01-01"
 
 
+# AGENT claude SHALL DEFINE RECORD testdeterminism AS A RECORD test_suite.
 class TestDeterminism:
     """S1.1.5: Verify byte-identical output across consecutive runs."""
 
+    # AGENT SHALL VALIDATE PROCESS test_10_consecutive_runs_identical_minimal.
     @pytest.mark.parametrize("render_fn", [render_aaa, render_readme, render_architecture])
     def test_10_consecutive_runs_identical_minimal(self, minimal_trug, render_fn):
         """10 consecutive renders produce byte-identical output (minimal_trug)."""
@@ -657,6 +729,7 @@ class TestDeterminism:
         for _ in range(9):
             assert render_fn(minimal_trug, render_date=FIXED_DATE) == baseline
 
+    # AGENT SHALL VALIDATE PROCESS test_10_consecutive_runs_identical_rich.
     @pytest.mark.parametrize("render_fn", [render_aaa, render_readme, render_architecture])
     def test_10_consecutive_runs_identical_rich(self, rich_trug, render_fn):
         """10 consecutive renders produce byte-identical output (rich_trug)."""
@@ -664,6 +737,7 @@ class TestDeterminism:
         for _ in range(9):
             assert render_fn(rich_trug, render_date=FIXED_DATE) == baseline
 
+    # AGENT SHALL VALIDATE PROCESS test_10_consecutive_runs_identical_determinism.
     @pytest.mark.parametrize("render_fn", [render_aaa, render_readme, render_architecture])
     def test_10_consecutive_runs_identical_determinism(self, determinism_trug, render_fn):
         """10 consecutive renders produce byte-identical output (determinism_trug)."""
@@ -671,6 +745,7 @@ class TestDeterminism:
         for _ in range(9):
             assert render_fn(determinism_trug, render_date=FIXED_DATE) == baseline
 
+    # AGENT SHALL VALIDATE PROCESS test_render_all_10_consecutive_runs.
     def test_render_all_10_consecutive_runs(self, determinism_trug):
         """render_all produces byte-identical output across 10 runs."""
         baseline = render_all(determinism_trug, render_date=FIXED_DATE)
@@ -678,18 +753,21 @@ class TestDeterminism:
             result = render_all(determinism_trug, render_date=FIXED_DATE)
             assert result == baseline
 
+    # AGENT SHALL VALIDATE PROCESS test_fixed_date_in_output.
     @pytest.mark.parametrize("render_fn", [render_aaa, render_readme, render_architecture])
     def test_fixed_date_in_output(self, minimal_trug, render_fn):
         """Passing render_date produces output containing that date."""
         result = render_fn(minimal_trug, render_date=FIXED_DATE)
         assert FIXED_DATE in result
 
+    # AGENT SHALL VALIDATE PROCESS test_render_all_fixed_date_in_output.
     def test_render_all_fixed_date_in_output(self, minimal_trug):
         """render_all with render_date produces output containing that date."""
         results = render_all(minimal_trug, render_date=FIXED_DATE)
         for filename, content in results.items():
             assert FIXED_DATE in content, f"{filename} missing fixed date"
 
+    # AGENT SHALL VALIDATE PROCESS test_default_date_uses_today.
     def test_default_date_uses_today(self, minimal_trug):
         """Without render_date, output uses today's date."""
         from datetime import date
@@ -697,6 +775,7 @@ class TestDeterminism:
         result = render_aaa(minimal_trug)
         assert today in result
 
+    # AGENT SHALL VALIDATE PROCESS test_render_all_writes_deterministic.
     def test_render_all_writes_deterministic(self, tmp_path, determinism_trug):
         """render_all with render_date writes deterministic files to disk."""
         render_all(determinism_trug, output_dir=str(tmp_path), render_date=FIXED_DATE)
@@ -709,19 +788,23 @@ class TestDeterminism:
 # ─── Enhanced Template Tests ──────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE RECORD testenhancedtemplates AS A RECORD test_suite.
 class TestEnhancedTemplates:
     """S1.2.7: Verify enhanced template field extraction."""
 
+    # AGENT SHALL VALIDATE PROCESS test_aaa_description_in_vision.
     def test_aaa_description_in_vision(self, rich_trug):
         """AAA.md VISION section uses top-level description."""
         result = render_aaa(rich_trug, render_date=FIXED_DATE)
         assert "A comprehensive test project for template validation" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_aaa_falls_back_to_purpose_without_description.
     def test_aaa_falls_back_to_purpose_without_description(self, minimal_trug):
         """AAA.md VISION falls back to purpose when no description."""
         result = render_aaa(minimal_trug, render_date=FIXED_DATE)
         assert "A minimal test folder" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_aaa_tasks_section.
     def test_aaa_tasks_section(self, rich_trug):
         """AAA.md includes TASKS section with non-FOLDER, non-GENERATED nodes."""
         result = render_aaa(rich_trug, render_date=FIXED_DATE)
@@ -729,6 +812,7 @@ class TestEnhancedTemplates:
         assert "CORE.md" in result
         assert "main.py" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_aaa_tasks_grouped_by_type.
     def test_aaa_tasks_grouped_by_type(self, rich_trug):
         """AAA.md TASKS groups nodes by type."""
         result = render_aaa(rich_trug, render_date=FIXED_DATE)
@@ -736,17 +820,20 @@ class TestEnhancedTemplates:
         assert "### SPECIFICATION" in tasks_section
         assert "### SOURCE" in tasks_section
 
+    # AGENT SHALL VALIDATE PROCESS test_aaa_tasks_not_present_without_nodes.
     def test_aaa_tasks_not_present_without_nodes(self, minimal_trug):
         """AAA.md omits TASKS when no non-FOLDER/GENERATED nodes exist."""
         result = render_aaa(minimal_trug, render_date=FIXED_DATE)
         assert "## TASKS" not in result
 
+    # AGENT SHALL VALIDATE PROCESS test_aaa_dependencies_section.
     def test_aaa_dependencies_section(self, rich_trug):
         """AAA.md ARCHITECTURE phase includes Dependencies subsection."""
         result = render_aaa(rich_trug, render_date=FIXED_DATE)
         assert "**Dependencies:**" in result
         assert "→" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_architecture_component_statistics.
     def test_architecture_component_statistics(self, rich_trug):
         """ARCHITECTURE.md Quick Reference includes component type counts."""
         result = render_architecture(rich_trug, render_date=FIXED_DATE)
@@ -754,23 +841,27 @@ class TestEnhancedTemplates:
         assert "FOLDER: 1" in result
         assert "SOURCE: 1" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_architecture_dependency_graph.
     def test_architecture_dependency_graph(self, rich_trug):
         """ARCHITECTURE.md includes Dependency Graph section."""
         result = render_architecture(rich_trug, render_date=FIXED_DATE)
         assert "## Dependency Graph" in result
         assert "--[IMPLEMENTS]-->" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_architecture_no_dep_graph_without_edges.
     def test_architecture_no_dep_graph_without_edges(self, minimal_trug):
         """ARCHITECTURE.md omits Dependency Graph when no edges."""
         result = render_architecture(minimal_trug, render_date=FIXED_DATE)
         assert "## Dependency Graph" not in result
 
+    # AGENT SHALL VALIDATE PROCESS test_readme_getting_started.
     def test_readme_getting_started(self, rich_trug):
         """README.md includes Getting Started section."""
         result = render_readme(rich_trug, render_date=FIXED_DATE)
         assert "## Getting Started" in result
         assert "A comprehensive test project for template validation" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_readme_getting_started_key_documents.
     def test_readme_getting_started_key_documents(self, rich_trug):
         """README.md Getting Started lists key markdown documents."""
         result = render_readme(rich_trug, render_date=FIXED_DATE)
@@ -778,6 +869,7 @@ class TestEnhancedTemplates:
         assert "**Key Documents:**" in started_section
         assert "CORE.md" in started_section
 
+    # AGENT SHALL VALIDATE PROCESS test_readme_dependencies_section.
     def test_readme_dependencies_section(self, rich_trug):
         """README.md includes Dependencies section for relevant edges."""
         result = render_readme(rich_trug, render_date=FIXED_DATE)
@@ -785,6 +877,7 @@ class TestEnhancedTemplates:
         assert "implements" in result
         assert "references" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_readme_no_dependencies_without_relevant_edges.
     def test_readme_no_dependencies_without_relevant_edges(self, minimal_trug):
         """README.md omits Dependencies when no relevant edges."""
         result = render_readme(minimal_trug, render_date=FIXED_DATE)
@@ -794,21 +887,25 @@ class TestEnhancedTemplates:
 # ─── S1.3.4: Renderer Edge Case Tests ─────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE RECORD testrendereredgecases AS A RECORD test_suite.
 class TestRendererEdgeCases:
     """Cover remaining uncovered renderer paths."""
 
+    # AGENT SHALL VALIDATE PROCESS test_load_trug_type_error.
     def test_load_trug_type_error(self):
         """_load_trug raises TypeError for invalid type (line 28)."""
         from trugs_tools.renderer import _load_trug
         with pytest.raises(TypeError):
             _load_trug(12345)
 
+    # AGENT SHALL VALIDATE PROCESS test_get_folder_node_no_folder_no_root.
     def test_get_folder_node_no_folder_no_root(self):
         """_get_folder_node raises ValueError when no root node (line 39)."""
         trug = {"nodes": [{"id": "x", "type": "SOURCE", "parent_id": "y"}]}
         with pytest.raises(ValueError):
             _get_folder_node(trug)
 
+    # AGENT SHALL VALIDATE PROCESS test_get_edges_from_no_matches.
     def test_get_edges_from_no_matches(self):
         """_get_edges_from returns empty when no matching edges (lines 65-70)."""
         from trugs_tools.renderer import _get_edges_from
@@ -820,6 +917,7 @@ class TestRendererEdgeCases:
         result = _get_edges_from(trug, "nonexistent")
         assert result == []
 
+    # AGENT SHALL VALIDATE PROCESS test_get_edges_to_no_matches.
     def test_get_edges_to_no_matches(self):
         """_get_edges_to returns empty when no matching edges (lines 75-80)."""
         from trugs_tools.renderer import _get_edges_to
@@ -831,6 +929,7 @@ class TestRendererEdgeCases:
         result = _get_edges_to(trug, "nonexistent")
         assert result == []
 
+    # AGENT SHALL VALIDATE PROCESS test_readme_non_generated_empty_but_has_description.
     def test_readme_non_generated_empty_but_has_description(self):
         """README render with no non-generated children but has description (line 370)."""
         trug = {
@@ -865,6 +964,7 @@ class TestRendererEdgeCases:
         result = render_readme(trug, render_date=FIXED_DATE)
         assert "Has description but no content nodes" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_architecture_edges_but_empty_relationships.
     def test_architecture_edges_but_empty_relationships(self):
         """ARCHITECTURE render with edges present (line 558 area)."""
         trug = {
@@ -901,6 +1001,7 @@ class TestRendererEdgeCases:
         assert "contains" in result
 
 
+# AGENT claude SHALL DEFINE RECORD testweightdisplay AS A RECORD test_suite.
 class TestWeightDisplay:
     """Tests for weight display in rendered output."""
 
@@ -943,20 +1044,24 @@ class TestWeightDisplay:
         ],
     }
 
+    # AGENT SHALL VALIDATE PROCESS test_render_aaa_with_weights.
     def test_render_aaa_with_weights(self):
         result = render_aaa(self._WEIGHTED_TRUG, render_date=FIXED_DATE)
         assert "Weight" in result
         assert "0.85" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_render_aaa_without_weights.
     def test_render_aaa_without_weights(self):
         result = render_aaa(self._WEIGHTED_TRUG, render_date=FIXED_DATE)
         # The unweighted edge should show — in the Weight column
         assert "—" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_render_architecture_dependency_graph_with_weights.
     def test_render_architecture_dependency_graph_with_weights(self):
         result = render_architecture(self._WEIGHTED_TRUG, render_date=FIXED_DATE)
         assert "--[DEPENDS_ON, 0.85]-->" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_render_deterministic_with_weights.
     def test_render_deterministic_with_weights(self):
         baseline = render_architecture(self._WEIGHTED_TRUG, render_date=FIXED_DATE)
         for _ in range(5):

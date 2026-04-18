@@ -20,7 +20,9 @@ from trugs_tools.web.graph_builder import (
 from trugs_tools.validator import validate_trug
 
 
+# AGENT claude SHALL DEFINE RECORD testtrugswebgraphbuilder AS A RECORD test_suite.
 class TestTRUGSWebGraphBuilder:
+    # AGENT SHALL VALIDATE PROCESS test_initial_structure.
     def test_initial_structure(self):
         builder = TRUGSWebGraphBuilder(name="test-graph", topic="testing")
         graph = builder.to_dict()
@@ -36,6 +38,7 @@ class TestTRUGSWebGraphBuilder:
         assert "dimensions" in graph
         assert "capabilities" in graph
 
+    # AGENT SHALL VALIDATE PROCESS test_root_node_created.
     def test_root_node_created(self):
         builder = TRUGSWebGraphBuilder(name="my-graph", topic="AI")
         graph = builder.to_dict()
@@ -43,6 +46,7 @@ class TestTRUGSWebGraphBuilder:
         types = [n["type"] for n in graph["nodes"]]
         assert "RESEARCH_GRAPH" in types
 
+    # AGENT SHALL VALIDATE PROCESS test_root_node_trugs_fields.
     def test_root_node_trugs_fields(self):
         builder = TRUGSWebGraphBuilder(name="my-graph", topic="AI")
         graph = builder.to_dict()
@@ -53,6 +57,7 @@ class TestTRUGSWebGraphBuilder:
         assert "contains" in root
         assert "properties" in root
 
+    # AGENT SHALL VALIDATE PROCESS test_add_source_node.
     def test_add_source_node(self):
         builder = TRUGSWebGraphBuilder(name="g", topic="t")
         source = Source(url="https://example.com/page", title="Example", source_type="WEB_SOURCE")
@@ -66,6 +71,7 @@ class TestTRUGSWebGraphBuilder:
         assert node["properties"]["url"] == "https://example.com/page"
         assert node["properties"]["credibility"] == 0.5
 
+    # AGENT SHALL VALIDATE PROCESS test_add_source_node_dedup.
     def test_add_source_node_dedup(self):
         builder = TRUGSWebGraphBuilder(name="g", topic="t")
         source = Source(url="https://example.com/", title="T", source_type="WEB_SOURCE")
@@ -75,6 +81,7 @@ class TestTRUGSWebGraphBuilder:
         # Should only appear once
         assert ids.count(_url_to_id("https://example.com/")) == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_add_entity_node.
     def test_add_entity_node(self):
         builder = TRUGSWebGraphBuilder(name="g", topic="t")
         entity = ResolvedEntity(
@@ -92,6 +99,7 @@ class TestTRUGSWebGraphBuilder:
         assert node["properties"]["name"] == "LangChain"
         assert node["metric_level"] == "BASE_TOOL"
 
+    # AGENT SHALL VALIDATE PROCESS test_add_relation_edge.
     def test_add_relation_edge(self):
         builder = TRUGSWebGraphBuilder(name="g", topic="t")
         # Add both endpoints first
@@ -104,6 +112,7 @@ class TestTRUGSWebGraphBuilder:
         edge_keys = [(e["from_id"], e["to_id"], e["relation"]) for e in builder.graph["edges"]]
         assert ("node_a", "node_b", "CITES") in edge_keys
 
+    # AGENT SHALL VALIDATE PROCESS test_add_relation_edge_missing_endpoint.
     def test_add_relation_edge_missing_endpoint(self):
         builder = TRUGSWebGraphBuilder(name="g", topic="t")
         relation = Relation(from_id="unknown_a", to_id="unknown_b", relation_type="CITES")
@@ -112,6 +121,7 @@ class TestTRUGSWebGraphBuilder:
         edge_keys = [(e["from_id"], e["to_id"]) for e in builder.graph["edges"]]
         assert ("unknown_a", "unknown_b") not in edge_keys
 
+    # AGENT SHALL VALIDATE PROCESS test_edge_deduplication.
     def test_edge_deduplication(self):
         builder = TRUGSWebGraphBuilder(name="g", topic="t")
         builder._add_node("a", "CONCEPT", {"name": "A"}, "BASE_CONCEPT")
@@ -121,6 +131,7 @@ class TestTRUGSWebGraphBuilder:
         cites_edges = [e for e in builder.graph["edges"] if e["from_id"] == "a" and e["to_id"] == "b" and e["relation"] == "CITES"]
         assert len(cites_edges) == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_to_json.
     def test_to_json(self):
         builder = TRUGSWebGraphBuilder(name="g", topic="t")
         json_str = builder.to_json()
@@ -128,11 +139,13 @@ class TestTRUGSWebGraphBuilder:
         assert "name" in data
         assert "nodes" in data
 
+    # AGENT SHALL VALIDATE PROCESS test_validate_passes.
     def test_validate_passes(self):
         builder = TRUGSWebGraphBuilder(name="test-graph", topic="testing")
         result = builder.validate()
         assert result.valid, f"Validation failed: {result.errors}"
 
+    # AGENT SHALL VALIDATE PROCESS test_validate_with_entity_node.
     def test_validate_with_entity_node(self):
         builder = TRUGSWebGraphBuilder(name="test", topic="AI")
         entity = ResolvedEntity(
@@ -144,6 +157,7 @@ class TestTRUGSWebGraphBuilder:
         result = builder.validate()
         assert result.valid, f"Validation failed: {result.errors}"
 
+    # AGENT SHALL VALIDATE PROCESS test_save_and_load.
     def test_save_and_load(self):
         builder = TRUGSWebGraphBuilder(name="save-test", topic="testing")
         with tempfile.NamedTemporaryFile(suffix=".trug.json", delete=False) as f:
@@ -159,6 +173,7 @@ class TestTRUGSWebGraphBuilder:
         finally:
             os.unlink(path)
 
+    # AGENT SHALL VALIDATE PROCESS test_save_validates_before_saving.
     def test_save_validates_before_saving(self):
         builder = TRUGSWebGraphBuilder(name="v", topic="t")
         # Corrupt the graph
@@ -172,6 +187,7 @@ class TestTRUGSWebGraphBuilder:
             if os.path.exists(path):
                 os.unlink(path)
 
+    # AGENT SHALL VALIDATE PROCESS test_contains_edges_in_graph.
     def test_contains_edges_in_graph(self):
         """Parent-child relationships should create contains edges."""
         builder = TRUGSWebGraphBuilder(name="g", topic="t")
@@ -182,14 +198,17 @@ class TestTRUGSWebGraphBuilder:
         assert len(contains_edges) >= 1
 
 
+# AGENT claude SHALL DEFINE RECORD testtrugs10compliance AS A RECORD test_suite.
 class TestTRUGS10Compliance:
     """Verify TRUGS 1.0 format compliance via validator."""
 
+    # AGENT SHALL VALIDATE PROCESS test_graph_passes_validator.
     def test_graph_passes_validator(self):
         builder = TRUGSWebGraphBuilder(name="compliance-test", topic="AI research")
         result = validate_trug(builder.to_dict())
         assert result.valid, f"Errors: {result.errors}"
 
+    # AGENT SHALL VALIDATE PROCESS test_node_required_fields.
     def test_node_required_fields(self):
         builder = TRUGSWebGraphBuilder(name="g", topic="t")
         for node in builder.graph["nodes"]:
@@ -197,6 +216,7 @@ class TestTRUGS10Compliance:
             assert "type" in node
             assert "metric_level" in node
 
+    # AGENT SHALL VALIDATE PROCESS test_edge_required_fields.
     def test_edge_required_fields(self):
         builder = TRUGSWebGraphBuilder(name="g", topic="t")
         # Add a node to get contains edges
@@ -206,6 +226,7 @@ class TestTRUGS10Compliance:
             assert "to_id" in edge
             assert "relation" in edge
 
+    # AGENT SHALL VALIDATE PROCESS test_no_source_target_fields.
     def test_no_source_target_fields(self):
         """Edges must use from_id/to_id, not source/target (ESG format)."""
         builder = TRUGSWebGraphBuilder(name="g", topic="t")
@@ -215,6 +236,7 @@ class TestTRUGS10Compliance:
             assert "from_id" in edge
             assert "to_id" in edge
 
+    # AGENT SHALL VALIDATE PROCESS test_graph_with_source_and_entity.
     def test_graph_with_source_and_entity(self):
         builder = TRUGSWebGraphBuilder(name="full-test", topic="machine learning")
         source = Source(url="https://arxiv.org/abs/2301.00001", title="Test Paper", source_type="PAPER")
@@ -227,6 +249,7 @@ class TestTRUGS10Compliance:
         assert result.valid, f"Errors: {result.errors}"
 
 
+# AGENT SHALL VALIDATE PROCESS test_build_graph_empty_seeds.
 @pytest.mark.asyncio
 async def test_build_graph_empty_seeds():
     """build_graph with no seed URLs returns valid TRUGS 1.0 graph."""
@@ -242,6 +265,7 @@ async def test_build_graph_empty_seeds():
     assert result.valid, f"Errors: {result.errors}"
 
 
+# AGENT SHALL VALIDATE PROCESS test_build_graph_with_respx.
 @pytest.mark.asyncio
 async def test_build_graph_with_respx():
     """build_graph discovers sources and builds a valid TRUGS 1.0 graph."""
@@ -270,11 +294,13 @@ async def test_build_graph_with_respx():
     assert len(graph["nodes"]) >= 1
 
 
+# AGENT SHALL VALIDATE PROCESS test_url_to_id.
 def test_url_to_id():
     assert _url_to_id("https://github.com/org/repo") == "github-com-org-repo"
     assert len(_url_to_id("https://example.com/" + "a" * 200)) <= 80
 
 
+# AGENT SHALL VALIDATE PROCESS test_make_id.
 def test_make_id():
     assert _make_id("machine learning") == "machine-learning"
     assert _make_id("Test Topic!") == "test-topic"
@@ -285,24 +311,28 @@ def test_make_id():
 # Public API — url_to_id, make_id, has_node, add_edge
 # ============================================================================
 
+# AGENT SHALL VALIDATE PROCESS test_public_url_to_id.
 def test_public_url_to_id():
     """Public url_to_id matches the deprecated _url_to_id alias."""
     assert url_to_id("https://github.com/org/repo") == "github-com-org-repo"
     assert url_to_id is _url_to_id
 
 
+# AGENT SHALL VALIDATE PROCESS test_public_make_id.
 def test_public_make_id():
     """Public make_id matches the deprecated _make_id alias."""
     assert make_id("machine learning") == "machine-learning"
     assert make_id is _make_id
 
 
+# AGENT SHALL VALIDATE PROCESS test_has_node.
 def test_has_node():
     builder = TRUGSWebGraphBuilder(name="g", topic="t")
     assert builder.has_node(builder._root_id) is True
     assert builder.has_node("nonexistent") is False
 
 
+# AGENT SHALL VALIDATE PROCESS test_add_edge_public.
 def test_add_edge_public():
     builder = TRUGSWebGraphBuilder(name="g", topic="t")
     builder._add_node("a", "CONCEPT", {"name": "A"}, "BASE_CONCEPT")
@@ -313,6 +343,7 @@ def test_add_edge_public():
     assert cites[0]["weight"] == 0.9
 
 
+# AGENT SHALL VALIDATE PROCESS test_add_edge_deduplication_public.
 def test_add_edge_deduplication_public():
     builder = TRUGSWebGraphBuilder(name="g", topic="t")
     builder._add_node("x", "CONCEPT", {"name": "X"}, "BASE_CONCEPT")

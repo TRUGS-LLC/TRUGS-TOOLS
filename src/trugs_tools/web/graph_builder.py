@@ -38,6 +38,7 @@ from .credibility import CredibilityScorer
 # TRUGS 1.0 Graph Builder
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD trugswebgraphbuilder AS RECORD class.
 class TRUGSWebGraphBuilder:
     """
     Builds a TRUGS 1.0 research graph from web sources.
@@ -127,6 +128,7 @@ class TRUGSWebGraphBuilder:
 
         return node_id
 
+    # AGENT claude SHALL DEFINE FUNCTION add_source_node.
     def add_source_node(self, source: Source, credibility: float = 0.5) -> str:
         """Add a WEB_SOURCE node. Returns node_id."""
         node_id = _url_to_id(source.url)
@@ -144,6 +146,7 @@ class TRUGSWebGraphBuilder:
         )
         return node_id
 
+    # AGENT claude SHALL DEFINE FUNCTION add_entity_node.
     def add_entity_node(self, entity: ResolvedEntity) -> str:
         """Add an entity node from a ResolvedEntity. Returns node_id."""
         node = entity.to_node()
@@ -156,6 +159,7 @@ class TRUGSWebGraphBuilder:
         )
         return node["id"]
 
+    # AGENT claude SHALL DEFINE FUNCTION add_relation_edge.
     def add_relation_edge(self, relation: Relation, weight: float) -> None:
         """Add a relation edge with computed weight."""
         if not relation.from_id or not relation.to_id:
@@ -170,10 +174,12 @@ class TRUGSWebGraphBuilder:
             weight=round(weight, 3),
         )
 
+    # AGENT claude SHALL DEFINE FUNCTION has_node.
     def has_node(self, node_id: str) -> bool:
         """Return True if a node with *node_id* exists in the graph."""
         return node_id in self._ids
 
+    # AGENT claude SHALL DEFINE FUNCTION add_edge.
     def add_edge(
         self,
         from_id: str,
@@ -204,19 +210,23 @@ class TRUGSWebGraphBuilder:
             edge["weight"] = weight
         self.graph["edges"].append(edge)
 
+    # AGENT claude SHALL DEFINE FUNCTION to_dict.
     def to_dict(self) -> dict:
         """Return the graph as a plain dictionary."""
         return self.graph
 
+    # AGENT claude SHALL DEFINE FUNCTION to_json.
     def to_json(self, indent: int = 2) -> str:
         """Return the graph as a JSON string."""
         return json.dumps(self.graph, indent=indent)
 
+    # AGENT claude SHALL DEFINE FUNCTION validate.
     def validate(self) -> "ValidationResult":  # type: ignore[name-defined]
         """Validate the graph with trugs_tools.validator."""
         from trugs_tools.validator import validate_trug
         return validate_trug(self.graph)
 
+    # AGENT claude SHALL DEFINE FUNCTION save.
     def save(self, filepath: str, validate: bool = True) -> dict:
         """
         Save graph to a .trug.json file.
@@ -271,6 +281,7 @@ class _WebPipeline:
         self.scorer = CredibilityScorer()
         self.cross_ref_mapper = CrossReferenceMapper()
 
+    # AGENT claude SHALL DEFINE FUNCTION run.
     async def run(self, topic: str, seed_urls: list) -> TRUGSWebGraphBuilder:
         """Run the full pipeline and return a populated TRUGSWebGraphBuilder."""
         graph_id = make_id(topic)
@@ -348,6 +359,7 @@ class _WebPipeline:
 # Convenience Functions
 # ============================================================================
 
+# AGENT claude SHALL DEFINE FUNCTION build_graph.
 async def build_graph(
     topic: str,
     seed_urls: list,
@@ -385,6 +397,7 @@ async def build_graph(
     return builder
 
 
+# AGENT claude SHALL DEFINE FUNCTION load_graph.
 def load_graph(filepath: str) -> dict:
     """Load a TRUGS 1.0 graph from a .trug.json file."""
     path = Path(filepath)
@@ -395,6 +408,7 @@ def load_graph(filepath: str) -> dict:
 # Helpers
 # ============================================================================
 
+# AGENT claude SHALL DEFINE FUNCTION url_to_id.
 def url_to_id(url: str) -> str:
     """Convert URL to valid TRUGS node ID."""
     parsed = urlparse(url)
@@ -404,6 +418,7 @@ def url_to_id(url: str) -> str:
     return id_str[:80]
 
 
+# AGENT claude SHALL DEFINE FUNCTION make_id.
 def make_id(text: str) -> str:
     """Make valid ID from text."""
     id_str = text.lower()

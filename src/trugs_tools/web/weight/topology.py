@@ -19,6 +19,7 @@ from typing import Optional
 # Data structures
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD nodetopology AS RECORD class.
 @dataclass
 class NodeTopology:
     """
@@ -47,6 +48,7 @@ def _graph_name(graph: dict) -> str:
     return graph.get("name", graph.get("id", "unknown"))
 
 
+# AGENT claude SHALL DEFINE FUNCTION compute_topology.
 def compute_topology(graphs: list) -> dict:
     """
     Compute inbound edge topology across multiple loaded TRUGs.
@@ -80,6 +82,7 @@ def compute_topology(graphs: list) -> dict:
 # Ranking & filtering
 # ============================================================================
 
+# AGENT claude SHALL DEFINE FUNCTION rank_by_importance.
 def rank_by_importance(
     topology: dict,
     min_inbound: int = 1,
@@ -102,6 +105,7 @@ def rank_by_importance(
     )
 
 
+# AGENT claude SHALL DEFINE FUNCTION find_convergence.
 def find_convergence(
     topology: dict,
     min_sources: int = 2,
@@ -131,6 +135,7 @@ def find_convergence(
 _DEFAULT_HALF_LIFE_DAYS = 30.0
 
 
+# AGENT claude SHALL DEFINE FUNCTION compute_freshness.
 def compute_freshness(
     edge: dict,
     now: Optional[datetime] = None,

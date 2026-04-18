@@ -21,6 +21,7 @@ from .traverse import TraversalResult, GraphTraverser
 # Report Data Structures
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD finding AS RECORD class.
 @dataclass
 class Finding:
     """A single finding from the graph."""
@@ -31,6 +32,7 @@ class Finding:
     weight: float
     evidence: str = ""
 
+    # AGENT claude SHALL DEFINE FUNCTION to_markdown.
     def to_markdown(self):
         """Render as markdown."""
         weight_indicator = (
@@ -48,6 +50,7 @@ class Finding:
         )
 
 
+# AGENT claude SHALL DEFINE RECORD report AS RECORD class.
 @dataclass
 class Report:
     """A synthesized report from graph data."""
@@ -70,6 +73,7 @@ class Report:
     high_credibility_count: int = 0
     avg_weight: float = 0.0
 
+    # AGENT claude SHALL DEFINE FUNCTION to_markdown.
     def to_markdown(self):
         """Render full report as markdown."""
         lines = [
@@ -160,6 +164,7 @@ class Report:
 
         return "\n".join(lines)
 
+    # AGENT claude SHALL DEFINE FUNCTION save.
     def save(self, path):
         """Save report to file."""
         path = Path(path)
@@ -189,6 +194,7 @@ Provide:
 Keep response under 300 words. Be factual and cite sources by name."""
 
 
+# AGENT claude SHALL DEFINE RECORD reportsynthesizer AS RECORD class.
 class ReportSynthesizer:
     """
     Generates reports from graph traversal results.
@@ -204,6 +210,7 @@ class ReportSynthesizer:
         self.llm = llm_client
         self.use_llm = use_llm and llm_client is not None
 
+    # AGENT claude SHALL DEFINE FUNCTION synthesize.
     async def synthesize(self, graph, result, title=None):
         """
         Synthesize a report from traversal results.
@@ -401,6 +408,7 @@ class ReportSynthesizer:
 # Convenience Function
 # ============================================================================
 
+# AGENT claude SHALL DEFINE FUNCTION generate_report.
 async def generate_report(
     graph,
     query,

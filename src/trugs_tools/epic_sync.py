@@ -85,6 +85,7 @@ def _fetch_repo_metrics(owner: str, name: str) -> dict:
     return metrics
 
 
+# AGENT claude SHALL DEFINE FUNCTION sync_epic.
 def sync_epic(epic_path: Path, dry_run: bool = False, verbose: bool = False) -> int:
     """Refresh metrics on every REPOSITORY node. Returns exit code."""
     if not epic_path.exists():
@@ -150,6 +151,7 @@ def sync_epic(epic_path: Path, dry_run: bool = False, verbose: bool = False) -> 
     return 0 if failed == 0 else 2
 
 
+# AGENT claude SHALL DEFINE FUNCTION epic_sync_command.
 def epic_sync_command(args: Optional[list] = None) -> int:
     """CLI entrypoint for `trugs-epic-sync`."""
     parser = argparse.ArgumentParser(

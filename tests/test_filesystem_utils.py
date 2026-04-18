@@ -41,17 +41,21 @@ def _make_trug(nodes=None, edges=None):
     }
 
 
+# AGENT claude SHALL DEFINE RECORD testloadsavegraph AS A RECORD test_suite.
 class TestLoadSaveGraph:
+    # AGENT SHALL VALIDATE PROCESS test_load_graph.
     def test_load_graph(self, tmp_path):
         trug = _make_trug()
         (tmp_path / TRUG_FILENAME).write_text(json.dumps(trug), encoding="utf-8")
         loaded = load_graph(tmp_path)
         assert loaded["name"] == "Test Folder"
 
+    # AGENT SHALL VALIDATE PROCESS test_load_graph_not_found.
     def test_load_graph_not_found(self, tmp_path):
         with pytest.raises(FileNotFoundError):
             load_graph(tmp_path)
 
+    # AGENT SHALL VALIDATE PROCESS test_save_graph.
     def test_save_graph(self, tmp_path):
         trug = _make_trug()
         path = save_graph(tmp_path, trug, backup=False)
@@ -59,6 +63,7 @@ class TestLoadSaveGraph:
         loaded = json.loads(path.read_text())
         assert loaded["name"] == "Test Folder"
 
+    # AGENT SHALL VALIDATE PROCESS test_save_graph_creates_backup.
     def test_save_graph_creates_backup(self, tmp_path):
         trug = _make_trug()
         save_graph(tmp_path, trug, backup=False)
@@ -69,6 +74,7 @@ class TestLoadSaveGraph:
         original = json.loads(backup.read_text())
         assert original["name"] == "Test Folder"
 
+    # AGENT SHALL VALIDATE PROCESS test_save_graph_creates_directories.
     def test_save_graph_creates_directories(self, tmp_path):
         nested = tmp_path / "a" / "b"
         trug = _make_trug()
@@ -76,22 +82,27 @@ class TestLoadSaveGraph:
         assert path.exists()
 
 
+# AGENT claude SHALL DEFINE RECORD testgraphqueries AS A RECORD test_suite.
 class TestGraphQueries:
+    # AGENT SHALL VALIDATE PROCESS test_get_node_by_id.
     def test_get_node_by_id(self):
         trug = _make_trug()
         node = get_node_by_id(trug, "root")
         assert node["type"] == "FOLDER"
 
+    # AGENT SHALL VALIDATE PROCESS test_get_node_by_id_not_found.
     def test_get_node_by_id_not_found(self):
         trug = _make_trug()
         assert get_node_by_id(trug, "nonexistent") is None
 
+    # AGENT SHALL VALIDATE PROCESS test_get_children.
     def test_get_children(self):
         trug = _make_trug()
         children = get_children(trug, "root")
         assert len(children) == 1
         assert children[0]["id"] == "child1"
 
+    # AGENT SHALL VALIDATE PROCESS test_get_children_sorted.
     def test_get_children_sorted(self):
         trug = _make_trug(nodes=[
             {"id": "root", "type": "FOLDER", "properties": {"name": "test"},
@@ -103,6 +114,7 @@ class TestGraphQueries:
         # Sorted by type then name: DOCUMENT(a.md) before SOURCE(b.py)
         assert children[0]["id"] == "a"
 
+    # AGENT SHALL VALIDATE PROCESS test_get_edges_for_node.
     def test_get_edges_for_node(self):
         trug = _make_trug(edges=[
             {"from_id": "root", "to_id": "child1", "relation": "CONTAINS"},
@@ -111,17 +123,20 @@ class TestGraphQueries:
         edges = get_edges_for_node(trug, "root")
         assert len(edges) == 2
 
+    # AGENT SHALL VALIDATE PROCESS test_get_edges_for_node_none.
     def test_get_edges_for_node_none(self):
         trug = _make_trug()
         edges = get_edges_for_node(trug, "root")
         assert len(edges) == 0
 
+    # AGENT SHALL VALIDATE PROCESS test_get_root_node_folder.
     def test_get_root_node_folder(self):
         trug = _make_trug()
         root = get_root_node(trug)
         assert root["id"] == "root"
         assert root["type"] == "FOLDER"
 
+    # AGENT SHALL VALIDATE PROCESS test_get_root_node_null_parent.
     def test_get_root_node_null_parent(self):
         trug = _make_trug(nodes=[
             {"id": "top", "type": "MODULE", "parent_id": None},
@@ -129,63 +144,83 @@ class TestGraphQueries:
         root = get_root_node(trug)
         assert root["id"] == "top"
 
+    # AGENT SHALL VALIDATE PROCESS test_get_root_node_empty.
     def test_get_root_node_empty(self):
         trug = {"nodes": []}
         assert get_root_node(trug) is None
 
 
+# AGENT claude SHALL DEFINE RECORD testinfernodetype AS A RECORD test_suite.
 class TestInferNodeType:
+    # AGENT SHALL VALIDATE PROCESS test_python_source.
     def test_python_source(self):
         assert infer_node_type("main.py") == "SOURCE"
 
+    # AGENT SHALL VALIDATE PROCESS test_go_source.
     def test_go_source(self):
         assert infer_node_type("main.go") == "SOURCE"
 
+    # AGENT SHALL VALIDATE PROCESS test_markdown_document.
     def test_markdown_document(self):
         assert infer_node_type("README.md") == "DOCUMENT"
 
+    # AGENT SHALL VALIDATE PROCESS test_json_configuration.
     def test_json_configuration(self):
         assert infer_node_type("config.json") == "CONFIGURATION"
 
+    # AGENT SHALL VALIDATE PROCESS test_yaml_configuration.
     def test_yaml_configuration(self):
         assert infer_node_type("config.yaml") == "CONFIGURATION"
 
+    # AGENT SHALL VALIDATE PROCESS test_toml_configuration.
     def test_toml_configuration(self):
         assert infer_node_type("pyproject.toml") == "CONFIGURATION"
 
+    # AGENT SHALL VALIDATE PROCESS test_trug_json_specification.
     def test_trug_json_specification(self):
         assert infer_node_type("folder.trug.json") == "SPECIFICATION"
 
+    # AGENT SHALL VALIDATE PROCESS test_test_file.
     def test_test_file(self):
         assert infer_node_type("test_main.test.py") == "TEST"
 
+    # AGENT SHALL VALIDATE PROCESS test_unknown_defaults_to_source.
     def test_unknown_defaults_to_source(self):
         assert infer_node_type("Makefile") == "SOURCE"
 
 
+# AGENT claude SHALL DEFINE RECORD testmakenodeid AS A RECORD test_suite.
 class TestMakeNodeId:
+    # AGENT SHALL VALIDATE PROCESS test_simple.
     def test_simple(self):
         assert make_node_id("main.py") == "main_py"
 
+    # AGENT SHALL VALIDATE PROCESS test_with_dashes.
     def test_with_dashes(self):
         assert make_node_id("my-file.txt") == "my_file_txt"
 
+    # AGENT SHALL VALIDATE PROCESS test_with_spaces.
     def test_with_spaces(self):
         assert make_node_id("my file.txt") == "my_file_txt"
 
 
+# AGENT claude SHALL DEFINE RECORD testvalidategraph AS A RECORD test_suite.
 class TestValidateGraph:
+    # AGENT SHALL VALIDATE PROCESS test_valid_graph.
     def test_valid_graph(self):
         trug = _make_trug()
         result = validate_graph(trug)
         assert result.valid
 
+    # AGENT SHALL VALIDATE PROCESS test_invalid_graph.
     def test_invalid_graph(self):
         result = validate_graph({"name": "bad"})
         assert not result.valid
 
 
+# AGENT claude SHALL DEFINE RECORD testbackup AS A RECORD test_suite.
 class TestBackup:
+    # AGENT SHALL VALIDATE PROCESS test_create_backup.
     def test_create_backup(self, tmp_path):
         trug = _make_trug()
         save_graph(tmp_path, trug, backup=False)
@@ -193,9 +228,11 @@ class TestBackup:
         assert backup is not None
         assert backup.exists()
 
+    # AGENT SHALL VALIDATE PROCESS test_create_backup_no_source.
     def test_create_backup_no_source(self, tmp_path):
         assert create_backup(tmp_path) is None
 
+    # AGENT SHALL VALIDATE PROCESS test_restore_backup.
     def test_restore_backup(self, tmp_path):
         trug = _make_trug()
         save_graph(tmp_path, trug, backup=False)
@@ -208,5 +245,6 @@ class TestBackup:
         loaded = load_graph(tmp_path)
         assert loaded["name"] == "Test Folder"
 
+    # AGENT SHALL VALIDATE PROCESS test_restore_backup_no_backup.
     def test_restore_backup_no_backup(self, tmp_path):
         assert not restore_backup(tmp_path)

@@ -13,6 +13,7 @@ from trugs_tools.filesystem.utils import (
 )
 
 
+# AGENT claude SHALL DEFINE FUNCTION tdim_add.
 def tdim_add(
     directory: Union[str, Path],
     name: str,
@@ -50,6 +51,7 @@ def tdim_add(
     return trug
 
 
+# AGENT claude SHALL DEFINE FUNCTION tdim_remove.
 def tdim_remove(
     directory: Union[str, Path],
     name: str,
@@ -99,6 +101,7 @@ def tdim_remove(
     return trug
 
 
+# AGENT claude SHALL DEFINE FUNCTION tdim_list.
 def tdim_list(
     directory: Union[str, Path],
     format: str = "text",
@@ -146,6 +149,7 @@ def tdim_list(
     return "\n".join(lines)
 
 
+# AGENT claude SHALL DEFINE FUNCTION tdim_set.
 def tdim_set(
     directory: Union[str, Path],
     node_id: str,
@@ -181,7 +185,7 @@ def tdim_set(
     return trug
 
 
-# Convenience wrapper
+# AGENT claude SHALL DEFINE FUNCTION tdim.
 def tdim(
     directory: Union[str, Path],
     action: str = "list",

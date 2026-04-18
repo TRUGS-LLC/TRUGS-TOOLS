@@ -158,28 +158,36 @@ def _branching():
 # ── find_unreachable_nodes ───────────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE RECORD testfindunreachablenodes AS A RECORD test_suite.
 class TestFindUnreachableNodes:
+    # AGENT SHALL VALIDATE PROCESS test_linear_no_unreachable.
     def test_linear_no_unreachable(self):
         assert TrugAnalyzer.find_unreachable_nodes(_linear()) == set()
 
+    # AGENT SHALL VALIDATE PROCESS test_empty.
     def test_empty(self):
         assert TrugAnalyzer.find_unreachable_nodes(_empty()) == set()
 
+    # AGENT SHALL VALIDATE PROCESS test_orphan_detected.
     def test_orphan_detected(self):
         unreachable = TrugAnalyzer.find_unreachable_nodes(_with_orphan())
         # orphan is a root itself, so reachable from itself — but it's isolated
         # Since orphan has parent_id=None, it IS a root → reachable from itself
         assert "orphan" not in unreachable  # orphan is a root, so "reachable"
 
+    # AGENT SHALL VALIDATE PROCESS test_all_reachable_via_hierarchy.
     def test_all_reachable_via_hierarchy(self):
         assert TrugAnalyzer.find_unreachable_nodes(_diamond()) == set()
 
+    # AGENT SHALL VALIDATE PROCESS test_cross_folder_skipped.
     def test_cross_folder_skipped(self):
         assert TrugAnalyzer.find_unreachable_nodes(_with_cross_folder()) == set()
 
+    # AGENT SHALL VALIDATE PROCESS test_no_roots_all_unreachable.
     def test_no_roots_all_unreachable(self):
         assert TrugAnalyzer.find_unreachable_nodes(_no_roots()) == {"a", "b"}
 
+    # AGENT SHALL VALIDATE PROCESS test_node_reachable_only_via_semantic_edge.
     def test_node_reachable_only_via_semantic_edge(self):
         """Node with parent but not in parent's contains — reachable via semantic edge."""
         g = TrugGraph.from_dict({
@@ -200,24 +208,31 @@ class TestFindUnreachableNodes:
 # ── find_dead_nodes ──────────────────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE RECORD testfinddeadnodes AS A RECORD test_suite.
 class TestFindDeadNodes:
+    # AGENT SHALL VALIDATE PROCESS test_linear_no_dead.
     def test_linear_no_dead(self):
         assert TrugAnalyzer.find_dead_nodes(_linear()) == set()
 
+    # AGENT SHALL VALIDATE PROCESS test_empty.
     def test_empty(self):
         assert TrugAnalyzer.find_dead_nodes(_empty()) == set()
 
+    # AGENT SHALL VALIDATE PROCESS test_dead_node_detected.
     def test_dead_node_detected(self):
         dead = TrugAnalyzer.find_dead_nodes(_with_dead())
         assert "child2" in dead
 
+    # AGENT SHALL VALIDATE PROCESS test_all_referenced.
     def test_all_referenced(self):
         assert TrugAnalyzer.find_dead_nodes(_diamond()) == set()
 
+    # AGENT SHALL VALIDATE PROCESS test_root_not_dead.
     def test_root_not_dead(self):
         dead = TrugAnalyzer.find_dead_nodes(_with_dead())
         assert "root" not in dead
 
+    # AGENT SHALL VALIDATE PROCESS test_node_in_contains_not_dead.
     def test_node_in_contains_not_dead(self):
         """Node listed in contains[] but no edge to_id is NOT dead."""
         g = TrugGraph.from_dict({
@@ -229,6 +244,7 @@ class TestFindDeadNodes:
         })
         assert TrugAnalyzer.find_dead_nodes(g) == set()
 
+    # AGENT SHALL VALIDATE PROCESS test_node_as_edge_target_not_dead.
     def test_node_as_edge_target_not_dead(self):
         """Node targeted by edge but not in any contains[] is NOT dead."""
         g = TrugGraph.from_dict({
@@ -246,7 +262,9 @@ class TestFindDeadNodes:
 # ── dominator_tree ───────────────────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE RECORD testdominatortree AS A RECORD test_suite.
 class TestDominatorTree:
+    # AGENT SHALL VALIDATE PROCESS test_linear.
     def test_linear(self):
         g = TrugGraph.from_dict({
             "nodes": [
@@ -266,6 +284,7 @@ class TestDominatorTree:
         assert dt["a"] == "root"
         assert dt["b"] in ("root", "a")  # b reachable from root→a→b
 
+    # AGENT SHALL VALIDATE PROCESS test_diamond.
     def test_diamond(self):
         dt = TrugAnalyzer.dominator_tree(_diamond())
         if "root" in dt:
@@ -274,9 +293,11 @@ class TestDominatorTree:
             # sink dominated by root (both a and b lead to it, both from root)
             assert dt["sink"] == "root"
 
+    # AGENT SHALL VALIDATE PROCESS test_empty.
     def test_empty(self):
         assert TrugAnalyzer.dominator_tree(_empty()) == {}
 
+    # AGENT SHALL VALIDATE PROCESS test_no_roots.
     def test_no_roots(self):
         assert TrugAnalyzer.dominator_tree(_no_roots()) == {}
 
@@ -284,25 +305,32 @@ class TestDominatorTree:
 # ── impact_set ───────────────────────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE RECORD testimpactset AS A RECORD test_suite.
 class TestImpactSet:
+    # AGENT SHALL VALIDATE PROCESS test_forward.
     def test_forward(self):
         g = _linear()
         impact = TrugAnalyzer.impact_set(g, "child")
         assert "grandchild" in impact
 
+    # AGENT SHALL VALIDATE PROCESS test_leaf_empty.
     def test_leaf_empty(self):
         assert TrugAnalyzer.impact_set(_linear(), "grandchild") == set()
 
+    # AGENT SHALL VALIDATE PROCESS test_nonexistent.
     def test_nonexistent(self):
         assert TrugAnalyzer.impact_set(_linear(), "nope") == set()
 
+    # AGENT SHALL VALIDATE PROCESS test_empty.
     def test_empty(self):
         assert TrugAnalyzer.impact_set(_empty(), "x") == set()
 
+    # AGENT SHALL VALIDATE PROCESS test_diamond_root.
     def test_diamond_root(self):
         impact = TrugAnalyzer.impact_set(_diamond(), "a")
         assert "sink" in impact
 
+    # AGENT SHALL VALIDATE PROCESS test_excludes_self.
     def test_excludes_self(self):
         assert "child" not in TrugAnalyzer.impact_set(_linear(), "child")
 
@@ -310,22 +338,28 @@ class TestImpactSet:
 # ── dependency_set ───────────────────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE RECORD testdependencyset AS A RECORD test_suite.
 class TestDependencySet:
+    # AGENT SHALL VALIDATE PROCESS test_reverse.
     def test_reverse(self):
         deps = TrugAnalyzer.dependency_set(_diamond(), "sink")
         assert "a" in deps
         assert "b" in deps
 
+    # AGENT SHALL VALIDATE PROCESS test_root_empty.
     def test_root_empty(self):
         # root has no incoming semantic edges
         assert TrugAnalyzer.dependency_set(_linear(), "root") == set()
 
+    # AGENT SHALL VALIDATE PROCESS test_nonexistent.
     def test_nonexistent(self):
         assert TrugAnalyzer.dependency_set(_linear(), "nope") == set()
 
+    # AGENT SHALL VALIDATE PROCESS test_empty.
     def test_empty(self):
         assert TrugAnalyzer.dependency_set(_empty(), "x") == set()
 
+    # AGENT SHALL VALIDATE PROCESS test_excludes_self.
     def test_excludes_self(self):
         assert "sink" not in TrugAnalyzer.dependency_set(_diamond(), "sink")
 
@@ -333,27 +367,33 @@ class TestDependencySet:
 # ── complexity ───────────────────────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE RECORD testcomplexity AS A RECORD test_suite.
 class TestComplexity:
+    # AGENT SHALL VALIDATE PROCESS test_empty.
     def test_empty(self):
         m = TrugAnalyzer.complexity(_empty())
         assert m == TrugComplexityMetrics(0, 0.0, 0, 0.0, 0, 0)
 
+    # AGENT SHALL VALIDATE PROCESS test_linear.
     def test_linear(self):
         m = TrugAnalyzer.complexity(_linear())
         assert m.node_count == 3
         assert m.edge_count == 1  # 1 semantic edge (uses), contains excluded
         assert m.max_depth == 3  # root → child → grandchild
 
+    # AGENT SHALL VALIDATE PROCESS test_diamond.
     def test_diamond(self):
         m = TrugAnalyzer.complexity(_diamond())
         assert m.edge_count == 2  # 2 uses edges
         assert m.cyclomatic >= 1
 
+    # AGENT SHALL VALIDATE PROCESS test_branching_factor.
     def test_branching_factor(self):
         m = TrugAnalyzer.complexity(_branching())
         # a has 2 outgoing semantic edges, so branching_factor = 2/1 = 2.0
         assert m.branching_factor == 2.0
 
+    # AGENT SHALL VALIDATE PROCESS test_frozen.
     def test_frozen(self):
         m = TrugComplexityMetrics(1, 1.0, 2, 0.5, 3, 1)
         with pytest.raises(AttributeError):
@@ -363,7 +403,9 @@ class TestComplexity:
 # ── critical_path ────────────────────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE RECORD testcriticalpath AS A RECORD test_suite.
 class TestCriticalPath:
+    # AGENT SHALL VALIDATE PROCESS test_linear.
     def test_linear(self):
         """Linear graph has one semantic edge: child→grandchild (uses).
         Critical path follows semantic edges from a root to a leaf."""
@@ -373,12 +415,15 @@ class TestCriticalPath:
         # This is correct: the semantic graph is sparse
         assert isinstance(path, list)
 
+    # AGENT SHALL VALIDATE PROCESS test_empty.
     def test_empty(self):
         assert TrugAnalyzer.critical_path(_empty()) == []
 
+    # AGENT SHALL VALIDATE PROCESS test_no_roots.
     def test_no_roots(self):
         assert TrugAnalyzer.critical_path(_no_roots()) == []
 
+    # AGENT SHALL VALIDATE PROCESS test_single_node.
     def test_single_node(self):
         g = TrugGraph.from_dict({
             "nodes": [{"id": "solo", "type": "T", "parent_id": None, "contains": []}],
@@ -387,6 +432,7 @@ class TestCriticalPath:
         path = TrugAnalyzer.critical_path(g)
         assert path == ["solo"]
 
+    # AGENT SHALL VALIDATE PROCESS test_diamond_picks_path.
     def test_diamond_picks_path(self):
         path = TrugAnalyzer.critical_path(_diamond())
         if path:
@@ -396,20 +442,25 @@ class TestCriticalPath:
 # ── find_stale_propagation ──────────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE RECORD teststalepropagation AS A RECORD test_suite.
 class TestStalePropagation:
+    # AGENT SHALL VALIDATE PROCESS test_propagation_via_uses.
     def test_propagation_via_uses(self):
         result = TrugAnalyzer.find_stale_propagation(_with_stale())
         assert "comp" in result
         assert "doc" in result["comp"]
 
+    # AGENT SHALL VALIDATE PROCESS test_no_propagation_via_tests.
     def test_no_propagation_via_tests(self):
         result = TrugAnalyzer.find_stale_propagation(_with_stale_no_propagation())
         assert "comp" in result
         assert result["comp"] == set()  # tests edge doesn't propagate
 
+    # AGENT SHALL VALIDATE PROCESS test_no_stale_nodes.
     def test_no_stale_nodes(self):
         assert TrugAnalyzer.find_stale_propagation(_linear()) == {}
 
+    # AGENT SHALL VALIDATE PROCESS test_stale_no_edges.
     def test_stale_no_edges(self):
         g = TrugGraph.from_dict({
             "nodes": [
@@ -421,6 +472,7 @@ class TestStalePropagation:
         result = TrugAnalyzer.find_stale_propagation(g)
         assert result == {"comp": set()}
 
+    # AGENT SHALL VALIDATE PROCESS test_empty.
     def test_empty(self):
         assert TrugAnalyzer.find_stale_propagation(_empty()) == {}
 
@@ -428,11 +480,14 @@ class TestStalePropagation:
 # ── Real file integration ───────────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE RECORD testrealfileintegration AS A RECORD test_suite.
 class TestRealFileIntegration:
+    # AGENT claude SHALL DEFINE FUNCTION repo_root.
     @pytest.fixture
     def repo_root(self):
         return Path(__file__).parent.parent.parent
 
+    # AGENT SHALL VALIDATE PROCESS test_trugs_tools_unreachable.
     def test_trugs_tools_unreachable(self, repo_root):
         path = repo_root / "TRUGS_TOOLS" / "folder.trug.json"
         if not path.exists():
@@ -442,6 +497,7 @@ class TestRealFileIntegration:
         # node_examples and node_tests are known orphans
         assert "node_examples" in unreachable or "node_tests" in unreachable or len(unreachable) >= 0
 
+    # AGENT SHALL VALIDATE PROCESS test_trugs_tools_complexity.
     def test_trugs_tools_complexity(self, repo_root):
         path = repo_root / "TRUGS_TOOLS" / "folder.trug.json"
         if not path.exists():
@@ -451,6 +507,7 @@ class TestRealFileIntegration:
         assert m.node_count > 20
         assert m.max_depth > 1
 
+    # AGENT SHALL VALIDATE PROCESS test_trugs_computation_loads.
     def test_trugs_computation_loads(self, repo_root):
         path = repo_root / "TRUGS_COMPUTATION" / "folder.trug.json"
         if not path.exists():
@@ -459,6 +516,7 @@ class TestRealFileIntegration:
         m = TrugAnalyzer.complexity(g)
         assert m.node_count > 10
 
+    # AGENT SHALL VALIDATE PROCESS test_trugs_protocol_loads.
     def test_trugs_protocol_loads(self, repo_root):
         path = repo_root / "TRUGS_PROTOCOL" / "folder.trug.json"
         if not path.exists():

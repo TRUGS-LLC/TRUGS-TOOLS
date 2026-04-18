@@ -88,6 +88,7 @@ def _append_table(lines: List[str], headers: List[str], rows: List[Tuple[Any, ..
     lines.append("")
 
 
+# AGENT claude SHALL DEFINE FUNCTION render_aaa_trug.
 def render_aaa_trug(trug: Any) -> str:
     """Render AAA.md from an AAA TRUG dict/path/json-string."""
     data = _load_trug(trug)

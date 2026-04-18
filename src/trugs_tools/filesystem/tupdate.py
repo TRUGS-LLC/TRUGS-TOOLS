@@ -43,6 +43,7 @@ def _set_nested(d: Dict[str, Any], key: str, value: Any) -> None:
     d[parts[-1]] = value
 
 
+# AGENT claude SHALL DEFINE FUNCTION tupdate.
 def tupdate(
     directory: Union[str, Path],
     node_id: str,

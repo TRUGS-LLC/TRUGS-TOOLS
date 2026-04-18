@@ -10,7 +10,9 @@ from trugs_tools.filesystem.tls import tls
 from trugs_tools.filesystem.utils import TRUG_FILENAME, load_graph
 
 
+# AGENT claude SHALL DEFINE RECORD testtinit AS A RECORD test_suite.
 class TestTinit:
+    # AGENT SHALL VALIDATE PROCESS test_basic_init.
     def test_basic_init(self, tmp_path):
         result = tinit(tmp_path)
         assert (tmp_path / TRUG_FILENAME).exists()
@@ -18,25 +20,30 @@ class TestTinit:
         assert len(result["nodes"]) == 1
         assert result["nodes"][0]["type"] == "FOLDER"
 
+    # AGENT SHALL VALIDATE PROCESS test_init_with_name.
     def test_init_with_name(self, tmp_path):
         result = tinit(tmp_path, name="MyProject")
         assert result["name"] == "MyProject Folder"
         assert result["nodes"][0]["properties"]["name"] == "MyProject"
 
+    # AGENT SHALL VALIDATE PROCESS test_init_with_description.
     def test_init_with_description(self, tmp_path):
         result = tinit(tmp_path, description="My test project")
         assert result["description"] == "My test project"
 
+    # AGENT SHALL VALIDATE PROCESS test_init_already_exists.
     def test_init_already_exists(self, tmp_path):
         tinit(tmp_path)
         with pytest.raises(FileExistsError):
             tinit(tmp_path)
 
+    # AGENT SHALL VALIDATE PROCESS test_init_force_overwrite.
     def test_init_force_overwrite(self, tmp_path):
         result1 = tinit(tmp_path, name="First")
         result2 = tinit(tmp_path, name="Second", force=True)
         assert result2["name"] == "Second Folder"
 
+    # AGENT SHALL VALIDATE PROCESS test_init_with_scan.
     def test_init_with_scan(self, tmp_path):
         # Create some files
         (tmp_path / "main.py").write_text("# Python")
@@ -50,6 +57,7 @@ class TestTinit:
         root = result["nodes"][0]
         assert len(root["contains"]) == 4
 
+    # AGENT SHALL VALIDATE PROCESS test_init_scan_ignores_hidden.
     def test_init_scan_ignores_hidden(self, tmp_path):
         (tmp_path / ".hidden").write_text("hidden")
         (tmp_path / "visible.py").write_text("visible")
@@ -59,6 +67,7 @@ class TestTinit:
         assert "visible.py" in names
         assert ".hidden" not in names
 
+    # AGENT SHALL VALIDATE PROCESS test_init_scan_ignores_pycache.
     def test_init_scan_ignores_pycache(self, tmp_path):
         (tmp_path / "__pycache__").mkdir()
         (tmp_path / "main.py").write_text("code")
@@ -67,35 +76,41 @@ class TestTinit:
         names = [n.get("properties", {}).get("name") for n in result["nodes"]]
         assert "__pycache__" not in names
 
+    # AGENT SHALL VALIDATE PROCESS test_init_creates_valid_trug.
     def test_init_creates_valid_trug(self, tmp_path):
         from trugs_tools.validator import validate_trug
         result = tinit(tmp_path)
         validation = validate_trug(result)
         assert validation.valid
 
+    # AGENT SHALL VALIDATE PROCESS test_init_creates_valid_json.
     def test_init_creates_valid_json(self, tmp_path):
         tinit(tmp_path)
         trug_path = tmp_path / TRUG_FILENAME
         loaded = json.loads(trug_path.read_text())
         assert loaded["version"] == "1.0.0"
 
+    # AGENT SHALL VALIDATE PROCESS test_tinit_with_qualifying_interest.
     def test_tinit_with_qualifying_interest(self, tmp_path):
         result = tinit(tmp_path, qualifying_interest="Best Burgers")
         root_node = result["nodes"][0]
         assert root_node["properties"]["qualifying_interest"] == "Best Burgers"
 
+    # AGENT SHALL VALIDATE PROCESS test_tinit_without_qualifying_interest.
     def test_tinit_without_qualifying_interest(self, tmp_path):
         result = tinit(tmp_path)
         root_node = result["nodes"][0]
         assert "qualifying_interest" not in root_node["properties"]
 
 
+# AGENT claude SHALL DEFINE RECORD testtadd AS A RECORD test_suite.
 class TestTadd:
     def _init_dir(self, tmp_path):
         """Helper to initialize a directory with folder.trug.json."""
         tinit(tmp_path, name="Test")
         return tmp_path
 
+    # AGENT SHALL VALIDATE PROCESS test_add_single_file.
     def test_add_single_file(self, tmp_path):
         self._init_dir(tmp_path)
         (tmp_path / "new_file.py").write_text("# code")
@@ -103,6 +118,7 @@ class TestTadd:
         node_ids = [n["id"] for n in result["nodes"]]
         assert "new_file_py" in node_ids
 
+    # AGENT SHALL VALIDATE PROCESS test_add_multiple_files.
     def test_add_multiple_files(self, tmp_path):
         self._init_dir(tmp_path)
         (tmp_path / "a.py").write_text("")
@@ -110,6 +126,7 @@ class TestTadd:
         result = tadd(tmp_path, ["a.py", "b.md"])
         assert len(result["nodes"]) == 3  # root + 2
 
+    # AGENT SHALL VALIDATE PROCESS test_add_infers_type.
     def test_add_infers_type(self, tmp_path):
         self._init_dir(tmp_path)
         (tmp_path / "main.py").write_text("")
@@ -117,6 +134,7 @@ class TestTadd:
         added = [n for n in result["nodes"] if n["id"] == "main_py"][0]
         assert added["type"] == "SOURCE"
 
+    # AGENT SHALL VALIDATE PROCESS test_add_override_type.
     def test_add_override_type(self, tmp_path):
         self._init_dir(tmp_path)
         (tmp_path / "data.txt").write_text("")
@@ -124,6 +142,7 @@ class TestTadd:
         added = [n for n in result["nodes"] if n["id"] == "data_txt"][0]
         assert added["type"] == "CONFIGURATION"
 
+    # AGENT SHALL VALIDATE PROCESS test_add_custom_parent.
     def test_add_custom_parent(self, tmp_path):
         self._init_dir(tmp_path)
         trug = load_graph(tmp_path)
@@ -139,6 +158,7 @@ class TestTadd:
         added = [n for n in result["nodes"] if n["id"] == "file_py"][0]
         assert added["parent_id"] == "sub"
 
+    # AGENT SHALL VALIDATE PROCESS test_add_duplicate_raises.
     def test_add_duplicate_raises(self, tmp_path):
         self._init_dir(tmp_path)
         (tmp_path / "main.py").write_text("")
@@ -146,15 +166,18 @@ class TestTadd:
         with pytest.raises(ValueError, match="already exists"):
             tadd(tmp_path, ["main.py"])
 
+    # AGENT SHALL VALIDATE PROCESS test_add_no_trug_raises.
     def test_add_no_trug_raises(self, tmp_path):
         with pytest.raises(FileNotFoundError):
             tadd(tmp_path, ["file.py"])
 
+    # AGENT SHALL VALIDATE PROCESS test_add_invalid_parent_raises.
     def test_add_invalid_parent_raises(self, tmp_path):
         self._init_dir(tmp_path)
         with pytest.raises(ValueError, match="Parent node not found"):
             tadd(tmp_path, ["file.py"], parent_id="nonexistent")
 
+    # AGENT SHALL VALIDATE PROCESS test_add_updates_parent_contains.
     def test_add_updates_parent_contains(self, tmp_path):
         self._init_dir(tmp_path)
         (tmp_path / "app.py").write_text("")
@@ -162,6 +185,7 @@ class TestTadd:
         root = result["nodes"][0]
         assert "app_py" in root["contains"]
 
+    # AGENT SHALL VALIDATE PROCESS test_add_with_purpose.
     def test_add_with_purpose(self, tmp_path):
         self._init_dir(tmp_path)
         (tmp_path / "app.py").write_text("")
@@ -170,6 +194,7 @@ class TestTadd:
         assert added["properties"]["purpose"] == "Main application"
 
 
+# AGENT claude SHALL DEFINE RECORD testtls AS A RECORD test_suite.
 class TestTls:
     def _init_with_files(self, tmp_path):
         """Helper to create a graph with some files."""
@@ -178,6 +203,7 @@ class TestTls:
         tinit(tmp_path, name="Test", scan=True)
         return tmp_path
 
+    # AGENT SHALL VALIDATE PROCESS test_list_text.
     def test_list_text(self, tmp_path):
         self._init_with_files(tmp_path)
         result = tls(tmp_path, format="text")
@@ -185,6 +211,7 @@ class TestTls:
         assert "main.py" in result
         assert "README.md" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_list_json.
     def test_list_json(self, tmp_path):
         self._init_with_files(tmp_path)
         result = tls(tmp_path, format="json")
@@ -193,6 +220,7 @@ class TestTls:
         assert "main.py" in names
         assert "README.md" in names
 
+    # AGENT SHALL VALIDATE PROCESS test_list_shows_type.
     def test_list_shows_type(self, tmp_path):
         self._init_with_files(tmp_path)
         result = tls(tmp_path, format="json")
@@ -200,6 +228,7 @@ class TestTls:
         assert types["main.py"] == "SOURCE"
         assert types["README.md"] == "DOCUMENT"
 
+    # AGENT SHALL VALIDATE PROCESS test_list_with_edges.
     def test_list_with_edges(self, tmp_path):
         self._init_with_files(tmp_path)
         # Add an edge
@@ -215,11 +244,13 @@ class TestTls:
         has_edges = any(item.get("edges") for item in result)
         assert has_edges
 
+    # AGENT SHALL VALIDATE PROCESS test_list_empty_dir.
     def test_list_empty_dir(self, tmp_path):
         tinit(tmp_path, name="Empty")
         result = tls(tmp_path, format="text")
         assert "(empty)" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_list_specific_node.
     def test_list_specific_node(self, tmp_path):
         self._init_with_files(tmp_path)
         trug = load_graph(tmp_path)
@@ -227,21 +258,25 @@ class TestTls:
         result = tls(tmp_path, node_id=root_id, format="json")
         assert isinstance(result, list)
 
+    # AGENT SHALL VALIDATE PROCESS test_list_invalid_node.
     def test_list_invalid_node(self, tmp_path):
         tinit(tmp_path)
         with pytest.raises(ValueError, match="Node not found"):
             tls(tmp_path, node_id="nonexistent")
 
+    # AGENT SHALL VALIDATE PROCESS test_list_no_trug.
     def test_list_no_trug(self, tmp_path):
         with pytest.raises(FileNotFoundError):
             tls(tmp_path)
 
+    # AGENT SHALL VALIDATE PROCESS test_list_shows_edge_count.
     def test_list_shows_edge_count(self, tmp_path):
         self._init_with_files(tmp_path)
         result = tls(tmp_path, format="json")
         for item in result:
             assert "edge_count" in item
 
+    # AGENT SHALL VALIDATE PROCESS test_list_shows_dimension.
     def test_list_shows_dimension(self, tmp_path):
         self._init_with_files(tmp_path)
         result = tls(tmp_path, format="json")

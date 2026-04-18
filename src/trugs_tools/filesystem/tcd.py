@@ -16,6 +16,7 @@ from trugs_tools.filesystem.utils import (
 )
 
 
+# AGENT claude SHALL DEFINE FUNCTION tcd.
 def tcd(
     directory: Union[str, Path],
     target: str = "",

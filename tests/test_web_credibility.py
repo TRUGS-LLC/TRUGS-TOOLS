@@ -14,7 +14,9 @@ from trugs_tools.web.credibility import (
 )
 
 
+# AGENT claude SHALL DEFINE RECORD testcredibilityfactors AS A RECORD test_suite.
 class TestCredibilityFactors:
+    # AGENT SHALL VALIDATE PROCESS test_total_is_capped_at_095.
     def test_total_is_capped_at_095(self):
         factors = CredibilityFactors(
             peer_reviewed=0.3,
@@ -26,10 +28,12 @@ class TestCredibilityFactors:
         # Raw sum = 1.0, capped at 0.95
         assert factors.total == pytest.approx(0.95)
 
+    # AGENT SHALL VALIDATE PROCESS test_total_below_cap.
     def test_total_below_cap(self):
         factors = CredibilityFactors(peer_reviewed=0.2, venue_quality=0.1)
         assert factors.total == pytest.approx(0.3)
 
+    # AGENT SHALL VALIDATE PROCESS test_to_dict.
     def test_to_dict(self):
         factors = CredibilityFactors(peer_reviewed=0.3)
         d = factors.to_dict()
@@ -37,6 +41,7 @@ class TestCredibilityFactors:
         assert "total" in d
         assert d["total"] == pytest.approx(0.3)
 
+    # AGENT SHALL VALIDATE PROCESS test_cap_never_exceeds_095.
     def test_cap_never_exceeds_095(self):
         # Even with all factors maxed out
         factors = CredibilityFactors(
@@ -49,7 +54,9 @@ class TestCredibilityFactors:
         assert factors.total <= 0.95
 
 
+# AGENT claude SHALL DEFINE RECORD testcredibilityscorer AS A RECORD test_suite.
 class TestCredibilityScorer:
+    # AGENT SHALL VALIDATE PROCESS test_academic_paper_high_score.
     def test_academic_paper_high_score(self):
         scorer = CredibilityScorer()
         source = Source(
@@ -62,6 +69,7 @@ class TestCredibilityScorer:
         assert factors.venue_quality > 0
         assert factors.total > 0
 
+    # AGENT SHALL VALIDATE PROCESS test_arxiv_preprint_lower_than_nature.
     def test_arxiv_preprint_lower_than_nature(self):
         scorer = CredibilityScorer()
         nature_source = Source(url="https://nature.com/article", source_type="PAPER")
@@ -70,6 +78,7 @@ class TestCredibilityScorer:
         arxiv_factors = scorer.score_source(arxiv_source)
         assert nature_factors.peer_reviewed > arxiv_factors.peer_reviewed
 
+    # AGENT SHALL VALIDATE PROCESS test_github_moderate_score.
     def test_github_moderate_score(self):
         scorer = CredibilityScorer()
         source = Source(
@@ -81,6 +90,7 @@ class TestCredibilityScorer:
         assert factors.venue_quality > 0
         assert factors.total > 0
 
+    # AGENT SHALL VALIDATE PROCESS test_github_stars_boost_author.
     def test_github_stars_boost_author(self):
         scorer = CredibilityScorer()
         low_star = Source(url="https://github.com/u/r", source_type="PROJECT", metadata={"stars": 5})
@@ -89,6 +99,7 @@ class TestCredibilityScorer:
         high_f = scorer.score_source(high_star)
         assert high_f.author_credentials >= low_f.author_credentials
 
+    # AGENT SHALL VALIDATE PROCESS test_low_quality_source.
     def test_low_quality_source(self):
         scorer = CredibilityScorer()
         source = Source(
@@ -98,12 +109,14 @@ class TestCredibilityScorer:
         factors = scorer.score_source(source)
         assert factors.total < 0.3
 
+    # AGENT SHALL VALIDATE PROCESS test_social_media_zero_venue.
     def test_social_media_zero_venue(self):
         scorer = CredibilityScorer()
         source = Source(url="https://twitter.com/user/post", source_type="WEB_SOURCE")
         factors = scorer.score_source(source)
         assert factors.venue_quality == 0.0
 
+    # AGENT SHALL VALIDATE PROCESS test_citation_count_boosts_score.
     def test_citation_count_boosts_score(self):
         scorer = CredibilityScorer()
         high_cite = Source(url="https://example.com", source_type="PAPER", metadata={"citations": 5000})
@@ -112,6 +125,7 @@ class TestCredibilityScorer:
         low_f = scorer.score_source(low_cite)
         assert high_f.citation_score > low_f.citation_score
 
+    # AGENT SHALL VALIDATE PROCESS test_recency_recent_source.
     def test_recency_recent_source(self):
         scorer = CredibilityScorer()
         from datetime import datetime
@@ -120,36 +134,42 @@ class TestCredibilityScorer:
         factors = scorer.score_source(source)
         assert factors.recency >= 0.1
 
+    # AGENT SHALL VALIDATE PROCESS test_recency_old_source.
     def test_recency_old_source(self):
         scorer = CredibilityScorer()
         source = Source(url="https://example.com", source_type="WEB_SOURCE", metadata={"published": "2010-01-01"})
         factors = scorer.score_source(source)
         assert factors.recency == 0.0
 
+    # AGENT SHALL VALIDATE PROCESS test_recency_no_date.
     def test_recency_no_date(self):
         scorer = CredibilityScorer()
         source = Source(url="https://example.com", source_type="WEB_SOURCE")
         factors = scorer.score_source(source)
         assert factors.recency == pytest.approx(0.03)
 
+    # AGENT SHALL VALIDATE PROCESS test_recency_invalid_date.
     def test_recency_invalid_date(self):
         scorer = CredibilityScorer()
         source = Source(url="https://example.com", source_type="WEB_SOURCE", metadata={"published": "not-a-date"})
         factors = scorer.score_source(source)
         assert factors.recency == pytest.approx(0.03)
 
+    # AGENT SHALL VALIDATE PROCESS test_high_h_index_boost.
     def test_high_h_index_boost(self):
         scorer = CredibilityScorer()
         source = Source(url="https://example.com", source_type="PAPER", metadata={"author": {"h_index": 60}})
         factors = scorer.score_source(source)
         assert factors.author_credentials == pytest.approx(0.2)
 
+    # AGENT SHALL VALIDATE PROCESS test_documentation_peer_reviewed.
     def test_documentation_peer_reviewed(self):
         scorer = CredibilityScorer()
         source = Source(url="https://docs.python.org/3/", source_type="DOCUMENTATION")
         factors = scorer.score_source(source)
         assert factors.peer_reviewed == pytest.approx(0.2)
 
+    # AGENT SHALL VALIDATE PROCESS test_score_edge_with_source.
     def test_score_edge_with_source(self):
         scorer = CredibilityScorer()
         relation = Relation(from_id="a", to_id="b", relation_type="CITES", confidence=0.8)
@@ -157,6 +177,7 @@ class TestCredibilityScorer:
         weight = scorer.score_edge(relation, from_source=source)
         assert 0 < weight <= 0.95
 
+    # AGENT SHALL VALIDATE PROCESS test_score_edge_without_source.
     def test_score_edge_without_source(self):
         scorer = CredibilityScorer()
         relation = Relation(from_id="a", to_id="b", relation_type="CITES", confidence=0.8)
@@ -164,18 +185,21 @@ class TestCredibilityScorer:
         assert weight > 0
         assert weight <= 0.95
 
+    # AGENT SHALL VALIDATE PROCESS test_score_edge_cap_at_095.
     def test_score_edge_cap_at_095(self):
         scorer = CredibilityScorer()
         relation = Relation(from_id="a", to_id="b", relation_type="CITES", confidence=1.0)
         weight = scorer.score_edge(relation)
         assert weight <= 0.95
 
+    # AGENT SHALL VALIDATE PROCESS test_relation_type_multipliers.
     def test_relation_type_multipliers(self):
         scorer = CredibilityScorer()
         cites = Relation(from_id="a", to_id="b", relation_type="CITES", confidence=0.9)
         weak = Relation(from_id="a", to_id="b", relation_type="RELATED_TO", confidence=0.9)
         assert scorer.score_edge(cites) >= scorer.score_edge(weak)
 
+    # AGENT SHALL VALIDATE PROCESS test_unknown_domain_small_venue_score.
     def test_unknown_domain_small_venue_score(self):
         scorer = CredibilityScorer()
         source = Source(url="https://totally-unknown-domain-xyz.com/page", source_type="WEB_SOURCE")
@@ -183,6 +207,7 @@ class TestCredibilityScorer:
         assert factors.venue_quality == pytest.approx(0.02)
 
 
+# AGENT SHALL VALIDATE PROCESS test_calculate_credibility.
 def test_calculate_credibility():
     source = Source(
         url="https://arxiv.org/abs/2301.00001",
@@ -193,12 +218,14 @@ def test_calculate_credibility():
     assert 0 < score <= 0.95
 
 
+# AGENT SHALL VALIDATE PROCESS test_score_edge_weight.
 def test_score_edge_weight():
     relation = Relation(from_id="x", to_id="y", relation_type="USES", confidence=0.7)
     weight = score_edge_weight(relation)
     assert 0 < weight <= 0.95
 
 
+# AGENT SHALL VALIDATE PROCESS test_score_edge_weight_with_source.
 def test_score_edge_weight_with_source():
     relation = Relation(from_id="x", to_id="y", relation_type="USES", confidence=0.7)
     source = Source(url="https://github.com/org/repo", source_type="PROJECT")

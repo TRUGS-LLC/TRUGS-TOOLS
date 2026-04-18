@@ -27,6 +27,7 @@ from typing import Optional
 # Data model
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD qualifyinginterest AS RECORD class.
 @dataclass
 class QualifyingInterest:
     """
@@ -42,6 +43,7 @@ class QualifyingInterest:
     domain: str = ""
     scope: str = ""
 
+    # AGENT claude SHALL DEFINE FUNCTION is_valid.
     @property
     def is_valid(self) -> bool:
         """A qualifying interest is valid when it has at least one keyword."""
@@ -52,6 +54,7 @@ class QualifyingInterest:
 # Parsing
 # ============================================================================
 
+# AGENT claude SHALL DEFINE FUNCTION parse_qualifying_interest.
 def parse_qualifying_interest(root_node: dict) -> Optional[QualifyingInterest]:
     """
     Extract a QualifyingInterest from a TRUG root node.
@@ -122,6 +125,7 @@ def _token_overlap(a_tokens: set, b_tokens: set) -> float:
     return len(intersection) / len(union)
 
 
+# AGENT claude SHALL DEFINE FUNCTION match_interest.
 def match_interest(
     interest: QualifyingInterest,
     candidate: QualifyingInterest,
@@ -175,6 +179,7 @@ def match_interest(
     return round(0.6 * kw_score + 0.3 * domain_score + 0.1 * scope_score, 4)
 
 
+# AGENT claude SHALL DEFINE FUNCTION rank_matches.
 def rank_matches(
     interest: QualifyingInterest,
     candidates: list,

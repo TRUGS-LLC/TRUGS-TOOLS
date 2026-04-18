@@ -99,6 +99,7 @@ def _node_map(trug: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
 # ─── AAA.md Renderer ─────────────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE FUNCTION render_aaa.
 def render_aaa(trug: Any, render_date: Optional[str] = None) -> str:
     """Render AAA.md from a folder TRUG.
 
@@ -266,6 +267,7 @@ def render_aaa(trug: Any, render_date: Optional[str] = None) -> str:
 # ─── README.md Renderer ──────────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE FUNCTION render_readme.
 def render_readme(trug: Any, render_date: Optional[str] = None) -> str:
     """Render README.md from a folder TRUG.
 
@@ -419,6 +421,7 @@ def _get_prose_content(data: Dict[str, Any], zone: str, repo_root: Optional[Path
     return prose_path.read_text(encoding="utf-8").strip()
 
 
+# AGENT claude SHALL DEFINE FUNCTION render_architecture.
 def render_architecture(
         trug: Any,
         render_date: Optional[str] = None,
@@ -803,6 +806,7 @@ def render_architecture(
 # ─── Batch Renderer ──────────────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE FUNCTION render_all.
 def render_all(
         trug: Any,
         output_dir: Optional[str] = None,

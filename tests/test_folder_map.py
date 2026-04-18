@@ -139,51 +139,66 @@ def _setup_repo(tmp_dir, folder_configs):
 # Unit Tests: Helpers
 # ===========================================================================
 
+# AGENT claude SHALL DEFINE RECORD testfolderalias AS A RECORD test_suite.
 class TestFolderAlias:
+    # AGENT SHALL VALIDATE PROCESS test_uppercase.
     def test_uppercase(self):
         assert _folder_alias("TRUGS_TOOLS") == "trugs_tools"
 
+    # AGENT SHALL VALIDATE PROCESS test_mixed_case.
     def test_mixed_case(self):
         assert _folder_alias("Code_Factory") == "code_factory"
 
+    # AGENT SHALL VALIDATE PROCESS test_already_lower.
     def test_already_lower(self):
         assert _folder_alias("packages") == "packages"
 
 
+# AGENT claude SHALL DEFINE RECORD testcrossfolderref AS A RECORD test_suite.
 class TestCrossFolderRef:
+    # AGENT SHALL VALIDATE PROCESS test_is_cross_folder.
     def test_is_cross_folder(self):
         assert _is_cross_folder_ref("trugs_tools:comp_validator") is True
 
+    # AGENT SHALL VALIDATE PROCESS test_is_not_cross_folder.
     def test_is_not_cross_folder(self):
         assert _is_cross_folder_ref("comp_validator") is False
 
+    # AGENT SHALL VALIDATE PROCESS test_parse.
     def test_parse(self):
         alias, node = _parse_cross_folder_ref("trugs_protocol:spec_validation")
         assert alias == "trugs_protocol"
         assert node == "spec_validation"
 
+    # AGENT SHALL VALIDATE PROCESS test_parse_uppercase.
     def test_parse_uppercase(self):
         alias, node = _parse_cross_folder_ref("TRUGS_TOOLS:comp_validator")
         assert alias == "trugs_tools"
         assert node == "comp_validator"
 
 
+# AGENT claude SHALL DEFINE RECORD testfindfoldernode AS A RECORD test_suite.
 class TestFindFolderNode:
+    # AGENT SHALL VALIDATE PROCESS test_found.
     def test_found(self):
         trug = _minimal_folder_trug("TEST")
         node = _find_folder_node(trug)
         assert node is not None
         assert node["type"] == "FOLDER"
 
+    # AGENT SHALL VALIDATE PROCESS test_not_found.
     def test_not_found(self):
         trug = {"nodes": [{"id": "x", "type": "DOCUMENT"}]}
         assert _find_folder_node(trug) is None
 
+    # AGENT SHALL VALIDATE PROCESS test_empty.
     def test_empty(self):
         assert _find_folder_node({}) is None
 
 
+# AGENT claude SHALL DEFINE RECORD testmakefoldernodeid AS A RECORD test_suite.
 class TestMakeFolderNodeId:
+    # AGENT SHALL VALIDATE PROCESS test_basic.
     def test_basic(self):
         assert _make_folder_node_id("trugs_tools") == "folder_trugs_tools"
 
@@ -192,7 +207,9 @@ class TestMakeFolderNodeId:
 # Unit Tests: Load folder TRUGs
 # ===========================================================================
 
+# AGENT claude SHALL DEFINE RECORD testloadfoldertrugs AS A RECORD test_suite.
 class TestLoadFolderTrugs:
+    # AGENT SHALL VALIDATE PROCESS test_loads_subfolders.
     def test_loads_subfolders(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = _setup_repo(tmp, [
@@ -208,6 +225,7 @@ class TestLoadFolderTrugs:
             assert "folder_b" in folders
             assert len(folders) == 2
 
+    # AGENT SHALL VALIDATE PROCESS test_excludes_root.
     def test_excludes_root(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -234,7 +252,9 @@ class TestLoadFolderTrugs:
 # Unit Tests: Resolve cross-folder edges
 # ===========================================================================
 
+# AGENT claude SHALL DEFINE RECORD testresolvecrossfolderedges AS A RECORD test_suite.
 class TestResolveCrossFolderEdges:
+    # AGENT SHALL VALIDATE PROCESS test_resolve_valid.
     def test_resolve_valid(self):
         folders = {
             "folder_a": FolderInfo(
@@ -269,6 +289,7 @@ class TestResolveCrossFolderEdges:
         assert resolved[0]["source_folder"] == "folder_a"
         assert resolved[0]["target_folder"] == "folder_b"
 
+    # AGENT SHALL VALIDATE PROCESS test_resolve_missing_folder.
     def test_resolve_missing_folder(self):
         folders = {
             "folder_a": FolderInfo(
@@ -294,6 +315,7 @@ class TestResolveCrossFolderEdges:
         assert len(unresolved) == 1
         assert "not found" in unresolved[0]["reason"]
 
+    # AGENT SHALL VALIDATE PROCESS test_resolve_missing_node.
     def test_resolve_missing_node(self):
         folders = {
             "folder_a": FolderInfo(
@@ -325,6 +347,7 @@ class TestResolveCrossFolderEdges:
         assert len(resolved) == 0
         assert len(unresolved) == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_internal_edges_skipped.
     def test_internal_edges_skipped(self):
         folders = {
             "folder_a": FolderInfo(
@@ -349,6 +372,7 @@ class TestResolveCrossFolderEdges:
         assert len(resolved) == 0
         assert len(unresolved) == 0
 
+    # AGENT SHALL VALIDATE PROCESS test_case_insensitive_alias.
     def test_case_insensitive_alias(self):
         """Cross-folder refs with uppercase aliases should resolve."""
         folders = {
@@ -381,6 +405,7 @@ class TestResolveCrossFolderEdges:
         assert len(resolved) == 1
         assert len(unresolved) == 0
 
+    # AGENT SHALL VALIDATE PROCESS test_resolve_missing_source_folder.
     def test_resolve_missing_source_folder(self):
         """Cross-folder from_id where the source folder doesn't exist."""
         folders = {
@@ -407,6 +432,7 @@ class TestResolveCrossFolderEdges:
         assert len(unresolved) == 1
         assert "source" in unresolved[0]["reason"]
 
+    # AGENT SHALL VALIDATE PROCESS test_resolve_missing_source_node.
     def test_resolve_missing_source_node(self):
         """Cross-folder from_id where source folder exists but node doesn't."""
         folders = {
@@ -440,6 +466,7 @@ class TestResolveCrossFolderEdges:
         assert len(unresolved) == 1
         assert "source" in unresolved[0]["reason"]
 
+    # AGENT SHALL VALIDATE PROCESS test_cross_folder_from_id.
     def test_cross_folder_from_id(self):
         """Cross-folder reference in from_id."""
         folders = {
@@ -478,9 +505,11 @@ class TestResolveCrossFolderEdges:
 # Unit Tests: Orphan detection
 # ===========================================================================
 
+# AGENT claude SHALL DEFINE RECORD testorphandetection AS A RECORD test_suite.
 class TestOrphanDetection:
     _stub = FolderInfo(path=Path("/tmp"), alias="", trug={}, folder_node=None, node_ids=set())
 
+    # AGENT SHALL VALIDATE PROCESS test_detects_orphan.
     def test_detects_orphan(self):
         folders = {"a": self._stub, "b": self._stub, "c": self._stub}
         resolved = [
@@ -489,6 +518,7 @@ class TestOrphanDetection:
         orphans = _find_orphaned_folders(folders, resolved)
         assert orphans == ["c"]
 
+    # AGENT SHALL VALIDATE PROCESS test_no_orphans.
     def test_no_orphans(self):
         folders = {"a": self._stub, "b": self._stub}
         resolved = [
@@ -497,6 +527,7 @@ class TestOrphanDetection:
         orphans = _find_orphaned_folders(folders, resolved)
         assert orphans == []
 
+    # AGENT SHALL VALIDATE PROCESS test_all_orphans.
     def test_all_orphans(self):
         folders = {"a": self._stub, "b": self._stub}
         orphans = _find_orphaned_folders(folders, [])
@@ -507,6 +538,7 @@ class TestOrphanDetection:
 # Unit Tests: Build root graph
 # ===========================================================================
 
+# AGENT claude SHALL DEFINE RECORD testbuildrootgraph AS A RECORD test_suite.
 class TestBuildRootGraph:
     def _make_folders(self):
         return {
@@ -526,6 +558,7 @@ class TestBuildRootGraph:
             ),
         }
 
+    # AGENT SHALL VALIDATE PROCESS test_structure.
     def test_structure(self):
         folders = self._make_folders()
         graph = _build_root_graph(folders, [], "TEST_REPO")
@@ -535,12 +568,14 @@ class TestBuildRootGraph:
         assert graph["nodes"][0]["id"] == "root_folder"
         assert graph["nodes"][0]["type"] == "FOLDER"
 
+    # AGENT SHALL VALIDATE PROCESS test_contains_edges.
     def test_contains_edges(self):
         folders = self._make_folders()
         graph = _build_root_graph(folders, [], "TEST_REPO")
         contains = [e for e in graph["edges"] if e["relation"] == "contains"]
         assert len(contains) == 2
 
+    # AGENT SHALL VALIDATE PROCESS test_cross_folder_edges.
     def test_cross_folder_edges(self):
         folders = self._make_folders()
         resolved = [{
@@ -555,6 +590,7 @@ class TestBuildRootGraph:
         assert uses_edges[0]["from_id"] == "folder_folder_a"
         assert uses_edges[0]["to_id"] == "folder_folder_b"
 
+    # AGENT SHALL VALIDATE PROCESS test_dedup_cross_folder_edges.
     def test_dedup_cross_folder_edges(self):
         folders = self._make_folders()
         resolved = [
@@ -575,12 +611,14 @@ class TestBuildRootGraph:
         uses_edges = [e for e in graph["edges"] if e["relation"] == "uses"]
         assert len(uses_edges) == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_deterministic_output.
     def test_deterministic_output(self):
         folders = self._make_folders()
         g1 = _build_root_graph(folders, [], "TEST_REPO")
         g2 = _build_root_graph(folders, [], "TEST_REPO")
         assert json.dumps(g1, sort_keys=True) == json.dumps(g2, sort_keys=True)
 
+    # AGENT SHALL VALIDATE PROCESS test_folder_properties_from_folder_node.
     def test_folder_properties_from_folder_node(self):
         folders = self._make_folders()
         graph = _build_root_graph(folders, [], "TEST_REPO")
@@ -589,6 +627,7 @@ class TestBuildRootGraph:
         assert fa_node["properties"]["purpose"] == "FOLDER_A project folder"
         assert fa_node["properties"]["phase"] == "CODING"
 
+    # AGENT SHALL VALIDATE PROCESS test_edges_sorted.
     def test_edges_sorted(self):
         folders = self._make_folders()
         resolved = [{
@@ -606,7 +645,9 @@ class TestBuildRootGraph:
 # Unit Tests: Make folder node
 # ===========================================================================
 
+# AGENT claude SHALL DEFINE RECORD testmakefoldernode AS A RECORD test_suite.
 class TestMakeFolderNode:
+    # AGENT SHALL VALIDATE PROCESS test_with_folder_node.
     def test_with_folder_node(self):
         info = FolderInfo(
             path=Path("/tmp/MY_FOLDER/folder.trug.json"),
@@ -622,6 +663,7 @@ class TestMakeFolderNode:
         assert node["properties"]["purpose"] == "MY_FOLDER project folder"
         assert node["parent_id"] == "root_folder"
 
+    # AGENT SHALL VALIDATE PROCESS test_without_folder_node.
     def test_without_folder_node(self):
         info = FolderInfo(
             path=Path("/tmp/MY_FOLDER/folder.trug.json"),
@@ -638,7 +680,9 @@ class TestMakeFolderNode:
 # Integration Tests: map_folder_trugs
 # ===========================================================================
 
+# AGENT claude SHALL DEFINE RECORD testmapfoldertrugs AS A RECORD test_suite.
 class TestMapFolderTrugs:
+    # AGENT SHALL VALIDATE PROCESS test_basic_map.
     def test_basic_map(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = _setup_repo(tmp, [
@@ -650,6 +694,7 @@ class TestMapFolderTrugs:
             assert result.root_graph is not None
             assert len(result.root_graph["nodes"]) == 3  # root + 2
 
+    # AGENT SHALL VALIDATE PROCESS test_with_cross_folder_edges.
     def test_with_cross_folder_edges(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = _setup_repo(tmp, [
@@ -682,6 +727,7 @@ class TestMapFolderTrugs:
             uses = [e for e in result.root_graph["edges"] if e["relation"] == "uses"]
             assert len(uses) == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_with_unresolved_edges.
     def test_with_unresolved_edges(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = _setup_repo(tmp, [
@@ -696,6 +742,7 @@ class TestMapFolderTrugs:
             result = map_folder_trugs(root, dry_run=True)
             assert len(result.unresolved_edges) == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_orphan_detection.
     def test_orphan_detection(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = _setup_repo(tmp, [
@@ -707,6 +754,7 @@ class TestMapFolderTrugs:
             # No cross-folder edges — all are orphans
             assert len(result.orphaned_folders) == 3
 
+    # AGENT SHALL VALIDATE PROCESS test_writes_file.
     def test_writes_file(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = _setup_repo(tmp, [
@@ -719,6 +767,7 @@ class TestMapFolderTrugs:
             assert data["type"] == "PROJECT"
             assert len(data["nodes"]) == 2  # root + 1 folder
 
+    # AGENT SHALL VALIDATE PROCESS test_writes_to_custom_output.
     def test_writes_to_custom_output(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = _setup_repo(tmp, [
@@ -730,6 +779,7 @@ class TestMapFolderTrugs:
             # Default path should not exist
             assert not (root / "folder.trug.json").exists()
 
+    # AGENT SHALL VALIDATE PROCESS test_dry_run_no_write.
     def test_dry_run_no_write(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = _setup_repo(tmp, [
@@ -738,17 +788,20 @@ class TestMapFolderTrugs:
             result = map_folder_trugs(root, dry_run=True)
             assert not (root / "folder.trug.json").exists()
 
+    # AGENT SHALL VALIDATE PROCESS test_not_a_directory.
     def test_not_a_directory(self):
         with tempfile.TemporaryDirectory() as tmp:
             fake = Path(tmp) / "not_a_dir"
             with pytest.raises(NotADirectoryError):
                 map_folder_trugs(fake)
 
+    # AGENT SHALL VALIDATE PROCESS test_no_trugs_found.
     def test_no_trugs_found(self):
         with tempfile.TemporaryDirectory() as tmp:
             with pytest.raises(FileNotFoundError):
                 map_folder_trugs(tmp)
 
+    # AGENT SHALL VALIDATE PROCESS test_excludes_root_trug.
     def test_excludes_root_trug(self):
         """Root folder.trug.json should not appear as a subfolder node."""
         with tempfile.TemporaryDirectory() as tmp:
@@ -764,6 +817,7 @@ class TestMapFolderTrugs:
             node_ids = [n["id"] for n in result.root_graph["nodes"]]
             assert "folder_sub_a" in node_ids
 
+    # AGENT SHALL VALIDATE PROCESS test_idempotent.
     def test_idempotent(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = _setup_repo(tmp, [
@@ -776,6 +830,7 @@ class TestMapFolderTrugs:
             j2 = json.dumps(r2.root_graph, sort_keys=True)
             assert j1 == j2
 
+    # AGENT SHALL VALIDATE PROCESS test_no_subfolder_trugs.
     def test_no_subfolder_trugs(self):
         """Root has folder.trug.json but no subfolders do."""
         with tempfile.TemporaryDirectory() as tmp:
@@ -791,12 +846,15 @@ class TestMapFolderTrugs:
 # MapResult Tests
 # ===========================================================================
 
+# AGENT claude SHALL DEFINE RECORD testmapresult AS A RECORD test_suite.
 class TestMapResult:
+    # AGENT SHALL VALIDATE PROCESS test_edge_count.
     def test_edge_count(self):
         r = MapResult()
         r.resolved_edges = [{"a": 1}, {"b": 2}]
         assert r.edge_count == 2
 
+    # AGENT SHALL VALIDATE PROCESS test_edge_count_empty.
     def test_edge_count_empty(self):
         r = MapResult()
         assert r.edge_count == 0
@@ -806,7 +864,9 @@ class TestMapResult:
 # CLI Tests
 # ===========================================================================
 
+# AGENT claude SHALL DEFINE RECORD testfoldermapcli AS A RECORD test_suite.
 class TestFolderMapCLI:
+    # AGENT SHALL VALIDATE PROCESS test_cli_dry_run.
     def test_cli_dry_run(self, capsys):
         with tempfile.TemporaryDirectory() as tmp:
             root = _setup_repo(tmp, [
@@ -819,6 +879,7 @@ class TestFolderMapCLI:
             data = json.loads(captured.out)
             assert data["type"] == "PROJECT"
 
+    # AGENT SHALL VALIDATE PROCESS test_cli_writes_file.
     def test_cli_writes_file(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = _setup_repo(tmp, [
@@ -828,6 +889,7 @@ class TestFolderMapCLI:
             assert exit_code == 0
             assert (root / "folder.trug.json").exists()
 
+    # AGENT SHALL VALIDATE PROCESS test_cli_custom_output.
     def test_cli_custom_output(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = _setup_repo(tmp, [
@@ -838,15 +900,18 @@ class TestFolderMapCLI:
             assert exit_code == 0
             assert out_file.exists()
 
+    # AGENT SHALL VALIDATE PROCESS test_cli_no_trugs.
     def test_cli_no_trugs(self, capsys):
         with tempfile.TemporaryDirectory() as tmp:
             exit_code = folder_map_command([tmp])
             assert exit_code == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_cli_not_a_directory.
     def test_cli_not_a_directory(self, capsys):
         exit_code = folder_map_command(["/nonexistent/path"])
         assert exit_code == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_cli_changes_reported.
     def test_cli_changes_reported(self, capsys):
         with tempfile.TemporaryDirectory() as tmp:
             root = _setup_repo(tmp, [

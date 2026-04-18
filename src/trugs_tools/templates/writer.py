@@ -3,6 +3,7 @@
 from typing import Dict, Any
 
 
+# AGENT claude SHALL DEFINE FUNCTION generate_writer_minimal.
 def generate_writer_minimal() -> Dict[str, Any]:
     """Generate minimal Writer TRUG (4 nodes).
     
@@ -75,6 +76,7 @@ def generate_writer_minimal() -> Dict[str, Any]:
     }
 
 
+# AGENT claude SHALL DEFINE FUNCTION generate_writer_complete.
 def generate_writer_complete() -> Dict[str, Any]:
     """Generate complete Writer TRUG with citations.
     

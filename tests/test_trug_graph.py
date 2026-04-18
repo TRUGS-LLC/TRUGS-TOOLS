@@ -97,28 +97,34 @@ def _with_from_node():
 # ── Factory tests ────────────────────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE RECORD testfactories AS A RECORD test_suite.
 class TestFactories:
+    # AGENT SHALL VALIDATE PROCESS test_from_dict.
     def test_from_dict(self):
         g = _minimal()
         assert g.get_node("root") is not None
 
+    # AGENT SHALL VALIDATE PROCESS test_from_json.
     def test_from_json(self):
         trug = {"nodes": [{"id": "x", "type": "T", "parent_id": None, "contains": []}], "edges": []}
         g = TrugGraph.from_json(json.dumps(trug))
         assert g.node_ids() == {"x"}
 
+    # AGENT SHALL VALIDATE PROCESS test_from_file.
     def test_from_file(self, tmp_path):
         p = tmp_path / "t.json"
         p.write_text(json.dumps({"nodes": [{"id": "x", "type": "T", "parent_id": None, "contains": []}], "edges": []}))
         g = TrugGraph.from_file(str(p))
         assert g.node_ids() == {"x"}
 
+    # AGENT SHALL VALIDATE PROCESS test_from_node_normalized.
     def test_from_node_normalized(self):
         g = _with_from_node()
         edges = g.get_all_edges()
         assert len(edges) == 1
         assert edges[0].get("from_id") == "a"
 
+    # AGENT SHALL VALIDATE PROCESS test_metadata_preserved.
     def test_metadata_preserved(self):
         g = _minimal()
         assert g.store.get_metadata().get("name") == "test"
@@ -127,23 +133,29 @@ class TestFactories:
 # ── Node accessors ───────────────────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE RECORD testnodeaccessors AS A RECORD test_suite.
 class TestNodeAccessors:
+    # AGENT SHALL VALIDATE PROCESS test_get_node.
     def test_get_node(self):
         g = _minimal()
         assert g.get_node("root") is not None
         assert g.get_node("nonexistent") is None
 
+    # AGENT SHALL VALIDATE PROCESS test_get_all_nodes.
     def test_get_all_nodes(self):
         assert len(_minimal().get_all_nodes()) == 3
 
+    # AGENT SHALL VALIDATE PROCESS test_get_nodes_by_type.
     def test_get_nodes_by_type(self):
         g = _minimal()
         assert len(g.get_nodes_by_type("FOLDER")) == 1
         assert len(g.get_nodes_by_type("MISSING")) == 0
 
+    # AGENT SHALL VALIDATE PROCESS test_node_ids.
     def test_node_ids(self):
         assert _minimal().node_ids() == {"root", "child1", "child2"}
 
+    # AGENT SHALL VALIDATE PROCESS test_empty.
     def test_empty(self):
         g = _empty()
         assert g.get_all_nodes() == []
@@ -153,38 +165,46 @@ class TestNodeAccessors:
 # ── Hierarchy accessors ──────────────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE RECORD testhierarchy AS A RECORD test_suite.
 class TestHierarchy:
+    # AGENT SHALL VALIDATE PROCESS test_root_nodes.
     def test_root_nodes(self):
         assert _minimal().root_nodes() == ["root"]
 
+    # AGENT SHALL VALIDATE PROCESS test_root_nodes_multiple.
     def test_root_nodes_multiple(self):
         g = _with_orphan()
         roots = g.root_nodes()
         assert "root" in roots
         assert "orphan" in roots
 
+    # AGENT SHALL VALIDATE PROCESS test_leaf_nodes.
     def test_leaf_nodes(self):
         leaves = _minimal().leaf_nodes()
         assert "child1" in leaves
         assert "child2" in leaves
         assert "root" not in leaves
 
+    # AGENT SHALL VALIDATE PROCESS test_get_children.
     def test_get_children(self):
         assert _minimal().get_children("root") == ["child1", "child2"]
         assert _minimal().get_children("child1") == []
         assert _minimal().get_children("nonexistent") == []
 
+    # AGENT SHALL VALIDATE PROCESS test_get_parent.
     def test_get_parent(self):
         g = _minimal()
         assert g.get_parent("child1") == "root"
         assert g.get_parent("root") is None
         assert g.get_parent("nonexistent") is None
 
+    # AGENT SHALL VALIDATE PROCESS test_get_ancestors.
     def test_get_ancestors(self):
         g = _with_hierarchy()
         assert g.get_ancestors("leaf") == ["mid", "root"]
         assert g.get_ancestors("root") == []
 
+    # AGENT SHALL VALIDATE PROCESS test_get_ancestors_no_infinite_loop.
     def test_get_ancestors_no_infinite_loop(self):
         """Malformed data with circular parent_id should not loop."""
         g = TrugGraph.from_dict({
@@ -198,11 +218,13 @@ class TestHierarchy:
         assert len(ancestors) == 1  # stops at cycle
         assert "b" in ancestors
 
+    # AGENT SHALL VALIDATE PROCESS test_get_descendants.
     def test_get_descendants(self):
         g = _with_hierarchy()
         assert g.get_descendants("root") == {"mid", "leaf"}
         assert g.get_descendants("leaf") == set()
 
+    # AGENT SHALL VALIDATE PROCESS test_empty_hierarchy.
     def test_empty_hierarchy(self):
         g = _empty()
         assert g.root_nodes() == []
@@ -212,32 +234,39 @@ class TestHierarchy:
 # ── Edge accessors ───────────────────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE RECORD testedgeaccessors AS A RECORD test_suite.
 class TestEdgeAccessors:
+    # AGENT SHALL VALIDATE PROCESS test_get_all_edges.
     def test_get_all_edges(self):
         assert len(_minimal().get_all_edges()) == 3
 
+    # AGENT SHALL VALIDATE PROCESS test_get_edges_by_relation.
     def test_get_edges_by_relation(self):
         g = _minimal()
         assert len(g.get_edges_by_relation("contains")) == 2
         assert len(g.get_edges_by_relation("uses")) == 1
         assert len(g.get_edges_by_relation("missing")) == 0
 
+    # AGENT SHALL VALIDATE PROCESS test_get_outgoing.
     def test_get_outgoing(self):
         g = _minimal()
         out = g.get_outgoing("root")
         assert len(out) == 2  # two contains edges
 
+    # AGENT SHALL VALIDATE PROCESS test_get_incoming.
     def test_get_incoming(self):
         g = _minimal()
         inc = g.get_incoming("child2")
         assert len(inc) == 2  # one contains + one uses
 
+    # AGENT SHALL VALIDATE PROCESS test_get_semantic_edges.
     def test_get_semantic_edges(self):
         g = _minimal()
         semantic = g.get_semantic_edges()
         assert len(semantic) == 1
         assert semantic[0]["relation"] == "uses"
 
+    # AGENT SHALL VALIDATE PROCESS test_empty_edges.
     def test_empty_edges(self):
         assert _empty().get_all_edges() == []
         assert _empty().get_semantic_edges() == []
@@ -246,17 +275,21 @@ class TestEdgeAccessors:
 # ── Stale accessors ──────────────────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE RECORD teststaleaccessors AS A RECORD test_suite.
 class TestStaleAccessors:
+    # AGENT SHALL VALIDATE PROCESS test_get_stale_nodes.
     def test_get_stale_nodes(self):
         g = _with_stale()
         assert g.get_stale_nodes() == ["comp"]
 
+    # AGENT SHALL VALIDATE PROCESS test_is_stale.
     def test_is_stale(self):
         g = _with_stale()
         assert g.is_stale("comp") is True
         assert g.is_stale("root") is False
         assert g.is_stale("nonexistent") is False
 
+    # AGENT SHALL VALIDATE PROCESS test_no_stale.
     def test_no_stale(self):
         assert _minimal().get_stale_nodes() == []
 
@@ -264,20 +297,26 @@ class TestStaleAccessors:
 # ── Metadata ─────────────────────────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE RECORD testmetadata AS A RECORD test_suite.
 class TestMetadata:
+    # AGENT SHALL VALIDATE PROCESS test_vocabularies.
     def test_vocabularies(self):
         assert _minimal().vocabularies() == ["project_v1"]
 
+    # AGENT SHALL VALIDATE PROCESS test_extensions.
     def test_extensions(self):
         assert _minimal().extensions() == []
 
+    # AGENT SHALL VALIDATE PROCESS test_store_property.
     def test_store_property(self):
         assert _minimal().store is not None
 
+    # AGENT SHALL VALIDATE PROCESS test_edge_from.
     def test_edge_from(self):
         assert TrugGraph.edge_from({"from_id": "a"}) == "a"
         assert TrugGraph.edge_from({"from_node": "b"}) == "b"
 
+    # AGENT SHALL VALIDATE PROCESS test_edge_to.
     def test_edge_to(self):
         assert TrugGraph.edge_to({"to_id": "a"}) == "a"
         assert TrugGraph.edge_to({"to_node": "b"}) == "b"
@@ -286,11 +325,14 @@ class TestMetadata:
 # ── Real file integration ───────────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE RECORD testrealfiles AS A RECORD test_suite.
 class TestRealFiles:
+    # AGENT claude SHALL DEFINE FUNCTION repo_root.
     @pytest.fixture
     def repo_root(self):
         return Path(__file__).parent.parent.parent  # TRUGS-DEVELOPMENT/
 
+    # AGENT SHALL VALIDATE PROCESS test_load_trugs_tools_folder.
     def test_load_trugs_tools_folder(self, repo_root):
         path = repo_root / "TRUGS_TOOLS" / "folder.trug.json"
         if not path.exists():
@@ -300,6 +342,7 @@ class TestRealFiles:
         roots = g.root_nodes()
         assert "trugs_tools_folder" in roots
 
+    # AGENT SHALL VALIDATE PROCESS test_load_trugs_computation_folder.
     def test_load_trugs_computation_folder(self, repo_root):
         path = repo_root / "TRUGS_COMPUTATION" / "folder.trug.json"
         if not path.exists():

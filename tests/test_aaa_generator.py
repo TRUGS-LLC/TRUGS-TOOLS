@@ -26,41 +26,50 @@ from trugs_tools.aaa_generator import (
 # ---------------------------------------------------------------------------
 
 
+# AGENT SHALL VALIDATE PROCESS test_folder_name_from_label.
 def test_folder_name_from_label():
     assert _folder_name_from_label("folder:TRUGS_TOOLS") == "TRUGS_TOOLS"
     assert _folder_name_from_label("folder:TRUGS_AAA") == "TRUGS_AAA"
 
 
+# AGENT SHALL VALIDATE PROCESS test_format_date_iso.
 def test_format_date_iso():
     assert _format_date("2026-02-25T12:00:00Z") == "2026-02-25"
 
 
+# AGENT SHALL VALIDATE PROCESS test_format_date_none.
 def test_format_date_none():
     assert _format_date(None) == ""
 
 
+# AGENT SHALL VALIDATE PROCESS test_format_date_empty.
 def test_format_date_empty():
     assert _format_date("") == ""
 
 
+# AGENT SHALL VALIDATE PROCESS test_next_link_present.
 def test_next_link_present():
     header = '<https://api.github.com/repos/X/Y/labels?page=2>; rel="next", <https://api.github.com/repos/X/Y/labels?page=5>; rel="last"'
     assert _next_link(header) == "https://api.github.com/repos/X/Y/labels?page=2"
 
 
+# AGENT SHALL VALIDATE PROCESS test_next_link_absent.
 def test_next_link_absent():
     header = '<https://api.github.com/repos/X/Y/labels?page=1>; rel="first"'
     assert _next_link(header) is None
 
 
+# AGENT SHALL VALIDATE PROCESS test_next_link_empty.
 def test_next_link_empty():
     assert _next_link("") is None
 
 
+# AGENT SHALL VALIDATE PROCESS test_linked_pr_none_when_no_events.
 def test_linked_pr_none_when_no_events():
     assert _linked_pr_from_timeline([]) is None
 
 
+# AGENT SHALL VALIDATE PROCESS test_linked_pr_from_cross_referenced.
 def test_linked_pr_from_cross_referenced():
     events = [
         {
@@ -81,6 +90,7 @@ def test_linked_pr_from_cross_referenced():
     assert pr["merged_at"] == "2026-01-15T10:00:00Z"
 
 
+# AGENT SHALL VALIDATE PROCESS test_linked_pr_skips_non_pr_cross_refs.
 def test_linked_pr_skips_non_pr_cross_refs():
     events = [
         {
@@ -103,11 +113,13 @@ def test_linked_pr_skips_non_pr_cross_refs():
 # ---------------------------------------------------------------------------
 
 
+# AGENT SHALL VALIDATE PROCESS test_normalize_headers_strips_parenthetical.
 def test_normalize_headers_strips_parenthetical():
     body = "## ARCHITECTURE (Issue TRUG)\nsome content"
     assert _normalize_headers(body) == "## ARCHITECTURE\nsome content"
 
 
+# AGENT SHALL VALIDATE PROCESS test_normalize_headers_strips_multiple.
 def test_normalize_headers_strips_multiple():
     body = "## VISION (Phase 1)\n\n## FEASIBILITY (check)\n"
     result = _normalize_headers(body)
@@ -115,11 +127,13 @@ def test_normalize_headers_strips_multiple():
     assert "## FEASIBILITY\n" in result
 
 
+# AGENT SHALL VALIDATE PROCESS test_normalize_headers_leaves_plain_headers.
 def test_normalize_headers_leaves_plain_headers():
     body = "## VISION\n\n## CODING\n"
     assert _normalize_headers(body) == body
 
 
+# AGENT SHALL VALIDATE PROCESS test_normalize_headers_leaves_lowercase_headers.
 def test_normalize_headers_leaves_lowercase_headers():
     # Only all-caps headers should be normalized
     body = "## My Header (note)\n"
@@ -129,6 +143,7 @@ def test_normalize_headers_leaves_lowercase_headers():
     assert _normalize_headers(body) == body
 
 
+# AGENT SHALL VALIDATE PROCESS test_normalize_headers_empty.
 def test_normalize_headers_empty():
     assert _normalize_headers("") == ""
 
@@ -138,6 +153,7 @@ def test_normalize_headers_empty():
 # ---------------------------------------------------------------------------
 
 
+# AGENT SHALL VALIDATE PROCESS test_detect_owner_repo_from_env.
 def test_detect_owner_repo_from_env(tmp_path, monkeypatch):
     monkeypatch.setenv("GH_OWNER", "TestOwner")
     monkeypatch.setenv("GH_REPO", "TestRepo")
@@ -146,6 +162,7 @@ def test_detect_owner_repo_from_env(tmp_path, monkeypatch):
     assert repo == "TestRepo"
 
 
+# AGENT SHALL VALIDATE PROCESS test_detect_owner_repo_from_git_remote.
 def test_detect_owner_repo_from_git_remote(tmp_path):
     import subprocess
     subprocess.run(["git", "init"], cwd=str(tmp_path), capture_output=True)
@@ -159,6 +176,7 @@ def test_detect_owner_repo_from_git_remote(tmp_path):
     assert repo == "SomeRepo"
 
 
+# AGENT SHALL VALIDATE PROCESS test_detect_owner_repo_from_ssh_remote.
 def test_detect_owner_repo_from_ssh_remote(tmp_path):
     import subprocess
     subprocess.run(["git", "init"], cwd=str(tmp_path), capture_output=True)
@@ -172,6 +190,7 @@ def test_detect_owner_repo_from_ssh_remote(tmp_path):
     assert repo == "OtherRepo"
 
 
+# AGENT SHALL VALIDATE PROCESS test_detect_owner_repo_raises_when_no_remote.
 def test_detect_owner_repo_raises_when_no_remote(tmp_path):
     import subprocess
     subprocess.run(["git", "init"], cwd=str(tmp_path), capture_output=True)
@@ -184,6 +203,7 @@ def test_detect_owner_repo_raises_when_no_remote(tmp_path):
 # ---------------------------------------------------------------------------
 
 
+# AGENT SHALL VALIDATE PROCESS test_sub_issue_section_open_no_pr.
 @patch("trugs_tools.aaa_generator._timeline_events", return_value=[])
 def test_sub_issue_section_open_no_pr(mock_tl):
     sub = {"number": 10, "title": "Do something", "state": "open", "body": "Details here"}
@@ -209,6 +229,7 @@ def test_sub_issue_section_open_no_pr(mock_tl):
         }
     ],
 )
+# AGENT SHALL VALIDATE PROCESS test_sub_issue_section_closed_with_pr.
 def test_sub_issue_section_closed_with_pr(mock_tl):
     sub = {"number": 20, "title": "Fixed bug", "state": "closed", "body": ""}
     section = _sub_issue_section(sub, "X", "Y")
@@ -221,6 +242,7 @@ def test_sub_issue_section_closed_with_pr(mock_tl):
 # ---------------------------------------------------------------------------
 
 
+# AGENT SHALL VALIDATE PROCESS test_compose_aaa_structure.
 @patch("trugs_tools.aaa_generator._timeline_events", return_value=[])
 def test_compose_aaa_structure(mock_tl):
     issue = {
@@ -243,6 +265,7 @@ def test_compose_aaa_structure(mock_tl):
     assert "### #101 — Sub task 1" in content
 
 
+# AGENT SHALL VALIDATE PROCESS test_compose_aaa_normalizes_headers.
 @patch("trugs_tools.aaa_generator._timeline_events", return_value=[])
 def test_compose_aaa_normalizes_headers(mock_tl):
     issue = {
@@ -257,6 +280,7 @@ def test_compose_aaa_normalizes_headers(mock_tl):
     assert "(Issue TRUG)" not in content
 
 
+# AGENT SHALL VALIDATE PROCESS test_compose_aaa_no_sub_issues.
 @patch("trugs_tools.aaa_generator._timeline_events", return_value=[])
 def test_compose_aaa_no_sub_issues(mock_tl):
     issue = {
@@ -276,6 +300,7 @@ def test_compose_aaa_no_sub_issues(mock_tl):
 # ---------------------------------------------------------------------------
 
 
+# AGENT SHALL VALIDATE PROCESS test_write_aaa_creates_file.
 def test_write_aaa_creates_file(tmp_path):
     folder = tmp_path / "MY_FOLDER"
     _write_aaa(folder, "# MY_FOLDER/\n\nContent here.\n")
@@ -284,6 +309,7 @@ def test_write_aaa_creates_file(tmp_path):
     assert "Content here." in aaa.read_text()
 
 
+# AGENT SHALL VALIDATE PROCESS test_archive_aaa_renames.
 def test_archive_aaa_renames(tmp_path):
     folder = tmp_path / "MY_FOLDER"
     folder.mkdir()
@@ -294,6 +320,7 @@ def test_archive_aaa_renames(tmp_path):
     assert len(archived) == 1
 
 
+# AGENT SHALL VALIDATE PROCESS test_archive_aaa_noop_when_no_aaa.
 def test_archive_aaa_noop_when_no_aaa(tmp_path):
     folder = tmp_path / "MY_FOLDER"
     folder.mkdir()
@@ -327,6 +354,7 @@ def _make_closed_issue(number, title):
     }
 
 
+# AGENT SHALL VALIDATE PROCESS test_generate_all_writes_aaa.
 @patch("trugs_tools.aaa_generator._detect_owner_repo", return_value=("X", "Y"))
 @patch("trugs_tools.aaa_generator._timeline_events", return_value=[])
 @patch("trugs_tools.aaa_generator._sub_issues", return_value=[])
@@ -343,6 +371,7 @@ def test_generate_all_writes_aaa(mock_labels, mock_issues, mock_subs, mock_tl, m
     assert "# TRUGS_TOOLS/" in aaa.read_text()
 
 
+# AGENT SHALL VALIDATE PROCESS test_generate_all_archives_when_closed.
 @patch("trugs_tools.aaa_generator._detect_owner_repo", return_value=("X", "Y"))
 @patch("trugs_tools.aaa_generator._timeline_events", return_value=[])
 @patch("trugs_tools.aaa_generator._sub_issues", return_value=[])
@@ -362,6 +391,7 @@ def test_generate_all_archives_when_closed(mock_labels, mock_issues, mock_api, m
     assert len(archived) == 1
 
 
+# AGENT SHALL VALIDATE PROCESS test_generate_all_no_issue_leaves_existing_aaa.
 @patch("trugs_tools.aaa_generator._detect_owner_repo", return_value=("X", "Y"))
 @patch("trugs_tools.aaa_generator._timeline_events", return_value=[])
 @patch("trugs_tools.aaa_generator._sub_issues", return_value=[])
@@ -379,6 +409,7 @@ def test_generate_all_no_issue_leaves_existing_aaa(mock_labels, mock_issues, moc
     assert "Legacy" in (folder / "AAA.md").read_text()
 
 
+# AGENT SHALL VALIDATE PROCESS test_generate_all_includes_sub_issues.
 @patch("trugs_tools.aaa_generator._detect_owner_repo", return_value=("X", "Y"))
 @patch("trugs_tools.aaa_generator._timeline_events", return_value=[])
 @patch("trugs_tools.aaa_generator._sub_issues")
@@ -399,6 +430,7 @@ def test_generate_all_includes_sub_issues(mock_labels, mock_issues, mock_subs, m
     assert "### #602 — Sub task B" in content
 
 
+# AGENT SHALL VALIDATE PROCESS test_generate_all_sorts_multiple_issues_by_created.
 @patch("trugs_tools.aaa_generator._detect_owner_repo", return_value=("X", "Y"))
 @patch("trugs_tools.aaa_generator._timeline_events", return_value=[])
 @patch("trugs_tools.aaa_generator._sub_issues", return_value=[])
@@ -420,6 +452,7 @@ def test_generate_all_sorts_multiple_issues_by_created(mock_labels, mock_issues,
     assert "#20" in (folder / "AAA.md").read_text()
 
 
+# AGENT SHALL VALIDATE PROCESS test_generate_all_skips_nested_folder_name.
 @patch("trugs_tools.aaa_generator._detect_owner_repo", return_value=("X", "Y"))
 @patch("trugs_tools.aaa_generator._list_folder_labels")
 def test_generate_all_skips_nested_folder_name(mock_labels, mock_detect, tmp_path, capsys):
@@ -429,6 +462,7 @@ def test_generate_all_skips_nested_folder_name(mock_labels, mock_detect, tmp_pat
     assert "WARNING" in capsys.readouterr().out
 
 
+# AGENT SHALL VALIDATE PROCESS test_generate_all_skips_empty_folder_name.
 @patch("trugs_tools.aaa_generator._detect_owner_repo", return_value=("X", "Y"))
 @patch("trugs_tools.aaa_generator._list_folder_labels")
 def test_generate_all_skips_empty_folder_name(mock_labels, mock_detect, tmp_path):
@@ -439,6 +473,7 @@ def test_generate_all_skips_empty_folder_name(mock_labels, mock_detect, tmp_path
     assert not (tmp_path / "AAA.md").exists()
 
 
+# AGENT SHALL VALIDATE PROCESS test_generate_all_skips_dot_folder_name.
 @patch("trugs_tools.aaa_generator._detect_owner_repo", return_value=("X", "Y"))
 @patch("trugs_tools.aaa_generator._list_folder_labels")
 def test_generate_all_skips_dot_folder_name(mock_labels, mock_detect, tmp_path):
@@ -453,6 +488,7 @@ def test_generate_all_skips_dot_folder_name(mock_labels, mock_detect, tmp_path):
 # ---------------------------------------------------------------------------
 
 
+# AGENT SHALL VALIDATE PROCESS test_aaa_generate_command_success.
 @patch("trugs_tools.aaa_generator.generate_all")
 def test_aaa_generate_command_success(mock_gen, tmp_path):
     from trugs_tools.cli import aaa_generate_command
@@ -461,6 +497,7 @@ def test_aaa_generate_command_success(mock_gen, tmp_path):
     mock_gen.assert_called_once_with(str(tmp_path))
 
 
+# AGENT SHALL VALIDATE PROCESS test_aaa_generate_command_error.
 @patch("trugs_tools.aaa_generator.generate_all", side_effect=RuntimeError("API error"))
 def test_aaa_generate_command_error(mock_gen, tmp_path, capsys):
     from trugs_tools.cli import aaa_generate_command
@@ -471,6 +508,7 @@ def test_aaa_generate_command_error(mock_gen, tmp_path, capsys):
     assert "generating AAA.md" in captured.err
 
 
+# AGENT SHALL VALIDATE PROCESS test_main_dispatcher_has_aaa_generate.
 def test_main_dispatcher_has_aaa_generate():
     """The main() dispatcher must register 'aaa-generate' subcommand."""
     import inspect

@@ -14,6 +14,7 @@ from trugs_tools.filesystem.utils import (
 )
 
 
+# AGENT claude SHALL DEFINE FUNCTION tget.
 def tget(
     directory: Union[str, Path],
     node_id: str,

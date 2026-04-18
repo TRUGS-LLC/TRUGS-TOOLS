@@ -13,6 +13,7 @@ from trugs_tools.filesystem.utils import (
 )
 
 
+# AGENT claude SHALL DEFINE FUNCTION tfind.
 def tfind(
     directory: Union[str, Path],
     node_type: Optional[str] = None,

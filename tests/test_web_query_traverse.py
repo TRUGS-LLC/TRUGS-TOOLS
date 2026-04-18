@@ -14,13 +14,16 @@ from trugs_tools.web.query.traverse import (
 # TraversalResult Tests
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD testtraversalresult AS A RECORD test_suite.
 class TestTraversalResult:
+    # AGENT SHALL VALIDATE PROCESS test_empty_result.
     def test_empty_result(self):
         result = TraversalResult(query="test")
         assert result.is_empty
         assert result.total_weight == 0.0
         assert result.avg_weight == 0.0
 
+    # AGENT SHALL VALIDATE PROCESS test_high_credibility_count.
     def test_high_credibility_count(self):
         nodes = [
             Node(id="a", type="T", properties={"credibility": 0.9}),
@@ -29,6 +32,7 @@ class TestTraversalResult:
         result = TraversalResult(query="test", nodes=nodes)
         assert result.high_credibility_count == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_top_nodes.
     def test_top_nodes(self, sample_graph):
         traverser = GraphTraverser(sample_graph)
         result = traverser.high_credibility_sources(min_weight=0.5)
@@ -37,12 +41,14 @@ class TestTraversalResult:
         if len(top) == 2:
             assert top[0].credibility >= top[1].credibility
 
+    # AGENT SHALL VALIDATE PROCESS test_top_edges.
     def test_top_edges(self, sample_graph):
         traverser = GraphTraverser(sample_graph)
         result = traverser.find_by_relation("EXTENDS")
         top = result.top_edges(2)
         assert len(top) <= 2
 
+    # AGENT SHALL VALIDATE PROCESS test_avg_weight_calculation.
     def test_avg_weight_calculation(self):
         edges = [
             Edge(from_id="a", to_id="b", relation="R", weight=0.6),
@@ -56,7 +62,9 @@ class TestTraversalResult:
 # GraphTraverser Tests
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD testgraphtraverser AS A RECORD test_suite.
 class TestGraphTraverser:
+    # AGENT SHALL VALIDATE PROCESS test_concept_sources.
     def test_concept_sources(self, sample_graph):
         traverser = GraphTraverser(sample_graph)
         result = traverser.concept_sources("graph")
@@ -64,66 +72,78 @@ class TestGraphTraverser:
         # Should find nodes with incoming edges related to "graph" concepts
         assert not result.is_empty or True  # lenient — depends on graph shape
 
+    # AGENT SHALL VALIDATE PROCESS test_concept_sources_no_match.
     def test_concept_sources_no_match(self, sample_graph):
         traverser = GraphTraverser(sample_graph)
         result = traverser.concept_sources("zzz_not_in_graph")
         assert result.is_empty
 
+    # AGENT SHALL VALIDATE PROCESS test_related_concepts.
     def test_related_concepts(self, sample_graph):
         traverser = GraphTraverser(sample_graph)
         result = traverser.related_concepts("langchain")
         assert isinstance(result, TraversalResult)
         assert len(result.nodes) > 0
 
+    # AGENT SHALL VALIDATE PROCESS test_related_concepts_with_relation_filter.
     def test_related_concepts_with_relation_filter(self, sample_graph):
         traverser = GraphTraverser(sample_graph)
         result = traverser.related_concepts("langchain", relation_types=["EXTENDS"])
         # langgraph EXTENDS langchain → langgraph should be in related
         assert isinstance(result, TraversalResult)
 
+    # AGENT SHALL VALIDATE PROCESS test_citation_chain_found.
     def test_citation_chain_found(self, sample_graph):
         traverser = GraphTraverser(sample_graph)
         result = traverser.citation_chain("langgraph", "graphrag")
         assert not result.is_empty
         assert len(result.paths) == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_citation_chain_not_found.
     def test_citation_chain_not_found(self, sample_graph):
         traverser = GraphTraverser(sample_graph)
         result = traverser.citation_chain("graphrag", "langgraph")
         assert result.is_empty
 
+    # AGENT SHALL VALIDATE PROCESS test_find_by_relation.
     def test_find_by_relation(self, sample_graph):
         traverser = GraphTraverser(sample_graph)
         result = traverser.find_by_relation("EXTENDS")
         assert len(result.edges) >= 1
         assert all(e.relation == "EXTENDS" for e in result.edges)
 
+    # AGENT SHALL VALIDATE PROCESS test_find_by_relation_no_match.
     def test_find_by_relation_no_match(self, sample_graph):
         traverser = GraphTraverser(sample_graph)
         result = traverser.find_by_relation("CONTRADICTS")
         assert result.is_empty
 
+    # AGENT SHALL VALIDATE PROCESS test_high_credibility_sources.
     def test_high_credibility_sources(self, sample_graph):
         traverser = GraphTraverser(sample_graph)
         result = traverser.high_credibility_sources(min_weight=0.9)
         assert len(result.nodes) >= 1
         assert all(n.credibility >= 0.9 for n in result.nodes)
 
+    # AGENT SHALL VALIDATE PROCESS test_high_credibility_sources_by_type.
     def test_high_credibility_sources_by_type(self, sample_graph):
         traverser = GraphTraverser(sample_graph)
         result = traverser.high_credibility_sources(min_weight=0.5, node_type="CONCEPT")
         assert all(n.type == "CONCEPT" for n in result.nodes)
 
+    # AGENT SHALL VALIDATE PROCESS test_weighted_consensus.
     def test_weighted_consensus(self, sample_graph):
         traverser = GraphTraverser(sample_graph)
         result = traverser.weighted_consensus("graph", min_sources=2)
         assert isinstance(result, TraversalResult)
 
+    # AGENT SHALL VALIDATE PROCESS test_weighted_consensus_no_concept.
     def test_weighted_consensus_no_concept(self, sample_graph):
         traverser = GraphTraverser(sample_graph)
         result = traverser.weighted_consensus("zzz_absent", min_sources=1)
         assert result.is_empty
 
+    # AGENT SHALL VALIDATE PROCESS test_alternatives.
     def test_alternatives(self, sample_graph):
         traverser = GraphTraverser(sample_graph)
         result = traverser.alternatives("langgraph")
@@ -132,6 +152,7 @@ class TestGraphTraverser:
         ids = [n.id for n in result.nodes]
         assert "neo4j" in ids
 
+    # AGENT SHALL VALIDATE PROCESS test_alternatives_empty.
     def test_alternatives_empty(self, sample_graph):
         traverser = GraphTraverser(sample_graph)
         result = traverser.alternatives("graphrag")
@@ -142,23 +163,29 @@ class TestGraphTraverser:
 # query_graph Function Tests
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD testquerygraph AS A RECORD test_suite.
 class TestQueryGraph:
+    # AGENT SHALL VALIDATE PROCESS test_simple_concept_query.
     def test_simple_concept_query(self, sample_graph):
         result = query_graph(sample_graph, "langchain")
         assert isinstance(result, TraversalResult)
 
+    # AGENT SHALL VALIDATE PROCESS test_high_credibility_routing.
     def test_high_credibility_routing(self, sample_graph):
         result = query_graph(sample_graph, "high credibility sources")
         assert isinstance(result, TraversalResult)
 
+    # AGENT SHALL VALIDATE PROCESS test_best_sources_routing.
     def test_best_sources_routing(self, sample_graph):
         result = query_graph(sample_graph, "best sources for AI")
         assert isinstance(result, TraversalResult)
 
+    # AGENT SHALL VALIDATE PROCESS test_contradictions_routing.
     def test_contradictions_routing(self, sample_graph):
         result = query_graph(sample_graph, "contradictions in data")
         assert isinstance(result, TraversalResult)
 
+    # AGENT SHALL VALIDATE PROCESS test_alternatives_routing.
     def test_alternatives_routing(self, sample_graph):
         result = query_graph(sample_graph, "alternatives to langgraph")
         assert isinstance(result, TraversalResult)

@@ -42,6 +42,7 @@ SUPPORTED_BRANCHES = {
 }
 
 
+# AGENT claude SHALL DEFINE FUNCTION generate_trug.
 def generate_trug(
     branch: str,
     template: str = "minimal",
@@ -115,6 +116,7 @@ def generate_trug(
     return trug
 
 
+# AGENT claude SHALL DEFINE FUNCTION generate_to_file.
 def generate_to_file(
     filepath: str,
     branch: str,

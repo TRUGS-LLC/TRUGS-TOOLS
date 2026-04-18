@@ -64,6 +64,7 @@ IGNORE_ON_DISK: Set[str] = {
 
 # -- Result dataclass ---------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD checkresult AS RECORD class.
 class CheckResult:
     """Result of checking a single folder.trug.json file."""
 
@@ -76,10 +77,12 @@ class CheckResult:
         self.node_count: int = 0
         self.edge_count: int = 0
 
+    # AGENT claude SHALL DEFINE FUNCTION ok.
     @property
     def ok(self) -> bool:
         return len(self.errors) == 0
 
+    # AGENT claude SHALL DEFINE FUNCTION to_dict.
     def to_dict(self) -> Dict[str, Any]:
         return {
             "folder": self.path,
@@ -94,6 +97,7 @@ class CheckResult:
 
 # -- Core checking logic ------------------------------------------------------
 
+# AGENT claude SHALL DEFINE FUNCTION check_folder_trug.
 def check_folder_trug(
     trug_path: Union[str, Path],
     check_filesystem: bool = True,
@@ -319,6 +323,7 @@ def check_folder_trug(
 
 # -- Multi-file scanning -------------------------------------------------------
 
+# AGENT claude SHALL DEFINE FUNCTION find_all_folder_trugs.
 def find_all_folder_trugs(root: Union[str, Path]) -> List[Path]:
     """Find all folder.trug.json files under root, excluding ZZZ_ dirs.
 
@@ -341,6 +346,7 @@ def find_all_folder_trugs(root: Union[str, Path]) -> List[Path]:
     return sorted(results)
 
 
+# AGENT claude SHALL DEFINE FUNCTION check_all.
 def check_all(
     paths: Optional[List[Union[str, Path]]] = None,
     scan_all: bool = False,
@@ -388,6 +394,7 @@ def check_all(
 
 # -- Output formatting ---------------------------------------------------------
 
+# AGENT claude SHALL DEFINE FUNCTION format_text.
 def format_text(results: List[CheckResult], quiet: bool = False) -> str:
     """Format results as human-readable text.
 
@@ -426,6 +433,7 @@ def format_text(results: List[CheckResult], quiet: bool = False) -> str:
     return "\n".join(lines)
 
 
+# AGENT claude SHALL DEFINE FUNCTION format_json.
 def format_json(results: List[CheckResult]) -> str:
     """Format results as JSON.
 

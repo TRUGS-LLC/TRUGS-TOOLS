@@ -434,6 +434,7 @@ def _render_references(nodes: List[Dict]) -> str:
 # ─── Main renderer ────────────────────────────────────────────────────
 
 
+# AGENT claude SHALL DEFINE FUNCTION render_agent_instructions.
 def render_agent_instructions(
     trug: Any,
     render_date: Optional[str] = None,

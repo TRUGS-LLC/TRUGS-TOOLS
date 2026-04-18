@@ -484,6 +484,7 @@ def test_save_graph_is_atomic_on_crash_simulation(tmp_path):
     import trugs_tools.memory as memory_module
     real_dump = memory_module.json.dump
 
+    # AGENT claude SHALL DEFINE RECORD boom AS RECORD class.
     class Boom(RuntimeError):
         pass
 

@@ -15,6 +15,7 @@ from trugs_tools.filesystem.utils import (
 )
 
 
+# AGENT claude SHALL DEFINE FUNCTION tls.
 def tls(
     directory: Union[str, Path],
     node_id: Optional[str] = None,

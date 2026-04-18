@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Optional
 
 
+# AGENT claude SHALL DEFINE RECORD node AS RECORD class.
 @dataclass
 class Node:
     """A graph node (TRUGS 1.0 format)."""
@@ -23,22 +24,27 @@ class Node:
     properties: dict = field(default_factory=dict)
     metric_level: str = ""
 
+    # AGENT claude SHALL DEFINE FUNCTION name.
     @property
     def name(self) -> str:
         return self.properties.get("name", self.id)
 
+    # AGENT claude SHALL DEFINE FUNCTION url.
     @property
     def url(self) -> Optional[str]:
         return self.properties.get("url") or self.properties.get("source_url")
 
+    # AGENT claude SHALL DEFINE FUNCTION description.
     @property
     def description(self) -> str:
         return self.properties.get("description", "")
 
+    # AGENT claude SHALL DEFINE FUNCTION credibility.
     @property
     def credibility(self) -> float:
         return float(self.properties.get("credibility", 0.5))
 
+    # AGENT claude SHALL DEFINE FUNCTION matches.
     def matches(self, **criteria) -> bool:
         """Check if node matches criteria."""
         for key, value in criteria.items():
@@ -58,6 +64,7 @@ class Node:
         return True
 
 
+# AGENT claude SHALL DEFINE RECORD edge AS RECORD class.
 @dataclass
 class Edge:
     """A graph edge (TRUGS 1.0 format)."""
@@ -67,6 +74,7 @@ class Edge:
     relation: str
     weight: float = 0.5
 
+    # AGENT claude SHALL DEFINE FUNCTION matches.
     def matches(self, **criteria) -> bool:
         """Check if edge matches criteria."""
         for key, value in criteria.items():
@@ -83,6 +91,7 @@ class Edge:
         return True
 
 
+# AGENT claude SHALL DEFINE RECORD graphmeta AS RECORD class.
 @dataclass
 class GraphMeta:
     """Graph metadata."""
@@ -98,6 +107,7 @@ class GraphMeta:
     edge_count: int = 0
 
 
+# AGENT claude SHALL DEFINE RECORD graph AS RECORD class.
 class Graph:
     """
     In-memory graph with query interface.
@@ -121,10 +131,12 @@ class Graph:
             self._outgoing.setdefault(edge.from_id, []).append(edge)
             self._incoming.setdefault(edge.to_id, []).append(edge)
 
+    # AGENT claude SHALL DEFINE FUNCTION nodes.
     @property
     def nodes(self):
         return list(self._nodes.values())
 
+    # AGENT claude SHALL DEFINE FUNCTION edges.
     @property
     def edges(self):
         return self._edges
@@ -136,10 +148,12 @@ class Graph:
     # Node Operations
     # ========================================================================
 
+    # AGENT claude SHALL DEFINE FUNCTION get_node.
     def get_node(self, node_id):
         """Get node by ID."""
         return self._nodes.get(node_id)
 
+    # AGENT claude SHALL DEFINE FUNCTION find_nodes.
     def find_nodes(self, **criteria):
         """
         Find nodes matching criteria.
@@ -151,10 +165,12 @@ class Graph:
         """
         return [n for n in self._nodes.values() if n.matches(**criteria)]
 
+    # AGENT claude SHALL DEFINE FUNCTION find_nodes_by_type.
     def find_nodes_by_type(self, node_type):
         """Find all nodes of a given type."""
         return self.find_nodes(type=node_type)
 
+    # AGENT claude SHALL DEFINE FUNCTION search_nodes.
     def search_nodes(self, query):
         """
         Search nodes by name/description containing query.
@@ -173,6 +189,7 @@ class Graph:
     # Edge Operations
     # ========================================================================
 
+    # AGENT claude SHALL DEFINE FUNCTION get_edges.
     def get_edges(self, **criteria):
         """
         Get edges matching criteria.
@@ -185,6 +202,7 @@ class Graph:
         """
         return [e for e in self._edges if e.matches(**criteria)]
 
+    # AGENT claude SHALL DEFINE FUNCTION get_outgoing.
     def get_outgoing(self, node_id, relation=None, min_weight=0.0):
         """Get outgoing edges from a node."""
         edges = self._outgoing.get(node_id, [])
@@ -194,6 +212,7 @@ class Graph:
             edges = [e for e in edges if e.weight >= min_weight]
         return edges
 
+    # AGENT claude SHALL DEFINE FUNCTION get_incoming.
     def get_incoming(self, node_id, relation=None, min_weight=0.0):
         """Get incoming edges to a node."""
         edges = self._incoming.get(node_id, [])
@@ -203,6 +222,7 @@ class Graph:
             edges = [e for e in edges if e.weight >= min_weight]
         return edges
 
+    # AGENT claude SHALL DEFINE FUNCTION get_neighbors.
     def get_neighbors(self, node_id, direction="both", min_weight=0.0):
         """
         Get neighbouring nodes.
@@ -228,6 +248,7 @@ class Graph:
     # Traversal Operations
     # ========================================================================
 
+    # AGENT claude SHALL DEFINE FUNCTION traverse.
     def traverse(
         self,
         start_id,
@@ -276,6 +297,7 @@ class Graph:
 
         return results
 
+    # AGENT claude SHALL DEFINE FUNCTION find_path.
     def find_path(self, start_id, end_id, max_depth=5):
         """
         Find path between two nodes (BFS).
@@ -317,6 +339,7 @@ class Graph:
     # Aggregation Operations
     # ========================================================================
 
+    # AGENT claude SHALL DEFINE FUNCTION get_top_nodes.
     def get_top_nodes(self, n=10, node_type=None, sort_by="credibility"):
         """Get top N nodes by credibility or other metric."""
         nodes = self.nodes
@@ -335,6 +358,7 @@ class Graph:
 
         return nodes[:n]
 
+    # AGENT claude SHALL DEFINE FUNCTION get_edge_stats.
     def get_edge_stats(self):
         """Get edge statistics."""
         if not self._edges:
@@ -354,6 +378,7 @@ class Graph:
         }
 
 
+# AGENT claude SHALL DEFINE RECORD graphloader AS RECORD class.
 class GraphLoader:
     """
     Loads TRUGS 1.0-format graphs from files or dicts.
@@ -361,6 +386,7 @@ class GraphLoader:
     Accepts output from ``TRUGSWebGraphBuilder.to_dict()`` directly.
     """
 
+    # AGENT claude SHALL DEFINE FUNCTION load.
     def load(self, path):
         """Load graph from a JSON file path or a pre-parsed dict."""
         if isinstance(path, dict):
@@ -369,6 +395,7 @@ class GraphLoader:
         data = json.loads(path.read_text())
         return self._parse(data)
 
+    # AGENT claude SHALL DEFINE FUNCTION loads.
     def loads(self, json_string):
         """Load graph from a JSON string."""
         data = json.loads(json_string)
@@ -418,6 +445,7 @@ class GraphLoader:
         return Graph(meta=meta, nodes=nodes, edges=edges)
 
 
+# AGENT claude SHALL DEFINE FUNCTION load_graph.
 def load_graph(path):
     """
     Load a TRUGS 1.0 graph from a file path or dict.

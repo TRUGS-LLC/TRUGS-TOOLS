@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 
+# AGENT claude SHALL DEFINE FUNCTION twhere.
 def twhere(
     query: str,
     root: str = ".",

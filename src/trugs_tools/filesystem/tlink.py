@@ -30,6 +30,7 @@ VALID_RELATIONS = {
 }
 
 
+# AGENT claude SHALL DEFINE FUNCTION tlink.
 def tlink(
     directory: Union[str, Path],
     from_id: str,
@@ -101,6 +102,7 @@ def tlink(
     return trug
 
 
+# AGENT claude SHALL DEFINE FUNCTION tunlink.
 def tunlink(
     directory: Union[str, Path],
     from_id: str,

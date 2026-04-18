@@ -17,6 +17,7 @@ from trugs_tools.filesystem.utils import (
 )
 
 
+# AGENT claude SHALL DEFINE FUNCTION tadd.
 def tadd(
     directory: Union[str, Path],
     files: List[str],

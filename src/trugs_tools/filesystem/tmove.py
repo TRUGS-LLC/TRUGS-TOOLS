@@ -17,6 +17,7 @@ from trugs_tools.filesystem.utils import (
 )
 
 
+# AGENT claude SHALL DEFINE FUNCTION tmove.
 def tmove(
     directory: Union[str, Path],
     node_id: str,

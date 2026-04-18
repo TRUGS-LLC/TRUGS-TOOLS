@@ -27,6 +27,7 @@ from .diff import TrugDiff, diff_trugs
 # Data structures
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD persistentquery AS RECORD class.
 @dataclass
 class PersistentQuery:
     """
@@ -55,6 +56,7 @@ class PersistentQuery:
     last_graph: Optional[dict] = None
 
 
+# AGENT claude SHALL DEFINE RECORD querydiffresult AS RECORD class.
 @dataclass
 class QueryDiffResult:
     """
@@ -79,6 +81,7 @@ class QueryDiffResult:
 # QueryStore — JSON file-based persistence
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD querystore AS RECORD class.
 class QueryStore:
     """
     Save and load persistent queries to/from a JSON file.
@@ -106,12 +109,14 @@ class QueryStore:
         with open(self.store_path, "w", encoding="utf-8") as fh:
             json.dump(data, fh, indent=2)
 
+    # AGENT claude SHALL DEFINE FUNCTION save.
     def save(self, query: PersistentQuery) -> None:
         """Save or update a persistent query."""
         data = self._load_all()
         data[query.query_id] = asdict(query)
         self._save_all(data)
 
+    # AGENT claude SHALL DEFINE FUNCTION load.
     def load(self, query_id: str) -> Optional[PersistentQuery]:
         """Load a persistent query by ID. Returns None if not found."""
         data = self._load_all()
@@ -120,11 +125,13 @@ class QueryStore:
             return None
         return PersistentQuery(**entry)
 
+    # AGENT claude SHALL DEFINE FUNCTION list_queries.
     def list_queries(self) -> list:
         """Return a list of all stored query IDs."""
         data = self._load_all()
         return sorted(data.keys())
 
+    # AGENT claude SHALL DEFINE FUNCTION delete.
     def delete(self, query_id: str) -> bool:
         """Delete a persistent query. Returns True if found and deleted."""
         data = self._load_all()
@@ -139,6 +146,7 @@ class QueryStore:
 # QueryRunner — re-execute a stored query and diff the results
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD queryrunner AS RECORD class.
 class QueryRunner:
     """
     Re-execute a :class:`PersistentQuery` using the Orchestrator and
@@ -151,6 +159,7 @@ class QueryRunner:
     def __init__(self, store: QueryStore):
         self.store = store
 
+    # AGENT claude SHALL DEFINE FUNCTION run.
     async def run(self, query: PersistentQuery) -> QueryDiffResult:
         """
         Execute the query's pipeline and produce a diff against the

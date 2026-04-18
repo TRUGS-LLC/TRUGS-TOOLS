@@ -15,6 +15,7 @@ from trugs_store import BaseGraph
 from trugs_store.memory import InMemoryGraphStore
 
 
+# AGENT claude SHALL DEFINE RECORD truggraph AS RECORD class.
 class TrugGraph(BaseGraph):
     """Domain-agnostic graph model built on BaseGraph.
 
@@ -25,6 +26,7 @@ class TrugGraph(BaseGraph):
 
     # ── Hierarchy accessors ──────────────────────────────────────────────
 
+    # AGENT claude SHALL DEFINE FUNCTION root_nodes.
     def root_nodes(self) -> list[str]:
         """Nodes where parent_id is None, null, or missing.
 
@@ -37,6 +39,7 @@ class TrugGraph(BaseGraph):
                 roots.append(node["id"])
         return roots
 
+    # AGENT claude SHALL DEFINE FUNCTION leaf_nodes.
     def leaf_nodes(self) -> list[str]:
         """Nodes where contains is [] or missing."""
         leaves: list[str] = []
@@ -46,6 +49,7 @@ class TrugGraph(BaseGraph):
                 leaves.append(node["id"])
         return leaves
 
+    # AGENT claude SHALL DEFINE FUNCTION get_children.
     def get_children(self, node_id: str) -> list[str]:
         """Get IDs of direct children from node's contains[] array."""
         node = self._store.get_node(node_id)
@@ -53,6 +57,7 @@ class TrugGraph(BaseGraph):
             return []
         return list(node.get("contains") or [])
 
+    # AGENT claude SHALL DEFINE FUNCTION get_parent.
     def get_parent(self, node_id: str) -> str | None:
         """Get parent_id of a node."""
         node = self._store.get_node(node_id)
@@ -60,6 +65,7 @@ class TrugGraph(BaseGraph):
             return None
         return node.get("parent_id")
 
+    # AGENT claude SHALL DEFINE FUNCTION get_ancestors.
     def get_ancestors(self, node_id: str) -> list[str]:
         """Walk parent_id chain upward to root. Ordered [parent, grandparent, ...].
 
@@ -80,6 +86,7 @@ class TrugGraph(BaseGraph):
 
         return ancestors
 
+    # AGENT claude SHALL DEFINE FUNCTION get_descendants.
     def get_descendants(self, node_id: str) -> set[str]:
         """BFS through contains[] downward. Excludes node_id itself."""
         descendants: set[str] = set()
@@ -101,18 +108,22 @@ class TrugGraph(BaseGraph):
 
     # ── Edge accessors ───────────────────────────────────────────────────
 
+    # AGENT claude SHALL DEFINE FUNCTION get_edges_by_relation.
     def get_edges_by_relation(self, relation: str) -> list[dict]:
         """Get all edges with a specific relation type."""
         return self._store.get_edges(relation=relation)
 
+    # AGENT claude SHALL DEFINE FUNCTION get_outgoing.
     def get_outgoing(self, node_id: str) -> list[dict]:
         """Get all outgoing edges from a node."""
         return self._store.get_outgoing(node_id)
 
+    # AGENT claude SHALL DEFINE FUNCTION get_incoming.
     def get_incoming(self, node_id: str) -> list[dict]:
         """Get all incoming edges to a node."""
         return self._store.get_incoming(node_id)
 
+    # AGENT claude SHALL DEFINE FUNCTION get_semantic_edges.
     def get_semantic_edges(self) -> list[dict]:
         """All edges where relation != 'contains'.
 
@@ -123,6 +134,7 @@ class TrugGraph(BaseGraph):
 
     # ── Stale accessors ──────────────────────────────────────────────────
 
+    # AGENT claude SHALL DEFINE FUNCTION get_stale_nodes.
     def get_stale_nodes(self) -> list[str]:
         """Nodes where properties.stale == True."""
         stale: list[str] = []
@@ -132,6 +144,7 @@ class TrugGraph(BaseGraph):
                 stale.append(node["id"])
         return stale
 
+    # AGENT claude SHALL DEFINE FUNCTION is_stale.
     def is_stale(self, node_id: str) -> bool:
         """Check if a node is marked stale."""
         node = self._store.get_node(node_id)
@@ -141,11 +154,13 @@ class TrugGraph(BaseGraph):
 
     # ── Metadata ─────────────────────────────────────────────────────────
 
+    # AGENT claude SHALL DEFINE FUNCTION vocabularies.
     def vocabularies(self) -> list[str]:
         """Get vocabularies from capabilities."""
         caps = self._store.get_metadata().get("capabilities", {})
         return caps.get("vocabularies", [])
 
+    # AGENT claude SHALL DEFINE FUNCTION extensions.
     def extensions(self) -> list[str]:
         """Get extensions from capabilities."""
         caps = self._store.get_metadata().get("capabilities", {})

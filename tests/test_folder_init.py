@@ -52,22 +52,29 @@ def _make_file(tmpdir, name, content=""):
 # _make_node_id tests
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testmakenodeid AS A RECORD test_suite.
 class TestMakeNodeId:
+    # AGENT SHALL VALIDATE PROCESS test_doc_readme.
     def test_doc_readme(self):
         assert _make_node_id("doc", "README.md") == "doc_readme"
 
+    # AGENT SHALL VALIDATE PROCESS test_spec_folder_check.
     def test_spec_folder_check(self):
         assert _make_node_id("spec", "SPEC_folder_check.md") == "spec_folder_check"
 
+    # AGENT SHALL VALIDATE PROCESS test_spec_specification_suffix.
     def test_spec_specification_suffix(self):
         assert _make_node_id("spec", "MY_SPECIFICATION.md") == "spec_my"
 
+    # AGENT SHALL VALIDATE PROCESS test_comp_trugs_tools.
     def test_comp_trugs_tools(self):
         assert _make_node_id("comp", "trugs_tools") == "comp_trugs_tools"
 
+    # AGENT SHALL VALIDATE PROCESS test_hyphen_to_underscore.
     def test_hyphen_to_underscore(self):
         assert _make_node_id("doc", "my-doc.md") == "doc_my_doc"
 
+    # AGENT SHALL VALIDATE PROCESS test_special_chars_removed.
     def test_special_chars_removed(self):
         assert _make_node_id("doc", "my doc (v2).md") == "doc_my_doc_v2"
 
@@ -76,7 +83,9 @@ class TestMakeNodeId:
 # Folder node ID tests (Fix 1 — explicit ID, not via _make_node_id)
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testfoldernodeid AS A RECORD test_suite.
 class TestFolderNodeId:
+    # AGENT SHALL VALIDATE PROCESS test_folder_id_ends_with_folder.
     def test_folder_id_ends_with_folder(self):
         """FOLDER node ID should end with _folder, no double _folder suffix."""
         import shutil
@@ -90,6 +99,7 @@ class TestFolderNodeId:
         finally:
             shutil.rmtree(d)
 
+    # AGENT SHALL VALIDATE PROCESS test_folder_id_hyphenated_name.
     def test_folder_id_hyphenated_name(self):
         """Ensure hyphenated folder names produce valid IDs."""
         import shutil
@@ -108,12 +118,15 @@ class TestFolderNodeId:
 # _count_lines tests
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testcountlines AS A RECORD test_suite.
 class TestCountLines:
+    # AGENT SHALL VALIDATE PROCESS test_counts_non_empty.
     def test_counts_non_empty(self, tmp_path):
         f = tmp_path / "test.py"
         f.write_text("line1\n\nline3\n", encoding="utf-8")
         assert _count_lines(f) == 2
 
+    # AGENT SHALL VALIDATE PROCESS test_missing_file.
     def test_missing_file(self, tmp_path):
         assert _count_lines(tmp_path / "missing.py") == 0
 
@@ -122,13 +135,17 @@ class TestCountLines:
 # _infer_purpose tests
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testinferpurpose AS A RECORD test_suite.
 class TestInferPurpose:
+    # AGENT SHALL VALIDATE PROCESS test_readme.
     def test_readme(self):
         assert "quickstart" in _infer_purpose("README.md").lower()
 
+    # AGENT SHALL VALIDATE PROCESS test_spec.
     def test_spec(self):
         assert "specification" in _infer_purpose("SPEC_folder_check.md").lower()
 
+    # AGENT SHALL VALIDATE PROCESS test_unknown.
     def test_unknown(self):
         result = _infer_purpose("CUSTOM.md")
         assert "Custom" in result
@@ -138,7 +155,9 @@ class TestInferPurpose:
 # _scan_documents tests
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testscandocuments AS A RECORD test_suite.
 class TestScanDocuments:
+    # AGENT SHALL VALIDATE PROCESS test_finds_md.
     def test_finds_md(self, tmp_path):
         _make_file(tmp_path, "README.md", "# README")
         _make_file(tmp_path, "AAA.md", "# AAA")
@@ -148,6 +167,7 @@ class TestScanDocuments:
         types = {n["type"] for n in nodes}
         assert types == {"DOCUMENT"}
 
+    # AGENT SHALL VALIDATE PROCESS test_separates_specs.
     def test_separates_specs(self, tmp_path):
         _make_file(tmp_path, "README.md", "# README")
         _make_file(tmp_path, "FOO_SPEC.md", "# Spec")
@@ -158,16 +178,19 @@ class TestScanDocuments:
         assert len(docs) == 1
         assert len(specs) == 2
 
+    # AGENT SHALL VALIDATE PROCESS test_empty_folder.
     def test_empty_folder(self, tmp_path):
         nodes = _scan_documents(tmp_path)
         assert nodes == []
 
+    # AGENT SHALL VALIDATE PROCESS test_no_recursion.
     def test_no_recursion(self, tmp_path):
         subdir = _make_dir(tmp_path, "subdir")
         _make_file(subdir, "HIDDEN.md", "# Hidden")
         nodes = _scan_documents(tmp_path)
         assert nodes == []
 
+    # AGENT SHALL VALIDATE PROCESS test_node_format.
     def test_node_format(self, tmp_path):
         _make_file(tmp_path, "README.md", "# README")
         nodes = _scan_documents(tmp_path)
@@ -185,7 +208,9 @@ class TestScanDocuments:
 # _scan_components tests
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testscancomponents AS A RECORD test_suite.
 class TestScanComponents:
+    # AGENT SHALL VALIDATE PROCESS test_finds_python.
     def test_finds_python(self, tmp_path):
         src = _make_dir(tmp_path, "src")
         _make_file(src, "main.py", "print('hello')\n")
@@ -195,36 +220,42 @@ class TestScanComponents:
         assert nodes[0]["properties"]["file_count"] == 1
         assert nodes[0]["properties"]["loc"] == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_skips_tests.
     def test_skips_tests(self, tmp_path):
         tests = _make_dir(tmp_path, "tests")
         _make_file(tests, "test_foo.py", "pass\n")
         nodes = _scan_components(tmp_path)
         assert len(nodes) == 0
 
+    # AGENT SHALL VALIDATE PROCESS test_skips_pycache.
     def test_skips_pycache(self, tmp_path):
         cache = _make_dir(tmp_path, "__pycache__")
         _make_file(cache, "foo.py", "pass\n")
         nodes = _scan_components(tmp_path)
         assert len(nodes) == 0
 
+    # AGENT SHALL VALIDATE PROCESS test_skips_hidden.
     def test_skips_hidden(self, tmp_path):
         hidden = _make_dir(tmp_path, ".hidden")
         _make_file(hidden, "foo.py", "pass\n")
         nodes = _scan_components(tmp_path)
         assert len(nodes) == 0
 
+    # AGENT SHALL VALIDATE PROCESS test_skips_zzz.
     def test_skips_zzz(self, tmp_path):
         zzz = _make_dir(tmp_path, "ZZZ_old")
         _make_file(zzz, "foo.py", "pass\n")
         nodes = _scan_components(tmp_path)
         assert len(nodes) == 0
 
+    # AGENT SHALL VALIDATE PROCESS test_ignores_dirs_without_py.
     def test_ignores_dirs_without_py(self, tmp_path):
         d = _make_dir(tmp_path, "data")
         _make_file(d, "data.csv", "a,b,c\n")
         nodes = _scan_components(tmp_path)
         assert len(nodes) == 0
 
+    # AGENT SHALL VALIDATE PROCESS test_component_node_format.
     def test_component_node_format(self, tmp_path):
         src = _make_dir(tmp_path, "mylib")
         _make_file(src, "core.py", "def foo():\n    pass\n")
@@ -234,6 +265,7 @@ class TestScanComponents:
         assert node["metric_level"] == "DEKA_COMPONENT"
         assert node["properties"]["name"] == "mylib"
 
+    # AGENT SHALL VALIDATE PROCESS test_component_excludes_nested_tests.
     def test_component_excludes_nested_tests(self, tmp_path):
         """Component file_count should exclude files in nested tests/ dirs."""
         src = _make_dir(tmp_path, "mylib")
@@ -249,7 +281,9 @@ class TestScanComponents:
 # _scan_tests tests
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testscantests AS A RECORD test_suite.
 class TestScanTests:
+    # AGENT SHALL VALIDATE PROCESS test_present.
     def test_present(self, tmp_path):
         tests = _make_dir(tmp_path, "tests")
         _make_file(tests, "test_foo.py", "def test_a(): pass\ndef test_b(): pass\n")
@@ -261,10 +295,12 @@ class TestScanTests:
         assert node["properties"]["test_files"] == 2
         assert node["metric_level"] == "BASE_TEST_SUITE"
 
+    # AGENT SHALL VALIDATE PROCESS test_absent.
     def test_absent(self, tmp_path):
         node = _scan_tests(tmp_path)
         assert node is None
 
+    # AGENT SHALL VALIDATE PROCESS test_counts_both_patterns.
     def test_counts_both_patterns(self, tmp_path):
         tests = _make_dir(tmp_path, "tests")
         _make_file(tests, "test_foo.py", "pass\n")
@@ -272,6 +308,7 @@ class TestScanTests:
         node = _scan_tests(tmp_path, run_tests=False)
         assert node["properties"]["test_files"] == 2
 
+    # AGENT SHALL VALIDATE PROCESS test_scan_tests_prefers_local_venv.
     def test_scan_tests_prefers_local_venv(self, tmp_path):
         """When .venv/bin/python exists, it should be used."""
         tests = _make_dir(tmp_path, "tests")
@@ -289,7 +326,9 @@ class TestScanTests:
 # _scan_schemas tests
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testscanschemas AS A RECORD test_suite.
 class TestScanSchemas:
+    # AGENT SHALL VALIDATE PROCESS test_schemas_dir.
     def test_schemas_dir(self, tmp_path):
         schemas = _make_dir(tmp_path, "schemas")
         _make_file(schemas, "core.json", "{}")
@@ -299,12 +338,14 @@ class TestScanSchemas:
         assert node["type"] == "SCHEMA"
         assert node["properties"]["schema_count"] == 2
 
+    # AGENT SHALL VALIDATE PROCESS test_schema_json_files.
     def test_schema_json_files(self, tmp_path):
         _make_file(tmp_path, "my.schema.json", "{}")
         node = _scan_schemas(tmp_path)
         assert node is not None
         assert node["properties"]["schema_count"] == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_absent.
     def test_absent(self, tmp_path):
         node = _scan_schemas(tmp_path)
         assert node is None
@@ -314,7 +355,9 @@ class TestScanSchemas:
 # _scan_templates tests
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testscantemplates AS A RECORD test_suite.
 class TestScanTemplates:
+    # AGENT SHALL VALIDATE PROCESS test_present.
     def test_present(self, tmp_path):
         templates = _make_dir(tmp_path, "templates")
         _make_file(templates, "base.json", "{}")
@@ -324,6 +367,7 @@ class TestScanTemplates:
         assert node["type"] == "TEMPLATE"
         assert node["properties"]["template_count"] == 2
 
+    # AGENT SHALL VALIDATE PROCESS test_absent.
     def test_absent(self, tmp_path):
         node = _scan_templates(tmp_path)
         assert node is None
@@ -333,7 +377,9 @@ class TestScanTemplates:
 # _scan_examples tests
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testscanexamples AS A RECORD test_suite.
 class TestScanExamples:
+    # AGENT SHALL VALIDATE PROCESS test_examples_upper.
     def test_examples_upper(self, tmp_path):
         examples = _make_dir(tmp_path, "EXAMPLES")
         _make_file(examples, "ex1.json", "{}")
@@ -344,6 +390,7 @@ class TestScanExamples:
         assert node["properties"]["example_count"] == 2
         assert node["properties"]["name"] == "EXAMPLES/"
 
+    # AGENT SHALL VALIDATE PROCESS test_examples_lower.
     def test_examples_lower(self, tmp_path):
         examples = _make_dir(tmp_path, "examples")
         _make_file(examples, "ex1.json", "{}")
@@ -351,6 +398,7 @@ class TestScanExamples:
         assert node is not None
         assert node["properties"]["name"] == "examples/"
 
+    # AGENT SHALL VALIDATE PROCESS test_prefers_upper.
     def test_prefers_upper(self, tmp_path):
         _make_dir(tmp_path, "EXAMPLES")
         _make_dir(tmp_path, "examples")
@@ -359,6 +407,7 @@ class TestScanExamples:
         node = _scan_examples(tmp_path)
         assert node["properties"]["name"] == "EXAMPLES/"
 
+    # AGENT SHALL VALIDATE PROCESS test_absent.
     def test_absent(self, tmp_path):
         node = _scan_examples(tmp_path)
         assert node is None
@@ -368,7 +417,9 @@ class TestScanExamples:
 # _read_aaa_metadata tests
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testreadaaametadata AS A RECORD test_suite.
 class TestReadAaaMetadata:
+    # AGENT SHALL VALIDATE PROCESS test_phase_status.
     def test_phase_status(self, tmp_path):
         _make_file(tmp_path, "AAA.md", (
             "# Project\n"
@@ -381,10 +432,12 @@ class TestReadAaaMetadata:
         assert meta["status"] == "Active development"
         assert meta["version"] == "1.0.0"
 
+    # AGENT SHALL VALIDATE PROCESS test_missing.
     def test_missing(self, tmp_path):
         meta = _read_aaa_metadata(tmp_path)
         assert meta == {}
 
+    # AGENT SHALL VALIDATE PROCESS test_partial.
     def test_partial(self, tmp_path):
         _make_file(tmp_path, "AAA.md", "**Phase:** TESTING\n")
         meta = _read_aaa_metadata(tmp_path)
@@ -396,7 +449,9 @@ class TestReadAaaMetadata:
 # _read_pyproject_metadata tests
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testreadpyprojectmetadata AS A RECORD test_suite.
 class TestReadPyprojectMetadata:
+    # AGENT SHALL VALIDATE PROCESS test_reads_metadata.
     def test_reads_metadata(self, tmp_path):
         _make_file(tmp_path, "pyproject.toml", (
             '[project]\n'
@@ -409,10 +464,12 @@ class TestReadPyprojectMetadata:
         assert meta["version"] == "2.0.0"
         assert meta["description"] == "A great tool"
 
+    # AGENT SHALL VALIDATE PROCESS test_missing.
     def test_missing(self, tmp_path):
         meta = _read_pyproject_metadata(tmp_path)
         assert meta == {}
 
+    # AGENT SHALL VALIDATE PROCESS test_stops_at_next_section.
     def test_stops_at_next_section(self, tmp_path):
         _make_file(tmp_path, "pyproject.toml", (
             '[project]\n'
@@ -429,7 +486,9 @@ class TestReadPyprojectMetadata:
 # _build_edges tests
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testbuildedges AS A RECORD test_suite.
 class TestBuildEdges:
+    # AGENT SHALL VALIDATE PROCESS test_contains_edges.
     def test_contains_edges(self):
         nodes = [
             {"id": "folder", "type": "FOLDER"},
@@ -442,6 +501,7 @@ class TestBuildEdges:
         targets = {e["to_id"] for e in contains}
         assert targets == {"doc_readme", "comp_src"}
 
+    # AGENT SHALL VALIDATE PROCESS test_tests_edges.
     def test_tests_edges(self):
         nodes = [
             {"id": "folder", "type": "FOLDER"},
@@ -454,6 +514,7 @@ class TestBuildEdges:
         assert tests_edges[0]["from_id"] == "test_suite"
         assert tests_edges[0]["to_id"] == "comp_src"
 
+    # AGENT SHALL VALIDATE PROCESS test_no_tests_without_components.
     def test_no_tests_without_components(self):
         nodes = [
             {"id": "folder", "type": "FOLDER"},
@@ -468,7 +529,9 @@ class TestBuildEdges:
 # init_folder_trug integration tests
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testinitfoldertrug AS A RECORD test_suite.
 class TestInitFolderTrug:
+    # AGENT SHALL VALIDATE PROCESS test_minimal_folder.
     def test_minimal_folder(self, tmp_path):
         """Folder with just README.md → FOLDER + 1 DOCUMENT node."""
         _make_file(tmp_path, "README.md", "# Hello\n")
@@ -479,6 +542,7 @@ class TestInitFolderTrug:
         assert "FOLDER" in types
         assert "DOCUMENT" in types
 
+    # AGENT SHALL VALIDATE PROCESS test_full_folder.
     def test_full_folder(self, tmp_path):
         """Folder with all node types generates all 8 types."""
         _make_file(tmp_path, "README.md", "# Hello")
@@ -501,22 +565,26 @@ class TestInitFolderTrug:
             "TEST_SUITE", "SCHEMA", "TEMPLATE", "EXAMPLE_SET",
         }
 
+    # AGENT SHALL VALIDATE PROCESS test_existing_trug_fails.
     def test_existing_trug_fails(self, tmp_path):
         _make_file(tmp_path, "folder.trug.json", "{}")
         with pytest.raises(FileExistsError):
             init_folder_trug(tmp_path)
 
+    # AGENT SHALL VALIDATE PROCESS test_force_overwrites.
     def test_force_overwrites(self, tmp_path):
         _make_file(tmp_path, "folder.trug.json", "{}")
         _make_file(tmp_path, "README.md", "# Hi")
         trug = init_folder_trug(tmp_path, force=True, run_tests=False)
         assert trug["type"] == "PROJECT"
 
+    # AGENT SHALL VALIDATE PROCESS test_not_a_directory.
     def test_not_a_directory(self, tmp_path):
         f = _make_file(tmp_path, "notadir.txt", "hi")
         with pytest.raises(NotADirectoryError):
             init_folder_trug(f)
 
+    # AGENT SHALL VALIDATE PROCESS test_folder_node_is_root.
     def test_folder_node_is_root(self, tmp_path):
         _make_file(tmp_path, "README.md", "# Hi")
         trug = init_folder_trug(tmp_path, run_tests=False)
@@ -524,6 +592,7 @@ class TestInitFolderTrug:
         assert len(folder_nodes) == 1
         assert folder_nodes[0]["parent_id"] is None
 
+    # AGENT SHALL VALIDATE PROCESS test_contains_array.
     def test_contains_array(self, tmp_path):
         _make_file(tmp_path, "README.md", "# Hi")
         src = _make_dir(tmp_path, "src")
@@ -533,6 +602,7 @@ class TestInitFolderTrug:
         child_ids = folder_node["contains"]
         assert "doc_readme" in child_ids
 
+    # AGENT SHALL VALIDATE PROCESS test_children_parent_id.
     def test_children_parent_id(self, tmp_path):
         _make_file(tmp_path, "README.md", "# Hi")
         trug = init_folder_trug(tmp_path, run_tests=False)
@@ -541,6 +611,7 @@ class TestInitFolderTrug:
             if node["type"] != "FOLDER":
                 assert node["parent_id"] == folder_node["id"]
 
+    # AGENT SHALL VALIDATE PROCESS test_edges_generated.
     def test_edges_generated(self, tmp_path):
         _make_file(tmp_path, "README.md", "# Hi")
         src = _make_dir(tmp_path, "src")
@@ -553,6 +624,7 @@ class TestInitFolderTrug:
         assert len(contains_edges) >= 3  # doc + comp + test_suite
         assert len(tests_edges) == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_trug_structure.
     def test_trug_structure(self, tmp_path):
         """Generated TRUG has required top-level keys."""
         _make_file(tmp_path, "README.md", "# Hi")
@@ -561,6 +633,7 @@ class TestInitFolderTrug:
         assert required_keys.issubset(set(trug.keys()))
         assert "folder_structure" in trug["dimensions"]
 
+    # AGENT SHALL VALIDATE PROCESS test_with_aaa_metadata.
     def test_with_aaa_metadata(self, tmp_path):
         _make_file(tmp_path, "AAA.md", "**Phase:** CODING\n**Status:** Active\n")
         _make_file(tmp_path, "README.md", "# Hi")
@@ -568,6 +641,7 @@ class TestInitFolderTrug:
         folder_node = [n for n in trug["nodes"] if n["type"] == "FOLDER"][0]
         assert folder_node["properties"]["phase"] == "CODING"
 
+    # AGENT SHALL VALIDATE PROCESS test_with_pyproject_metadata.
     def test_with_pyproject_metadata(self, tmp_path):
         _make_file(tmp_path, "pyproject.toml", (
             '[project]\nname = "my-tool"\nversion = "3.0.0"\n'
@@ -583,9 +657,11 @@ class TestInitFolderTrug:
 # Integration test: run against TRUGS_TOOLS folder
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testintegrationtrugstools AS A RECORD test_suite.
 class TestIntegrationTrugsTools:
     """Integration test against the real TRUGS_TOOLS folder."""
 
+    # AGENT claude SHALL DEFINE FUNCTION trugs_tools_path.
     @pytest.fixture
     def trugs_tools_path(self):
         # Find the TRUGS_TOOLS folder relative to this test
@@ -597,6 +673,7 @@ class TestIntegrationTrugsTools:
 
     @pytest.mark.skip(reason="integration test with external TRUGS_TOOLS_development path; not applicable in trugs-tools scaffold")
 
+    # AGENT SHALL VALIDATE PROCESS test_init_trugs_tools.
     def test_init_trugs_tools(self, trugs_tools_path):
         trug = init_folder_trug(trugs_tools_path, force=True, run_tests=False)
         assert len(trug["nodes"]) >= 10
@@ -606,6 +683,7 @@ class TestIntegrationTrugsTools:
         assert "TEST_SUITE" in types
         assert "DOCUMENT" in types
 
+    # AGENT SHALL VALIDATE PROCESS test_init_validates.
     def test_init_validates(self, trugs_tools_path):
         """Generated TRUG passes trugs-validate."""
         from trugs_tools.validator import validate_trug
@@ -627,7 +705,9 @@ class TestIntegrationTrugsTools:
 # find_folders_without_trug tests
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testfindfolderswithouttrug AS A RECORD test_suite.
 class TestFindFoldersWithoutTrug:
+    # AGENT SHALL VALIDATE PROCESS test_finds_missing.
     def test_finds_missing(self, tmp_path):
         folder1 = _make_dir(tmp_path, "folder1")
         _make_file(folder1, "README.md", "# Hi")
@@ -639,6 +719,7 @@ class TestFindFoldersWithoutTrug:
         assert str(folder1) in paths
         assert str(folder2) not in paths
 
+    # AGENT SHALL VALIDATE PROCESS test_skips_hidden.
     def test_skips_hidden(self, tmp_path):
         hidden = _make_dir(tmp_path, ".hidden")
         _make_file(hidden, "README.md", "# Hi")
@@ -650,7 +731,9 @@ class TestFindFoldersWithoutTrug:
 # CLI tests
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testfolderinitcli AS A RECORD test_suite.
 class TestFolderInitCli:
+    # AGENT SHALL VALIDATE PROCESS test_single_folder.
     def test_single_folder(self, tmp_path):
         _make_file(tmp_path, "README.md", "# Hello")
         ret = folder_init_command([str(tmp_path), "--no-tests"])
@@ -659,6 +742,7 @@ class TestFolderInitCli:
         trug = json.loads((tmp_path / "folder.trug.json").read_text())
         assert trug["type"] == "PROJECT"
 
+    # AGENT SHALL VALIDATE PROCESS test_dry_run.
     def test_dry_run(self, tmp_path, capsys):
         _make_file(tmp_path, "README.md", "# Hello")
         ret = folder_init_command([str(tmp_path), "--dry-run", "--no-tests"])
@@ -668,22 +752,26 @@ class TestFolderInitCli:
         trug = json.loads(captured.out)
         assert trug["type"] == "PROJECT"
 
+    # AGENT SHALL VALIDATE PROCESS test_force.
     def test_force(self, tmp_path):
         _make_file(tmp_path, "README.md", "# Hello")
         _make_file(tmp_path, "folder.trug.json", "{}")
         ret = folder_init_command([str(tmp_path), "--force", "--no-tests"])
         assert ret == 0
 
+    # AGENT SHALL VALIDATE PROCESS test_existing_without_force.
     def test_existing_without_force(self, tmp_path):
         _make_file(tmp_path, "folder.trug.json", "{}")
         ret = folder_init_command([str(tmp_path)])
         assert ret == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_missing_path.
     def test_missing_path(self, tmp_path):
         missing = str(tmp_path / "nonexistent")
         ret = folder_init_command([missing])
         assert ret == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_no_tests_flag.
     def test_no_tests_flag(self, tmp_path):
         _make_file(tmp_path, "README.md", "# Hello")
         tests_dir = _make_dir(tmp_path, "tests")
@@ -694,6 +782,7 @@ class TestFolderInitCli:
         test_nodes = [n for n in trug["nodes"] if n["type"] == "TEST_SUITE"]
         assert len(test_nodes) == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_all_flag.
     def test_all_flag(self, tmp_path):
         """--all generates TRUGs for folders missing them."""
         folder1 = _make_dir(tmp_path, "project_a")
@@ -712,6 +801,7 @@ class TestFolderInitCli:
         # folder3's TRUG should be unchanged (not overwritten)
         assert json.loads((folder3 / "folder.trug.json").read_text()) == {}
 
+    # AGENT SHALL VALIDATE PROCESS test_all_dry_run.
     def test_all_dry_run(self, tmp_path, capsys):
         """--all --dry-run prints but doesn't write."""
         folder1 = _make_dir(tmp_path, "project_a")
@@ -722,6 +812,7 @@ class TestFolderInitCli:
         captured = capsys.readouterr()
         assert "project_a" in captured.out
 
+    # AGENT SHALL VALIDATE PROCESS test_all_no_qualifying_folders.
     def test_all_no_qualifying_folders(self, tmp_path, capsys):
         """--all with no qualifying folders returns 0."""
         ret = folder_init_command(["--all", "--root", str(tmp_path), "--no-tests"])
@@ -732,9 +823,11 @@ class TestFolderInitCli:
 # VG-1: test_count_source tracking (Fix 1 — #453)
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testtestcountsource AS A RECORD test_suite.
 class TestTestCountSource:
     """VG-1: _scan_tests records test_count_source to distinguish pytest vs fallback."""
 
+    # AGENT SHALL VALIDATE PROCESS test_pytest_failure_fallback_file_count.
     def test_pytest_failure_fallback_file_count(self, tmp_path, caplog):
         """VG-1: pytest failure → warning + fallback_file_count."""
         import logging
@@ -757,6 +850,7 @@ class TestTestCountSource:
         # Should have emitted a warning
         assert any("falling back" in r.message for r in caplog.records)
 
+    # AGENT SHALL VALIDATE PROCESS test_pytest_missing_fallback_file_count.
     def test_pytest_missing_fallback_file_count(self, tmp_path, caplog):
         """VG-1: pytest not found → warning + fallback_file_count."""
         import logging
@@ -774,6 +868,7 @@ class TestTestCountSource:
         assert node["properties"]["test_count_source"] == "fallback_file_count"
         assert any("falling back" in r.message for r in caplog.records)
 
+    # AGENT SHALL VALIDATE PROCESS test_pytest_success_source.
     def test_pytest_success_source(self, tmp_path):
         """VG-1b: pytest success → pytest source."""
         import subprocess
@@ -791,6 +886,7 @@ class TestTestCountSource:
         assert node["properties"]["test_count_source"] == "pytest"
         assert node["properties"]["test_count"] == 2
 
+    # AGENT SHALL VALIDATE PROCESS test_run_tests_false_always_fallback.
     def test_run_tests_false_always_fallback(self, tmp_path):
         """When run_tests=False, source is always fallback_file_count."""
         tests = _make_dir(tmp_path, "tests")

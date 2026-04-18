@@ -41,6 +41,7 @@ from urllib.parse import urlparse
 _TRUG_SCHEME = "trug"
 
 
+# AGENT claude SHALL DEFINE RECORD crosstruguri AS RECORD class.
 @dataclass
 class CrossTrugUri:
     """
@@ -58,21 +59,25 @@ class CrossTrugUri:
     node_id: str = ""
     raw: str = ""
 
+    # AGENT claude SHALL DEFINE FUNCTION is_valid.
     @property
     def is_valid(self) -> bool:
         """A URI is valid when it has authority, path, and node_id."""
         return bool(self.authority) and bool(self.path) and bool(self.node_id)
 
+    # AGENT claude SHALL DEFINE FUNCTION trug_location.
     @property
     def trug_location(self) -> str:
         """The TRUG location without the node fragment."""
         return f"{_TRUG_SCHEME}://{self.authority}{self.path}"
 
+    # AGENT claude SHALL DEFINE FUNCTION to_uri.
     def to_uri(self) -> str:
         """Reconstruct the full URI string."""
         return f"{_TRUG_SCHEME}://{self.authority}{self.path}#{self.node_id}"
 
 
+# AGENT claude SHALL DEFINE FUNCTION parse_cross_trug_uri.
 def parse_cross_trug_uri(uri: str) -> Optional[CrossTrugUri]:
     """
     Parse a ``trug://`` URI into a CrossTrugUri.
@@ -108,11 +113,13 @@ def parse_cross_trug_uri(uri: str) -> Optional[CrossTrugUri]:
     )
 
 
+# AGENT claude SHALL DEFINE FUNCTION is_cross_trug_ref.
 def is_cross_trug_ref(node_ref: str) -> bool:
     """Return True if a node reference is a cross-TRUG URI."""
     return isinstance(node_ref, str) and node_ref.strip().startswith(f"{_TRUG_SCHEME}://")
 
 
+# AGENT claude SHALL DEFINE FUNCTION build_cross_trug_uri.
 def build_cross_trug_uri(authority: str, path: str, node_id: str) -> str:
     """
     Build a cross-TRUG URI from components.
@@ -135,6 +142,7 @@ def build_cross_trug_uri(authority: str, path: str, node_id: str) -> str:
 # Cross-TRUG Edge
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD crosstrugedge AS RECORD class.
 @dataclass
 class CrossTrugEdge:
     """
@@ -157,11 +165,13 @@ class CrossTrugEdge:
     weight: float = 0.5
     metadata: dict = field(default_factory=dict)
 
+    # AGENT claude SHALL DEFINE FUNCTION is_cross_trug.
     @property
     def is_cross_trug(self) -> bool:
         """True if at least one endpoint is a cross-TRUG URI."""
         return is_cross_trug_ref(self.from_id) or is_cross_trug_ref(self.to_id)
 
+    # AGENT claude SHALL DEFINE FUNCTION remote_uri.
     @property
     def remote_uri(self) -> Optional[CrossTrugUri]:
         """Return the parsed URI of the remote endpoint (prefers to_id)."""
@@ -171,6 +181,7 @@ class CrossTrugEdge:
             return parse_cross_trug_uri(self.from_id)
         return None
 
+    # AGENT claude SHALL DEFINE FUNCTION to_edge_dict.
     def to_edge_dict(self) -> dict:
         """Convert to TRUGS 1.0 edge dict format."""
         edge: dict = {
@@ -187,6 +198,7 @@ class CrossTrugEdge:
 # Validation
 # ============================================================================
 
+# AGENT claude SHALL DEFINE FUNCTION validate_cross_trug_edge.
 def validate_cross_trug_edge(edge: CrossTrugEdge) -> list:
     """
     Validate a cross-TRUG edge.
@@ -225,6 +237,7 @@ def validate_cross_trug_edge(edge: CrossTrugEdge) -> list:
 # Resolver
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD crosstrugresolver AS RECORD class.
 class CrossTrugResolver:
     """
     Resolves cross-TRUG node references by lazy-loading remote TRUGs.
@@ -246,6 +259,7 @@ class CrossTrugResolver:
         self._cache: dict = {}  # trug_location → graph_dict
         self._loader: object = None  # Optional callable
 
+    # AGENT claude SHALL DEFINE FUNCTION register_graph.
     def register_graph(self, location: str, graph_data: dict) -> None:
         """
         Pre-register a TRUG graph in the cache.
@@ -256,6 +270,7 @@ class CrossTrugResolver:
         """
         self._cache[location] = graph_data
 
+    # AGENT claude SHALL DEFINE FUNCTION register_loader.
     def register_loader(self, loader: object) -> None:
         """
         Register a callable ``loader(location: str) -> Optional[dict]``
@@ -263,6 +278,7 @@ class CrossTrugResolver:
         """
         self._loader = loader
 
+    # AGENT claude SHALL DEFINE FUNCTION resolve_node.
     def resolve_node(self, uri_str: str) -> Optional[dict]:
         """
         Resolve a cross-TRUG URI to the target node dict.
@@ -291,6 +307,7 @@ class CrossTrugResolver:
 
         return None
 
+    # AGENT claude SHALL DEFINE FUNCTION resolve_edge.
     def resolve_edge(self, edge: CrossTrugEdge) -> dict:
         """
         Resolve a cross-TRUG edge, returning info about resolved endpoints.
@@ -329,6 +346,7 @@ class CrossTrugResolver:
 
         return None
 
+    # AGENT claude SHALL DEFINE FUNCTION cached_locations.
     @property
     def cached_locations(self) -> list:
         """Return list of cached TRUG locations."""

@@ -112,27 +112,34 @@ def _write_trug(folder_path, trug_dict):
 # SyncResult tests
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testsyncresult AS A RECORD test_suite.
 class TestSyncResult:
+    # AGENT SHALL VALIDATE PROCESS test_default_no_changes.
     def test_default_no_changes(self):
         r = SyncResult()
         assert not r.has_changes
 
+    # AGENT SHALL VALIDATE PROCESS test_has_changes_updated.
     def test_has_changes_updated(self):
         r = SyncResult(updated_nodes=["comp_x"])
         assert r.has_changes
 
+    # AGENT SHALL VALIDATE PROCESS test_has_changes_new.
     def test_has_changes_new(self):
         r = SyncResult(new_nodes=["doc_new"])
         assert r.has_changes
 
+    # AGENT SHALL VALIDATE PROCESS test_has_changes_stale.
     def test_has_changes_stale(self):
         r = SyncResult(stale_nodes=["doc_old"])
         assert r.has_changes
 
+    # AGENT SHALL VALIDATE PROCESS test_has_changes_cleared_stale.
     def test_has_changes_cleared_stale(self):
         r = SyncResult(cleared_stale=["doc_x"])
         assert r.has_changes
 
+    # AGENT SHALL VALIDATE PROCESS test_has_changes_edges_added.
     def test_has_changes_edges_added(self):
         r = SyncResult(edges_added=1)
         assert r.has_changes
@@ -142,7 +149,9 @@ class TestSyncResult:
 # _find_folder_node tests
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testfindfoldernode AS A RECORD test_suite.
 class TestFindFolderNode:
+    # AGENT SHALL VALIDATE PROCESS test_finds_folder.
     def test_finds_folder(self):
         nodes = [
             {"id": "x", "type": "DOCUMENT"},
@@ -150,6 +159,7 @@ class TestFindFolderNode:
         ]
         assert _find_folder_node(nodes)["id"] == "f"
 
+    # AGENT SHALL VALIDATE PROCESS test_returns_none_if_missing.
     def test_returns_none_if_missing(self):
         assert _find_folder_node([{"id": "x", "type": "DOCUMENT"}]) is None
 
@@ -158,7 +168,9 @@ class TestFindFolderNode:
 # _update_factual_properties tests
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testupdatefactualproperties AS A RECORD test_suite.
 class TestUpdateFactualProperties:
+    # AGENT SHALL VALIDATE PROCESS test_updates_component_counts.
     def test_updates_component_counts(self):
         existing = {
             "id": "comp_x",
@@ -177,6 +189,7 @@ class TestUpdateFactualProperties:
         assert existing["properties"]["purpose"] == "Custom purpose"
         assert len(changes) == 2
 
+    # AGENT SHALL VALIDATE PROCESS test_updates_test_count.
     def test_updates_test_count(self):
         existing = {
             "id": "test_suite",
@@ -193,6 +206,7 @@ class TestUpdateFactualProperties:
         assert existing["properties"]["test_files"] == 5
         assert len(changes) == 2
 
+    # AGENT SHALL VALIDATE PROCESS test_preserves_purpose.
     def test_preserves_purpose(self):
         existing = {
             "id": "comp_x",
@@ -207,6 +221,7 @@ class TestUpdateFactualProperties:
         _update_factual_properties(existing, fresh, "COMPONENT")
         assert existing["properties"]["purpose"] == "My enriched purpose"
 
+    # AGENT SHALL VALIDATE PROCESS test_no_changes_when_equal.
     def test_no_changes_when_equal(self):
         existing = {
             "id": "comp_x",
@@ -221,6 +236,7 @@ class TestUpdateFactualProperties:
         changes = _update_factual_properties(existing, fresh, "COMPONENT")
         assert changes == []
 
+    # AGENT SHALL VALIDATE PROCESS test_unknown_type_no_update.
     def test_unknown_type_no_update(self):
         existing = {"id": "x", "properties": {"a": 1}}
         fresh = {"id": "x", "properties": {"a": 2}}
@@ -228,6 +244,7 @@ class TestUpdateFactualProperties:
         assert changes == []
         assert existing["properties"]["a"] == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_preserves_custom_properties.
     def test_preserves_custom_properties(self):
         existing = {
             "id": "comp_x",
@@ -248,28 +265,34 @@ class TestUpdateFactualProperties:
 # _update_folder_metadata tests
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testupdatefoldermetadata AS A RECORD test_suite.
 class TestUpdateFolderMetadata:
+    # AGENT SHALL VALIDATE PROCESS test_updates_phase.
     def test_updates_phase(self):
         folder = {"id": "f", "properties": {"phase": "DEVELOPMENT"}}
         changes = _update_folder_metadata(folder, {"phase": "TESTING"}, {})
         assert folder["properties"]["phase"] == "TESTING"
         assert len(changes) == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_updates_version_from_aaa.
     def test_updates_version_from_aaa(self):
         folder = {"id": "f", "properties": {"version": "1.0.0"}}
         changes = _update_folder_metadata(folder, {"version": "1.1.0"}, {})
         assert folder["properties"]["version"] == "1.1.0"
 
+    # AGENT SHALL VALIDATE PROCESS test_updates_version_from_pyproject.
     def test_updates_version_from_pyproject(self):
         folder = {"id": "f", "properties": {"version": "1.0.0"}}
         changes = _update_folder_metadata(folder, {}, {"version": "1.2.0"})
         assert folder["properties"]["version"] == "1.2.0"
 
+    # AGENT SHALL VALIDATE PROCESS test_aaa_version_preferred_over_pyproject.
     def test_aaa_version_preferred_over_pyproject(self):
         folder = {"id": "f", "properties": {"version": "1.0.0"}}
         _update_folder_metadata(folder, {"version": "2.0.0"}, {"version": "3.0.0"})
         assert folder["properties"]["version"] == "2.0.0"
 
+    # AGENT SHALL VALIDATE PROCESS test_no_changes_when_same.
     def test_no_changes_when_same(self):
         folder = {"id": "f", "properties": {"phase": "TESTING", "status": "active"}}
         changes = _update_folder_metadata(
@@ -282,18 +305,22 @@ class TestUpdateFolderMetadata:
 # _update_top_level_metadata tests
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testupdatetoplevelmetadata AS A RECORD test_suite.
 class TestUpdateTopLevelMetadata:
+    # AGENT SHALL VALIDATE PROCESS test_updates_version.
     def test_updates_version(self):
         trug = {"version": "1.0.0", "description": "old"}
         changes = _update_top_level_metadata(trug, {"version": "1.1.0"})
         assert trug["version"] == "1.1.0"
         assert len(changes) == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_updates_description.
     def test_updates_description(self):
         trug = {"version": "1.0.0", "description": "old"}
         changes = _update_top_level_metadata(trug, {"description": "new desc"})
         assert trug["description"] == "new desc"
 
+    # AGENT SHALL VALIDATE PROCESS test_no_changes.
     def test_no_changes(self):
         trug = {"version": "1.0.0", "description": "same"}
         changes = _update_top_level_metadata(trug, {"version": "1.0.0", "description": "same"})
@@ -304,18 +331,22 @@ class TestUpdateTopLevelMetadata:
 # sync_folder_trug — full sync tests
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testsyncfoldertrug AS A RECORD test_suite.
 class TestSyncFolderTrug:
+    # AGENT SHALL VALIDATE PROCESS test_no_trug_error.
     def test_no_trug_error(self, tmp_path):
         """Folder without folder.trug.json raises FileNotFoundError."""
         with pytest.raises(FileNotFoundError, match="folder-init first"):
             sync_folder_trug(tmp_path)
 
+    # AGENT SHALL VALIDATE PROCESS test_not_a_directory.
     def test_not_a_directory(self, tmp_path):
         f = tmp_path / "file.txt"
         f.write_text("x")
         with pytest.raises(NotADirectoryError):
             sync_folder_trug(f)
 
+    # AGENT SHALL VALIDATE PROCESS test_sync_preserves_edges.
     def test_sync_preserves_edges(self, tmp_path):
         """All existing edges must be preserved exactly after sync."""
         trug = _minimal_trug("myproj")
@@ -339,6 +370,7 @@ class TestSyncFolderTrug:
         for orig_edge in original_edges:
             assert orig_edge in synced["edges"]
 
+    # AGENT SHALL VALIDATE PROCESS test_sync_updates_component_counts.
     def test_sync_updates_component_counts(self, tmp_path):
         """Component file_count and loc should be updated."""
         trug = _minimal_trug("myproj")
@@ -367,6 +399,7 @@ class TestSyncFolderTrug:
         assert comp["properties"]["file_count"] == 2
         assert comp["properties"]["loc"] == 5  # 2 + 3 non-empty lines
 
+    # AGENT SHALL VALIDATE PROCESS test_sync_updates_folder_phase.
     def test_sync_updates_folder_phase(self, tmp_path):
         """FOLDER phase should be updated from AAA.md."""
         trug = _minimal_trug("myproj")
@@ -383,6 +416,7 @@ class TestSyncFolderTrug:
         folder = next(n for n in synced["nodes"] if n["type"] == "FOLDER")
         assert folder["properties"]["phase"] == "INTERNAL_TESTING"
 
+    # AGENT SHALL VALIDATE PROCESS test_sync_preserves_purpose.
     def test_sync_preserves_purpose(self, tmp_path):
         """Custom purpose on a node must not be overwritten."""
         trug = _minimal_trug("myproj")
@@ -397,6 +431,7 @@ class TestSyncFolderTrug:
         doc = next(n for n in synced["nodes"] if n["id"] == "doc_readme")
         assert doc["properties"]["purpose"] == "My custom enriched purpose"
 
+    # AGENT SHALL VALIDATE PROCESS test_sync_detects_new_doc.
     def test_sync_detects_new_doc(self, tmp_path):
         """New .md file should create a new DOCUMENT node + contains edge."""
         trug = _minimal_trug("myproj")
@@ -419,6 +454,7 @@ class TestSyncFolderTrug:
         ]
         assert len(contains_edges) == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_sync_detects_new_component.
     def test_sync_detects_new_component(self, tmp_path):
         """New Python subdir should add COMPONENT node + contains + tests edges."""
         trug = _minimal_trug("myproj")
@@ -456,6 +492,7 @@ class TestSyncFolderTrug:
         ]
         assert len(tests_edges) == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_sync_flags_stale_node.
     def test_sync_flags_stale_node(self, tmp_path):
         """Node whose file is gone should be marked stale."""
         trug = _minimal_trug("myproj")
@@ -482,6 +519,7 @@ class TestSyncFolderTrug:
         assert old["properties"]["stale"] is True
         assert old["properties"]["stale_reason"] == "file not found on disk"
 
+    # AGENT SHALL VALIDATE PROCESS test_sync_clears_stale_on_return.
     def test_sync_clears_stale_on_return(self, tmp_path):
         """Previously stale node whose file reappears should have stale cleared."""
         trug = _minimal_trug("myproj")
@@ -514,6 +552,7 @@ class TestSyncFolderTrug:
         assert "stale" not in cl["properties"]
         assert "stale_reason" not in cl["properties"]
 
+    # AGENT SHALL VALIDATE PROCESS test_sync_preserves_custom_properties.
     def test_sync_preserves_custom_properties(self, tmp_path):
         """Extra human-added properties must be preserved."""
         trug = _minimal_trug("myproj")
@@ -530,6 +569,7 @@ class TestSyncFolderTrug:
         assert doc["properties"]["verified"] is True
         assert doc["properties"]["verified_by"] == "alice"
 
+    # AGENT SHALL VALIDATE PROCESS test_sync_updates_top_level_version.
     def test_sync_updates_top_level_version(self, tmp_path):
         """Top-level version should be updated from pyproject.toml."""
         trug = _minimal_trug("myproj")
@@ -550,6 +590,7 @@ class TestSyncFolderTrug:
         assert synced["version"] == "2.0.0"
         assert synced["description"] == "New desc"
 
+    # AGENT SHALL VALIDATE PROCESS test_sync_no_changes.
     def test_sync_no_changes(self, tmp_path):
         """TRUG already matching filesystem should produce no changes."""
         # Create the folder.trug.json and corresponding files to match
@@ -571,6 +612,7 @@ class TestSyncFolderTrug:
         assert not result.stale_nodes
         assert not result.cleared_stale
 
+    # AGENT SHALL VALIDATE PROCESS test_sync_idempotent.
     def test_sync_idempotent(self, tmp_path):
         """Running sync twice should produce the same result."""
         trug = _minimal_trug("myproj")
@@ -589,6 +631,7 @@ class TestSyncFolderTrug:
         assert after_first == after_second
         assert not result2.has_changes
 
+    # AGENT SHALL VALIDATE PROCESS test_sync_dry_run_no_write.
     def test_sync_dry_run_no_write(self, tmp_path):
         """dry_run=True should not modify the file."""
         trug = _minimal_trug("myproj")
@@ -608,7 +651,9 @@ class TestSyncFolderTrug:
 # CLI tests
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testclisinglefolder AS A RECORD test_suite.
 class TestCLISingleFolder:
+    # AGENT SHALL VALIDATE PROCESS test_cli_single_folder.
     def test_cli_single_folder(self, tmp_path):
         trug = _minimal_trug("myproj")
         _write_trug(tmp_path, trug)
@@ -617,6 +662,7 @@ class TestCLISingleFolder:
         exit_code = folder_sync_command([str(tmp_path), "--no-tests"])
         assert exit_code == 0
 
+    # AGENT SHALL VALIDATE PROCESS test_cli_dry_run.
     def test_cli_dry_run(self, tmp_path, capsys):
         trug = _minimal_trug("myproj")
         _write_trug(tmp_path, trug)
@@ -633,18 +679,21 @@ class TestCLISingleFolder:
         captured = capsys.readouterr()
         assert "[dry-run]" in captured.out
 
+    # AGENT SHALL VALIDATE PROCESS test_cli_no_trug.
     def test_cli_no_trug(self, tmp_path, capsys):
         exit_code = folder_sync_command([str(tmp_path), "--no-tests"])
         assert exit_code == 1
         captured = capsys.readouterr()
         assert "folder-init first" in captured.err
 
+    # AGENT SHALL VALIDATE PROCESS test_cli_not_a_dir.
     def test_cli_not_a_dir(self, tmp_path, capsys):
         f = tmp_path / "file.txt"
         f.write_text("x")
         exit_code = folder_sync_command([str(f), "--no-tests"])
         assert exit_code == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_cli_no_tests_flag.
     def test_cli_no_tests_flag(self, tmp_path):
         trug = _minimal_trug("myproj")
         trug["nodes"].append({
@@ -672,7 +721,9 @@ class TestCLISingleFolder:
         assert ts["properties"]["test_files"] == 2
 
 
+# AGENT claude SHALL DEFINE RECORD testcliall AS A RECORD test_suite.
 class TestCLIAll:
+    # AGENT SHALL VALIDATE PROCESS test_cli_all.
     def test_cli_all(self, tmp_path):
         # Create two folders with TRUGs
         d1 = _make_dir(tmp_path, "proj1")
@@ -687,6 +738,7 @@ class TestCLIAll:
         )
         assert exit_code == 0
 
+    # AGENT SHALL VALIDATE PROCESS test_cli_all_with_error.
     def test_cli_all_with_error(self, tmp_path):
         """--all should return 2 if any folder fails to sync."""
         d1 = _make_dir(tmp_path, "proj1")
@@ -701,6 +753,7 @@ class TestCLIAll:
         )
         assert exit_code == 2
 
+    # AGENT SHALL VALIDATE PROCESS test_cli_all_no_files.
     def test_cli_all_no_files(self, tmp_path, capsys):
         exit_code = folder_sync_command(
             ["--all", "--root", str(tmp_path), "--no-tests"]
@@ -714,7 +767,9 @@ class TestCLIAll:
 # Integration tests
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testintegration AS A RECORD test_suite.
 class TestIntegration:
+    # AGENT SHALL VALIDATE PROCESS test_sync_then_check_idempotent.
     def test_sync_then_check_idempotent(self, tmp_path):
         """Sync then sync again should be idempotent."""
         trug = _minimal_trug("myproj")
@@ -745,6 +800,7 @@ class TestIntegration:
         r2 = sync_folder_trug(tmp_path, run_tests=False)
         assert not r2.has_changes
 
+    # AGENT SHALL VALIDATE PROCESS test_sync_complex_scenario.
     def test_sync_complex_scenario(self, tmp_path):
         """Full scenario: updates, new, stale all in one sync."""
         trug = _minimal_trug("myproj")
@@ -809,6 +865,7 @@ class TestIntegration:
         deleted = next(n for n in synced["nodes"] if n["id"] == "doc_deleted")
         assert deleted["properties"]["stale"] is True
 
+    # AGENT SHALL VALIDATE PROCESS test_sync_updates_schema_count.
     def test_sync_updates_schema_count(self, tmp_path):
         """Schema count should be updated."""
         trug = _minimal_trug("myproj")
@@ -837,6 +894,7 @@ class TestIntegration:
         schema = next(n for n in synced["nodes"] if n["id"] == "schema_set")
         assert schema["properties"]["schema_count"] == 3
 
+    # AGENT SHALL VALIDATE PROCESS test_sync_updates_template_count.
     def test_sync_updates_template_count(self, tmp_path):
         """Template count should be updated."""
         trug = _minimal_trug("myproj")
@@ -864,6 +922,7 @@ class TestIntegration:
         tmpl = next(n for n in synced["nodes"] if n["id"] == "template_set")
         assert tmpl["properties"]["template_count"] == 2
 
+    # AGENT SHALL VALIDATE PROCESS test_sync_updates_example_count.
     def test_sync_updates_example_count(self, tmp_path):
         """Example count should be updated."""
         trug = _minimal_trug("myproj")
@@ -897,47 +956,56 @@ class TestIntegration:
 # _node_file_exists tests
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testnodefileexists AS A RECORD test_suite.
 class TestNodeFileExists:
     """Tests for the _node_file_exists helper that prevents false stale flags."""
 
+    # AGENT SHALL VALIDATE PROCESS test_component_with_file_property_found.
     def test_component_with_file_property_found(self, tmp_path):
         """Component with 'file' property pointing to existing file is not stale."""
         _make_file(tmp_path, "src/pkg/module.py", "# code")
         props = {"name": "module", "file": "src/pkg/module.py"}
         assert _node_file_exists(tmp_path, props, "COMPONENT") is True
 
+    # AGENT SHALL VALIDATE PROCESS test_component_with_file_property_missing.
     def test_component_with_file_property_missing(self, tmp_path):
         """Component with 'file' property pointing to nonexistent file is stale."""
         props = {"name": "module", "file": "src/pkg/module.py"}
         assert _node_file_exists(tmp_path, props, "COMPONENT") is False
 
+    # AGENT SHALL VALIDATE PROCESS test_document_with_name_property_found.
     def test_document_with_name_property_found(self, tmp_path):
         """Document with 'name' matching a file on disk is not stale."""
         _make_file(tmp_path, "CHANGELOG.md", "# Changes")
         props = {"name": "CHANGELOG.md", "format": "markdown"}
         assert _node_file_exists(tmp_path, props, "DOCUMENT") is True
 
+    # AGENT SHALL VALIDATE PROCESS test_document_with_name_property_missing.
     def test_document_with_name_property_missing(self, tmp_path):
         """Document with 'name' not matching any file is stale."""
         props = {"name": "NONEXISTENT.md", "format": "markdown"}
         assert _node_file_exists(tmp_path, props, "DOCUMENT") is False
 
+    # AGENT SHALL VALIDATE PROCESS test_spec_with_ref_property_found.
     def test_spec_with_ref_property_found(self, tmp_path):
         """Specification with 'ref' containing filename § section should resolve."""
         _make_file(tmp_path, "SPECIFICATIONS.md", "# Specs")
         props = {"name": "SPECIFICATIONS.md", "ref": "SPECIFICATIONS.md § S-01"}
         assert _node_file_exists(tmp_path, props, "SPECIFICATION") is True
 
+    # AGENT SHALL VALIDATE PROCESS test_spec_with_ref_but_file_missing.
     def test_spec_with_ref_but_file_missing(self, tmp_path):
         """Specification with 'ref' pointing to nonexistent file is stale."""
         props = {"name": "SPECIFICATIONS.md", "ref": "SPECIFICATIONS.md § S-01"}
         assert _node_file_exists(tmp_path, props, "SPECIFICATION") is False
 
+    # AGENT SHALL VALIDATE PROCESS test_no_relevant_properties.
     def test_no_relevant_properties(self, tmp_path):
         """Node with neither file, name, nor ref returns False."""
         props = {"purpose": "Something"}
         assert _node_file_exists(tmp_path, props, "COMPONENT") is False
 
+    # AGENT SHALL VALIDATE PROCESS test_name_with_slash_not_treated_as_filename.
     def test_name_with_slash_not_treated_as_filename(self, tmp_path):
         """Name containing '/' should not be used as a simple filename lookup."""
         props = {"name": "src/pkg/module.py"}
@@ -948,9 +1016,11 @@ class TestNodeFileExists:
 # Integration: stale detection with file property (Issue #427)
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD teststaledetectionwithfileproperty AS A RECORD test_suite.
 class TestStaleDetectionWithFileProperty:
     """Integration tests for the fix to Issue #427 — per-file component nodes."""
 
+    # AGENT SHALL VALIDATE PROCESS test_per_file_component_not_marked_stale.
     def test_per_file_component_not_marked_stale(self, tmp_path):
         """Component with 'file' property pointing to existing file should NOT be stale."""
         trug = _minimal_trug("myproj")
@@ -982,6 +1052,7 @@ class TestStaleDetectionWithFileProperty:
         comp = next(n for n in synced["nodes"] if n["id"] == "comp_errors")
         assert "stale" not in comp["properties"]
 
+    # AGENT SHALL VALIDATE PROCESS test_per_file_component_truly_missing_still_stale.
     def test_per_file_component_truly_missing_still_stale(self, tmp_path):
         """Component with 'file' property pointing to nonexistent file IS stale."""
         trug = _minimal_trug("myproj")
@@ -1007,6 +1078,7 @@ class TestStaleDetectionWithFileProperty:
         result = sync_folder_trug(tmp_path, run_tests=False)
         assert "comp_analyzer" in result.stale_nodes
 
+    # AGENT SHALL VALIDATE PROCESS test_previously_stale_component_cleared_when_file_exists.
     def test_previously_stale_component_cleared_when_file_exists(self, tmp_path):
         """Component that was stale but now has its file should be cleared."""
         trug = _minimal_trug("myproj")
@@ -1040,6 +1112,7 @@ class TestStaleDetectionWithFileProperty:
         assert "stale" not in comp["properties"]
         assert "stale_reason" not in comp["properties"]
 
+    # AGENT SHALL VALIDATE PROCESS test_spec_node_with_existing_ref_file_not_stale.
     def test_spec_node_with_existing_ref_file_not_stale(self, tmp_path):
         """Specification node referencing existing file should NOT be stale."""
         trug = _minimal_trug("myproj")
@@ -1069,9 +1142,11 @@ class TestStaleDetectionWithFileProperty:
 # VG-2: Component status auto-advance (Fix 2 — #453)
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD teststatusautoadvance AS A RECORD test_suite.
 class TestStatusAutoAdvance:
     """VG-2: NOT_STARTED + file exists + loc > 0 → PRESENT."""
 
+    # AGENT SHALL VALIDATE PROCESS test_not_started_with_code_advances_to_present.
     def test_not_started_with_code_advances_to_present(self, tmp_path):
         """VG-2: NOT_STARTED + file exists + loc > 0 → PRESENT."""
         trug = _minimal_trug("myproj")
@@ -1104,6 +1179,7 @@ class TestStatusAutoAdvance:
         comp = next(n for n in synced["nodes"] if n["id"] == "comp_src")
         assert comp["properties"]["status"] == "PRESENT"
 
+    # AGENT SHALL VALIDATE PROCESS test_complete_status_unchanged.
     def test_complete_status_unchanged(self, tmp_path):
         """VG-3: COMPLETE + file exists → no change."""
         trug = _minimal_trug("myproj")
@@ -1135,6 +1211,7 @@ class TestStatusAutoAdvance:
         comp = next(n for n in synced["nodes"] if n["id"] == "comp_src")
         assert comp["properties"]["status"] == "COMPLETE"
 
+    # AGENT SHALL VALIDATE PROCESS test_missing_status_not_set.
     def test_missing_status_not_set(self, tmp_path):
         """If status is missing/empty, do not set it."""
         trug = _minimal_trug("myproj")
@@ -1170,9 +1247,11 @@ class TestStatusAutoAdvance:
 # VG-4: Ghost node pruning (Fix 3 — #453)
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testghostnodepruning AS A RECORD test_suite.
 class TestGhostNodePruning:
     """VG-4: Pruning removes nodes stale for N consecutive syncs."""
 
+    # AGENT SHALL VALIDATE PROCESS test_prune_after_1_removes_node.
     def test_prune_after_1_removes_node(self, tmp_path):
         """VG-4: Two syncs with prune-after=1 → node removed on second sync."""
         trug = _minimal_trug("myproj")
@@ -1213,6 +1292,7 @@ class TestGhostNodePruning:
         edge_targets = [e.get("to_id") for e in synced["edges"]]
         assert "doc_old" not in edge_targets
 
+    # AGENT SHALL VALIDATE PROCESS test_stale_cleared_when_file_returns.
     def test_stale_cleared_when_file_returns(self, tmp_path):
         """VG-4b: Node becomes non-stale → stale_since/stale_count cleared."""
         trug = _minimal_trug("myproj")
@@ -1248,6 +1328,7 @@ class TestGhostNodePruning:
         assert "stale_since" not in cl["properties"]
         assert "stale_count" not in cl["properties"]
 
+    # AGENT SHALL VALIDATE PROCESS test_prune_after_0_disables_pruning.
     def test_prune_after_0_disables_pruning(self, tmp_path):
         """VG-4c: prune-after=0 → no pruning."""
         trug = _minimal_trug("myproj")
@@ -1280,6 +1361,7 @@ class TestGhostNodePruning:
         ids = [n["id"] for n in synced["nodes"]]
         assert "doc_old" in ids
 
+    # AGENT SHALL VALIDATE PROCESS test_stale_count_increments.
     def test_stale_count_increments(self, tmp_path):
         """stale_count should increment on each sync while stale."""
         trug = _minimal_trug("myproj")
@@ -1316,9 +1398,11 @@ class TestGhostNodePruning:
 # VG-5: Prose/factual divergence warning (Fix 4 — #453)
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testprosefactualdivergence AS A RECORD test_suite.
 class TestProseFactualDivergence:
     """VG-5: Prose contradicts factual → warning emitted, prose unchanged."""
 
+    # AGENT SHALL VALIDATE PROCESS test_prose_contradicts_factual_emits_warning.
     def test_prose_contradicts_factual_emits_warning(self, tmp_path, caplog):
         """VG-5: Prose says '5 files' but factual file_count=2 → warning."""
         import logging
@@ -1357,6 +1441,7 @@ class TestProseFactualDivergence:
         comp = next(n for n in synced["nodes"] if n["id"] == "comp_src")
         assert "5 files" in comp["properties"]["purpose"]
 
+    # AGENT SHALL VALIDATE PROCESS test_no_warning_when_matching.
     def test_no_warning_when_matching(self, tmp_path, caplog):
         """No warning when prose integers match factual values."""
         import logging

@@ -338,6 +338,7 @@ def _archive_aaa(folder_path: Path, issue_title: str) -> None:
     aaa_path.rename(dest)
 
 
+# AGENT claude SHALL DEFINE FUNCTION generate_all.
 def generate_all(root: str, token: Optional[str] = None) -> None:
     """Entry-point: generate AAA.md for every folder with an open issue.
 

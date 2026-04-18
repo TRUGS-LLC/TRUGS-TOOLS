@@ -17,6 +17,7 @@ from trugs_tools.claude_instructions_renderer import (
 REPO_ROOT = Path(__file__).parent.parent.parent
 
 
+# AGENT claude SHALL DEFINE FUNCTION minimal_trug.
 @pytest.fixture
 def minimal_trug():
     """Minimal agent_instructions TRUG with one node of each key type."""
@@ -138,6 +139,7 @@ def minimal_trug():
     }
 
 
+# AGENT claude SHALL DEFINE FUNCTION real_trug_path.
 @pytest.fixture
 def real_trug_path():
     """Path to the real agent_instructions.trug.json in this repo."""
@@ -147,11 +149,13 @@ def real_trug_path():
 # ─── _load_trug tests ─────────────────────────────────────────────────
 
 
+# AGENT SHALL VALIDATE PROCESS test_load_trug_from_dict.
 def test_load_trug_from_dict(minimal_trug):
     result = _load_trug(minimal_trug)
     assert result is minimal_trug
 
 
+# AGENT SHALL VALIDATE PROCESS test_load_trug_from_path.
 def test_load_trug_from_path(tmp_path, minimal_trug):
     p = tmp_path / "test.trug.json"
     p.write_text(json.dumps(minimal_trug), encoding="utf-8")
@@ -159,6 +163,7 @@ def test_load_trug_from_path(tmp_path, minimal_trug):
     assert result["meta"]["id"] == "agent_instructions"
 
 
+# AGENT SHALL VALIDATE PROCESS test_load_trug_invalid_type.
 def test_load_trug_invalid_type():
     with pytest.raises(TypeError, match="Expected dict, str, or Path"):
         _load_trug(42)
@@ -167,27 +172,32 @@ def test_load_trug_invalid_type():
 # ─── render_claude_instructions tests ─────────────────────────────────
 
 
+# AGENT SHALL VALIDATE PROCESS test_output_includes_generated_header.
 @pytest.mark.xfail(reason="renderer does not currently emit GENERATED_HEADER; pre-existing gap, not caused by G1 migration")
 def test_output_includes_generated_header(minimal_trug):
     out = render_claude_instructions(minimal_trug)
     assert GENERATED_HEADER in out
 
 
+# AGENT SHALL VALIDATE PROCESS test_output_includes_claude_md_title.
 def test_output_includes_claude_md_title(minimal_trug):
     out = render_claude_instructions(minimal_trug)
     assert "# CLAUDE.md" in out
 
 
+# AGENT SHALL VALIDATE PROCESS test_output_includes_claude_code_subtitle.
 def test_output_includes_claude_code_subtitle(minimal_trug):
     out = render_claude_instructions(minimal_trug)
     assert "guidance to Claude Code" in out
 
 
+# AGENT SHALL VALIDATE PROCESS test_output_ends_with_newline.
 def test_output_ends_with_newline(minimal_trug):
     out = render_claude_instructions(minimal_trug)
     assert out.endswith("\n")
 
 
+# AGENT SHALL VALIDATE PROCESS test_deterministic_output.
 def test_deterministic_output(minimal_trug):
     """Same input produces identical output."""
     out1 = render_claude_instructions(minimal_trug)
@@ -195,6 +205,7 @@ def test_deterministic_output(minimal_trug):
     assert out1 == out2
 
 
+# AGENT SHALL VALIDATE PROCESS test_what_is_trugs_section_rendered.
 def test_what_is_trugs_section_rendered(minimal_trug):
     out = render_claude_instructions(minimal_trug)
     assert "## What This Repository Is" in out
@@ -202,6 +213,7 @@ def test_what_is_trugs_section_rendered(minimal_trug):
     assert "The TRUG indexes reality." in out
 
 
+# AGENT SHALL VALIDATE PROCESS test_protected_section_rendered.
 def test_protected_section_rendered(minimal_trug):
     out = render_claude_instructions(minimal_trug)
     assert "## Protected Paths" in out
@@ -210,11 +222,13 @@ def test_protected_section_rendered(minimal_trug):
     assert "`CLAUDE.md`" in out
 
 
+# AGENT SHALL VALIDATE PROCESS test_archive_in_protected.
 def test_archive_in_protected(minimal_trug):
     out = render_claude_instructions(minimal_trug)
     assert "`zzz_*`" in out
 
 
+# AGENT SHALL VALIDATE PROCESS test_commands_section_rendered.
 def test_commands_section_rendered(minimal_trug):
     out = render_claude_instructions(minimal_trug)
     assert "## Setup & Commands" in out
@@ -222,30 +236,35 @@ def test_commands_section_rendered(minimal_trug):
     assert "perago chat" in out
 
 
+# AGENT SHALL VALIDATE PROCESS test_branching_section_rendered.
 def test_branching_section_rendered(minimal_trug):
     out = render_claude_instructions(minimal_trug)
     assert "### Branching (Hard Rule)" in out
     assert "All changes need a branch." in out
 
 
+# AGENT SHALL VALIDATE PROCESS test_four_file_pattern_rendered.
 def test_four_file_pattern_rendered(minimal_trug):
     out = render_claude_instructions(minimal_trug)
     assert "### Four-File Pattern Per Folder" in out
     assert "folder.trug.json" in out
 
 
+# AGENT SHALL VALIDATE PROCESS test_execution_rules_rendered.
 def test_execution_rules_rendered(minimal_trug):
     out = render_claude_instructions(minimal_trug)
     assert "### Execution Rules" in out
     assert "Do EXACTLY what is specified." in out
 
 
+# AGENT SHALL VALIDATE PROCESS test_references_section_rendered.
 def test_references_section_rendered(minimal_trug):
     out = render_claude_instructions(minimal_trug)
     assert "## Key References" in out
     assert "AAA Reference" in out
 
 
+# AGENT SHALL VALIDATE PROCESS test_section_order.
 def test_section_order(minimal_trug):
     """Key sections appear in the expected order."""
     out = render_claude_instructions(minimal_trug)
@@ -260,6 +279,7 @@ def test_section_order(minimal_trug):
 # ─── Real TRUG tests ──────────────────────────────────────────────────
 
 
+# AGENT SHALL VALIDATE PROCESS test_render_from_real_trug.
 def test_render_from_real_trug(real_trug_path):
     """Smoke test: render the real agent_instructions.trug.json without error."""
     if not real_trug_path.exists():
@@ -274,6 +294,7 @@ def test_render_from_real_trug(real_trug_path):
     assert "## Key References" in out
 
 
+# AGENT SHALL VALIDATE PROCESS test_real_trug_has_all_major_sections.
 def test_real_trug_has_all_major_sections(real_trug_path):
     """The rendered output from the real TRUG must contain all expected sections."""
     if not real_trug_path.exists():
@@ -303,6 +324,7 @@ def test_real_trug_has_all_major_sections(real_trug_path):
 # ─── CLI command tests ────────────────────────────────────────────────
 
 
+# AGENT SHALL VALIDATE PROCESS test_cli_dry_run.
 def test_cli_dry_run(tmp_path, minimal_trug, capsys):
     """--dry-run prints to stdout and does not create output file."""
     from trugs_tools.cli import claude_render_command
@@ -323,6 +345,7 @@ def test_cli_dry_run(tmp_path, minimal_trug, capsys):
     assert "## What This Repository Is" in captured.out
 
 
+# AGENT SHALL VALIDATE PROCESS test_cli_writes_output_file.
 def test_cli_writes_output_file(tmp_path, minimal_trug):
     """Without --dry-run, the output file is written."""
     from trugs_tools.cli import claude_render_command
@@ -341,6 +364,7 @@ def test_cli_writes_output_file(tmp_path, minimal_trug):
     assert "# CLAUDE.md" in content
 
 
+# AGENT SHALL VALIDATE PROCESS test_cli_missing_input_returns_exit_1.
 def test_cli_missing_input_returns_exit_1(tmp_path):
     """Missing input file → exit code 1."""
     from trugs_tools.cli import claude_render_command

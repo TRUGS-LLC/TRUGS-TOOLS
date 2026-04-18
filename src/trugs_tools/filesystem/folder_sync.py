@@ -43,6 +43,7 @@ _UPDATABLE_PROPERTIES: Dict[str, Set[str]] = {
 }
 
 
+# AGENT claude SHALL DEFINE RECORD syncresult AS RECORD class.
 @dataclass
 class SyncResult:
     """Result of a folder-sync operation."""
@@ -56,6 +57,7 @@ class SyncResult:
     edges_total: int = 0
     changes: List[str] = field(default_factory=list)
 
+    # AGENT claude SHALL DEFINE FUNCTION has_changes.
     @property
     def has_changes(self) -> bool:
         return bool(
@@ -68,6 +70,7 @@ class SyncResult:
         )
 
 
+# AGENT claude SHALL DEFINE FUNCTION sync_folder_trug.
 def sync_folder_trug(
     path: Union[str, Path],
     run_tests: bool = True,

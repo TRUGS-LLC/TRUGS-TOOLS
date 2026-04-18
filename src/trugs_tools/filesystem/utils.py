@@ -22,6 +22,7 @@ TRUG_FILENAME = "folder.trug.json"
 BACKUP_SUFFIX = ".backup"
 
 
+# AGENT claude SHALL DEFINE FUNCTION load_graph.
 def load_graph(directory: Union[str, Path]) -> Dict[str, Any]:
     """Load folder.trug.json from a directory.
 
@@ -46,6 +47,7 @@ def load_graph(directory: Union[str, Path]) -> Dict[str, Any]:
         raise FileNotFoundError(f"No {TRUG_FILENAME} found in {directory}")
 
 
+# AGENT claude SHALL DEFINE FUNCTION save_graph.
 def save_graph(directory: Union[str, Path], trug: Dict[str, Any],
                backup: bool = True) -> Path:
     """Save TRUG to folder.trug.json in a directory.
@@ -75,6 +77,7 @@ def save_graph(directory: Union[str, Path], trug: Dict[str, Any],
     return target
 
 
+# AGENT claude SHALL DEFINE FUNCTION validate_graph.
 def validate_graph(trug: Dict[str, Any]) -> ValidationResult:
     """Validate a TRUG dictionary.
 
@@ -87,6 +90,7 @@ def validate_graph(trug: Dict[str, Any]) -> ValidationResult:
     return validate_trug(trug)
 
 
+# AGENT claude SHALL DEFINE FUNCTION get_node_by_id.
 def get_node_by_id(trug: Dict[str, Any], node_id: str) -> Optional[Dict[str, Any]]:
     """Find a node by its ID.
 
@@ -103,6 +107,7 @@ def get_node_by_id(trug: Dict[str, Any], node_id: str) -> Optional[Dict[str, Any
     return None
 
 
+# AGENT claude SHALL DEFINE FUNCTION get_children.
 def get_children(trug: Dict[str, Any], parent_id: str) -> List[Dict[str, Any]]:
     """Get child nodes of a parent, sorted by type then name.
 
@@ -126,6 +131,7 @@ def get_children(trug: Dict[str, Any], parent_id: str) -> List[Dict[str, Any]]:
     return children
 
 
+# AGENT claude SHALL DEFINE FUNCTION get_edges_for_node.
 def get_edges_for_node(trug: Dict[str, Any], node_id: str) -> List[Dict[str, Any]]:
     """Get all edges involving a node (as source or target).
 
@@ -142,6 +148,7 @@ def get_edges_for_node(trug: Dict[str, Any], node_id: str) -> List[Dict[str, Any
     ]
 
 
+# AGENT claude SHALL DEFINE FUNCTION get_root_node.
 def get_root_node(trug: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Find the FOLDER root node.
 
@@ -160,6 +167,7 @@ def get_root_node(trug: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     return None
 
 
+# AGENT claude SHALL DEFINE FUNCTION infer_node_type.
 def infer_node_type(filepath: Union[str, Path]) -> str:
     """Infer TRUG node type from file extension.
 
@@ -212,6 +220,7 @@ def infer_node_type(filepath: Union[str, Path]) -> str:
     return ext_map.get(suffix, "SOURCE")
 
 
+# AGENT claude SHALL DEFINE FUNCTION make_node_id.
 def make_node_id(name: str) -> str:
     """Generate a node ID from a filename.
 
@@ -224,6 +233,7 @@ def make_node_id(name: str) -> str:
     return name.replace(".", "_").replace("-", "_").replace(" ", "_").lower()
 
 
+# AGENT claude SHALL DEFINE FUNCTION create_backup.
 def create_backup(directory: Union[str, Path]) -> Optional[Path]:
     """Create a backup of folder.trug.json.
 
@@ -241,6 +251,7 @@ def create_backup(directory: Union[str, Path]) -> Optional[Path]:
     return backup_path
 
 
+# AGENT claude SHALL DEFINE FUNCTION restore_backup.
 def restore_backup(directory: Union[str, Path]) -> bool:
     """Restore folder.trug.json from backup.
 

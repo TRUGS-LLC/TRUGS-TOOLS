@@ -11,7 +11,9 @@ from trugs_tools.web.resolver import (
 )
 
 
+# AGENT claude SHALL DEFINE RECORD testresolvedentity AS A RECORD test_suite.
 class TestResolvedEntity:
+    # AGENT SHALL VALIDATE PROCESS test_to_node_trugs_format.
     def test_to_node_trugs_format(self):
         entity = ResolvedEntity(
             id="langchain",
@@ -35,13 +37,16 @@ class TestResolvedEntity:
         assert node["contains"] == []
         assert node["dimension"] == "web_structure"
 
+    # AGENT SHALL VALIDATE PROCESS test_to_node_claim_level.
     def test_to_node_claim_level(self):
         entity = ResolvedEntity(id="c1", canonical_name="Claim", entity_type="CLAIM")
         node = entity.to_node()
         assert node["metric_level"] == "CENTI_CLAIM"
 
 
+# AGENT claude SHALL DEFINE RECORD testentityresolver AS A RECORD test_suite.
 class TestEntityResolver:
+    # AGENT SHALL VALIDATE PROCESS test_exact_match_merge.
     def test_exact_match_merge(self):
         resolver = EntityResolver()
         entities = [
@@ -52,6 +57,7 @@ class TestEntityResolver:
         assert len(resolved) == 1
         assert resolved[0].mention_count == 2
 
+    # AGENT SHALL VALIDATE PROCESS test_known_alias_merge.
     def test_known_alias_merge(self):
         resolver = EntityResolver()
         entities = [
@@ -61,6 +67,7 @@ class TestEntityResolver:
         resolved = resolver.resolve(entities)
         assert len(resolved) == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_different_types_not_merged.
     def test_different_types_not_merged(self):
         resolver = EntityResolver()
         entities = [
@@ -70,10 +77,12 @@ class TestEntityResolver:
         resolved = resolver.resolve(entities)
         assert len(resolved) == 2
 
+    # AGENT SHALL VALIDATE PROCESS test_resolve_empty.
     def test_resolve_empty(self):
         resolver = EntityResolver()
         assert resolver.resolve([]) == []
 
+    # AGENT SHALL VALIDATE PROCESS test_resolve_single.
     def test_resolve_single(self):
         resolver = EntityResolver()
         entities = [Entity(id="x", name="Thing", entity_type="CONCEPT")]
@@ -82,6 +91,7 @@ class TestEntityResolver:
         assert resolved[0].canonical_name == "Thing"
         assert resolved[0].mention_count == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_merge_collects_source_urls.
     def test_merge_collects_source_urls(self):
         resolver = EntityResolver()
         entities = [
@@ -92,6 +102,7 @@ class TestEntityResolver:
         assert len(resolved) == 1
         assert len(resolved[0].source_urls) == 2
 
+    # AGENT SHALL VALIDATE PROCESS test_merge_longest_description.
     def test_merge_longest_description(self):
         resolver = EntityResolver()
         entities = [
@@ -101,6 +112,7 @@ class TestEntityResolver:
         resolved = resolver.resolve(entities)
         assert "longer" in resolved[0].description
 
+    # AGENT SHALL VALIDATE PROCESS test_normalized_similarity_merge.
     def test_normalized_similarity_merge(self):
         resolver = EntityResolver(similarity_threshold=0.85)
         entities = [
@@ -112,23 +124,28 @@ class TestEntityResolver:
         assert isinstance(resolved, list)
         assert len(resolved) >= 1
 
+    # AGENT SHALL VALIDATE PROCESS test_similarity_method.
     def test_similarity_method(self):
         resolver = EntityResolver()
         assert resolver._similarity("hello", "hello") == 1.0
         assert resolver._similarity("hello", "world") < 1.0
 
+    # AGENT SHALL VALIDATE PROCESS test_normalize_removes_suffixes.
     def test_normalize_removes_suffixes(self):
         resolver = EntityResolver()
         assert resolver._normalize("pandas library") == "pandas"
         assert resolver._normalize("pytorch framework") == "pytorch"
 
+    # AGENT SHALL VALIDATE PROCESS test_make_id.
     def test_make_id(self):
         resolver = EntityResolver()
         assert resolver._make_id("LangChain") == "langchain"
         assert " " not in resolver._make_id("multi word name")
 
 
+# AGENT claude SHALL DEFINE RECORD testcrossreferencemapper AS A RECORD test_suite.
 class TestCrossReferenceMapper:
+    # AGENT SHALL VALIDATE PROCESS test_map_entity_to_source.
     def test_map_entity_to_source(self):
         mapper = CrossReferenceMapper()
         mapper.map_entity_to_source("entity_1", "https://site1.com")
@@ -136,6 +153,7 @@ class TestCrossReferenceMapper:
         assert "entity_1" in mapper.entity_to_urls
         assert len(mapper.entity_to_urls["entity_1"]) == 2
 
+    # AGENT SHALL VALIDATE PROCESS test_find_cross_references.
     def test_find_cross_references(self):
         mapper = CrossReferenceMapper()
         entities = [
@@ -157,6 +175,7 @@ class TestCrossReferenceMapper:
         assert cross_refs[0]["entity_id"] == "e1"
         assert cross_refs[0]["source_count"] == 2
 
+    # AGENT SHALL VALIDATE PROCESS test_find_connected_sources.
     def test_find_connected_sources(self):
         mapper = CrossReferenceMapper()
         mapper.map_entity_to_source("e1", "https://site1.com")
@@ -168,6 +187,7 @@ class TestCrossReferenceMapper:
         assert any(url == "https://site2.com" for url in connected)
         assert "https://site1.com" not in connected
 
+    # AGENT SHALL VALIDATE PROCESS test_find_cross_references_single_source.
     def test_find_cross_references_single_source(self):
         mapper = CrossReferenceMapper()
         entities = [
@@ -182,6 +202,7 @@ class TestCrossReferenceMapper:
         assert cross_refs == []
 
 
+# AGENT SHALL VALIDATE PROCESS test_resolve_entities_convenience.
 def test_resolve_entities_convenience():
     entities = [
         Entity(id="a", name="LangChain", entity_type="TOOL"),

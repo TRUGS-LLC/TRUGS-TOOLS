@@ -16,6 +16,7 @@ from trugs_tools.filesystem.utils import (
 )
 
 
+# AGENT claude SHALL DEFINE FUNCTION tinit.
 def tinit(
     directory: Union[str, Path],
     name: Optional[str] = None,

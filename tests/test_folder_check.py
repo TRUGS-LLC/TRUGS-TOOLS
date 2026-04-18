@@ -66,14 +66,17 @@ def _write_trug(tmpdir, trug_dict):
 # Error-level checks (rules 1-11)
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testvalidjson AS A RECORD test_suite.
 class TestValidJSON:
     """Rule 1: file must parse as valid JSON."""
 
+    # AGENT SHALL VALIDATE PROCESS test_valid_json_passes.
     def test_valid_json_passes(self, tmp_path):
         p = _write_trug(tmp_path, _minimal_trug())
         r = check_folder_trug(p, check_filesystem=False)
         assert r.ok
 
+    # AGENT SHALL VALIDATE PROCESS test_invalid_json_fails.
     def test_invalid_json_fails(self, tmp_path):
         p = tmp_path / "folder.trug.json"
         p.write_text("{bad json", encoding="utf-8")
@@ -81,6 +84,7 @@ class TestValidJSON:
         assert not r.ok
         assert any("Invalid JSON" in e for e in r.errors)
 
+    # AGENT SHALL VALIDATE PROCESS test_missing_file_fails.
     def test_missing_file_fails(self, tmp_path):
         p = tmp_path / "folder.trug.json"
         r = check_folder_trug(p, check_filesystem=False)
@@ -88,14 +92,17 @@ class TestValidJSON:
         assert any("File not found" in e for e in r.errors)
 
 
+# AGENT claude SHALL DEFINE RECORD testrequiredkeys AS A RECORD test_suite.
 class TestRequiredKeys:
     """Rule 2: required top-level keys."""
 
+    # AGENT SHALL VALIDATE PROCESS test_all_keys_present_passes.
     def test_all_keys_present_passes(self, tmp_path):
         p = _write_trug(tmp_path, _minimal_trug())
         r = check_folder_trug(p, check_filesystem=False)
         assert r.ok
 
+    # AGENT SHALL VALIDATE PROCESS test_missing_key_fails.
     def test_missing_key_fails(self, tmp_path):
         trug = _minimal_trug()
         del trug["nodes"]
@@ -105,14 +112,17 @@ class TestRequiredKeys:
         assert any("Missing required top-level key: 'nodes'" in e for e in r.errors)
 
 
+# AGENT claude SHALL DEFINE RECORD testfoldernodecount AS A RECORD test_suite.
 class TestFolderNodeCount:
     """Rule 3: exactly 1 FOLDER node with parent_id=null."""
 
+    # AGENT SHALL VALIDATE PROCESS test_one_folder_ok.
     def test_one_folder_ok(self, tmp_path):
         p = _write_trug(tmp_path, _minimal_trug())
         r = check_folder_trug(p, check_filesystem=False)
         assert r.ok
 
+    # AGENT SHALL VALIDATE PROCESS test_no_folder_node.
     def test_no_folder_node(self, tmp_path):
         trug = _minimal_trug()
         trug["nodes"][0]["type"] = "DOCUMENT"
@@ -121,6 +131,7 @@ class TestFolderNodeCount:
         r = check_folder_trug(p, check_filesystem=False)
         assert any("No FOLDER node" in e for e in r.errors)
 
+    # AGENT SHALL VALIDATE PROCESS test_multiple_folder_nodes.
     def test_multiple_folder_nodes(self, tmp_path):
         trug = _minimal_trug()
         trug["nodes"].append({
@@ -137,9 +148,11 @@ class TestFolderNodeCount:
         assert any("Multiple FOLDER nodes" in e for e in r.errors)
 
 
+# AGENT claude SHALL DEFINE RECORD testvalidnodetypes AS A RECORD test_suite.
 class TestValidNodeTypes:
     """Rule 4: only valid node types."""
 
+    # AGENT SHALL VALIDATE PROCESS test_valid_types_pass.
     @pytest.mark.parametrize("ntype", sorted(VALID_NODE_TYPES.keys()))
     def test_valid_types_pass(self, tmp_path, ntype):
         trug = _minimal_trug()
@@ -158,6 +171,7 @@ class TestValidNodeTypes:
         invalid_type_errors = [e for e in r.errors if "invalid type" in e]
         assert len(invalid_type_errors) == 0
 
+    # AGENT SHALL VALIDATE PROCESS test_invalid_type_fails.
     def test_invalid_type_fails(self, tmp_path):
         trug = _minimal_trug()
         trug["nodes"].append({
@@ -173,6 +187,7 @@ class TestValidNodeTypes:
         r = check_folder_trug(p, check_filesystem=False)
         assert any("invalid type 'GENERATED'" in e for e in r.errors)
 
+    # AGENT SHALL VALIDATE PROCESS test_prose_node_passes.
     def test_prose_node_passes(self, tmp_path):
         trug = _minimal_trug()
         trug["nodes"].append({
@@ -189,9 +204,11 @@ class TestValidNodeTypes:
         assert r.ok
 
 
+# AGENT claude SHALL DEFINE RECORD testmetriclevels AS A RECORD test_suite.
 class TestMetricLevels:
     """Rule 5: correct metric_level per type."""
 
+    # AGENT SHALL VALIDATE PROCESS test_correct_levels_pass.
     def test_correct_levels_pass(self, tmp_path):
         trug = _minimal_trug()
         p = _write_trug(tmp_path, trug)
@@ -199,6 +216,7 @@ class TestMetricLevels:
         metric_errors = [e for e in r.errors if "metric_level" in e]
         assert len(metric_errors) == 0
 
+    # AGENT SHALL VALIDATE PROCESS test_wrong_level_fails.
     def test_wrong_level_fails(self, tmp_path):
         trug = _minimal_trug()
         trug["nodes"][0]["metric_level"] = "BASE_FOLDER"
@@ -208,9 +226,11 @@ class TestMetricLevels:
                     for e in r.errors)
 
 
+# AGENT claude SHALL DEFINE RECORD testedgerelations AS A RECORD test_suite.
 class TestEdgeRelations:
     """Rules 6 & 7: valid internal and cross-folder edge relations."""
 
+    # AGENT SHALL VALIDATE PROCESS test_valid_internal_relation.
     def test_valid_internal_relation(self, tmp_path):
         trug = _minimal_trug()
         trug["nodes"].append({
@@ -232,6 +252,7 @@ class TestEdgeRelations:
         rel_errors = [e for e in r.errors if "invalid internal relation" in e]
         assert len(rel_errors) == 0
 
+    # AGENT SHALL VALIDATE PROCESS test_invalid_internal_relation.
     def test_invalid_internal_relation(self, tmp_path):
         trug = _minimal_trug()
         trug["nodes"].append({
@@ -252,6 +273,7 @@ class TestEdgeRelations:
         r = check_folder_trug(p, check_filesystem=False)
         assert any("invalid internal relation 'EXTENDS'" in e for e in r.errors)
 
+    # AGENT SHALL VALIDATE PROCESS test_valid_cross_folder_relation.
     def test_valid_cross_folder_relation(self, tmp_path):
         trug = _minimal_trug()
         trug["edges"].append({
@@ -264,6 +286,7 @@ class TestEdgeRelations:
         cf_errors = [e for e in r.errors if "cross-folder" in e]
         assert len(cf_errors) == 0
 
+    # AGENT SHALL VALIDATE PROCESS test_invalid_cross_folder_relation.
     def test_invalid_cross_folder_relation(self, tmp_path):
         trug = _minimal_trug()
         trug["edges"].append({
@@ -277,9 +300,11 @@ class TestEdgeRelations:
                     for e in r.errors)
 
 
+# AGENT claude SHALL DEFINE RECORD testcrossfoldersyntax AS A RECORD test_suite.
 class TestCrossFolderSyntax:
     """Rule 8: cross-folder edge to_id must be folder_name:node_id."""
 
+    # AGENT SHALL VALIDATE PROCESS test_valid_cross_folder_syntax.
     def test_valid_cross_folder_syntax(self, tmp_path):
         trug = _minimal_trug()
         trug["edges"].append({
@@ -292,6 +317,7 @@ class TestCrossFolderSyntax:
         syntax_errors = [e for e in r.errors if "folder_name:node_id" in e]
         assert len(syntax_errors) == 0
 
+    # AGENT SHALL VALIDATE PROCESS test_invalid_cross_folder_syntax_empty_parts.
     def test_invalid_cross_folder_syntax_empty_parts(self, tmp_path):
         trug = _minimal_trug()
         trug["edges"].append({
@@ -304,9 +330,11 @@ class TestCrossFolderSyntax:
         assert any("folder_name:node_id" in e for e in r.errors)
 
 
+# AGENT claude SHALL DEFINE RECORD testcontainsconsistency AS A RECORD test_suite.
 class TestContainsConsistency:
     """Rule 9: contains-array consistency with contains edges."""
 
+    # AGENT SHALL VALIDATE PROCESS test_consistent_contains.
     def test_consistent_contains(self, tmp_path):
         trug = _minimal_trug()
         trug["nodes"][0]["contains"] = ["doc_readme"]
@@ -329,6 +357,7 @@ class TestContainsConsistency:
         consist_errors = [e for e in r.errors if "Contains-array" in e]
         assert len(consist_errors) == 0
 
+    # AGENT SHALL VALIDATE PROCESS test_missing_contains_edge.
     def test_missing_contains_edge(self, tmp_path):
         trug = _minimal_trug()
         trug["nodes"][0]["contains"] = ["doc_readme"]
@@ -347,9 +376,11 @@ class TestContainsConsistency:
         assert any("Contains-array lists 'doc_readme'" in e for e in r.errors)
 
 
+# AGENT claude SHALL DEFINE RECORD testdanglingedges AS A RECORD test_suite.
 class TestDanglingEdges:
     """Rule 10: no dangling edge references (internal)."""
 
+    # AGENT SHALL VALIDATE PROCESS test_valid_edge_refs.
     def test_valid_edge_refs(self, tmp_path):
         trug = _minimal_trug()
         trug["nodes"].append({
@@ -371,6 +402,7 @@ class TestDanglingEdges:
         dangling = [e for e in r.errors if "does not reference any node" in e]
         assert len(dangling) == 0
 
+    # AGENT SHALL VALIDATE PROCESS test_dangling_from_id.
     def test_dangling_from_id(self, tmp_path):
         trug = _minimal_trug()
         trug["edges"].append({
@@ -382,6 +414,7 @@ class TestDanglingEdges:
         r = check_folder_trug(p, check_filesystem=False)
         assert any("from_id 'ghost_node' does not reference" in e for e in r.errors)
 
+    # AGENT SHALL VALIDATE PROCESS test_dangling_to_id.
     def test_dangling_to_id(self, tmp_path):
         trug = _minimal_trug()
         trug["edges"].append({
@@ -393,6 +426,7 @@ class TestDanglingEdges:
         r = check_folder_trug(p, check_filesystem=False)
         assert any("to_id 'missing_node' does not reference" in e for e in r.errors)
 
+    # AGENT SHALL VALIDATE PROCESS test_cross_folder_to_id_not_dangling.
     def test_cross_folder_to_id_not_dangling(self, tmp_path):
         """Cross-folder to_ids should NOT be flagged as dangling."""
         trug = _minimal_trug()
@@ -407,9 +441,11 @@ class TestDanglingEdges:
         assert len(dangling) == 0
 
 
+# AGENT claude SHALL DEFINE RECORD testfilesystemexistence AS A RECORD test_suite.
 class TestFilesystemExistence:
     """Rule 11: DOCUMENT/SPECIFICATION nodes reference existing files."""
 
+    # AGENT SHALL VALIDATE PROCESS test_existing_file_passes.
     def test_existing_file_passes(self, tmp_path):
         (tmp_path / "README.md").write_text("# Hi", encoding="utf-8")
         trug = _minimal_trug()
@@ -427,6 +463,7 @@ class TestFilesystemExistence:
         fs_errors = [e for e in r.errors if "does not exist" in e]
         assert len(fs_errors) == 0
 
+    # AGENT SHALL VALIDATE PROCESS test_missing_file_fails.
     def test_missing_file_fails(self, tmp_path):
         trug = _minimal_trug()
         trug["nodes"].append({
@@ -442,6 +479,7 @@ class TestFilesystemExistence:
         r = check_folder_trug(p, check_filesystem=True)
         assert any("does not exist" in e for e in r.errors)
 
+    # AGENT SHALL VALIDATE PROCESS test_spec_file_missing.
     def test_spec_file_missing(self, tmp_path):
         trug = _minimal_trug()
         trug["nodes"].append({
@@ -462,9 +500,11 @@ class TestFilesystemExistence:
 # Warning-level checks
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testwarnings AS A RECORD test_suite.
 class TestWarnings:
     """Warning-level checks: on-disk items, stale flags, empty contains."""
 
+    # AGENT SHALL VALIDATE PROCESS test_on_disk_not_in_trug.
     def test_on_disk_not_in_trug(self, tmp_path):
         (tmp_path / "orphan_file.md").write_text("orphan", encoding="utf-8")
         trug = _minimal_trug()
@@ -472,6 +512,7 @@ class TestWarnings:
         r = check_folder_trug(p, check_filesystem=True)
         assert any("orphan_file.md" in w for w in r.warnings)
 
+    # AGENT SHALL VALIDATE PROCESS test_stale_flag_warning.
     def test_stale_flag_warning(self, tmp_path):
         trug = _minimal_trug()
         trug["nodes"].append({
@@ -487,6 +528,7 @@ class TestWarnings:
         r = check_folder_trug(p, check_filesystem=False)
         assert any("stale=true" in w for w in r.warnings)
 
+    # AGENT SHALL VALIDATE PROCESS test_empty_contains_warning.
     def test_empty_contains_warning(self, tmp_path):
         trug = _minimal_trug()
         # Default already has empty contains
@@ -494,6 +536,7 @@ class TestWarnings:
         r = check_folder_trug(p, check_filesystem=False)
         assert any("empty contains" in w for w in r.warnings)
 
+    # AGENT SHALL VALIDATE PROCESS test_non_empty_contains_no_warning.
     def test_non_empty_contains_no_warning(self, tmp_path):
         trug = _minimal_trug()
         trug["nodes"][0]["contains"] = ["comp_a"]
@@ -521,9 +564,11 @@ class TestWarnings:
 # Multi-file scanning
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testfindallfoldertrugs AS A RECORD test_suite.
 class TestFindAllFolderTrugs:
     """find_all_folder_trugs discovers files correctly."""
 
+    # AGENT SHALL VALIDATE PROCESS test_finds_files.
     def test_finds_files(self, tmp_path):
         sub1 = tmp_path / "A"
         sub1.mkdir()
@@ -534,6 +579,7 @@ class TestFindAllFolderTrugs:
         found = find_all_folder_trugs(tmp_path)
         assert len(found) == 2
 
+    # AGENT SHALL VALIDATE PROCESS test_excludes_zzz.
     def test_excludes_zzz(self, tmp_path):
         sub1 = tmp_path / "A"
         sub1.mkdir()
@@ -546,9 +592,11 @@ class TestFindAllFolderTrugs:
         assert "ZZZ_" not in str(found[0])
 
 
+# AGENT claude SHALL DEFINE RECORD testcheckall AS A RECORD test_suite.
 class TestCheckAll:
     """check_all wrapper logic."""
 
+    # AGENT SHALL VALIDATE PROCESS test_scan_all.
     def test_scan_all(self, tmp_path):
         sub = tmp_path / "A"
         sub.mkdir()
@@ -557,11 +605,13 @@ class TestCheckAll:
         assert len(results) == 1
         assert results[0].ok
 
+    # AGENT SHALL VALIDATE PROCESS test_explicit_paths_file.
     def test_explicit_paths_file(self, tmp_path):
         p = _write_trug(tmp_path, _minimal_trug())
         results = check_all(paths=[str(p)], check_filesystem=False)
         assert len(results) == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_explicit_paths_dir.
     def test_explicit_paths_dir(self, tmp_path):
         _write_trug(tmp_path, _minimal_trug())
         results = check_all(paths=[str(tmp_path)], check_filesystem=False)
@@ -572,9 +622,11 @@ class TestCheckAll:
 # Output formatting
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testformattext AS A RECORD test_suite.
 class TestFormatText:
     """format_text produces readable output."""
 
+    # AGENT SHALL VALIDATE PROCESS test_quiet_mode.
     def test_quiet_mode(self, tmp_path):
         p = _write_trug(tmp_path, _minimal_trug())
         r = check_folder_trug(p, check_filesystem=False)
@@ -582,6 +634,7 @@ class TestFormatText:
         assert "0 error(s)" in output
         assert "1 file(s)" in output
 
+    # AGENT SHALL VALIDATE PROCESS test_verbose_mode.
     def test_verbose_mode(self, tmp_path):
         p = _write_trug(tmp_path, _minimal_trug())
         r = check_folder_trug(p, check_filesystem=False)
@@ -590,9 +643,11 @@ class TestFormatText:
         assert "Edges:" in output
 
 
+# AGENT claude SHALL DEFINE RECORD testformatjson AS A RECORD test_suite.
 class TestFormatJSON:
     """format_json produces valid JSON."""
 
+    # AGENT SHALL VALIDATE PROCESS test_valid_json_output.
     def test_valid_json_output(self, tmp_path):
         p = _write_trug(tmp_path, _minimal_trug())
         r = check_folder_trug(p, check_filesystem=False)
@@ -610,14 +665,17 @@ class TestFormatJSON:
 # CLI
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD testcli AS A RECORD test_suite.
 class TestCLI:
     """folder_check_command CLI interface."""
 
+    # AGENT SHALL VALIDATE PROCESS test_check_single_file.
     def test_check_single_file(self, tmp_path):
         p = _write_trug(tmp_path, _minimal_trug())
         rc = folder_check_command([str(p)])
         assert rc == 0
 
+    # AGENT SHALL VALIDATE PROCESS test_check_with_errors.
     def test_check_with_errors(self, tmp_path):
         trug = _minimal_trug()
         trug["nodes"][0]["type"] = "INVALID"
@@ -625,6 +683,7 @@ class TestCLI:
         rc = folder_check_command([str(p)])
         assert rc == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_json_format.
     def test_json_format(self, tmp_path, capsys):
         p = _write_trug(tmp_path, _minimal_trug())
         rc = folder_check_command([str(p), "--format", "json"])
@@ -633,6 +692,7 @@ class TestCLI:
         parsed = json.loads(captured.out)
         assert isinstance(parsed, list)
 
+    # AGENT SHALL VALIDATE PROCESS test_quiet_mode.
     def test_quiet_mode(self, tmp_path, capsys):
         p = _write_trug(tmp_path, _minimal_trug())
         rc = folder_check_command([str(p), "--quiet"])
@@ -640,12 +700,14 @@ class TestCLI:
         captured = capsys.readouterr()
         assert "error(s)" in captured.out
 
+    # AGENT SHALL VALIDATE PROCESS test_strict_mode_warnings.
     def test_strict_mode_warnings(self, tmp_path):
         # minimal trug has empty contains → warning
         p = _write_trug(tmp_path, _minimal_trug())
         rc = folder_check_command([str(p), "--strict"])
         assert rc == 1  # warnings treated as errors
 
+    # AGENT SHALL VALIDATE PROCESS test_all_flag.
     def test_all_flag(self, tmp_path):
         sub = tmp_path / "X"
         sub.mkdir()
@@ -653,24 +715,29 @@ class TestCLI:
         rc = folder_check_command(["--all", "--root", str(tmp_path)])
         assert rc == 0
 
+    # AGENT SHALL VALIDATE PROCESS test_no_args_returns_error.
     def test_no_args_returns_error(self, capsys):
         with pytest.raises(SystemExit) as exc_info:
             folder_check_command([])
         assert exc_info.value.code == 2
 
 
+# AGENT claude SHALL DEFINE RECORD testcheckresult AS A RECORD test_suite.
 class TestCheckResult:
     """CheckResult dataclass."""
 
+    # AGENT SHALL VALIDATE PROCESS test_ok_when_no_errors.
     def test_ok_when_no_errors(self):
         r = CheckResult("test.json")
         assert r.ok
 
+    # AGENT SHALL VALIDATE PROCESS test_not_ok_with_errors.
     def test_not_ok_with_errors(self):
         r = CheckResult("test.json")
         r.errors.append("something bad")
         assert not r.ok
 
+    # AGENT SHALL VALIDATE PROCESS test_to_dict.
     def test_to_dict(self):
         r = CheckResult("test.json")
         r.errors.append("err")

@@ -22,24 +22,29 @@ def _init_project(tmp_path):
     return tmp_path
 
 
+# AGENT claude SHALL DEFINE RECORD testtcd AS A RECORD test_suite.
 class TestTcd:
+    # AGENT SHALL VALIDATE PROCESS test_navigate_to_root.
     def test_navigate_to_root(self, tmp_path):
         _init_project(tmp_path)
         result = tcd(tmp_path, "/")
         assert result["node"]["type"] == "FOLDER"
         assert len(result["children"]) == 4
 
+    # AGENT SHALL VALIDATE PROCESS test_navigate_to_root_empty_target.
     def test_navigate_to_root_empty_target(self, tmp_path):
         _init_project(tmp_path)
         result = tcd(tmp_path, "")
         assert result["node"]["type"] == "FOLDER"
 
+    # AGENT SHALL VALIDATE PROCESS test_navigate_by_id.
     def test_navigate_by_id(self, tmp_path):
         _init_project(tmp_path)
         result = tcd(tmp_path, "main_py")
         assert result["node"]["id"] == "main_py"
         assert result["node"]["type"] == "SOURCE"
 
+    # AGENT SHALL VALIDATE PROCESS test_navigate_to_parent.
     def test_navigate_to_parent(self, tmp_path):
         _init_project(tmp_path)
         trug = load_graph(tmp_path)
@@ -47,6 +52,7 @@ class TestTcd:
         result = tcd(tmp_path, "..", current="main_py")
         assert result["node"]["id"] == root_id
 
+    # AGENT SHALL VALIDATE PROCESS test_navigate_parent_from_root.
     def test_navigate_parent_from_root(self, tmp_path):
         _init_project(tmp_path)
         trug = load_graph(tmp_path)
@@ -54,31 +60,37 @@ class TestTcd:
         with pytest.raises(ValueError, match="Already at root"):
             tcd(tmp_path, "..", current=root_id)
 
+    # AGENT SHALL VALIDATE PROCESS test_navigate_parent_no_current.
     def test_navigate_parent_no_current(self, tmp_path):
         _init_project(tmp_path)
         with pytest.raises(ValueError, match="Current node required"):
             tcd(tmp_path, "..")
 
+    # AGENT SHALL VALIDATE PROCESS test_navigate_parent_invalid_current.
     def test_navigate_parent_invalid_current(self, tmp_path):
         _init_project(tmp_path)
         with pytest.raises(ValueError, match="Current node not found"):
             tcd(tmp_path, "..", current="nonexistent")
 
+    # AGENT SHALL VALIDATE PROCESS test_navigate_invalid_node.
     def test_navigate_invalid_node(self, tmp_path):
         _init_project(tmp_path)
         with pytest.raises(ValueError, match="Node not found"):
             tcd(tmp_path, "nonexistent")
 
+    # AGENT SHALL VALIDATE PROCESS test_navigate_no_trug.
     def test_navigate_no_trug(self, tmp_path):
         with pytest.raises(FileNotFoundError):
             tcd(tmp_path, "/")
 
+    # AGENT SHALL VALIDATE PROCESS test_result_has_path.
     def test_result_has_path(self, tmp_path):
         _init_project(tmp_path)
         result = tcd(tmp_path, "main_py")
         assert result["path"].startswith("/")
         assert "main.py" in result["path"]
 
+    # AGENT SHALL VALIDATE PROCESS test_result_has_children.
     def test_result_has_children(self, tmp_path):
         _init_project(tmp_path)
         result = tcd(tmp_path, "/")
@@ -88,13 +100,16 @@ class TestTcd:
             assert "type" in child
             assert "name" in child
 
+    # AGENT SHALL VALIDATE PROCESS test_result_has_edges.
     def test_result_has_edges(self, tmp_path):
         _init_project(tmp_path)
         result = tcd(tmp_path, "/")
         assert isinstance(result["edges"], list)
 
 
+# AGENT claude SHALL DEFINE RECORD testtfind AS A RECORD test_suite.
 class TestTfind:
+    # AGENT SHALL VALIDATE PROCESS test_find_by_type.
     def test_find_by_type(self, tmp_path):
         _init_project(tmp_path)
         result = tfind(tmp_path, node_type="SOURCE", format="json")
@@ -102,12 +117,14 @@ class TestTfind:
         assert all(item["type"] == "SOURCE" for item in result)
         assert len(result) == 2  # main.py, utils.py
 
+    # AGENT SHALL VALIDATE PROCESS test_find_by_type_document.
     def test_find_by_type_document(self, tmp_path):
         _init_project(tmp_path)
         result = tfind(tmp_path, node_type="DOCUMENT", format="json")
         assert len(result) == 1
         assert result[0]["name"] == "README.md"
 
+    # AGENT SHALL VALIDATE PROCESS test_find_by_name_pattern.
     def test_find_by_name_pattern(self, tmp_path):
         _init_project(tmp_path)
         result = tfind(tmp_path, name_pattern=r"\.py$", format="json")
@@ -116,17 +133,20 @@ class TestTfind:
         assert "utils.py" in names
         assert "README.md" not in names
 
+    # AGENT SHALL VALIDATE PROCESS test_find_by_dimension.
     def test_find_by_dimension(self, tmp_path):
         _init_project(tmp_path)
         result = tfind(tmp_path, dimension="folder_structure", format="json")
         assert len(result) == 5  # root + 4 files
 
+    # AGENT SHALL VALIDATE PROCESS test_find_by_metric_level.
     def test_find_by_metric_level(self, tmp_path):
         _init_project(tmp_path)
         result = tfind(tmp_path, metric_level="KILO_FOLDER", format="json")
         assert len(result) == 1
         assert result[0]["type"] == "FOLDER"
 
+    # AGENT SHALL VALIDATE PROCESS test_find_with_children.
     def test_find_with_children(self, tmp_path):
         _init_project(tmp_path)
         result = tfind(tmp_path, has_children=True, format="json")
@@ -134,12 +154,14 @@ class TestTfind:
         assert len(result) == 1
         assert result[0]["type"] == "FOLDER"
 
+    # AGENT SHALL VALIDATE PROCESS test_find_without_children.
     def test_find_without_children(self, tmp_path):
         _init_project(tmp_path)
         result = tfind(tmp_path, has_children=False, format="json")
         # All leaf nodes
         assert len(result) == 4
 
+    # AGENT SHALL VALIDATE PROCESS test_find_by_edge_relation.
     def test_find_by_edge_relation(self, tmp_path):
         _init_project(tmp_path)
         # Add an edge
@@ -148,6 +170,7 @@ class TestTfind:
         ids = [item["id"] for item in result]
         assert "main_py" in ids or "utils_py" in ids
 
+    # AGENT SHALL VALIDATE PROCESS test_find_custom_filter.
     def test_find_custom_filter(self, tmp_path):
         _init_project(tmp_path)
         result = tfind(
@@ -158,6 +181,7 @@ class TestTfind:
         assert len(result) == 1
         assert result[0]["id"] == "main_py"
 
+    # AGENT SHALL VALIDATE PROCESS test_find_multiple_filters.
     def test_find_multiple_filters(self, tmp_path):
         _init_project(tmp_path)
         result = tfind(
@@ -169,11 +193,13 @@ class TestTfind:
         assert len(result) == 1
         assert result[0]["name"] == "main.py"
 
+    # AGENT SHALL VALIDATE PROCESS test_find_no_matches.
     def test_find_no_matches(self, tmp_path):
         _init_project(tmp_path)
         result = tfind(tmp_path, node_type="NONEXISTENT", format="json")
         assert result == []
 
+    # AGENT SHALL VALIDATE PROCESS test_find_text_format.
     def test_find_text_format(self, tmp_path):
         _init_project(tmp_path)
         result = tfind(tmp_path, node_type="SOURCE", format="text")
@@ -181,10 +207,12 @@ class TestTfind:
         assert "Found" in result
         assert "main.py" in result
 
+    # AGENT SHALL VALIDATE PROCESS test_find_no_trug.
     def test_find_no_trug(self, tmp_path):
         with pytest.raises(FileNotFoundError):
             tfind(tmp_path)
 
+    # AGENT SHALL VALIDATE PROCESS test_find_all.
     def test_find_all(self, tmp_path):
         _init_project(tmp_path)
         result = tfind(tmp_path, format="json")

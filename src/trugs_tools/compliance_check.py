@@ -297,6 +297,7 @@ def _walk_python(path: Path) -> list[_FunctionRecord]:
 
     records: list[_FunctionRecord] = []
 
+    # AGENT claude SHALL DEFINE FUNCTION visit.
     def visit(node: ast.AST, parent: Optional[ast.ClassDef] = None, inside_func: bool = False) -> None:
         # Walk AST children. Functions nested inside other functions are
         # implementation detail — not reported. Methods of classes ARE reported.

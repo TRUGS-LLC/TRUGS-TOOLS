@@ -22,6 +22,7 @@ from dataclasses import dataclass
 from trugs_tools.trug_graph import TrugGraph
 
 
+# AGENT claude SHALL DEFINE RECORD trugcomplexitymetrics AS RECORD class.
 @dataclass(frozen=True)
 class TrugComplexityMetrics:
     """Structural complexity metrics for a TRUG.
@@ -49,9 +50,11 @@ _STALE_PROPAGATION_RELATIONS = frozenset({
 })
 
 
+# AGENT claude SHALL DEFINE RECORD truganalyzer AS RECORD class.
 class TrugAnalyzer:
     """Static analysis of TrugGraph structure. All methods are stateless."""
 
+    # AGENT claude SHALL DEFINE FUNCTION find_unreachable_nodes.
     @staticmethod
     def find_unreachable_nodes(graph: TrugGraph) -> set[str]:
         """Nodes not reachable from any root via hierarchy OR semantic edges.
@@ -109,6 +112,7 @@ class TrugAnalyzer:
 
         return all_ids - visited
 
+    # AGENT claude SHALL DEFINE FUNCTION find_dead_nodes.
     @staticmethod
     def find_dead_nodes(graph: TrugGraph) -> set[str]:
         """Non-root nodes not referenced by any edge to_id or contains[].
@@ -137,6 +141,7 @@ class TrugAnalyzer:
         roots = set(graph.root_nodes())
         return all_ids - referenced - roots
 
+    # AGENT claude SHALL DEFINE FUNCTION dominator_tree.
     @staticmethod
     def dominator_tree(graph: TrugGraph) -> dict[str, str | None]:
         """Immediate dominator for each reachable node via semantic edges.
@@ -169,6 +174,7 @@ class TrugAnalyzer:
         visited: set[str] = set()
         postorder: list[str] = []
 
+        # AGENT claude SHALL DEFINE FUNCTION dfs.
         def dfs(node: str) -> None:
             visited.add(node)
             for succ in adj.get(node, []):
@@ -189,6 +195,7 @@ class TrugAnalyzer:
             if root in rpo_index:
                 idom[root] = root
 
+        # AGENT claude SHALL DEFINE FUNCTION intersect.
         def intersect(b1: str, b2: str) -> str:
             finger1, finger2 = b1, b2
             while finger1 != finger2:
@@ -229,6 +236,7 @@ class TrugAnalyzer:
 
         return result
 
+    # AGENT claude SHALL DEFINE FUNCTION impact_set.
     @staticmethod
     def impact_set(graph: TrugGraph, node_id: str) -> set[str]:
         """All nodes transitively downstream of node_id via semantic edges.
@@ -258,6 +266,7 @@ class TrugAnalyzer:
 
         return visited
 
+    # AGENT claude SHALL DEFINE FUNCTION dependency_set.
     @staticmethod
     def dependency_set(graph: TrugGraph, node_id: str) -> set[str]:
         """All nodes transitively upstream of node_id via semantic edges.
@@ -287,6 +296,7 @@ class TrugAnalyzer:
 
         return visited
 
+    # AGENT claude SHALL DEFINE FUNCTION complexity.
     @staticmethod
     def complexity(graph: TrugGraph) -> TrugComplexityMetrics:
         """Graph complexity metrics.
@@ -343,6 +353,7 @@ class TrugAnalyzer:
             edge_count=n_edges,
         )
 
+    # AGENT claude SHALL DEFINE FUNCTION critical_path.
     @staticmethod
     def critical_path(graph: TrugGraph) -> list[str]:
         """Longest path from any root to any leaf via semantic edges.
@@ -422,6 +433,7 @@ class TrugAnalyzer:
         path.reverse()
         return path
 
+    # AGENT claude SHALL DEFINE FUNCTION find_stale_propagation.
     @staticmethod
     def find_stale_propagation(graph: TrugGraph) -> dict[str, set[str]]:
         """For each stale node, find nodes transitively affected via propagation edges.

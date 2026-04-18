@@ -20,84 +20,107 @@ from trugs_tools.web.hub.qualifying_interest import QualifyingInterest
 # Helper function tests
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD testistrugurl AS A RECORD test_suite.
 class TestIsTrugUrl:
+    # AGENT SHALL VALIDATE PROCESS test_folder_trug_json.
     def test_folder_trug_json(self):
         assert _is_trug_url("https://example.com/folder.trug.json") is True
 
+    # AGENT SHALL VALIDATE PROCESS test_bare_trug_json.
     def test_bare_trug_json(self):
         assert _is_trug_url("https://example.com/trug.json") is True
 
+    # AGENT SHALL VALIDATE PROCESS test_dot_trug_json.
     def test_dot_trug_json(self):
         assert _is_trug_url("https://example.com/.trug.json") is True
 
+    # AGENT SHALL VALIDATE PROCESS test_non_trug_url.
     def test_non_trug_url(self):
         assert _is_trug_url("https://example.com/index.html") is False
 
+    # AGENT SHALL VALIDATE PROCESS test_trug_in_path.
     def test_trug_in_path(self):
         assert _is_trug_url("https://example.com/path/to/trug.json") is True
 
 
+# AGENT claude SHALL DEFINE RECORD testgithubrawurl AS A RECORD test_suite.
 class TestGithubRawUrl:
+    # AGENT SHALL VALIDATE PROCESS test_basic_repo.
     def test_basic_repo(self):
         url = _github_raw_url("https://github.com/user/repo")
         assert url == "https://raw.githubusercontent.com/user/repo/main/folder.trug.json"
 
+    # AGENT SHALL VALIDATE PROCESS test_custom_path.
     def test_custom_path(self):
         url = _github_raw_url("https://github.com/user/repo", path="data/graph.trug.json")
         assert "data/graph.trug.json" in url
 
+    # AGENT SHALL VALIDATE PROCESS test_custom_branch.
     def test_custom_branch(self):
         url = _github_raw_url("https://github.com/user/repo", branch="develop")
         assert "/develop/" in url
 
+    # AGENT SHALL VALIDATE PROCESS test_invalid_repo.
     def test_invalid_repo(self):
         url = _github_raw_url("https://github.com/user")
         assert url == ""
 
 
+# AGENT claude SHALL DEFINE RECORD testextracttrugurls AS A RECORD test_suite.
 class TestExtractTrugUrls:
+    # AGENT SHALL VALIDATE PROCESS test_href_links.
     def test_href_links(self):
         html = '<a href="https://example.com/folder.trug.json">TRUG</a>'
         urls = _extract_trug_urls(html, "https://example.com")
         assert len(urls) == 1
         assert urls[0] == "https://example.com/folder.trug.json"
 
+    # AGENT SHALL VALIDATE PROCESS test_relative_links.
     def test_relative_links(self):
         html = '<a href="/data/trug.json">TRUG</a>'
         urls = _extract_trug_urls(html, "https://example.com")
         assert len(urls) == 1
         assert "example.com" in urls[0]
 
+    # AGENT SHALL VALIDATE PROCESS test_bare_url_in_text.
     def test_bare_url_in_text(self):
         text = "Check out https://example.com/data.trug.json for more info."
         urls = _extract_trug_urls(text, "https://example.com")
         assert len(urls) >= 1
 
+    # AGENT SHALL VALIDATE PROCESS test_no_trug_links.
     def test_no_trug_links(self):
         html = '<a href="https://example.com/index.html">Home</a>'
         urls = _extract_trug_urls(html, "https://example.com")
         assert len(urls) == 0
 
 
+# AGENT claude SHALL DEFINE RECORD testparsetrugjson AS A RECORD test_suite.
 class TestParseTrugJson:
+    # AGENT SHALL VALIDATE PROCESS test_valid_trug.
     def test_valid_trug(self):
         data = {"name": "test", "nodes": [], "edges": []}
         result = _parse_trug_json(json.dumps(data))
         assert result is not None
         assert result["name"] == "test"
 
+    # AGENT SHALL VALIDATE PROCESS test_invalid_json.
     def test_invalid_json(self):
         assert _parse_trug_json("not json") is None
 
+    # AGENT SHALL VALIDATE PROCESS test_no_nodes.
     def test_no_nodes(self):
         data = {"name": "test"}
         assert _parse_trug_json(json.dumps(data)) is None
 
+    # AGENT SHALL VALIDATE PROCESS test_non_dict.
     def test_non_dict(self):
         assert _parse_trug_json(json.dumps([1, 2, 3])) is None
 
 
+# AGENT claude SHALL DEFINE RECORD testfindrootnode AS A RECORD test_suite.
 class TestFindRootNode:
+    # AGENT SHALL VALIDATE PROCESS test_root_by_parent_id_none.
     def test_root_by_parent_id_none(self):
         graph = {
             "nodes": [
@@ -108,14 +131,17 @@ class TestFindRootNode:
         root = _find_root_node(graph)
         assert root["id"] == "root"
 
+    # AGENT SHALL VALIDATE PROCESS test_no_parent_id_field.
     def test_no_parent_id_field(self):
         graph = {"nodes": [{"id": "only"}]}
         root = _find_root_node(graph)
         assert root["id"] == "only"
 
+    # AGENT SHALL VALIDATE PROCESS test_empty_nodes.
     def test_empty_nodes(self):
         assert _find_root_node({"nodes": []}) is None
 
+    # AGENT SHALL VALIDATE PROCESS test_fallback_first_node.
     def test_fallback_first_node(self):
         graph = {
             "nodes": [
@@ -131,7 +157,9 @@ class TestFindRootNode:
 # HubCandidate dataclass
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD testhubcandidate AS A RECORD test_suite.
 class TestHubCandidate:
+    # AGENT SHALL VALIDATE PROCESS test_default_values.
     def test_default_values(self):
         c = HubCandidate()
         assert c.url == ""
@@ -140,6 +168,7 @@ class TestHubCandidate:
         assert c.tier3_score is None
         assert c.final_score == 0.0
 
+    # AGENT SHALL VALIDATE PROCESS test_with_data.
     def test_with_data(self):
         c = HubCandidate(
             url="https://example.com/trug.json",
@@ -197,7 +226,9 @@ def _make_trug_graph_no_qi(name, topic=""):
     }
 
 
+# AGENT claude SHALL DEFINE RECORD testhubagenttier2 AS A RECORD test_suite.
 class TestHubAgentTier2:
+    # AGENT SHALL VALIDATE PROCESS test_evaluate_with_matching_qi.
     def test_evaluate_with_matching_qi(self):
         interest = QualifyingInterest(keywords=["machine learning"], domain="ai")
         agent = HubAgent(interest=interest)
@@ -211,6 +242,7 @@ class TestHubAgentTier2:
         assert candidates[0].tier2_score > 0.5
         assert candidates[0].qualifying_interest is not None
 
+    # AGENT SHALL VALIDATE PROCESS test_evaluate_with_non_matching_qi.
     def test_evaluate_with_non_matching_qi(self):
         interest = QualifyingInterest(keywords=["machine learning"])
         agent = HubAgent(interest=interest)
@@ -223,6 +255,7 @@ class TestHubAgentTier2:
         agent.evaluate_tier2(candidates)
         assert candidates[0].tier2_score < 0.3
 
+    # AGENT SHALL VALIDATE PROCESS test_evaluate_without_qi_uses_fallback.
     def test_evaluate_without_qi_uses_fallback(self):
         interest = QualifyingInterest(keywords=["machine learning"])
         agent = HubAgent(interest=interest)
@@ -236,6 +269,7 @@ class TestHubAgentTier2:
         # Fallback should find "machine learning" in topic
         assert candidates[0].tier2_score > 0.0
 
+    # AGENT SHALL VALIDATE PROCESS test_evaluate_no_graph_data.
     def test_evaluate_no_graph_data(self):
         interest = QualifyingInterest(keywords=["test"])
         agent = HubAgent(interest=interest)
@@ -243,6 +277,7 @@ class TestHubAgentTier2:
         agent.evaluate_tier2(candidates)
         assert candidates[0].tier2_score == 0.0
 
+    # AGENT SHALL VALIDATE PROCESS test_evaluate_empty_graph.
     def test_evaluate_empty_graph(self):
         interest = QualifyingInterest(keywords=["test"])
         agent = HubAgent(interest=interest)
@@ -250,6 +285,7 @@ class TestHubAgentTier2:
         agent.evaluate_tier2(candidates)
         assert candidates[0].tier2_score == 0.0
 
+    # AGENT SHALL VALIDATE PROCESS test_fallback_no_keyword_match.
     def test_fallback_no_keyword_match(self):
         interest = QualifyingInterest(keywords=["quantum computing"])
         agent = HubAgent(interest=interest)
@@ -263,7 +299,9 @@ class TestHubAgentTier2:
         assert candidates[0].tier2_score == 0.0
 
 
+# AGENT claude SHALL DEFINE RECORD testhubagentdiscoverfromgraphs AS A RECORD test_suite.
 class TestHubAgentDiscoverFromGraphs:
+    # AGENT SHALL VALIDATE PROCESS test_from_graph_dicts.
     def test_from_graph_dicts(self):
         interest = QualifyingInterest(keywords=["ml"])
         agent = HubAgent(interest=interest)
@@ -275,6 +313,7 @@ class TestHubAgentDiscoverFromGraphs:
         assert len(candidates) == 2
         assert candidates[0].url == "graph_a"
 
+    # AGENT SHALL VALIDATE PROCESS test_filters_invalid_graphs.
     def test_filters_invalid_graphs(self):
         interest = QualifyingInterest(keywords=["test"])
         agent = HubAgent(interest=interest)
@@ -286,6 +325,7 @@ class TestHubAgentDiscoverFromGraphs:
         candidates = agent.discover_from_graphs(graphs)
         assert len(candidates) == 1
 
+    # AGENT SHALL VALIDATE PROCESS test_max_candidates_limit.
     def test_max_candidates_limit(self):
         interest = QualifyingInterest(keywords=["test"])
         agent = HubAgent(interest=interest, max_candidates=2)
@@ -296,7 +336,9 @@ class TestHubAgentDiscoverFromGraphs:
         assert len(candidates) == 2
 
 
+# AGENT claude SHALL DEFINE RECORD testhubagentrank AS A RECORD test_suite.
 class TestHubAgentRank:
+    # AGENT SHALL VALIDATE PROCESS test_rank_filters_by_min_relevance.
     def test_rank_filters_by_min_relevance(self):
         interest = QualifyingInterest(keywords=["test"])
         agent = HubAgent(interest=interest, min_relevance=0.5)
@@ -310,6 +352,7 @@ class TestHubAgentRank:
         assert ranked[0].url == "a"
         assert ranked[1].url == "c"
 
+    # AGENT SHALL VALIDATE PROCESS test_rank_empty.
     def test_rank_empty(self):
         interest = QualifyingInterest(keywords=["test"])
         agent = HubAgent(interest=interest)
@@ -320,28 +363,36 @@ class TestHubAgentRank:
 # HubAgent — Tier 3 (LLM, async)
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD mockllmforhub AS RECORD class.
 class MockLLMForHub:
     """Mock LLM client that returns a score."""
 
+    # AGENT claude SHALL DEFINE FUNCTION complete.
     async def complete(self, prompt, max_tokens=50):
         return "0.75"
 
 
+# AGENT claude SHALL DEFINE RECORD mockllmbadresponse AS RECORD class.
 class MockLLMBadResponse:
     """Mock LLM client that returns non-numeric text."""
 
+    # AGENT claude SHALL DEFINE FUNCTION complete.
     async def complete(self, prompt, max_tokens=50):
         return "I think this is very relevant!"
 
 
+# AGENT claude SHALL DEFINE RECORD mockllmerror AS RECORD class.
 class MockLLMError:
     """Mock LLM client that raises an exception."""
 
+    # AGENT claude SHALL DEFINE FUNCTION complete.
     async def complete(self, prompt, max_tokens=50):
         raise RuntimeError("LLM failed")
 
 
+# AGENT claude SHALL DEFINE RECORD testhubagenttier3 AS A RECORD test_suite.
 class TestHubAgentTier3:
+    # AGENT SHALL VALIDATE PROCESS test_tier3_evaluates_ambiguous.
     @pytest.mark.asyncio
     async def test_tier3_evaluates_ambiguous(self):
         interest = QualifyingInterest(keywords=["ml"])
@@ -364,6 +415,7 @@ class TestHubAgentTier3:
         # Blended: 0.5*0.4 + 0.5*0.75 = 0.575
         assert abs(candidates[0].final_score - 0.575) < 0.01
 
+    # AGENT SHALL VALIDATE PROCESS test_tier3_skips_high_score.
     @pytest.mark.asyncio
     async def test_tier3_skips_high_score(self):
         interest = QualifyingInterest(keywords=["ml"])
@@ -378,6 +430,7 @@ class TestHubAgentTier3:
         await agent.evaluate_tier3(candidates)
         assert candidates[0].tier3_score is None  # Not evaluated
 
+    # AGENT SHALL VALIDATE PROCESS test_tier3_skips_low_score.
     @pytest.mark.asyncio
     async def test_tier3_skips_low_score(self):
         interest = QualifyingInterest(keywords=["ml"])
@@ -392,6 +445,7 @@ class TestHubAgentTier3:
         await agent.evaluate_tier3(candidates)
         assert candidates[0].tier3_score is None
 
+    # AGENT SHALL VALIDATE PROCESS test_tier3_no_llm_client.
     @pytest.mark.asyncio
     async def test_tier3_no_llm_client(self):
         interest = QualifyingInterest(keywords=["ml"])
@@ -402,6 +456,7 @@ class TestHubAgentTier3:
         await agent.evaluate_tier3(candidates)
         assert candidates[0].tier3_score is None
 
+    # AGENT SHALL VALIDATE PROCESS test_tier3_bad_response.
     @pytest.mark.asyncio
     async def test_tier3_bad_response(self):
         interest = QualifyingInterest(keywords=["ml"])
@@ -422,6 +477,7 @@ class TestHubAgentTier3:
         await agent.evaluate_tier3(candidates)
         assert candidates[0].tier3_score is None  # Couldn't parse
 
+    # AGENT SHALL VALIDATE PROCESS test_tier3_llm_error.
     @pytest.mark.asyncio
     async def test_tier3_llm_error(self):
         interest = QualifyingInterest(keywords=["ml"])
@@ -447,7 +503,9 @@ class TestHubAgentTier3:
 # HubAgent — full pipeline (async)
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD testhubagentfullpipeline AS A RECORD test_suite.
 class TestHubAgentFullPipeline:
+    # AGENT SHALL VALIDATE PROCESS test_discover_from_graphs_and_rank.
     @pytest.mark.asyncio
     async def test_discover_from_graphs_and_rank(self):
         """End-to-end: load → evaluate Tier 2 → rank."""

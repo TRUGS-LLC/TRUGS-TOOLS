@@ -17,6 +17,7 @@ from trugs_tools.agent_instructions_renderer import (
 REPO_ROOT = Path(__file__).parent.parent.parent
 
 
+# AGENT claude SHALL DEFINE FUNCTION minimal_trug.
 @pytest.fixture
 def minimal_trug():
     """Minimal agent_instructions TRUG with one node of each key type."""
@@ -92,6 +93,7 @@ def minimal_trug():
     }
 
 
+# AGENT claude SHALL DEFINE FUNCTION real_trug_path.
 @pytest.fixture
 def real_trug_path():
     """Path to the real agent_instructions.trug.json in this repo."""
@@ -101,11 +103,13 @@ def real_trug_path():
 # ─── _load_trug tests ─────────────────────────────────────────────────
 
 
+# AGENT SHALL VALIDATE PROCESS test_load_trug_from_dict.
 def test_load_trug_from_dict(minimal_trug):
     result = _load_trug(minimal_trug)
     assert result is minimal_trug
 
 
+# AGENT SHALL VALIDATE PROCESS test_load_trug_from_path.
 def test_load_trug_from_path(tmp_path, minimal_trug):
     p = tmp_path / "test.trug.json"
     p.write_text(json.dumps(minimal_trug), encoding="utf-8")
@@ -113,6 +117,7 @@ def test_load_trug_from_path(tmp_path, minimal_trug):
     assert result["meta"]["id"] == "agent_instructions"
 
 
+# AGENT SHALL VALIDATE PROCESS test_load_trug_from_str_path.
 def test_load_trug_from_str_path(tmp_path, minimal_trug):
     p = tmp_path / "test.trug.json"
     p.write_text(json.dumps(minimal_trug), encoding="utf-8")
@@ -120,6 +125,7 @@ def test_load_trug_from_str_path(tmp_path, minimal_trug):
     assert result["meta"]["id"] == "agent_instructions"
 
 
+# AGENT SHALL VALIDATE PROCESS test_load_trug_invalid_type.
 def test_load_trug_invalid_type():
     with pytest.raises(TypeError, match="Expected dict, str, or Path"):
         _load_trug(42)
@@ -128,26 +134,31 @@ def test_load_trug_invalid_type():
 # ─── render_agent_instructions tests ─────────────────────────────────
 
 
+# AGENT SHALL VALIDATE PROCESS test_output_includes_generated_header.
 def test_output_includes_generated_header(minimal_trug):
     out = render_agent_instructions(minimal_trug)
     assert GENERATED_HEADER in out
 
 
+# AGENT SHALL VALIDATE PROCESS test_output_includes_source_comment.
 def test_output_includes_source_comment(minimal_trug):
     out = render_agent_instructions(minimal_trug)
     assert "SOURCE OF TRUTH: .github/agent_instructions.trug.json" in out
 
 
+# AGENT SHALL VALIDATE PROCESS test_output_includes_title.
 def test_output_includes_title(minimal_trug):
     out = render_agent_instructions(minimal_trug)
     assert "# TRUGS_DEVELOPMENT: Instructions for LLM and CoPilot Agents." in out
 
 
+# AGENT SHALL VALIDATE PROCESS test_output_ends_with_newline.
 def test_output_ends_with_newline(minimal_trug):
     out = render_agent_instructions(minimal_trug)
     assert out.endswith("\n")
 
 
+# AGENT SHALL VALIDATE PROCESS test_deterministic_output.
 def test_deterministic_output(minimal_trug):
     """Same input produces identical output."""
     out1 = render_agent_instructions(minimal_trug)
@@ -155,6 +166,7 @@ def test_deterministic_output(minimal_trug):
     assert out1 == out2
 
 
+# AGENT SHALL VALIDATE PROCESS test_what_is_a_trug_section_rendered.
 def test_what_is_a_trug_section_rendered(minimal_trug):
     out = render_agent_instructions(minimal_trug)
     assert "## What Is a TRUG" in out
@@ -162,6 +174,7 @@ def test_what_is_a_trug_section_rendered(minimal_trug):
     assert "The TRUG indexes reality." in out
 
 
+# AGENT SHALL VALIDATE PROCESS test_protected_section_rendered.
 def test_protected_section_rendered(minimal_trug):
     out = render_agent_instructions(minimal_trug)
     assert "## PROTECTED - DO NOT MODIFY" in out
@@ -169,6 +182,7 @@ def test_protected_section_rendered(minimal_trug):
     assert "`.env/`" in out
 
 
+# AGENT SHALL VALIDATE PROCESS test_branching_rules_section_rendered.
 def test_branching_rules_section_rendered(minimal_trug):
     out = render_agent_instructions(minimal_trug)
     assert "## BRANCHING RULES (HARD RULE)" in out
@@ -176,18 +190,21 @@ def test_branching_rules_section_rendered(minimal_trug):
     assert "1. Create issue" in out
 
 
+# AGENT SHALL VALIDATE PROCESS test_archive_convention_section_rendered.
 def test_archive_convention_section_rendered(minimal_trug):
     out = render_agent_instructions(minimal_trug)
     assert "## ARCHIVE CONVENTION" in out
     assert "`zzz_`" in out
 
 
+# AGENT SHALL VALIDATE PROCESS test_project_org_section_rendered.
 def test_project_org_section_rendered(minimal_trug):
     out = render_agent_instructions(minimal_trug)
     assert "## Project Organization & Agentic Coding" in out
     assert "Interactive Development" in out
 
 
+# AGENT SHALL VALIDATE PROCESS test_references_section_rendered.
 def test_references_section_rendered(minimal_trug):
     out = render_agent_instructions(minimal_trug)
     assert "## References" in out
@@ -195,6 +212,7 @@ def test_references_section_rendered(minimal_trug):
     assert "TRUGS_AAA/REFERENCE_aaa_reference.md" in out
 
 
+# AGENT SHALL VALIDATE PROCESS test_section_order.
 def test_section_order(minimal_trug):
     """Key sections appear in the expected order."""
     out = render_agent_instructions(minimal_trug)
@@ -208,6 +226,7 @@ def test_section_order(minimal_trug):
 # ─── Real TRUG tests ──────────────────────────────────────────────────
 
 
+# AGENT SHALL VALIDATE PROCESS test_render_from_real_trug.
 def test_render_from_real_trug(real_trug_path):
     """Smoke test: render the real agent_instructions.trug.json without error."""
     if not real_trug_path.exists():
@@ -222,6 +241,7 @@ def test_render_from_real_trug(real_trug_path):
     assert "## References" in out
 
 
+# AGENT SHALL VALIDATE PROCESS test_real_trug_has_all_major_sections.
 def test_real_trug_has_all_major_sections(real_trug_path):
     """The rendered output from the real TRUG must contain all expected sections."""
     if not real_trug_path.exists():
@@ -250,6 +270,7 @@ def test_real_trug_has_all_major_sections(real_trug_path):
 # ─── CLI command tests ────────────────────────────────────────────────
 
 
+# AGENT SHALL VALIDATE PROCESS test_cli_dry_run.
 def test_cli_dry_run(tmp_path, minimal_trug, capsys):
     """--dry-run prints to stdout and does not create output file."""
     import json as json_mod
@@ -271,6 +292,7 @@ def test_cli_dry_run(tmp_path, minimal_trug, capsys):
     assert "## What Is a TRUG" in captured.out
 
 
+# AGENT SHALL VALIDATE PROCESS test_cli_writes_output_file.
 def test_cli_writes_output_file(tmp_path, minimal_trug):
     """Without --dry-run, the output file is written."""
     import json as json_mod
@@ -290,6 +312,7 @@ def test_cli_writes_output_file(tmp_path, minimal_trug):
     assert "## What Is a TRUG" in content
 
 
+# AGENT SHALL VALIDATE PROCESS test_cli_missing_input_returns_exit_1.
 def test_cli_missing_input_returns_exit_1(tmp_path):
     """Missing input file → exit code 1."""
     from trugs_tools.cli import agent_render_command

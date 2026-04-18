@@ -20,7 +20,9 @@ def _base_trug(**overrides):
     return trug
 
 
+# AGENT claude SHALL DEFINE RECORD testrule10unreachablenodes AS A RECORD test_suite.
 class TestRule10UnreachableNodes:
+    # AGENT SHALL VALIDATE PROCESS test_no_unreachable.
     def test_no_unreachable(self):
         trug = _base_trug(
             nodes=[
@@ -35,6 +37,7 @@ class TestRule10UnreachableNodes:
         w_unreachable = [w for w in result.warnings if w.code == "UNREACHABLE_NODE"]
         assert w_unreachable == []
 
+    # AGENT SHALL VALIDATE PROCESS test_unreachable_produces_warning.
     def test_unreachable_produces_warning(self):
         trug = _base_trug(
             nodes=[
@@ -51,6 +54,7 @@ class TestRule10UnreachableNodes:
         assert len(w_unreachable) >= 1
         assert any(w.node_id == "island" for w in w_unreachable)
 
+    # AGENT SHALL VALIDATE PROCESS test_warning_does_not_affect_validity.
     def test_warning_does_not_affect_validity(self):
         """Unreachable node warning should not set valid=False.
         Use parent_id=None so node is a root (no rule 2 violation)."""
@@ -69,7 +73,9 @@ class TestRule10UnreachableNodes:
         assert result.valid is True
 
 
+# AGENT claude SHALL DEFINE RECORD testrule11deadnodes AS A RECORD test_suite.
 class TestRule11DeadNodes:
+    # AGENT SHALL VALIDATE PROCESS test_no_dead.
     def test_no_dead(self):
         trug = _base_trug(
             nodes=[
@@ -84,6 +90,7 @@ class TestRule11DeadNodes:
         w_dead = [w for w in result.warnings if w.code == "DEAD_NODE"]
         assert w_dead == []
 
+    # AGENT SHALL VALIDATE PROCESS test_dead_produces_warning.
     def test_dead_produces_warning(self):
         trug = _base_trug(
             nodes=[
@@ -101,6 +108,7 @@ class TestRule11DeadNodes:
         assert len(w_dead) >= 1
         assert any(w.node_id == "child2" for w in w_dead)
 
+    # AGENT SHALL VALIDATE PROCESS test_warning_does_not_affect_validity.
     def test_warning_does_not_affect_validity(self):
         """Dead node warning should not set valid=False.
         Node is in root.contains so rule 2 passes, but has no edge to_id targeting it."""
@@ -120,7 +128,9 @@ class TestRule11DeadNodes:
         assert result.valid is True
 
 
+# AGENT claude SHALL DEFINE RECORD testexistingrulesunchanged AS A RECORD test_suite.
 class TestExistingRulesUnchanged:
+    # AGENT SHALL VALIDATE PROCESS test_minimal_valid_trug.
     def test_minimal_valid_trug(self):
         trug = _base_trug(
             nodes=[
@@ -131,6 +141,7 @@ class TestExistingRulesUnchanged:
         assert result.valid is True
         assert len(result.errors) == 0
 
+    # AGENT SHALL VALIDATE PROCESS test_duplicate_id_still_caught.
     def test_duplicate_id_still_caught(self):
         trug = _base_trug(
             nodes=[
@@ -141,6 +152,7 @@ class TestExistingRulesUnchanged:
         result = validate_trug(trug)
         assert any(e.code == "DUPLICATE_NODE_ID" for e in result.errors)
 
+    # AGENT SHALL VALIDATE PROCESS test_non_trug_skips.
     def test_non_trug_skips(self):
         result = validate_trug({"name": "x"})
         # Missing root fields → invalid, but existing behavior

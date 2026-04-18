@@ -17,6 +17,7 @@ from .crawler import Source
 from .extractor import Relation
 
 
+# AGENT claude SHALL DEFINE RECORD credibilityfactors AS RECORD class.
 @dataclass
 class CredibilityFactors:
     """Factors contributing to a source credibility score."""
@@ -29,6 +30,7 @@ class CredibilityFactors:
 
     _CAP: float = 0.95
 
+    # AGENT claude SHALL DEFINE FUNCTION total.
     @property
     def total(self) -> float:
         """Credibility score capped at 0.95."""
@@ -41,6 +43,7 @@ class CredibilityFactors:
         )
         return min(self._CAP, raw)
 
+    # AGENT claude SHALL DEFINE FUNCTION to_dict.
     def to_dict(self) -> dict:
         return {
             "peer_reviewed": self.peer_reviewed,
@@ -102,6 +105,7 @@ LOW_QUALITY_SIGNALS = [
 ]
 
 
+# AGENT claude SHALL DEFINE RECORD credibilityscorer AS RECORD class.
 class CredibilityScorer:
     """
     Scores source and edge credibility.
@@ -115,6 +119,7 @@ class CredibilityScorer:
         self.moderate_quality = MODERATE_QUALITY_DOMAINS
         self.low_quality_signals = LOW_QUALITY_SIGNALS
 
+    # AGENT claude SHALL DEFINE FUNCTION score_source.
     def score_source(self, source: Source) -> CredibilityFactors:
         """
         Calculate credibility factors for a source.
@@ -136,6 +141,7 @@ class CredibilityScorer:
 
         return factors
 
+    # AGENT claude SHALL DEFINE FUNCTION score_edge.
     def score_edge(
         self,
         relation: Relation,
@@ -260,6 +266,7 @@ class CredibilityScorer:
             return 0.03
 
 
+# AGENT claude SHALL DEFINE FUNCTION calculate_credibility.
 def calculate_credibility(source: Source) -> float:
     """
     Convenience function: calculate source credibility score.
@@ -275,6 +282,7 @@ def calculate_credibility(source: Source) -> float:
     return factors.total
 
 
+# AGENT claude SHALL DEFINE FUNCTION score_edge_weight.
 def score_edge_weight(
     relation: Relation,
     source: Optional[Source] = None,

@@ -14,7 +14,9 @@ from trugs_tools.web.graph_builder import TRUGSWebGraphBuilder
 # PipelineResult
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD testpipelineresult AS A RECORD test_suite.
 class TestPipelineResult:
+    # AGENT SHALL VALIDATE PROCESS test_empty_result.
     def test_empty_result(self):
         r = PipelineResult()
         assert r.node_count == 0
@@ -25,6 +27,7 @@ class TestPipelineResult:
         assert r.relations == []
         assert r.errors == []
 
+    # AGENT SHALL VALIDATE PROCESS test_with_builder.
     def test_with_builder(self):
         builder = TRUGSWebGraphBuilder(
             name="test", topic="testing", description="A test graph"
@@ -42,7 +45,9 @@ class TestPipelineResult:
 # Orchestrator — mock provider (no real HTTP)
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD testorchestratormock AS A RECORD test_suite.
 class TestOrchestratorMock:
+    # AGENT SHALL VALIDATE PROCESS test_run_with_mock_provider.
     @pytest.mark.asyncio
     async def test_run_with_mock_provider(self):
         """Run the full pipeline with the mock LLM (no HTTP calls)."""
@@ -59,6 +64,7 @@ class TestOrchestratorMock:
         # Should have at least the root node
         assert result.node_count >= 1
 
+    # AGENT SHALL VALIDATE PROCESS test_run_empty_seeds.
     @pytest.mark.asyncio
     async def test_run_empty_seeds(self):
         orch = Orchestrator(topic="empty", llm_provider="mock")
@@ -67,6 +73,7 @@ class TestOrchestratorMock:
         assert result.node_count >= 1  # root node
         assert result.errors == []
 
+    # AGENT SHALL VALIDATE PROCESS test_graph_dict_structure.
     @pytest.mark.asyncio
     async def test_graph_dict_structure(self):
         orch = Orchestrator(topic="test graph", llm_provider="mock")
@@ -81,6 +88,7 @@ class TestOrchestratorMock:
         assert d["version"] == "1.0.0"
         assert d["type"] == "RESEARCH"
 
+    # AGENT SHALL VALIDATE PROCESS test_run_and_save.
     @pytest.mark.asyncio
     async def test_run_and_save(self):
         orch = Orchestrator(topic="save test", llm_provider="mock")
@@ -96,11 +104,13 @@ class TestOrchestratorMock:
                 data = json.load(f)
             assert data["type"] == "RESEARCH"
 
+    # AGENT SHALL VALIDATE PROCESS test_description_default.
     @pytest.mark.asyncio
     async def test_description_default(self):
         orch = Orchestrator(topic="my topic")
         assert "my topic" in orch.description
 
+    # AGENT SHALL VALIDATE PROCESS test_description_custom.
     @pytest.mark.asyncio
     async def test_description_custom(self):
         orch = Orchestrator(topic="my topic", description="Custom desc")
@@ -111,12 +121,15 @@ class TestOrchestratorMock:
 # Orchestrator — integration with hub __init__
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD testorchestratorimport AS A RECORD test_suite.
 class TestOrchestratorImport:
+    # AGENT SHALL VALIDATE PROCESS test_import_from_hub.
     def test_import_from_hub(self):
         from trugs_tools.web.hub import Orchestrator as O, PipelineResult as PR
         assert O is Orchestrator
         assert PR is PipelineResult
 
+    # AGENT SHALL VALIDATE PROCESS test_import_from_web.
     def test_import_from_web(self):
         from trugs_tools.web import Orchestrator as O, PipelineResult as PR
         assert O is Orchestrator

@@ -9,6 +9,7 @@ from trugs_tools import generate_trug, validate_trug, __version__
 FIXED_TEST_DATE = "2025-01-01"
 
 
+# AGENT SHALL VALIDATE PROCESS test_full_workflow_web.
 def test_full_workflow_web():
     """Test complete workflow: generate → validate → check structure."""
     # Generate
@@ -27,6 +28,7 @@ def test_full_workflow_web():
     assert len(trug["edges"]) > 0
 
 
+# AGENT SHALL VALIDATE PROCESS test_full_workflow_all_branches.
 def test_full_workflow_all_branches():
     """Test that all branches generate valid TRUGs."""
     branches = ["web", "writer", "orchestration", "knowledge_v1", "nested"]
@@ -44,6 +46,7 @@ def test_full_workflow_all_branches():
             assert trug["branch"] == branch
 
 
+# AGENT SHALL VALIDATE PROCESS test_workflow_with_file_io.
 def test_workflow_with_file_io(tmp_path):
     """Test workflow with file I/O."""
     from trugs_tools.generator import generate_to_file
@@ -62,6 +65,7 @@ def test_workflow_with_file_io(tmp_path):
     assert result.valid
 
 
+# AGENT SHALL VALIDATE PROCESS test_extension_workflow.
 def test_extension_workflow():
     """Test workflow with extensions."""
     # Generate with extensions
@@ -75,6 +79,7 @@ def test_extension_workflow():
     assert trug.get("extensions") == ["typed", "scoped"]
 
 
+# AGENT SHALL VALIDATE PROCESS test_validation_catches_errors.
 def test_validation_catches_errors():
     """Test that validator catches common errors."""
     # Test 1: Duplicate IDs
@@ -124,6 +129,7 @@ def test_validation_catches_errors():
     assert any("INVALID_TO_ID" in e.code for e in result.errors)
 
 
+# AGENT SHALL VALIDATE PROCESS test_all_templates_have_required_fields.
 def test_all_templates_have_required_fields():
     """Verify all generated templates have required fields."""
     branches = ["web", "writer", "orchestration", "knowledge_v1", "nested"]
@@ -149,6 +155,7 @@ def test_all_templates_have_required_fields():
                 assert field in edge, f"{branch} edge missing {field}"
 
 
+# AGENT SHALL VALIDATE PROCESS test_consistency_between_parent_and_contains.
 def test_consistency_between_parent_and_contains():
     """Verify parent_id and contains edges are consistent in all templates."""
     branches = ["web", "writer", "orchestration", "knowledge_v1", "nested"]
@@ -178,6 +185,7 @@ def test_consistency_between_parent_and_contains():
             assert child_id in contains_map[parent_id], f"{branch}: Child {child_id} not in parent's contains"
 
 
+# AGENT SHALL VALIDATE PROCESS test_json_serialization_roundtrip.
 def test_json_serialization_roundtrip():
     """Test that generated TRUGs can be serialized and deserialized."""
     branches = ["web", "writer", "orchestration", "knowledge_v1", "nested"]
@@ -199,6 +207,7 @@ def test_json_serialization_roundtrip():
         assert result.valid
 
 
+# AGENT SHALL VALIDATE PROCESS test_version_info.
 def test_version_info():
     """Test that version info is available."""
     from trugs_tools import __version__, __codename__
@@ -207,6 +216,7 @@ def test_version_info():
     assert __codename__ == "AAA_AARDVARK"
 
 
+# AGENT SHALL VALIDATE PROCESS test_api_exports.
 def test_api_exports():
     """Test that main API functions are exported."""
     from trugs_tools import validate_trug, generate_trug, ValidationResult
@@ -220,6 +230,7 @@ def test_api_exports():
 # ─── S1.3.5: Integration Test Suite ───────────────────────────────────
 
 
+# AGENT SHALL VALIDATE PROCESS test_validate_generate_render_pipeline.
 def test_validate_generate_render_pipeline(tmp_path):
     """Test validate→generate→render pipeline."""
     from trugs_tools.generator import generate_to_file
@@ -274,6 +285,7 @@ def test_validate_generate_render_pipeline(tmp_path):
     assert "## Quick Reference" in arch
 
 
+# AGENT SHALL VALIDATE PROCESS test_all_branches_generate_valid_trugs.
 def test_all_branches_generate_valid_trugs():
     """Test all branches generate valid TRUGs that validate correctly."""
     branches = ["web", "writer", "orchestration", "knowledge_v1", "nested"]
@@ -285,6 +297,7 @@ def test_all_branches_generate_valid_trugs():
             assert result.valid, f"{branch}/{template} failed: {result.errors}"
 
 
+# AGENT SHALL VALIDATE PROCESS test_render_output_contains_expected_sections.
 def test_render_output_contains_expected_sections():
     """Test render output contains expected sections."""
     from trugs_tools.renderer import render_aaa, render_readme, render_architecture
@@ -337,6 +350,7 @@ def test_render_output_contains_expected_sections():
 # ─── S1.3.6: Regression Test Suite ────────────────────────────────────
 
 
+# AGENT SHALL VALIDATE PROCESS test_real_reference_trug_validates.
 def test_real_reference_trug_validates():
     """Test real REFERENCE/folder.trug.json validates."""
     reference_path = Path(__file__).parent.parent.parent / "REFERENCE" / "folder.trug.json"
@@ -348,6 +362,7 @@ def test_real_reference_trug_validates():
     assert not any(e.code == "PARSE_ERROR" for e in result.errors)
 
 
+# AGENT SHALL VALIDATE PROCESS test_real_protocol_trug_validates.
 def test_real_protocol_trug_validates():
     """Test real TRUGS_PROTOCOL/folder.trug.json validates."""
     protocol_path = Path(__file__).parent.parent.parent / "TRUGS_PROTOCOL" / "folder.trug.json"
@@ -358,6 +373,7 @@ def test_real_protocol_trug_validates():
     assert not any(e.code == "PARSE_ERROR" for e in result.errors)
 
 
+# AGENT SHALL VALIDATE PROCESS test_example_trug_files_validate.
 def test_example_trug_files_validate():
     """Test all EXAMPLES/*.trug.json validate (if any exist)."""
     examples_dir = Path(__file__).parent.parent / "EXAMPLES"
@@ -377,6 +393,7 @@ def test_example_trug_files_validate():
 # ─── S1.3.7: Performance Benchmark ───────────────────────────────────
 
 
+# AGENT SHALL VALIDATE PROCESS test_generate_and_validate_100_trugs_performance.
 def test_generate_and_validate_100_trugs_performance():
     """Test generating and validating 100 TRUGs in under 5 seconds."""
     import time

@@ -10,6 +10,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from trugs_tools.aaa_validator import validate_aaa, parse_sections, check_issue_trug, check_architecture_content
 
 
+# AGENT SHALL VALIDATE PROCESS test_parse_sections.
 def test_parse_sections():
     """Test section header parsing."""
     content = """
@@ -24,6 +25,7 @@ More content
     assert "FEASIBILITY" in sections
     assert "ARCHITECTURE" in sections
 
+# AGENT SHALL VALIDATE PROCESS test_issue_trug_detection.
 def test_issue_trug_detection():
     """Test Issue TRUG (JSON block with nodes and edges) detection."""
     # With Issue TRUG
@@ -80,6 +82,7 @@ Some text but no JSON block.
     assert not check_issue_trug(content_text_only)
 
 
+# AGENT SHALL VALIDATE PROCESS test_architecture_content_with_system_design.
 def test_architecture_content_with_system_design():
     """ARCHITECTURE with System Design content (no Issue TRUG) is valid."""
     content = """
@@ -99,6 +102,7 @@ def test_architecture_content_with_system_design():
     assert check_architecture_content(content)
 
 
+# AGENT SHALL VALIDATE PROCESS test_architecture_content_with_issue_trug_only.
 def test_architecture_content_with_issue_trug_only():
     """ARCHITECTURE with Issue TRUG only (no System Design prose) is valid."""
     content = """
@@ -116,6 +120,7 @@ def test_architecture_content_with_issue_trug_only():
     assert check_issue_trug(content)
 
 
+# AGENT SHALL VALIDATE PROCESS test_architecture_content_with_both.
 def test_architecture_content_with_both():
     """ARCHITECTURE with both System Design and Issue TRUG is valid."""
     content = """
@@ -139,6 +144,7 @@ Component map here.
     assert check_issue_trug(content)
 
 
+# AGENT SHALL VALIDATE PROCESS test_architecture_content_empty.
 def test_architecture_content_empty():
     """ARCHITECTURE with only Phase Status and no real content is invalid."""
     content = """
@@ -148,6 +154,7 @@ def test_architecture_content_empty():
     assert not check_architecture_content(content)
 
 
+# AGENT SHALL VALIDATE PROCESS test_architecture_content_completely_empty.
 def test_architecture_content_completely_empty():
     """ARCHITECTURE with nothing after the heading is invalid."""
     content = """
@@ -158,6 +165,7 @@ def test_architecture_content_completely_empty():
     assert not check_architecture_content(content)
 
 
+# AGENT SHALL VALIDATE PROCESS test_validate_aaa_system_design_only.
 def test_validate_aaa_system_design_only():
     """validate_aaa accepts ARCHITECTURE with System Design only (no Issue TRUG)."""
     content = """
@@ -188,6 +196,7 @@ content
     path.unlink()
 
 
+# AGENT SHALL VALIDATE PROCESS test_validate_aaa_empty_architecture_fails.
 def test_validate_aaa_empty_architecture_fails():
     """validate_aaa rejects ARCHITECTURE with no content."""
     content = """
@@ -216,6 +225,7 @@ content
     path.unlink()
 
 
+# AGENT SHALL VALIDATE PROCESS test_missing_sections.
 def test_missing_sections():
     """Test detection of missing sections."""
     content = """

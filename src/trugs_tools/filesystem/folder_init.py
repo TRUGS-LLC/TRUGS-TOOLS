@@ -486,6 +486,7 @@ def _build_non_contains_edges(nodes: List[dict]) -> List[dict]:
 # Main entry point
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE FUNCTION init_folder_trug.
 def init_folder_trug(
     path: Union[str, Path],
     force: bool = False,
@@ -619,6 +620,7 @@ def init_folder_trug(
     return result
 
 
+# AGENT claude SHALL DEFINE FUNCTION find_folders_without_trug.
 def find_folders_without_trug(root: Union[str, Path]) -> List[Path]:
     """Find folders that could benefit from a folder.trug.json but don't have one.
 

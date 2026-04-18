@@ -12,6 +12,7 @@ from trugs_tools.filesystem.utils import (
 )
 
 
+# AGENT claude SHALL DEFINE FUNCTION tunlink.
 def tunlink(
     directory: Union[str, Path],
     from_id: Optional[str] = None,

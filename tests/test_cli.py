@@ -9,6 +9,7 @@ from io import StringIO
 from trugs_tools.cli import validate_command, generate_command, info_command, main
 
 
+# AGENT SHALL VALIDATE PROCESS test_validate_command_valid_file.
 def test_validate_command_valid_file(tmp_path):
     """Test validating a valid TRUG file."""
     # Create a valid TRUG file
@@ -31,6 +32,7 @@ def test_validate_command_valid_file(tmp_path):
     assert exit_code == 0
 
 
+# AGENT SHALL VALIDATE PROCESS test_validate_command_invalid_file.
 def test_validate_command_invalid_file(tmp_path):
     """Test validating an invalid TRUG file."""
     # Create an invalid TRUG file (missing required fields)
@@ -45,6 +47,7 @@ def test_validate_command_invalid_file(tmp_path):
     assert exit_code == 1
 
 
+# AGENT SHALL VALIDATE PROCESS test_validate_command_multiple_files.
 def test_validate_command_multiple_files(tmp_path):
     """Test validating multiple TRUG files."""
     # Create two valid files
@@ -68,6 +71,7 @@ def test_validate_command_multiple_files(tmp_path):
     assert exit_code == 0
 
 
+# AGENT SHALL VALIDATE PROCESS test_validate_command_json_output.
 def test_validate_command_json_output(tmp_path, capsys):
     """Test validation with JSON output format."""
     # Create a valid TRUG file
@@ -95,6 +99,7 @@ def test_validate_command_json_output(tmp_path, capsys):
     assert output["results"][0]["valid"] is True
 
 
+# AGENT SHALL VALIDATE PROCESS test_validate_command_file_not_found.
 def test_validate_command_file_not_found():
     """Test validation with non-existent file."""
     exit_code = validate_command(["nonexistent.json"])
@@ -103,6 +108,7 @@ def test_validate_command_file_not_found():
     assert exit_code in [1, 2]
 
 
+# AGENT SHALL VALIDATE PROCESS test_generate_command_python_minimal.
 def test_generate_command_python_minimal(tmp_path, capsys):
     """Test generating a Web minimal TRUG."""
     output_file = tmp_path / "output.json"
@@ -124,6 +130,7 @@ def test_generate_command_python_minimal(tmp_path, capsys):
     assert trug["name"] == "Web Minimal Example"
 
 
+# AGENT SHALL VALIDATE PROCESS test_generate_command_all_branches.
 def test_generate_command_all_branches(tmp_path):
     """Test generating TRUGs for all branches."""
     branches = ["web", "writer", "orchestration", "knowledge_v1", "nested"]
@@ -139,6 +146,7 @@ def test_generate_command_all_branches(tmp_path):
         assert output_file.exists()
 
 
+# AGENT SHALL VALIDATE PROCESS test_generate_command_with_extensions.
 def test_generate_command_with_extensions(tmp_path):
     """Test generating TRUG with extensions."""
     output_file = tmp_path / "output.json"
@@ -154,6 +162,7 @@ def test_generate_command_with_extensions(tmp_path):
     assert output_file.exists()
 
 
+# AGENT SHALL VALIDATE PROCESS test_generate_command_stdout.
 def test_generate_command_stdout(capsys):
     """Test generating TRUG to stdout."""
     exit_code = generate_command([
@@ -169,6 +178,7 @@ def test_generate_command_stdout(capsys):
     assert trug["branch"] == "web"
 
 
+# AGENT SHALL VALIDATE PROCESS test_generate_command_invalid_branch.
 def test_generate_command_invalid_branch():
     """Test generating with invalid branch."""
     # Invalid branch will raise SystemExit from argparse
@@ -178,6 +188,7 @@ def test_generate_command_invalid_branch():
         ])
 
 
+# AGENT SHALL VALIDATE PROCESS test_info_command_valid_file.
 def test_info_command_valid_file(tmp_path, capsys):
     """Test info command on valid TRUG file."""
     # Create a TRUG file
@@ -211,6 +222,7 @@ def test_info_command_valid_file(tmp_path, capsys):
     assert "Edges:      1" in captured.out
 
 
+# AGENT SHALL VALIDATE PROCESS test_info_command_json_output.
 def test_info_command_json_output(tmp_path, capsys):
     """Test info command with JSON output."""
     # Create a TRUG file
@@ -239,12 +251,14 @@ def test_info_command_json_output(tmp_path, capsys):
     assert output["node_count"] == 1
 
 
+# AGENT SHALL VALIDATE PROCESS test_info_command_file_not_found.
 def test_info_command_file_not_found():
     """Test info command with non-existent file."""
     exit_code = info_command(["nonexistent.json"])
     assert exit_code == 1
 
 
+# AGENT SHALL VALIDATE PROCESS test_main_version.
 def test_main_version(capsys):
     """Test main command with --version."""
     # Override sys.argv to test version
@@ -258,6 +272,7 @@ def test_main_version(capsys):
         sys.argv = old_argv
 
 
+# AGENT SHALL VALIDATE PROCESS test_main_no_command.
 def test_main_no_command(capsys):
     """Test main command with no subcommand."""
     old_argv = sys.argv
@@ -269,6 +284,7 @@ def test_main_no_command(capsys):
         sys.argv = old_argv
 
 
+# AGENT SHALL VALIDATE PROCESS test_validate_quiet_mode.
 def test_validate_quiet_mode(tmp_path, capsys):
     """Test validation in quiet mode."""
     # Create a valid TRUG file
@@ -292,6 +308,7 @@ def test_validate_quiet_mode(tmp_path, capsys):
     # Just check exit code is correct
 
 
+# AGENT SHALL VALIDATE PROCESS test_validate_verbose_mode.
 def test_validate_verbose_mode(tmp_path, capsys):
     """Test validation in verbose mode."""
     trug = {
@@ -313,6 +330,7 @@ def test_validate_verbose_mode(tmp_path, capsys):
     assert exit_code == 0  # Valid TRUG
 
 
+# AGENT SHALL VALIDATE PROCESS test_generate_complete_template.
 def test_generate_complete_template(tmp_path):
     """Test generating complete template."""
     output_file = tmp_path / "complete.json"
@@ -366,6 +384,7 @@ def _make_folder_trug_file(tmp_path):
     return f
 
 
+# AGENT SHALL VALIDATE PROCESS test_render_command_valid_file.
 def test_render_command_valid_file(tmp_path):
     """Test render_command with valid TRUG file."""
     trug_file = _make_folder_trug_file(tmp_path)
@@ -378,6 +397,7 @@ def test_render_command_valid_file(tmp_path):
     assert (out_dir / "ARCHITECTURE.md").exists()
 
 
+# AGENT SHALL VALIDATE PROCESS test_render_command_dry_run.
 def test_render_command_dry_run(tmp_path, capsys):
     """Test render_command with --dry-run."""
     trug_file = _make_folder_trug_file(tmp_path)
@@ -391,6 +411,7 @@ def test_render_command_dry_run(tmp_path, capsys):
     assert "=== ARCHITECTURE.md ===" in captured.out
 
 
+# AGENT SHALL VALIDATE PROCESS test_render_command_file_type_aaa.
 def test_render_command_file_type_aaa(tmp_path, capsys):
     """Test render_command with --file-type aaa."""
     trug_file = _make_folder_trug_file(tmp_path)
@@ -403,6 +424,7 @@ def test_render_command_file_type_aaa(tmp_path, capsys):
     assert "=== README.md ===" not in captured.out
 
 
+# AGENT SHALL VALIDATE PROCESS test_render_command_output_directory.
 def test_render_command_output_directory(tmp_path):
     """Test render_command with --output directory."""
     trug_file = _make_folder_trug_file(tmp_path)
@@ -414,6 +436,7 @@ def test_render_command_output_directory(tmp_path):
     assert (out_dir / "AAA.md").exists()
 
 
+# AGENT SHALL VALIDATE PROCESS test_render_command_nonexistent_file.
 def test_render_command_nonexistent_file(capsys):
     """Test render_command with non-existent file."""
     exit_code = render_command(["nonexistent_file.json"])
@@ -423,6 +446,7 @@ def test_render_command_nonexistent_file(capsys):
     assert "not found" in captured.err.lower() or "error" in captured.err.lower()
 
 
+# AGENT SHALL VALIDATE PROCESS test_render_command_invalid_json.
 def test_render_command_invalid_json(tmp_path, capsys):
     """Test render_command with invalid JSON file."""
     bad_file = tmp_path / "bad.json"
@@ -435,6 +459,7 @@ def test_render_command_invalid_json(tmp_path, capsys):
     assert "Invalid JSON" in captured.err or "Error" in captured.err
 
 
+# AGENT SHALL VALIDATE PROCESS test_validate_command_file_not_found.
 def test_validate_command_file_not_found(capsys):
     """Test validate_command with file not found."""
     exit_code = validate_command(["totally_nonexistent_file.json"])
@@ -442,6 +467,7 @@ def test_validate_command_file_not_found(capsys):
     assert exit_code in [1, 2]
 
 
+# AGENT SHALL VALIDATE PROCESS test_validate_command_invalid_json.
 def test_validate_command_invalid_json(tmp_path, capsys):
     """Test validate_command with invalid JSON."""
     bad_file = tmp_path / "bad.json"
@@ -452,6 +478,7 @@ def test_validate_command_invalid_json(tmp_path, capsys):
     assert exit_code in [1, 2]
 
 
+# AGENT SHALL VALIDATE PROCESS test_info_command_with_extensions.
 def test_info_command_with_extensions(tmp_path, capsys):
     """Test info_command with extensions present."""
     trug = {
@@ -479,6 +506,7 @@ def test_info_command_with_extensions(tmp_path, capsys):
     assert "scoped" in captured.out
 
 
+# AGENT SHALL VALIDATE PROCESS test_info_command_file_not_found.
 def test_info_command_file_not_found(capsys):
     """Test info_command with file not found."""
     exit_code = info_command(["totally_nonexistent_file.json"])
@@ -488,6 +516,7 @@ def test_info_command_file_not_found(capsys):
     assert "not found" in captured.err.lower() or "error" in captured.err.lower()
 
 
+# AGENT SHALL VALIDATE PROCESS test_info_command_invalid_json.
 def test_info_command_invalid_json(tmp_path, capsys):
     """Test info_command with invalid JSON."""
     bad_file = tmp_path / "bad.json"
@@ -500,6 +529,7 @@ def test_info_command_invalid_json(tmp_path, capsys):
     assert "Invalid JSON" in captured.err or "Error" in captured.err
 
 
+# AGENT SHALL VALIDATE PROCESS test_main_subcommand_dispatch_validate.
 def test_main_subcommand_dispatch_validate(tmp_path, capsys):
     """Test main subcommand dispatch with validate."""
     trug = {
@@ -521,6 +551,7 @@ def test_main_subcommand_dispatch_validate(tmp_path, capsys):
     assert exit_code == 0
 
 
+# AGENT SHALL VALIDATE PROCESS test_generate_command_error_handling.
 def test_generate_command_error_handling(capsys):
     """Test generate_command error path (line 169-171)."""
     from unittest.mock import patch
@@ -536,6 +567,7 @@ def test_generate_command_error_handling(capsys):
     assert "generation error" in captured.err
 
 
+# AGENT SHALL VALIDATE PROCESS test_info_command_generic_exception.
 def test_info_command_generic_exception(tmp_path, capsys):
     """Test info_command generic exception path (line 262-264)."""
     from unittest.mock import patch
@@ -551,6 +583,7 @@ def test_info_command_generic_exception(tmp_path, capsys):
     assert "unexpected" in captured.err
 
 
+# AGENT SHALL VALIDATE PROCESS test_render_command_generic_exception.
 def test_render_command_generic_exception(tmp_path, capsys):
     """Test render_command generic exception path (line 337-339)."""
     from unittest.mock import patch
@@ -565,6 +598,7 @@ def test_render_command_generic_exception(tmp_path, capsys):
     assert "render failed" in captured.err
 
 
+# AGENT SHALL VALIDATE PROCESS test_main_dispatches_func.
 def test_main_dispatches_func():
     """Test main() hasattr(args, 'func') dispatch (line 376)."""
     old_argv = sys.argv

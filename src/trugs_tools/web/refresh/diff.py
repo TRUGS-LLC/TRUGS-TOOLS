@@ -17,6 +17,7 @@ from dataclasses import dataclass, field
 # Data structures
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD trugdiff AS RECORD class.
 @dataclass
 class TrugDiff:
     """
@@ -41,6 +42,7 @@ class TrugDiff:
     edges_removed: list = field(default_factory=list)
     edges_reweighted: list = field(default_factory=list)
 
+    # AGENT claude SHALL DEFINE FUNCTION is_empty.
     @property
     def is_empty(self) -> bool:
         """Return True when the diff contains no changes."""
@@ -53,6 +55,7 @@ class TrugDiff:
             and not self.edges_reweighted
         )
 
+    # AGENT claude SHALL DEFINE FUNCTION summary.
     @property
     def summary(self) -> str:
         """One-line human-readable summary of changes."""
@@ -90,6 +93,7 @@ def _node_properties_differ(old_node: dict, new_node: dict) -> bool:
     return False
 
 
+# AGENT claude SHALL DEFINE FUNCTION diff_trugs.
 def diff_trugs(
     old_graph: dict,
     new_graph: dict,
@@ -157,6 +161,7 @@ def diff_trugs(
 # Apply diff
 # ============================================================================
 
+# AGENT claude SHALL DEFINE FUNCTION apply_diff.
 def apply_diff(base_graph: dict, diff: TrugDiff) -> dict:
     """
     Produce an updated graph by applying *diff* to *base_graph*.

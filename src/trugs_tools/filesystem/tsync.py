@@ -38,6 +38,7 @@ IGNORE_PATTERNS: Set[str] = {
 }
 
 
+# AGENT claude SHALL DEFINE FUNCTION tsync.
 def tsync(
     directory: Union[str, Path],
     dry_run: bool = False,

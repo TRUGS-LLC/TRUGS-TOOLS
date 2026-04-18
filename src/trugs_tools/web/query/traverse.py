@@ -10,6 +10,7 @@ from typing import Optional
 from .loader import Graph, Node, Edge
 
 
+# AGENT claude SHALL DEFINE RECORD traversalresult AS RECORD class.
 @dataclass
 class TraversalResult:
     """Result of a graph traversal operation."""
@@ -34,21 +35,25 @@ class TraversalResult:
             1 for n in self.nodes if n.credibility >= 0.7
         )
 
+    # AGENT claude SHALL DEFINE FUNCTION is_empty.
     @property
     def is_empty(self):
         return len(self.nodes) == 0
 
+    # AGENT claude SHALL DEFINE FUNCTION top_nodes.
     def top_nodes(self, n=5):
         """Get top N nodes by credibility."""
         sorted_nodes = sorted(self.nodes, key=lambda x: x.credibility, reverse=True)
         return sorted_nodes[:n]
 
+    # AGENT claude SHALL DEFINE FUNCTION top_edges.
     def top_edges(self, n=5):
         """Get top N edges by weight."""
         sorted_edges = sorted(self.edges, key=lambda x: x.weight, reverse=True)
         return sorted_edges[:n]
 
 
+# AGENT claude SHALL DEFINE RECORD graphtraverser AS RECORD class.
 class GraphTraverser:
     """
     High-level traversal patterns for query answering.
@@ -66,6 +71,7 @@ class GraphTraverser:
     def __init__(self, graph):
         self.graph = graph
 
+    # AGENT claude SHALL DEFINE FUNCTION concept_sources.
     def concept_sources(self, concept, min_weight=0.5):
         """
         Find sources that define or discuss a concept.
@@ -108,6 +114,7 @@ class GraphTraverser:
             edges=all_edges,
         )
 
+    # AGENT claude SHALL DEFINE FUNCTION related_concepts.
     def related_concepts(
         self,
         concept,
@@ -160,6 +167,7 @@ class GraphTraverser:
             edges=all_edges,
         )
 
+    # AGENT claude SHALL DEFINE FUNCTION citation_chain.
     def citation_chain(self, source_id, target_id, max_depth=5):
         """Find citation path between two sources."""
         path = self.graph.find_path(source_id, target_id, max_depth)
@@ -179,6 +187,7 @@ class GraphTraverser:
             paths=[path],
         )
 
+    # AGENT claude SHALL DEFINE FUNCTION find_by_relation.
     def find_by_relation(self, relation, min_weight=0.5):
         """
         Find all edges of a specific relation type.
@@ -204,6 +213,7 @@ class GraphTraverser:
             edges=edges,
         )
 
+    # AGENT claude SHALL DEFINE FUNCTION high_credibility_sources.
     def high_credibility_sources(self, min_weight=0.7, node_type=None):
         """Find high-credibility sources in the graph."""
         nodes = self.graph.nodes
@@ -219,6 +229,7 @@ class GraphTraverser:
             nodes=high_cred,
         )
 
+    # AGENT claude SHALL DEFINE FUNCTION weighted_consensus.
     def weighted_consensus(self, concept, min_sources=2, min_weight=0.5):
         """
         Find concepts/claims supported by multiple credible sources.
@@ -244,6 +255,7 @@ class GraphTraverser:
             edges=consensus_edges,
         )
 
+    # AGENT claude SHALL DEFINE FUNCTION alternatives.
     def alternatives(self, node_id, min_weight=0.3):
         """
         Find alternatives to a given node (tool, approach, etc.).
@@ -274,6 +286,7 @@ class GraphTraverser:
         )
 
 
+# AGENT claude SHALL DEFINE FUNCTION query_graph.
 def query_graph(graph, query, min_weight=0.5):
     """
     Simple query interface for graph traversal.

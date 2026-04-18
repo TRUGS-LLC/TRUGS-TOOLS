@@ -17,12 +17,14 @@ def _canonical_data():
     return json.loads(CANONICAL_PATH.read_text(encoding="utf-8"))
 
 
+# AGENT SHALL VALIDATE PROCESS test_validate_aaa_trug_accepts_canonical_example.
 def test_validate_aaa_trug_accepts_canonical_example():
     valid, errors = validate_aaa_trug(_canonical_data())
     assert valid
     assert errors == []
 
 
+# AGENT SHALL VALIDATE PROCESS test_validate_aaa_trug_rejects_missing_node_core_fields.
 def test_validate_aaa_trug_rejects_missing_node_core_fields():
     data = _canonical_data()
     data["nodes"][0].pop("dimension")
@@ -31,6 +33,7 @@ def test_validate_aaa_trug_rejects_missing_node_core_fields():
     assert any("missing CORE fields" in err and "dimension" in err for err in errors)
 
 
+# AGENT SHALL VALIDATE PROCESS test_validate_aaa_trug_rejects_unknown_node_type.
 def test_validate_aaa_trug_rejects_unknown_node_type():
     data = _canonical_data()
     data["nodes"][1]["type"] = "UNKNOWN_TYPE"
@@ -39,6 +42,7 @@ def test_validate_aaa_trug_rejects_unknown_node_type():
     assert any("unknown aaa_v1 node type" in err for err in errors)
 
 
+# AGENT SHALL VALIDATE PROCESS test_validate_aaa_trug_rejects_dangling_edge_with_specific_message.
 def test_validate_aaa_trug_rejects_dangling_edge_with_specific_message():
     data = _canonical_data()
     data["edges"][0]["to_id"] = "missing_phase"
@@ -47,6 +51,7 @@ def test_validate_aaa_trug_rejects_dangling_edge_with_specific_message():
     assert any("Dangling edge" in err and "missing_phase" in err for err in errors)
 
 
+# AGENT SHALL VALIDATE PROCESS test_validate_aaa_trug_rejects_one_unpaired_coding_task_with_id_and_name.
 def test_validate_aaa_trug_rejects_one_unpaired_coding_task_with_id_and_name():
     data = _canonical_data()
     data["edges"] = [
@@ -62,6 +67,7 @@ def test_validate_aaa_trug_rejects_one_unpaired_coding_task_with_id_and_name():
     )
 
 
+# AGENT SHALL VALIDATE PROCESS test_validate_aaa_trug_rejects_all_unpaired_coding_tasks.
 def test_validate_aaa_trug_rejects_all_unpaired_coding_tasks():
     data = _canonical_data()
     data["edges"] = [edge for edge in data["edges"] if edge.get("relation") != "audits"]
@@ -71,6 +77,7 @@ def test_validate_aaa_trug_rejects_all_unpaired_coding_tasks():
     assert len(unpaired) == 2
 
 
+# AGENT SHALL VALIDATE PROCESS test_validate_aaa_markdown_path_unchanged.
 def test_validate_aaa_markdown_path_unchanged():
     content = """
 ## VISION

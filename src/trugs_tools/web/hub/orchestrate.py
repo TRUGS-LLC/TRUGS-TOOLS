@@ -37,6 +37,7 @@ from ..graph_builder import TRUGSWebGraphBuilder, url_to_id, make_id
 # Result
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD pipelineresult AS RECORD class.
 @dataclass
 class PipelineResult:
     """
@@ -56,18 +57,21 @@ class PipelineResult:
     relations: list = field(default_factory=list)
     errors: list = field(default_factory=list)
 
+    # AGENT claude SHALL DEFINE FUNCTION node_count.
     @property
     def node_count(self) -> int:
         if self.builder is None:
             return 0
         return len(self.builder.graph.get("nodes", []))
 
+    # AGENT claude SHALL DEFINE FUNCTION edge_count.
     @property
     def edge_count(self) -> int:
         if self.builder is None:
             return 0
         return len(self.builder.graph.get("edges", []))
 
+    # AGENT claude SHALL DEFINE FUNCTION graph_dict.
     @property
     def graph_dict(self) -> Optional[dict]:
         if self.builder is None:
@@ -79,6 +83,7 @@ class PipelineResult:
 # Orchestrator
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD orchestrator AS RECORD class.
 class Orchestrator:
     """
     End-to-end pipeline: discover → extract → resolve → score → build.
@@ -121,6 +126,7 @@ class Orchestrator:
         self.max_sources = max_sources
         self.max_depth = max_depth
 
+    # AGENT claude SHALL DEFINE FUNCTION run.
     async def run(self, seed_urls: list) -> PipelineResult:
         """
         Execute the full pipeline.
@@ -262,6 +268,7 @@ class Orchestrator:
 
         return result
 
+    # AGENT claude SHALL DEFINE FUNCTION run_and_save.
     async def run_and_save(
         self,
         seed_urls: list,

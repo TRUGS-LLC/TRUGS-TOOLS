@@ -35,6 +35,7 @@ from .qualifying_interest import (
 # Data model
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD hubcandidate AS RECORD class.
 @dataclass
 class HubCandidate:
     """
@@ -132,6 +133,7 @@ def _find_root_node(graph_data: dict) -> Optional[dict]:
     return nodes[0] if nodes else None
 
 
+# AGENT claude SHALL DEFINE RECORD hubagent AS RECORD class.
 class HubAgent:
     """
     Discovers and evaluates external TRUGs via a three-tier process.
@@ -189,6 +191,7 @@ class HubAgent:
             pass
         return None
 
+    # AGENT claude SHALL DEFINE FUNCTION discover_from_urls.
     async def discover_from_urls(self, seed_urls: list) -> list:
         """
         Tier 1: discover TRUG candidates from a list of seed URLs.
@@ -263,6 +266,7 @@ class HubAgent:
                 )
         return None
 
+    # AGENT claude SHALL DEFINE FUNCTION discover_from_graphs.
     def discover_from_graphs(self, graphs: list) -> list:
         """
         Tier 1 (local variant): create candidates from pre-loaded graph dicts.
@@ -289,6 +293,7 @@ class HubAgent:
     # Tier 2 — Graph-compute matching
     # ------------------------------------------------------------------
 
+    # AGENT claude SHALL DEFINE FUNCTION evaluate_tier2.
     def evaluate_tier2(self, candidates: list) -> list:
         """
         Tier 2: score each candidate against the hub's qualifying interest.
@@ -340,6 +345,7 @@ class HubAgent:
     # Tier 3 — LLM evaluation (optional, paid)
     # ------------------------------------------------------------------
 
+    # AGENT claude SHALL DEFINE FUNCTION evaluate_tier3.
     async def evaluate_tier3(self, candidates: list) -> list:
         """
         Tier 3: use LLM to evaluate ambiguous candidates.
@@ -404,6 +410,7 @@ class HubAgent:
     # Ranking
     # ------------------------------------------------------------------
 
+    # AGENT claude SHALL DEFINE FUNCTION rank.
     def rank(self, candidates: list) -> list:
         """
         Rank candidates by final_score, filtering by min_relevance.
@@ -421,6 +428,7 @@ class HubAgent:
     # Full pipeline
     # ------------------------------------------------------------------
 
+    # AGENT claude SHALL DEFINE FUNCTION discover.
     async def discover(self, seed_urls: list) -> list:
         """
         Full hub discovery pipeline: Tier 1 → Tier 2 → Tier 3 → rank.

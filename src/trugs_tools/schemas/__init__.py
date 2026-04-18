@@ -36,6 +36,7 @@ def _load_all_branch_schemas() -> dict[str, dict]:
     return _schema_cache
 
 
+# AGENT claude SHALL DEFINE FUNCTION load_branch_schema.
 def load_branch_schema(branch: str) -> dict:
     """Load a branch schema by name.
 
@@ -58,12 +59,14 @@ def load_branch_schema(branch: str) -> dict:
     return schemas[key]
 
 
+# AGENT claude SHALL DEFINE FUNCTION list_branch_schemas.
 def list_branch_schemas() -> list[str]:
     """Return a sorted list of all available branch names."""
     schemas = _load_all_branch_schemas()
     return sorted(schemas.keys())
 
 
+# AGENT claude SHALL DEFINE FUNCTION get_branch_node_types.
 def get_branch_node_types(branch: str) -> list[str]:
     """Return valid node types for a branch.
 
@@ -80,6 +83,7 @@ def get_branch_node_types(branch: str) -> list[str]:
     return list(schema.get("node_types", []))
 
 
+# AGENT claude SHALL DEFINE FUNCTION get_branch_relations.
 def get_branch_relations(branch: str) -> list[str]:
     """Return valid edge relations for a branch.
 
@@ -96,6 +100,7 @@ def get_branch_relations(branch: str) -> list[str]:
     return list(schema.get("relations", []))
 
 
+# AGENT claude SHALL DEFINE FUNCTION validate_branch_schema.
 def validate_branch_schema(trug: dict) -> list[str]:
     """Validate a TRUG's nodes/edges against its branch schema.
 

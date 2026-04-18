@@ -33,6 +33,7 @@ EXAMPLES_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "EXAMPLE
 # ── Schema Loading Tests ────────────────────────────────────────────────
 
 
+# AGENT SHALL VALIDATE PROCESS test_load_branch_schema.
 @pytest.mark.parametrize("branch", ALL_BRANCHES)
 def test_load_branch_schema(branch):
     """Each branch schema can be loaded."""
@@ -40,18 +41,21 @@ def test_load_branch_schema(branch):
     assert isinstance(schema, dict)
 
 
+# AGENT SHALL VALIDATE PROCESS test_load_unknown_branch_raises.
 def test_load_unknown_branch_raises():
     """Unknown branch raises ValueError."""
     with pytest.raises(ValueError, match="Unknown branch"):
         load_branch_schema("nonexistent")
 
 
+# AGENT SHALL VALIDATE PROCESS test_list_branch_schemas_returns_expected_count.
 def test_list_branch_schemas_returns_expected_count():
     """list_branch_schemas returns the expected number of items."""
     branches = list_branch_schemas()
     assert len(branches) == 7
 
 
+# AGENT SHALL VALIDATE PROCESS test_list_branch_schemas_contains_all.
 def test_list_branch_schemas_contains_all():
     """list_branch_schemas contains every expected branch."""
     branches = list_branch_schemas()
@@ -59,6 +63,7 @@ def test_list_branch_schemas_contains_all():
         assert b in branches
 
 
+# AGENT SHALL VALIDATE PROCESS test_list_branch_schemas_excludes_old.
 def test_list_branch_schemas_excludes_old():
     """list_branch_schemas does NOT contain merged branches."""
     branches = list_branch_schemas()
@@ -67,6 +72,7 @@ def test_list_branch_schemas_excludes_old():
     assert "research" not in branches
 
 
+# AGENT SHALL VALIDATE PROCESS test_schema_has_required_keys.
 @pytest.mark.parametrize("branch", ALL_BRANCHES)
 def test_schema_has_required_keys(branch):
     """Each schema has branch, graph_type, node_types, relations."""
@@ -92,6 +98,7 @@ EXPECTED_NODE_TYPES = {
 }
 
 
+# AGENT SHALL VALIDATE PROCESS test_get_branch_node_types.
 @pytest.mark.parametrize("branch", ALL_BRANCHES)
 def test_get_branch_node_types(branch):
     """get_branch_node_types returns expected types for each branch."""
@@ -131,6 +138,7 @@ EXPECTED_RELATIONS = {
 }
 
 
+# AGENT SHALL VALIDATE PROCESS test_get_branch_relations.
 @pytest.mark.parametrize("branch", ALL_BRANCHES)
 def test_get_branch_relations(branch):
     """get_branch_relations returns expected relations for each branch."""
@@ -148,6 +156,7 @@ BRANCH_TEMPLATE_PAIRS = [
 
 @pytest.mark.parametrize("branch,template", BRANCH_TEMPLATE_PAIRS,
                          ids=[f"{b}-{t}" for b, t in BRANCH_TEMPLATE_PAIRS])
+# AGENT SHALL VALIDATE PROCESS test_generated_trug_validates_against_schema.
 def test_generated_trug_validates_against_schema(branch, template):
     """Generated TRUGs from every branch×template pass schema validation."""
     trug = generate_trug(branch, template=template, validate=False)
@@ -185,6 +194,7 @@ _KNOWN_SCHEMA_DRIFT = {
     "example_path", _EXAMPLE_PATHS,
     ids=[os.path.relpath(p, EXAMPLES_DIR) for p in _EXAMPLE_PATHS],
 )
+# AGENT SHALL VALIDATE PROCESS test_example_validates_against_branch_schema.
 def test_example_validates_against_branch_schema(example_path):
     """Every example JSON file validates against its branch schema."""
     rel = os.path.relpath(example_path, EXAMPLES_DIR)
@@ -198,6 +208,7 @@ def test_example_validates_against_branch_schema(example_path):
     )
 
 
+# AGENT SHALL VALIDATE PROCESS test_all_examples_discovered.
 def test_all_examples_discovered():
     """Sanity check: we found at least 19 example JSON files."""
     assert len(_EXAMPLE_PATHS) >= 19
@@ -206,6 +217,7 @@ def test_all_examples_discovered():
 # ── Validation Tests ────────────────────────────────────────────────────
 
 
+# AGENT SHALL VALIDATE PROCESS test_validate_valid_trug_returns_empty.
 def test_validate_valid_trug_returns_empty():
     """A valid TRUG returns empty error list."""
     trug = generate_trug("web", template="minimal", validate=False)
@@ -213,6 +225,7 @@ def test_validate_valid_trug_returns_empty():
     assert errors == []
 
 
+# AGENT SHALL VALIDATE PROCESS test_validate_invalid_node_type.
 def test_validate_invalid_node_type():
     """An invalid node type produces an error."""
     trug = generate_trug("web", template="minimal", validate=False)
@@ -228,6 +241,7 @@ def test_validate_invalid_node_type():
     assert "BOGUS_TYPE" in errors[0]
 
 
+# AGENT SHALL VALIDATE PROCESS test_validate_invalid_relation.
 def test_validate_invalid_relation():
     """An invalid relation produces an error."""
     trug = generate_trug("web", template="minimal", validate=False)
@@ -241,6 +255,7 @@ def test_validate_invalid_relation():
     assert "BOGUS_RELATION" in errors[0]
 
 
+# AGENT SHALL VALIDATE PROCESS test_validate_unknown_graph_type_returns_empty.
 def test_validate_unknown_graph_type_returns_empty():
     """Unknown graph type returns empty list (graceful handling)."""
     trug = {
@@ -254,6 +269,7 @@ def test_validate_unknown_graph_type_returns_empty():
     assert errors == []
 
 
+# AGENT SHALL VALIDATE PROCESS test_validate_empty_type_returns_empty.
 def test_validate_empty_type_returns_empty():
     """Empty type string returns empty list."""
     trug = {
@@ -270,6 +286,7 @@ def test_validate_empty_type_returns_empty():
 # ── Migration Error Tests ────────────────────────────────────────────────
 
 
+# AGENT SHALL VALIDATE PROCESS test_generate_old_branch_raises_migration_error.
 @pytest.mark.parametrize("old_branch", ["living", "knowledge", "research"])
 def test_generate_old_branch_raises_migration_error(old_branch):
     """Old branch names raise ValueError with migration hint."""
@@ -277,6 +294,7 @@ def test_generate_old_branch_raises_migration_error(old_branch):
         generate_trug(old_branch)
 
 
+# AGENT SHALL VALIDATE PROCESS test_migration_error_includes_old_name.
 @pytest.mark.parametrize("old_branch", ["living", "knowledge", "research"])
 def test_migration_error_includes_old_name(old_branch):
     """Migration error includes the old branch name the user tried."""
@@ -287,11 +305,13 @@ def test_migration_error_includes_old_name(old_branch):
 # ── Thread Safety Tests ─────────────────────────────────────────────────
 
 
+# AGENT SHALL VALIDATE PROCESS test_concurrent_schema_loading.
 def test_concurrent_schema_loading():
     """Loading schemas concurrently never raises ValueError."""
     import concurrent.futures
     import trugs_tools.schemas as schemas_mod
 
+    # AGENT claude SHALL DEFINE FUNCTION load_branch.
     def load_branch(branch):
         return load_branch_schema(branch)
 

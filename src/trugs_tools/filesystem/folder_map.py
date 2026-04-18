@@ -23,6 +23,7 @@ from trugs_tools.filesystem.folder_check import find_all_folder_trugs
 # Data classes
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE RECORD folderinfo AS RECORD class.
 @dataclass
 class FolderInfo:
     """Information about a single folder TRUG."""
@@ -34,6 +35,7 @@ class FolderInfo:
     node_ids: Set[str]
 
 
+# AGENT claude SHALL DEFINE RECORD mapresult AS RECORD class.
 @dataclass
 class MapResult:
     """Result of a folder-map operation."""
@@ -45,6 +47,7 @@ class MapResult:
     root_graph: Optional[dict] = None
     changes: List[str] = field(default_factory=list)
 
+    # AGENT claude SHALL DEFINE FUNCTION edge_count.
     @property
     def edge_count(self) -> int:
         return len(self.resolved_edges)
@@ -367,6 +370,7 @@ def _build_root_graph(
 # Main entry point
 # ---------------------------------------------------------------------------
 
+# AGENT claude SHALL DEFINE FUNCTION map_folder_trugs.
 def map_folder_trugs(
     root: Union[str, Path],
     dry_run: bool = False,

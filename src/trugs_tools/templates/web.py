@@ -3,6 +3,7 @@
 from typing import Dict, Any
 
 
+# AGENT claude SHALL DEFINE FUNCTION generate_web_minimal.
 def generate_web_minimal() -> Dict[str, Any]:
     """Generate minimal Web TRUG (3 nodes).
     
@@ -65,6 +66,7 @@ def generate_web_minimal() -> Dict[str, Any]:
     }
 
 
+# AGENT claude SHALL DEFINE FUNCTION generate_web_complete.
 def generate_web_complete() -> Dict[str, Any]:
     """Generate complete Web TRUG with navigation.
     

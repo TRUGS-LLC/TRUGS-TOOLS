@@ -12,6 +12,7 @@ def _canonical_block() -> str:
     return f"```json\n{CANONICAL_PATH.read_text(encoding='utf-8')}\n```"
 
 
+# AGENT SHALL VALIDATE PROCESS test_detect_trug_json_positive.
 def test_detect_trug_json_positive():
     body = f"## ARCHITECTURE\n\n{_canonical_block()}"
     parsed = _detect_trug_json(body)
@@ -19,6 +20,7 @@ def test_detect_trug_json_positive():
     assert parsed["type"] == "AAA"
 
 
+# AGENT SHALL VALIDATE PROCESS test_detect_trug_json_negative_non_aaa_json.
 def test_detect_trug_json_negative_non_aaa_json():
     body = """## ARCHITECTURE
 
@@ -29,6 +31,7 @@ def test_detect_trug_json_negative_non_aaa_json():
     assert _detect_trug_json(body) is None
 
 
+# AGENT SHALL VALIDATE PROCESS test_detect_trug_json_negative_missing_vocabulary.
 def test_detect_trug_json_negative_missing_vocabulary():
     body = """## ARCHITECTURE
 
@@ -39,6 +42,7 @@ def test_detect_trug_json_negative_missing_vocabulary():
     assert _detect_trug_json(body) is None
 
 
+# AGENT SHALL VALIDATE PROCESS test_detect_trug_json_ignores_malformed_json_and_finds_later_valid_block.
 def test_detect_trug_json_ignores_malformed_json_and_finds_later_valid_block():
     body = f"""## ARCHITECTURE
 
@@ -53,11 +57,13 @@ def test_detect_trug_json_ignores_malformed_json_and_finds_later_valid_block():
     assert parsed["type"] == "AAA"
 
 
+# AGENT SHALL VALIDATE PROCESS test_detect_trug_json_no_json_blocks.
 def test_detect_trug_json_no_json_blocks():
     body = 'markdown mentions "nodes" and "edges" but has no code block'
     assert _detect_trug_json(body) is None
 
 
+# AGENT SHALL VALIDATE PROCESS test_compose_aaa_uses_trug_renderer_when_detected.
 @patch("trugs_tools.aaa_generator._timeline_events", return_value=[])
 def test_compose_aaa_uses_trug_renderer_when_detected(mock_timeline):
     issue = {
@@ -72,6 +78,7 @@ def test_compose_aaa_uses_trug_renderer_when_detected(mock_timeline):
     assert "## Sub-Issues" not in content
 
 
+# AGENT SHALL VALIDATE PROCESS test_compose_aaa_markdown_path_unchanged_when_no_trug.
 @patch("trugs_tools.aaa_generator._timeline_events", return_value=[])
 def test_compose_aaa_markdown_path_unchanged_when_no_trug(mock_timeline):
     issue = {

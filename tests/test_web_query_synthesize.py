@@ -17,7 +17,9 @@ from trugs_tools.web.extractor import MockLLMClient
 # Finding Tests
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD testfinding AS A RECORD test_suite.
 class TestFinding:
+    # AGENT SHALL VALIDATE PROCESS test_high_confidence_markdown.
     def test_high_confidence_markdown(self):
         finding = Finding(
             statement="LangChain is a framework",
@@ -30,6 +32,7 @@ class TestFinding:
         assert "LangChain" in md
         assert "0.85" in md
 
+    # AGENT SHALL VALIDATE PROCESS test_medium_confidence_markdown.
     def test_medium_confidence_markdown(self):
         finding = Finding(
             statement="Medium claim",
@@ -40,6 +43,7 @@ class TestFinding:
         md = finding.to_markdown()
         assert "🟡" in md
 
+    # AGENT SHALL VALIDATE PROCESS test_low_confidence_markdown.
     def test_low_confidence_markdown(self):
         finding = Finding(
             statement="Low claim",
@@ -50,6 +54,7 @@ class TestFinding:
         md = finding.to_markdown()
         assert "🔴" in md
 
+    # AGENT SHALL VALIDATE PROCESS test_no_url_markdown.
     def test_no_url_markdown(self):
         finding = Finding(
             statement="Claim",
@@ -66,7 +71,9 @@ class TestFinding:
 # Report Tests
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD testreport AS A RECORD test_suite.
 class TestReport:
+    # AGENT SHALL VALIDATE PROCESS test_to_markdown_basic.
     def test_to_markdown_basic(self):
         report = Report(
             title="Test Report",
@@ -91,6 +98,7 @@ class TestReport:
         assert "Finding 1" in md
         assert "Sources" in md
 
+    # AGENT SHALL VALIDATE PROCESS test_to_markdown_contradictions.
     def test_to_markdown_contradictions(self):
         a = Finding(statement="Claim A", source_name="SA", source_url=None, weight=0.8)
         b = Finding(statement="Claim B", source_name="SB", source_url=None, weight=0.6)
@@ -104,6 +112,7 @@ class TestReport:
         assert "Contradictions" in md
         assert "Claim A" in md
 
+    # AGENT SHALL VALIDATE PROCESS test_to_markdown_recommendations.
     def test_to_markdown_recommendations(self):
         report = Report(
             title="R",
@@ -115,6 +124,7 @@ class TestReport:
         assert "Recommendations" in md
         assert "Do this first" in md
 
+    # AGENT SHALL VALIDATE PROCESS test_save_to_file.
     def test_save_to_file(self, tmp_path):
         report = Report(title="R", query="q", graph_id="g")
         out = tmp_path / "report.md"
@@ -122,6 +132,7 @@ class TestReport:
         assert out.exists()
         assert "# R" in out.read_text()
 
+    # AGENT SHALL VALIDATE PROCESS test_no_findings_sections_hidden.
     def test_no_findings_sections_hidden(self):
         report = Report(title="R", query="q", graph_id="g")
         md = report.to_markdown()
@@ -132,7 +143,9 @@ class TestReport:
 # ReportSynthesizer Tests
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD testreportsynthesizer AS A RECORD test_suite.
 class TestReportSynthesizer:
+    # AGENT SHALL VALIDATE PROCESS test_basic_mode.
     @pytest.mark.asyncio
     async def test_basic_mode(self, sample_graph):
         traverser = GraphTraverser(sample_graph)
@@ -144,6 +157,7 @@ class TestReportSynthesizer:
         assert isinstance(report.summary, str)
         assert isinstance(report.recommendations, list)
 
+    # AGENT SHALL VALIDATE PROCESS test_llm_mode.
     @pytest.mark.asyncio
     async def test_llm_mode(self, sample_graph):
         traverser = GraphTraverser(sample_graph)
@@ -155,6 +169,7 @@ class TestReportSynthesizer:
         assert isinstance(report.summary, str)
         assert len(report.summary) > 0
 
+    # AGENT SHALL VALIDATE PROCESS test_custom_title.
     @pytest.mark.asyncio
     async def test_custom_title(self, sample_graph):
         traverser = GraphTraverser(sample_graph)
@@ -163,6 +178,7 @@ class TestReportSynthesizer:
         report = await synthesizer.synthesize(sample_graph, result, title="My Report")
         assert report.title == "My Report"
 
+    # AGENT SHALL VALIDATE PROCESS test_no_findings_summary.
     @pytest.mark.asyncio
     async def test_no_findings_summary(self, sample_graph):
         result = TraversalResult(query="empty query")
@@ -170,6 +186,7 @@ class TestReportSynthesizer:
         report = await synthesizer.synthesize(sample_graph, result)
         assert "No relevant findings" in report.summary
 
+    # AGENT SHALL VALIDATE PROCESS test_low_credibility_recommendation.
     @pytest.mark.asyncio
     async def test_low_credibility_recommendation(self, sample_graph):
         # Result with avg_weight = 0 and no high credibility
@@ -178,6 +195,7 @@ class TestReportSynthesizer:
         report = await synthesizer.synthesize(sample_graph, result)
         assert any("peer-reviewed" in r or "credibility" in r.lower() for r in report.recommendations)
 
+    # AGENT SHALL VALIDATE PROCESS test_contradictions_extracted.
     @pytest.mark.asyncio
     async def test_contradictions_extracted(self):
         """Contradictions are extracted from graph CONTRADICTS edges."""
@@ -203,13 +221,16 @@ class TestReportSynthesizer:
 # generate_report Convenience Function Tests
 # ============================================================================
 
+# AGENT claude SHALL DEFINE RECORD testgeneratereport AS A RECORD test_suite.
 class TestGenerateReport:
+    # AGENT SHALL VALIDATE PROCESS test_generate_report_basic.
     @pytest.mark.asyncio
     async def test_generate_report_basic(self, sample_graph):
         report = await generate_report(sample_graph, "langchain", use_llm=False)
         assert isinstance(report, Report)
         assert report.title
 
+    # AGENT SHALL VALIDATE PROCESS test_generate_report_saves_file.
     @pytest.mark.asyncio
     async def test_generate_report_saves_file(self, sample_graph, tmp_path):
         out = tmp_path / "out.md"
@@ -219,6 +240,7 @@ class TestGenerateReport:
         assert out.exists()
         assert "langchain" in out.read_text().lower()
 
+    # AGENT SHALL VALIDATE PROCESS test_generate_report_with_mock_llm.
     @pytest.mark.asyncio
     async def test_generate_report_with_mock_llm(self, sample_graph):
         mock_llm = MockLLMClient()

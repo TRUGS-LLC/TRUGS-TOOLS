@@ -7,7 +7,9 @@ from trugs_tools.web.query.loader import load_graph
 from trugs_tools.web.query.synthesize import Report, generate_report
 
 
+# AGENT claude SHALL DEFINE RECORD testwithtrugswebgraphbuilder AS A RECORD test_suite.
 class TestWithTRUGSWebGraphBuilder:
+    # AGENT SHALL VALIDATE PROCESS test_load_graph_from_builder.
     def test_load_graph_from_builder(self):
         builder = TRUGSWebGraphBuilder(name="integration-graph", topic="AI")
         builder.graph["nodes"].append({
@@ -26,6 +28,7 @@ class TestWithTRUGSWebGraphBuilder:
         assert node.name == "Neural Networks"
         assert node.credibility == 0.9
 
+    # AGENT SHALL VALIDATE PROCESS test_full_pipeline.
     @pytest.mark.asyncio
     async def test_full_pipeline(self):
         builder = TRUGSWebGraphBuilder(name="pipeline-test", topic="testing")
