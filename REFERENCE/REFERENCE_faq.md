@@ -89,16 +89,16 @@ The validator enforces these rules in order:
 
 ```bash
 # Single file
-trugs-validate my_trug.json
+tg validate my_trug.json
 
 # Multiple files
-trugs-validate file1.json file2.json
+tg validate file1.json file2.json
 
 # JSON output for scripting
-trugs-validate --format json my_trug.json
+tg validate --format json my_trug.json
 
 # Quiet mode (exit code only)
-trugs-validate --quiet my_trug.json && echo "Valid"
+tg validate --quiet my_trug.json && echo "Valid"
 ```
 
 **Python API:**
@@ -148,13 +148,13 @@ Fix: Give each node a unique identifier.
 
 ```bash
 # Minimal Python TRUG (3 nodes)
-trugs-generate --branch python --template minimal --output example.json
+tg generate --branch python --template minimal --output example.json
 
 # Complete Rust TRUG with extensions
-trugs-generate --branch rust --template complete --extension typed --extension ownership --output rust.json
+tg generate --branch rust --template complete --extension typed --extension ownership --output rust.json
 
 # Generate all branches at once
-trugs-generate --all --output-dir examples/
+tg generate --all --output-dir examples/
 ```
 
 **Python API:**
@@ -191,7 +191,7 @@ All generated TRUGs are **valid by construction** — they pass all 9 validation
 | `ssa` | Static Single Assignment form |
 
 ```bash
-trugs-generate --branch python --extension typed --extension scoped
+tg generate --branch python --extension typed --extension scoped
 ```
 
 ---
@@ -212,16 +212,16 @@ trugs-generate --branch python --extension typed --extension scoped
 
 ```bash
 # Render all three files
-trugs-render folder.trug.json
+tg render folder.trug.json
 
 # Preview without writing
-trugs-render folder.trug.json --dry-run
+tg render folder.trug.json --dry-run
 
 # Render only ARCHITECTURE.md
-trugs-render folder.trug.json --file-type architecture
+tg render folder.trug.json --file-type architecture
 
 # Output to a different directory
-trugs-render folder.trug.json -o /tmp/output
+tg render folder.trug.json -o /tmp/output
 ```
 
 **Python API:**
@@ -358,10 +358,10 @@ The validator checks **structural correctness** (the 9 rules), but does not chec
 - **Property schemas** — The `properties` object is open and unchecked.
 - **Domain semantics** — Whether your graph makes logical sense for your use case.
 
-Use `trugs-info` to inspect your graph's structure and catch issues visually:
+Use `tg info` to inspect your graph's structure and catch issues visually:
 
 ```bash
-trugs-info my_trug.json
+tg info my_trug.json
 ```
 
 This shows node type distributions, edge relation counts, hierarchy depth, and other statistics that can reveal structural problems the validator won't catch.
