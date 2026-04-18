@@ -1,0 +1,523 @@
+{
+  "name": "#581-6: TRUG Authoring + Governance - Autonomous TRUG Generation with Governance Enforcement",
+  "version": "1.0.0",
+  "type": "AAA",
+  "description": "Canonical AAA TRUG example demonstrating CODE+AUDIT pairing.",
+  "dimensions": {
+    "development": {
+      "description": "7-phase development lifecycle",
+      "base_level": "BASE"
+    }
+  },
+  "capabilities": {
+    "extensions": [
+      "compute"
+    ],
+    "vocabularies": [
+      "aaa_v1",
+      "compute_v1"
+    ],
+    "profiles": []
+  },
+  "nodes": [
+    {
+      "id": "aaa_root",
+      "type": "AAA",
+      "properties": {
+        "name": "#581-6: TRUG Authoring + Governance",
+        "description": "Closed issue #596 converted to canonical AAA TRUG format",
+        "issue_number": 596,
+        "folder": "PERAGO",
+        "status": "COMPLETE",
+        "created": "2026-02-20",
+        "labels": [
+          "folder:PERAGO"
+        ]
+      },
+      "parent_id": null,
+      "contains": [
+        "phase_vision",
+        "phase_feasibility",
+        "phase_specifications",
+        "phase_architecture",
+        "phase_coding",
+        "phase_testing",
+        "phase_deployment"
+      ],
+      "metric_level": "KILO_AAA",
+      "dimension": "development"
+    },
+    {
+      "id": "phase_vision",
+      "type": "PHASE",
+      "properties": {
+        "name": "VISION",
+        "status": "COMPLETE",
+        "quality_gate": "✅",
+        "output": "Autonomous TRUG authoring with governance enforcement defined"
+      },
+      "parent_id": "aaa_root",
+      "contains": [],
+      "metric_level": "BASE_PHASE",
+      "dimension": "development"
+    },
+    {
+      "id": "phase_feasibility",
+      "type": "PHASE",
+      "properties": {
+        "name": "FEASIBILITY",
+        "status": "COMPLETE",
+        "quality_gate": "✅",
+        "output": "Feasibility analysis completed with risks, dependencies, and sources"
+      },
+      "parent_id": "aaa_root",
+      "contains": [
+        "risk_schema_drift",
+        "dep_trugs_protocol",
+        "source_trugs_protocol"
+      ],
+      "metric_level": "BASE_PHASE",
+      "dimension": "development"
+    },
+    {
+      "id": "phase_specifications",
+      "type": "PHASE",
+      "properties": {
+        "name": "SPECIFICATIONS",
+        "status": "COMPLETE",
+        "quality_gate": "✅",
+        "output": "Governance specification and acceptance criteria finalized"
+      },
+      "parent_id": "aaa_root",
+      "contains": [],
+      "metric_level": "BASE_PHASE",
+      "dimension": "development"
+    },
+    {
+      "id": "phase_architecture",
+      "type": "PHASE",
+      "properties": {
+        "name": "ARCHITECTURE",
+        "status": "COMPLETE",
+        "quality_gate": "✅",
+        "output": "Architecture decisions captured as ADRs"
+      },
+      "parent_id": "aaa_root",
+      "contains": [
+        "adr_governance_model"
+      ],
+      "metric_level": "BASE_PHASE",
+      "dimension": "development"
+    },
+    {
+      "id": "phase_coding",
+      "type": "PHASE",
+      "properties": {
+        "name": "CODING",
+        "status": "COMPLETE",
+        "quality_gate": "✅",
+        "output": "Implementation completed and verified by paired audits"
+      },
+      "parent_id": "aaa_root",
+      "contains": [
+        "task_trug_authoring",
+        "task_enforce_governance",
+        "audit_task_trug_authoring",
+        "audit_task_enforce_governance",
+        "sub_issue_593"
+      ],
+      "metric_level": "BASE_PHASE",
+      "dimension": "development"
+    },
+    {
+      "id": "phase_testing",
+      "type": "PHASE",
+      "properties": {
+        "name": "TESTING",
+        "status": "COMPLETE",
+        "quality_gate": "✅",
+        "output": "Regression and governance checks passed"
+      },
+      "parent_id": "aaa_root",
+      "contains": [
+        "gate_tests_passing"
+      ],
+      "metric_level": "BASE_PHASE",
+      "dimension": "development"
+    },
+    {
+      "id": "phase_deployment",
+      "type": "PHASE",
+      "properties": {
+        "name": "DEPLOYMENT",
+        "status": "COMPLETE",
+        "quality_gate": "✅",
+        "output": "Merged with PR #598 and deployed to main"
+      },
+      "parent_id": "aaa_root",
+      "contains": [],
+      "metric_level": "BASE_PHASE",
+      "dimension": "development"
+    },
+    {
+      "id": "risk_schema_drift",
+      "type": "RISK",
+      "properties": {
+        "name": "Generated TRUGs may drift from protocol constraints",
+        "severity": "HIGH",
+        "mitigation": "Validate generated TRUGs against protocol rules before write",
+        "source": "Issue #596 feasibility analysis"
+      },
+      "parent_id": "phase_feasibility",
+      "contains": [],
+      "metric_level": "CENTI_RISK",
+      "dimension": "development"
+    },
+    {
+      "id": "dep_trugs_protocol",
+      "type": "DEPENDENCY",
+      "properties": {
+        "name": "TRUGS protocol branch definitions",
+        "type": "INTERNAL",
+        "version": "1.0.0",
+        "status": "ACTIVE",
+        "url": "TRUGS_PROTOCOL/BRANCHES.md"
+      },
+      "parent_id": "phase_feasibility",
+      "contains": [],
+      "metric_level": "CENTI_DEPENDENCY",
+      "dimension": "development"
+    },
+    {
+      "id": "source_trugs_protocol",
+      "type": "RESEARCH_SOURCE",
+      "properties": {
+        "name": "TRUGS protocol documentation",
+        "url": "https://github.com/Xepayac/TRUGS-DEVELOPMENT/tree/main/TRUGS_PROTOCOL",
+        "accessed": "2026-02-20",
+        "relevance": "Defines node and edge constraints enforced by governance logic"
+      },
+      "parent_id": "phase_feasibility",
+      "contains": [],
+      "metric_level": "MILLI_RESEARCH_SOURCE",
+      "dimension": "development"
+    },
+    {
+      "id": "adr_governance_model",
+      "type": "ADR",
+      "properties": {
+        "name": "Enforce protocol validation before TRUG persistence",
+        "decision": "Run protocol validation as a required step before saving generated TRUGs",
+        "rationale": "Prevents invalid graph structures from entering the repository",
+        "status": "ACCEPTED",
+        "adr_id": "ADR-596-01"
+      },
+      "parent_id": "phase_architecture",
+      "contains": [],
+      "metric_level": "CENTI_ADR",
+      "dimension": "development"
+    },
+    {
+      "id": "task_trug_authoring",
+      "type": "TASK",
+      "properties": {
+        "name": "Implement autonomous TRUG authoring pipeline",
+        "status": "COMPLETE",
+        "priority": "HIGH",
+        "operation": "validate",
+        "fields": [
+          "nodes",
+          "edges",
+          "metric_level"
+        ],
+        "parameters": {
+          "strict": true
+        }
+      },
+      "parent_id": "phase_coding",
+      "contains": [],
+      "metric_level": "CENTI_TASK",
+      "dimension": "development"
+    },
+    {
+      "id": "task_enforce_governance",
+      "type": "TASK",
+      "properties": {
+        "name": "Add governance checks for generated TRUG output",
+        "status": "COMPLETE",
+        "priority": "HIGH",
+        "parameters": {
+          "enforce_schema": true
+        }
+      },
+      "parent_id": "phase_coding",
+      "contains": [],
+      "metric_level": "CENTI_TASK",
+      "dimension": "development"
+    },
+    {
+      "id": "audit_task_trug_authoring",
+      "type": "AUDIT",
+      "properties": {
+        "name": "Audit autonomous TRUG authoring task",
+        "status": "PASS",
+        "gate_1_tests": "Targeted and regression tests pass",
+        "gate_2_coverage": "Coverage remains at or above project threshold",
+        "gate_3_logic": "Review confirms generated TRUG structure is correct",
+        "gate_4_integration": "Generated TRUGs flow through existing tooling unchanged",
+        "fix_cycles": 1
+      },
+      "parent_id": "phase_coding",
+      "contains": [],
+      "metric_level": "CENTI_AUDIT",
+      "dimension": "development"
+    },
+    {
+      "id": "audit_task_enforce_governance",
+      "type": "AUDIT",
+      "properties": {
+        "name": "Audit governance enforcement task",
+        "status": "PASS",
+        "gate_1_tests": "Governance tests pass with failing fixtures rejected",
+        "gate_2_coverage": "Coverage includes enforcement paths",
+        "gate_3_logic": "Validation logic blocks invalid graph writes",
+        "gate_4_integration": "Checks run in CI and local workflows",
+        "fix_cycles": 0
+      },
+      "parent_id": "phase_coding",
+      "contains": [],
+      "metric_level": "CENTI_AUDIT",
+      "dimension": "development"
+    },
+    {
+      "id": "sub_issue_593",
+      "type": "SUB_ISSUE",
+      "properties": {
+        "name": "AAA Generation — predecessor task",
+        "issue_number": 593,
+        "type": "A",
+        "status": "COMPLETE",
+        "pr_number": 595
+      },
+      "parent_id": "phase_coding",
+      "contains": [],
+      "metric_level": "CENTI_SUB_ISSUE",
+      "dimension": "development"
+    },
+    {
+      "id": "gate_tests_passing",
+      "type": "QUALITY_GATE",
+      "properties": {
+        "name": "All validation and governance tests passing",
+        "condition": "pytest suite passes and protocol checks return zero errors",
+        "status": "✅",
+        "phase": "TESTING"
+      },
+      "parent_id": "phase_testing",
+      "contains": [],
+      "metric_level": "CENTI_QUALITY_GATE",
+      "dimension": "development"
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "phase_vision",
+      "to_id": "phase_feasibility",
+      "relation": "precedes"
+    },
+    {
+      "from_id": "phase_feasibility",
+      "to_id": "phase_specifications",
+      "relation": "precedes"
+    },
+    {
+      "from_id": "phase_specifications",
+      "to_id": "phase_architecture",
+      "relation": "precedes"
+    },
+    {
+      "from_id": "phase_architecture",
+      "to_id": "phase_coding",
+      "relation": "precedes"
+    },
+    {
+      "from_id": "phase_coding",
+      "to_id": "phase_testing",
+      "relation": "precedes"
+    },
+    {
+      "from_id": "phase_testing",
+      "to_id": "phase_deployment",
+      "relation": "precedes"
+    },
+    {
+      "from_id": "phase_coding",
+      "to_id": "phase_architecture",
+      "relation": "blocked_by"
+    },
+    {
+      "from_id": "task_enforce_governance",
+      "to_id": "task_trug_authoring",
+      "relation": "depends_on"
+    },
+    {
+      "from_id": "task_enforce_governance",
+      "to_id": "risk_schema_drift",
+      "relation": "mitigates"
+    },
+    {
+      "from_id": "risk_schema_drift",
+      "to_id": "source_trugs_protocol",
+      "relation": "cites"
+    },
+    {
+      "from_id": "adr_governance_model",
+      "to_id": "task_trug_authoring",
+      "relation": "decides"
+    },
+    {
+      "from_id": "task_trug_authoring",
+      "to_id": "phase_specifications",
+      "relation": "implements"
+    },
+    {
+      "from_id": "sub_issue_593",
+      "to_id": "task_trug_authoring",
+      "relation": "tracks"
+    },
+    {
+      "from_id": "gate_tests_passing",
+      "to_id": "phase_coding",
+      "relation": "validates"
+    },
+    {
+      "from_id": "audit_task_trug_authoring",
+      "to_id": "task_trug_authoring",
+      "relation": "audits"
+    },
+    {
+      "from_id": "audit_task_enforce_governance",
+      "to_id": "task_enforce_governance",
+      "relation": "audits"
+    },
+    {
+      "from_id": "aaa_root",
+      "to_id": "phase_vision",
+      "relation": "contains",
+      "weight": 1.0,
+      "properties": {}
+    },
+    {
+      "from_id": "aaa_root",
+      "to_id": "phase_feasibility",
+      "relation": "contains",
+      "weight": 1.0,
+      "properties": {}
+    },
+    {
+      "from_id": "aaa_root",
+      "to_id": "phase_specifications",
+      "relation": "contains",
+      "weight": 1.0,
+      "properties": {}
+    },
+    {
+      "from_id": "aaa_root",
+      "to_id": "phase_architecture",
+      "relation": "contains",
+      "weight": 1.0,
+      "properties": {}
+    },
+    {
+      "from_id": "aaa_root",
+      "to_id": "phase_coding",
+      "relation": "contains",
+      "weight": 1.0,
+      "properties": {}
+    },
+    {
+      "from_id": "aaa_root",
+      "to_id": "phase_testing",
+      "relation": "contains",
+      "weight": 1.0,
+      "properties": {}
+    },
+    {
+      "from_id": "aaa_root",
+      "to_id": "phase_deployment",
+      "relation": "contains",
+      "weight": 1.0,
+      "properties": {}
+    },
+    {
+      "from_id": "phase_feasibility",
+      "to_id": "risk_schema_drift",
+      "relation": "contains",
+      "weight": 1.0,
+      "properties": {}
+    },
+    {
+      "from_id": "phase_feasibility",
+      "to_id": "dep_trugs_protocol",
+      "relation": "contains",
+      "weight": 1.0,
+      "properties": {}
+    },
+    {
+      "from_id": "phase_feasibility",
+      "to_id": "source_trugs_protocol",
+      "relation": "contains",
+      "weight": 1.0,
+      "properties": {}
+    },
+    {
+      "from_id": "phase_architecture",
+      "to_id": "adr_governance_model",
+      "relation": "contains",
+      "weight": 1.0,
+      "properties": {}
+    },
+    {
+      "from_id": "phase_coding",
+      "to_id": "task_trug_authoring",
+      "relation": "contains",
+      "weight": 1.0,
+      "properties": {}
+    },
+    {
+      "from_id": "phase_coding",
+      "to_id": "task_enforce_governance",
+      "relation": "contains",
+      "weight": 1.0,
+      "properties": {}
+    },
+    {
+      "from_id": "phase_coding",
+      "to_id": "audit_task_trug_authoring",
+      "relation": "contains",
+      "weight": 1.0,
+      "properties": {}
+    },
+    {
+      "from_id": "phase_coding",
+      "to_id": "audit_task_enforce_governance",
+      "relation": "contains",
+      "weight": 1.0,
+      "properties": {}
+    },
+    {
+      "from_id": "phase_coding",
+      "to_id": "sub_issue_593",
+      "relation": "contains",
+      "weight": 1.0,
+      "properties": {}
+    },
+    {
+      "from_id": "phase_testing",
+      "to_id": "gate_tests_passing",
+      "relation": "contains",
+      "weight": 1.0,
+      "properties": {}
+    }
+  ]
+}

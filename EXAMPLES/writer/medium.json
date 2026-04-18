@@ -1,0 +1,131 @@
+{
+  "name": "Writer Medium Example",
+  "version": "1.0.0",
+  "type": "WRITER",
+  "branch": "writer",
+  "description": "Medium-complexity Writer TRUG with sections and citations",
+  "nodes": [
+    {
+      "id": "doc_1",
+      "type": "DOCUMENT",
+      "metric_level": "MEGA_DOCUMENT",
+      "parent_id": null,
+      "properties": {
+        "title": "Research Paper",
+        "author": "Jane Smith",
+        "date": "2026-01-15"
+      }
+    },
+    {
+      "id": "sec_intro",
+      "type": "SECTION",
+      "metric_level": "CENTI_SECTION",
+      "parent_id": "doc_1",
+      "properties": {
+        "title": "Introduction",
+        "order": 1
+      }
+    },
+    {
+      "id": "para_1",
+      "type": "PARAGRAPH",
+      "metric_level": "MILLI_PARAGRAPH",
+      "parent_id": "sec_intro",
+      "properties": {
+        "content": "This paper examines the role of graph structures in modern software."
+      }
+    },
+    {
+      "id": "sec_method",
+      "type": "SECTION",
+      "metric_level": "CENTI_SECTION",
+      "parent_id": "doc_1",
+      "properties": {
+        "title": "Methodology",
+        "order": 2
+      }
+    },
+    {
+      "id": "para_2",
+      "type": "PARAGRAPH",
+      "metric_level": "MILLI_PARAGRAPH",
+      "parent_id": "sec_method",
+      "properties": {
+        "content": "We surveyed 50 open-source projects using graph-based architectures."
+      }
+    },
+    {
+      "id": "cit_1",
+      "type": "CITATION",
+      "metric_level": "MILLI_CITATION",
+      "parent_id": "sec_method",
+      "properties": {
+        "key": "knuth1974",
+        "text": "Knuth, 1974"
+      }
+    },
+    {
+      "id": "ref_1",
+      "type": "REFERENCE",
+      "metric_level": "MILLI_REFERENCE",
+      "parent_id": "doc_1",
+      "properties": {
+        "key": "knuth1974",
+        "title": "Structured Programming with goto Statements",
+        "year": "1974"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "doc_1",
+      "to_id": "sec_intro",
+      "relation": "contains"
+    },
+    {
+      "from_id": "doc_1",
+      "to_id": "sec_method",
+      "relation": "contains"
+    },
+    {
+      "from_id": "doc_1",
+      "to_id": "ref_1",
+      "relation": "contains"
+    },
+    {
+      "from_id": "sec_intro",
+      "to_id": "para_1",
+      "relation": "contains"
+    },
+    {
+      "from_id": "sec_method",
+      "to_id": "para_2",
+      "relation": "contains"
+    },
+    {
+      "from_id": "sec_method",
+      "to_id": "cit_1",
+      "relation": "contains"
+    },
+    {
+      "from_id": "cit_1",
+      "to_id": "ref_1",
+      "relation": "cites"
+    },
+    {
+      "from_id": "sec_intro",
+      "to_id": "sec_method",
+      "relation": "precedes"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "document_structure",
+      "levels": [
+        "DOCUMENT",
+        "SECTION",
+        "PARAGRAPH"
+      ]
+    }
+  ]
+}

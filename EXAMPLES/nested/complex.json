@@ -1,0 +1,264 @@
+{
+  "name": "Nested Complex Example",
+  "version": "1.0.0",
+  "type": "NESTED",
+  "branch": "nested",
+  "description": "Complex Nested TRUG with deep subgraph nesting, multiple pipelines, and rich edge variety",
+  "nodes": [
+    {
+      "id": "task_root",
+      "type": "TASK",
+      "metric_level": "BASE_TASK",
+      "parent_id": null,
+      "properties": {
+        "name": "ML Training Pipeline",
+        "description": "End-to-end machine learning training pipeline",
+        "status": "running"
+      }
+    },
+    {
+      "id": "subgraph_data_prep",
+      "type": "SUBGRAPH",
+      "metric_level": "DEKA_SUBGRAPH",
+      "parent_id": "task_root",
+      "properties": {
+        "name": "Data Preparation",
+        "subgraph_ref": "data_preparation.trug.json",
+        "description": "External child graph: data cleaning and feature engineering"
+      }
+    },
+    {
+      "id": "subgraph_ingest",
+      "type": "SUBGRAPH",
+      "metric_level": "DEKA_SUBGRAPH",
+      "parent_id": "subgraph_data_prep",
+      "properties": {
+        "name": "Raw Ingest",
+        "subgraph_ref": "raw_ingest.trug.json",
+        "description": "Nested child graph: raw data ingestion from multiple sources"
+      }
+    },
+    {
+      "id": "subgraph_feature_eng",
+      "type": "SUBGRAPH",
+      "metric_level": "DEKA_SUBGRAPH",
+      "parent_id": "subgraph_data_prep",
+      "properties": {
+        "name": "Feature Engineering",
+        "subgraph_ref": "feature_engineering.trug.json",
+        "description": "Nested child graph: feature extraction and transformation"
+      }
+    },
+    {
+      "id": "result_features",
+      "type": "RESULT",
+      "metric_level": "MILLI_RESULT",
+      "parent_id": "subgraph_feature_eng",
+      "properties": {
+        "name": "Feature Dataset",
+        "status": "success",
+        "records_processed": 120000,
+        "feature_count": 256
+      }
+    },
+    {
+      "id": "subgraph_training",
+      "type": "SUBGRAPH",
+      "metric_level": "DEKA_SUBGRAPH",
+      "parent_id": "task_root",
+      "properties": {
+        "name": "Model Training",
+        "subgraph_ref": "model_training.trug.json",
+        "description": "External child graph: model training and hyperparameter tuning"
+      }
+    },
+    {
+      "id": "subgraph_eval",
+      "type": "SUBGRAPH",
+      "metric_level": "DEKA_SUBGRAPH",
+      "parent_id": "task_root",
+      "properties": {
+        "name": "Model Evaluation",
+        "subgraph_ref": "model_evaluation.trug.json",
+        "description": "External child graph: model evaluation and metrics"
+      }
+    },
+    {
+      "id": "task_validate",
+      "type": "TASK",
+      "metric_level": "BASE_TASK",
+      "parent_id": "task_root",
+      "properties": {
+        "name": "Validate Outputs",
+        "description": "Validate all pipeline outputs and model quality",
+        "status": "pending"
+      }
+    },
+    {
+      "id": "subgraph_deploy",
+      "type": "SUBGRAPH",
+      "metric_level": "DEKA_SUBGRAPH",
+      "parent_id": "task_root",
+      "properties": {
+        "name": "Model Deployment",
+        "subgraph_ref": "model_deployment.trug.json",
+        "description": "External child graph: model packaging and deployment"
+      }
+    },
+    {
+      "id": "result_training",
+      "type": "RESULT",
+      "metric_level": "MILLI_RESULT",
+      "parent_id": "subgraph_training",
+      "properties": {
+        "name": "Trained Model",
+        "status": "success",
+        "accuracy": 0.94,
+        "epochs": 50
+      }
+    },
+    {
+      "id": "result_eval",
+      "type": "RESULT",
+      "metric_level": "MILLI_RESULT",
+      "parent_id": "subgraph_eval",
+      "properties": {
+        "name": "Evaluation Report",
+        "status": "success",
+        "f1_score": 0.91
+      }
+    },
+    {
+      "id": "result_pipeline",
+      "type": "RESULT",
+      "metric_level": "MILLI_RESULT",
+      "parent_id": "task_root",
+      "properties": {
+        "name": "Pipeline Result",
+        "status": "success",
+        "summary": "All stages completed \u2014 model deployed"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "task_root",
+      "to_id": "subgraph_data_prep",
+      "relation": "contains"
+    },
+    {
+      "from_id": "subgraph_data_prep",
+      "to_id": "subgraph_ingest",
+      "relation": "contains"
+    },
+    {
+      "from_id": "subgraph_data_prep",
+      "to_id": "subgraph_feature_eng",
+      "relation": "contains"
+    },
+    {
+      "from_id": "subgraph_feature_eng",
+      "to_id": "result_features",
+      "relation": "contains"
+    },
+    {
+      "from_id": "task_root",
+      "to_id": "subgraph_training",
+      "relation": "contains"
+    },
+    {
+      "from_id": "task_root",
+      "to_id": "subgraph_eval",
+      "relation": "contains"
+    },
+    {
+      "from_id": "task_root",
+      "to_id": "task_validate",
+      "relation": "contains"
+    },
+    {
+      "from_id": "task_root",
+      "to_id": "subgraph_deploy",
+      "relation": "contains"
+    },
+    {
+      "from_id": "task_root",
+      "to_id": "result_pipeline",
+      "relation": "contains"
+    },
+    {
+      "from_id": "subgraph_training",
+      "to_id": "result_training",
+      "relation": "contains"
+    },
+    {
+      "from_id": "subgraph_eval",
+      "to_id": "result_eval",
+      "relation": "contains"
+    },
+    {
+      "from_id": "subgraph_ingest",
+      "to_id": "subgraph_feature_eng",
+      "relation": "precedes",
+      "weight": 0.95
+    },
+    {
+      "from_id": "subgraph_data_prep",
+      "to_id": "subgraph_training",
+      "relation": "precedes",
+      "weight": 0.9
+    },
+    {
+      "from_id": "subgraph_training",
+      "to_id": "subgraph_eval",
+      "relation": "precedes",
+      "weight": 0.9
+    },
+    {
+      "from_id": "subgraph_eval",
+      "to_id": "task_validate",
+      "relation": "precedes",
+      "weight": 0.85
+    },
+    {
+      "from_id": "task_validate",
+      "to_id": "subgraph_deploy",
+      "relation": "precedes",
+      "weight": 0.8
+    },
+    {
+      "from_id": "subgraph_feature_eng",
+      "to_id": "result_features",
+      "relation": "produces",
+      "weight": 0.9
+    },
+    {
+      "from_id": "subgraph_training",
+      "to_id": "result_training",
+      "relation": "produces",
+      "weight": 0.85
+    },
+    {
+      "from_id": "subgraph_eval",
+      "to_id": "result_eval",
+      "relation": "produces",
+      "weight": 0.8
+    },
+    {
+      "from_id": "task_validate",
+      "to_id": "result_pipeline",
+      "relation": "produces",
+      "weight": 0.75
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "execution_flow",
+      "levels": [
+        "TASK",
+        "SUBGRAPH",
+        "RESULT"
+      ]
+    }
+  ]
+}

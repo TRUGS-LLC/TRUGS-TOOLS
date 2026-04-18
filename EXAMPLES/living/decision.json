@@ -1,0 +1,154 @@
+{
+  "name": "Living Decision Discourse Example",
+  "version": "1.0.0",
+  "type": "LIVING",
+  "branch": "living",
+  "description": "Decision discourse with rejection, invalidation, and supersession",
+  "nodes": [
+    {
+      "id": "query_storage",
+      "type": "QUERY",
+      "metric_level": "BASE_QUERY",
+      "parent_id": null,
+      "contains": [
+        "synthesis_options",
+        "decision_use_sqlite",
+        "entity_benchmark",
+        "decision_switch_postgres"
+      ],
+      "properties": {
+        "text": "Which database should we use for graph storage?",
+        "intent": "architecture",
+        "timestamp": "2025-01-15T10:00:00Z"
+      }
+    },
+    {
+      "id": "synthesis_options",
+      "type": "SYNTHESIS",
+      "metric_level": "BASE_SYNTHESIS",
+      "parent_id": "query_storage",
+      "contains": [],
+      "properties": {
+        "name": "Storage Options Analysis",
+        "summary": "Two candidates: SQLite (simple, embedded) vs PostgreSQL (scalable, JSONB)",
+        "confidence": 0.9
+      }
+    },
+    {
+      "id": "decision_use_sqlite",
+      "type": "DECISION",
+      "metric_level": "BASE_DECISION",
+      "parent_id": "query_storage",
+      "contains": [],
+      "properties": {
+        "name": "Use SQLite for MVP",
+        "decision": "Use SQLite for the MVP storage layer",
+        "decision_type": "architectural",
+        "rationale": "Simpler deployment, no external service, sufficient for <10K nodes",
+        "constraints": [
+          "Single-writer only",
+          "No concurrent access"
+        ],
+        "reversible_by": "Exceeding 10K nodes or needing concurrent writers"
+      }
+    },
+    {
+      "id": "entity_benchmark",
+      "type": "ENTITY",
+      "metric_level": "BASE_ENTITY",
+      "parent_id": "query_storage",
+      "contains": [],
+      "properties": {
+        "name": "PostgreSQL Benchmark Results",
+        "entity_type": "evidence",
+        "value": "PostgreSQL JSONB queries 15x faster than SQLite at 50K nodes"
+      }
+    },
+    {
+      "id": "decision_switch_postgres",
+      "type": "DECISION",
+      "metric_level": "BASE_DECISION",
+      "parent_id": "query_storage",
+      "contains": [],
+      "properties": {
+        "name": "Switch to PostgreSQL",
+        "decision": "Switch storage layer from SQLite to PostgreSQL",
+        "decision_type": "architectural",
+        "rationale": "Benchmark shows SQLite cannot scale; PostgreSQL JSONB is 15x faster at projected sizes",
+        "constraints": [
+          "Requires PostgreSQL service",
+          "Schema migration needed"
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "query_storage",
+      "to_id": "synthesis_options",
+      "relation": "contains"
+    },
+    {
+      "from_id": "query_storage",
+      "to_id": "decision_use_sqlite",
+      "relation": "contains"
+    },
+    {
+      "from_id": "query_storage",
+      "to_id": "entity_benchmark",
+      "relation": "contains"
+    },
+    {
+      "from_id": "query_storage",
+      "to_id": "decision_switch_postgres",
+      "relation": "contains"
+    },
+    {
+      "from_id": "synthesis_options",
+      "to_id": "decision_use_sqlite",
+      "relation": "synthesizes_to"
+    },
+    {
+      "from_id": "decision_use_sqlite",
+      "to_id": "synthesis_options",
+      "relation": "REJECTS",
+      "properties": {
+        "reason": "PostgreSQL rejected as over-engineered for MVP"
+      }
+    },
+    {
+      "from_id": "entity_benchmark",
+      "to_id": "decision_use_sqlite",
+      "relation": "INVALIDATES",
+      "properties": {
+        "reason": "Benchmark shows SQLite cannot scale to projected data sizes"
+      }
+    },
+    {
+      "from_id": "decision_switch_postgres",
+      "to_id": "decision_use_sqlite",
+      "relation": "SUPERSEDES",
+      "properties": {
+        "reason": "New evidence invalidated the original decision"
+      }
+    },
+    {
+      "from_id": "decision_switch_postgres",
+      "to_id": "entity_benchmark",
+      "relation": "cites"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "memory_flow",
+      "levels": [
+        "QUERY",
+        "TOOL_EXECUTION",
+        "ENTITY",
+        "SYNTHESIS",
+        "ANSWER",
+        "DECISION"
+      ]
+    }
+  ]
+}

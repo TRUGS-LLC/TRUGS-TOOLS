@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TRUGS v1.0 Project Tracking Branch Schema",
+  "description": "Schema for Project Tracking branch TRUGs",
+  "branch": "project_tracking",
+  "graph_type": "TRACKER",
+  "node_types": ["TRACKER", "EPIC", "TASK", "SUBTASK", "MILESTONE", "MOTIVATION", "PRINCIPLE"],
+  "relations": ["CONTAINS", "DEPENDS_ON", "BLOCKS", "INFORMS", "GROUNDS", "EXTENDS", "COMPLETES", "TRACKS", "RESOLVES", "SUPERSEDES"],
+  "extensions": [],
+  "allOf": [{"$ref": "core.schema.json"}],
+  "properties": {
+    "type": {"const": "TRACKER"},
+    "nodes": {
+      "items": {
+        "properties": {
+          "type": {"enum": ["TRACKER", "EPIC", "TASK", "SUBTASK", "MILESTONE", "MOTIVATION", "PRINCIPLE"]}
+        }
+      }
+    }
+  }
+}

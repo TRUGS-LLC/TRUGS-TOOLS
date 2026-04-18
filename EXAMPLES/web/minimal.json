@@ -1,0 +1,61 @@
+{
+  "name": "Web Minimal Example",
+  "version": "1.0.0",
+  "type": "WEB",
+  "branch": "web",
+  "description": "Minimal Web TRUG demonstrating navigation structure",
+  "nodes": [
+    {
+      "id": "site_1",
+      "type": "SITE",
+      "metric_level": "KILO_SITE",
+      "parent_id": null,
+      "properties": {
+        "name": "Example Site",
+        "domain": "example.com"
+      }
+    },
+    {
+      "id": "page_1",
+      "type": "PAGE",
+      "metric_level": "BASE_PAGE",
+      "parent_id": "site_1",
+      "properties": {
+        "title": "Home",
+        "url": "/index.html"
+      }
+    },
+    {
+      "id": "section_1",
+      "type": "SECTION",
+      "metric_level": "CENTI_SECTION",
+      "parent_id": "page_1",
+      "properties": {
+        "heading": "Welcome",
+        "content": "Welcome to our site"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "site_1",
+      "to_id": "page_1",
+      "relation": "contains"
+    },
+    {
+      "from_id": "page_1",
+      "to_id": "section_1",
+      "relation": "contains"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "navigation",
+      "levels": [
+        "SITE",
+        "PAGE",
+        "SECTION"
+      ]
+    }
+  ]
+}

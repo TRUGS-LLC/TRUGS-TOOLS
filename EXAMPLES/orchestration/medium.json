@@ -1,0 +1,129 @@
+{
+  "name": "Orchestration Medium Example",
+  "version": "1.0.0",
+  "type": "ORCHESTRATION",
+  "branch": "orchestration",
+  "description": "Medium orchestration TRUG: a principal delegates tasks to an agent with resource access",
+  "nodes": [
+    {
+      "id": "principal_1",
+      "type": "PRINCIPAL",
+      "metric_level": "HECTO_PRINCIPAL",
+      "parent_id": null,
+      "properties": {
+        "name": "PlatformAdmin",
+        "role": "administrator",
+        "description": "Platform administrator with full authority"
+      }
+    },
+    {
+      "id": "agent_1",
+      "type": "AGENT",
+      "metric_level": "DEKA_AGENT",
+      "parent_id": "principal_1",
+      "properties": {
+        "name": "CIBot",
+        "role": "ci_agent",
+        "description": "Continuous integration agent"
+      }
+    },
+    {
+      "id": "task_build",
+      "type": "TASK",
+      "metric_level": "BASE_TASK",
+      "parent_id": "agent_1",
+      "properties": {
+        "name": "build_project",
+        "action": "build",
+        "target": "main-app",
+        "status": "queued"
+      }
+    },
+    {
+      "id": "task_test",
+      "type": "TASK",
+      "metric_level": "BASE_TASK",
+      "parent_id": "agent_1",
+      "properties": {
+        "name": "run_tests",
+        "action": "test",
+        "target": "test-suite",
+        "status": "queued"
+      }
+    },
+    {
+      "id": "resource_repo",
+      "type": "RESOURCE",
+      "metric_level": "KILO_RESOURCE",
+      "parent_id": "principal_1",
+      "properties": {
+        "name": "source_repository",
+        "resource_type": "git_repo",
+        "uri": "github.com/org/main-app",
+        "access_level": "read-write"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "principal_1",
+      "to_id": "agent_1",
+      "relation": "contains"
+    },
+    {
+      "from_id": "principal_1",
+      "to_id": "resource_repo",
+      "relation": "contains"
+    },
+    {
+      "from_id": "agent_1",
+      "to_id": "task_build",
+      "relation": "contains"
+    },
+    {
+      "from_id": "agent_1",
+      "to_id": "task_test",
+      "relation": "contains"
+    },
+    {
+      "from_id": "principal_1",
+      "to_id": "agent_1",
+      "relation": "delegates_to"
+    },
+    {
+      "from_id": "agent_1",
+      "to_id": "task_build",
+      "relation": "delegates_to"
+    },
+    {
+      "from_id": "agent_1",
+      "to_id": "task_test",
+      "relation": "delegates_to"
+    },
+    {
+      "from_id": "task_build",
+      "to_id": "task_test",
+      "relation": "leads_to"
+    },
+    {
+      "from_id": "agent_1",
+      "to_id": "resource_repo",
+      "relation": "accesses"
+    },
+    {
+      "from_id": "agent_1",
+      "to_id": "principal_1",
+      "relation": "reports_to"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "agent_hierarchy",
+      "levels": [
+        "PRINCIPAL",
+        "AGENT",
+        "TASK"
+      ]
+    }
+  ]
+}

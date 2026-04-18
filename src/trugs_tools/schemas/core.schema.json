@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TRUGS v1.0 Core Schema",
+  "description": "Base schema for all TRUGS v1.0 files",
+  "type": "object",
+  "required": ["name", "version", "type", "nodes", "edges"],
+  "properties": {
+    "name": {"type": "string"},
+    "version": {"type": "string"},
+    "type": {"type": "string"},
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "metric_level"],
+        "properties": {
+          "id": {"type": "string"},
+          "type": {"type": "string"},
+          "metric_level": {"type": "string"},
+          "parent_id": {"type": ["string", "null"]},
+          "contains": {"type": "array", "items": {"type": "string"}},
+          "properties": {"type": "object"},
+          "dimension": {"type": "object"}
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from_id", "to_id", "relation"],
+        "properties": {
+          "from_id": {"type": "string"},
+          "to_id": {"type": "string"},
+          "relation": {"type": "string"},
+          "weight": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+          "properties": {"type": "object"}
+        }
+      }
+    },
+    "dimensions": {"type": "object"},
+    "capabilities": {"type": "object"},
+    "extensions": {"type": "array", "items": {"type": "string"}}
+  }
+}

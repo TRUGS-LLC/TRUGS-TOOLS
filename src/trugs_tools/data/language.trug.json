@@ -1,0 +1,4221 @@
+{
+  "name": "TRUGS Language Vocabulary",
+  "version": "1.0.1",
+  "type": "NAMESPACE",
+  "description": "Canonical TRL vocabulary — 190 words across 8 parts of speech. Generated from SPEC_vocabulary.md by tools/build_language_trug.py.",
+  "dimensions": {},
+  "capabilities": {
+    "vocabularies": [
+      "trl_v1"
+    ]
+  },
+  "meta": {
+    "generated_by": "tools/build_language_trug.py",
+    "source": "TRUGS_LANGUAGE/SPEC_vocabulary.md",
+    "word_count": 190,
+    "part_counts": {
+      "noun": 26,
+      "verb": 61,
+      "adjective": 36,
+      "adverb": 19,
+      "preposition": 18,
+      "conjunction": 13,
+      "article": 10,
+      "pronoun": 7
+    }
+  },
+  "nodes": [
+    {
+      "id": "language",
+      "type": "NAMESPACE",
+      "parent_id": null,
+      "contains": [
+        "nouns",
+        "verbs",
+        "adjectives",
+        "adverbs",
+        "prepositions",
+        "conjunctions",
+        "articles",
+        "pronouns"
+      ],
+      "properties": {
+        "name": "TRUGS Language (TRL)",
+        "version": "1.0.1",
+        "word_count": 190
+      },
+      "metric_level": "KILO_LANGUAGE",
+      "dimension": {}
+    },
+    {
+      "id": "nouns",
+      "type": "DATA",
+      "parent_id": "language",
+      "contains": [
+        "noun-actors",
+        "noun-artifacts",
+        "noun-containers",
+        "noun-boundaries",
+        "noun-outcomes"
+      ],
+      "properties": {
+        "speech": "noun",
+        "count": 26
+      },
+      "metric_level": "HECTO_CATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "verbs",
+      "type": "DATA",
+      "parent_id": "language",
+      "contains": [
+        "verb-transform",
+        "verb-move",
+        "verb-obligate",
+        "verb-permit",
+        "verb-prohibit",
+        "verb-control",
+        "verb-bind",
+        "verb-resolve"
+      ],
+      "properties": {
+        "speech": "verb",
+        "count": 61
+      },
+      "metric_level": "HECTO_CATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "adjectives",
+      "type": "DATA",
+      "parent_id": "language",
+      "contains": [
+        "adjective-type",
+        "adjective-access",
+        "adjective-state",
+        "adjective-quantity",
+        "adjective-priority"
+      ],
+      "properties": {
+        "speech": "adjective",
+        "count": 36
+      },
+      "metric_level": "HECTO_CATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "adverbs",
+      "type": "DATA",
+      "parent_id": "language",
+      "contains": [
+        "adverb-timing",
+        "adverb-repetition",
+        "adverb-degree",
+        "adverb-condition"
+      ],
+      "properties": {
+        "speech": "adverb",
+        "count": 19
+      },
+      "metric_level": "HECTO_CATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "prepositions",
+      "type": "DATA",
+      "parent_id": "language",
+      "contains": [
+        "preposition-flow",
+        "preposition-dependency",
+        "preposition-containment",
+        "preposition-reference",
+        "preposition-replacement",
+        "preposition-authority",
+        "preposition-binding"
+      ],
+      "properties": {
+        "speech": "preposition",
+        "count": 18
+      },
+      "metric_level": "HECTO_CATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "conjunctions",
+      "type": "DATA",
+      "parent_id": "language",
+      "contains": [
+        "conjunction-sequence",
+        "conjunction-parallel",
+        "conjunction-alternative",
+        "conjunction-cause",
+        "conjunction-exception"
+      ],
+      "properties": {
+        "speech": "conjunction",
+        "count": 13
+      },
+      "metric_level": "HECTO_CATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "articles",
+      "type": "DATA",
+      "parent_id": "language",
+      "contains": [
+        "article-specific",
+        "article-universal",
+        "article-existential",
+        "article-negative"
+      ],
+      "properties": {
+        "speech": "article",
+        "count": 10
+      },
+      "metric_level": "HECTO_CATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "pronouns",
+      "type": "DATA",
+      "parent_id": "language",
+      "contains": [
+        "pronoun-self",
+        "pronoun-result",
+        "pronoun-source",
+        "pronoun-target",
+        "pronoun-legal_reference"
+      ],
+      "properties": {
+        "speech": "pronoun",
+        "count": 7
+      },
+      "metric_level": "HECTO_CATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "noun-actors",
+      "type": "DATA",
+      "parent_id": "nouns",
+      "contains": [
+        "w-process",
+        "w-service",
+        "w-function",
+        "w-transform",
+        "w-party",
+        "w-agent",
+        "w-principal"
+      ],
+      "properties": {
+        "subcategory": "actors",
+        "description": "Who performs actions",
+        "count": 7
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "noun-artifacts",
+      "type": "DATA",
+      "parent_id": "nouns",
+      "contains": [
+        "w-data",
+        "w-file",
+        "w-record",
+        "w-message",
+        "w-stream",
+        "w-resource",
+        "w-instrument"
+      ],
+      "properties": {
+        "subcategory": "artifacts",
+        "description": "What is acted upon",
+        "count": 7
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "noun-containers",
+      "type": "DATA",
+      "parent_id": "nouns",
+      "contains": [
+        "w-pipeline",
+        "w-stage",
+        "w-module",
+        "w-namespace"
+      ],
+      "properties": {
+        "subcategory": "containers",
+        "description": "What holds other things",
+        "count": 4
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "noun-boundaries",
+      "type": "DATA",
+      "parent_id": "nouns",
+      "contains": [
+        "w-entry",
+        "w-exit",
+        "w-interface",
+        "w-endpoint",
+        "w-jurisdiction"
+      ],
+      "properties": {
+        "subcategory": "boundaries",
+        "description": "Where/when things apply",
+        "count": 5
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "noun-outcomes",
+      "type": "DATA",
+      "parent_id": "nouns",
+      "contains": [
+        "w-error",
+        "w-exception",
+        "w-remedy"
+      ],
+      "properties": {
+        "subcategory": "outcomes",
+        "description": "What comes out",
+        "count": 3
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "verb-transform",
+      "type": "DATA",
+      "parent_id": "verbs",
+      "contains": [
+        "w-filter",
+        "w-exclude",
+        "w-map",
+        "w-sort",
+        "w-merge",
+        "w-split",
+        "w-flatten",
+        "w-aggregate",
+        "w-group",
+        "w-rename",
+        "w-batch",
+        "w-distinct",
+        "w-take",
+        "w-skip"
+      ],
+      "properties": {
+        "subcategory": "transform",
+        "description": "Change data shape",
+        "count": 14
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "verb-move",
+      "type": "DATA",
+      "parent_id": "verbs",
+      "contains": [
+        "w-read",
+        "w-write",
+        "w-send",
+        "w-receive",
+        "w-return",
+        "w-request",
+        "w-respond",
+        "w-authenticate",
+        "w-deliver",
+        "w-assign"
+      ],
+      "properties": {
+        "subcategory": "move",
+        "description": "Move data between actors",
+        "count": 10
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "verb-obligate",
+      "type": "DATA",
+      "parent_id": "verbs",
+      "contains": [
+        "w-validate",
+        "w-assert",
+        "w-require",
+        "w-shall"
+      ],
+      "properties": {
+        "subcategory": "obligate",
+        "description": "Mandate behavior",
+        "count": 4
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "verb-permit",
+      "type": "DATA",
+      "parent_id": "verbs",
+      "contains": [
+        "w-allow",
+        "w-approve",
+        "w-grant",
+        "w-override",
+        "w-may"
+      ],
+      "properties": {
+        "subcategory": "permit",
+        "description": "Allow behavior",
+        "count": 5
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "verb-prohibit",
+      "type": "DATA",
+      "parent_id": "verbs",
+      "contains": [
+        "w-deny",
+        "w-reject",
+        "w-shall_not",
+        "w-revoke"
+      ],
+      "properties": {
+        "subcategory": "prohibit",
+        "description": "Forbid behavior",
+        "count": 4
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "verb-control",
+      "type": "DATA",
+      "parent_id": "verbs",
+      "contains": [
+        "w-branch",
+        "w-match",
+        "w-retry",
+        "w-timeout",
+        "w-throw",
+        "w-exists",
+        "w-expire",
+        "w-equals",
+        "w-exceeds",
+        "w-precedes"
+      ],
+      "properties": {
+        "subcategory": "control",
+        "description": "Direct execution flow",
+        "count": 10
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "verb-bind",
+      "type": "DATA",
+      "parent_id": "verbs",
+      "contains": [
+        "w-define",
+        "w-declare",
+        "w-implement",
+        "w-nest",
+        "w-augment",
+        "w-replace",
+        "w-cite",
+        "w-administer",
+        "w-stipulate"
+      ],
+      "properties": {
+        "subcategory": "bind",
+        "description": "Establish meaning or structural relationships",
+        "count": 9
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "verb-resolve",
+      "type": "DATA",
+      "parent_id": "verbs",
+      "contains": [
+        "w-catch",
+        "w-handle",
+        "w-recover",
+        "w-cure",
+        "w-indemnify"
+      ],
+      "properties": {
+        "subcategory": "resolve",
+        "description": "Respond to failure",
+        "count": 5
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "adjective-type",
+      "type": "DATA",
+      "parent_id": "adjectives",
+      "contains": [
+        "w-string",
+        "w-integer",
+        "w-boolean",
+        "w-array",
+        "w-object"
+      ],
+      "properties": {
+        "subcategory": "type",
+        "description": "What kind of thing",
+        "count": 5
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "adjective-access",
+      "type": "DATA",
+      "parent_id": "adjectives",
+      "contains": [
+        "w-public",
+        "w-private",
+        "w-protected",
+        "w-readonly",
+        "w-confidential"
+      ],
+      "properties": {
+        "subcategory": "access",
+        "description": "Who can see/touch it",
+        "count": 5
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "adjective-state",
+      "type": "DATA",
+      "parent_id": "adjectives",
+      "contains": [
+        "w-valid",
+        "w-invalid",
+        "w-null",
+        "w-empty",
+        "w-pending",
+        "w-active",
+        "w-failed",
+        "w-mutable",
+        "w-immutable",
+        "w-binding",
+        "w-void",
+        "w-enforceable",
+        "w-expired",
+        "w-precedent"
+      ],
+      "properties": {
+        "subcategory": "state",
+        "description": "Current condition",
+        "count": 14
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "adjective-quantity",
+      "type": "DATA",
+      "parent_id": "adjectives",
+      "contains": [
+        "w-required",
+        "w-optional",
+        "w-unique",
+        "w-multiple",
+        "w-sole",
+        "w-joint"
+      ],
+      "properties": {
+        "subcategory": "quantity",
+        "description": "How many / whether required",
+        "count": 6
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "adjective-priority",
+      "type": "DATA",
+      "parent_id": "adjectives",
+      "contains": [
+        "w-default",
+        "w-critical",
+        "w-high",
+        "w-low",
+        "w-material",
+        "w-subordinate"
+      ],
+      "properties": {
+        "subcategory": "priority",
+        "description": "Relative importance",
+        "count": 6
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "adverb-timing",
+      "type": "DATA",
+      "parent_id": "adverbs",
+      "contains": [
+        "w-async",
+        "w-sync",
+        "w-sequential",
+        "w-parallel",
+        "w-immediate",
+        "w-lazy",
+        "w-promptly",
+        "w-forthwith",
+        "w-within"
+      ],
+      "properties": {
+        "subcategory": "timing",
+        "description": "When/how fast",
+        "count": 9
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "adverb-repetition",
+      "type": "DATA",
+      "parent_id": "adverbs",
+      "contains": [
+        "w-once",
+        "w-always",
+        "w-never",
+        "w-bounded"
+      ],
+      "properties": {
+        "subcategory": "repetition",
+        "description": "How often",
+        "count": 4
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "adverb-degree",
+      "type": "DATA",
+      "parent_id": "adverbs",
+      "contains": [
+        "w-strictly",
+        "w-partially",
+        "w-substantially",
+        "w-reasonably"
+      ],
+      "properties": {
+        "subcategory": "degree",
+        "description": "How precisely",
+        "count": 4
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "adverb-condition",
+      "type": "DATA",
+      "parent_id": "adverbs",
+      "contains": [
+        "w-unconditionally",
+        "w-conditionally"
+      ],
+      "properties": {
+        "subcategory": "condition",
+        "description": "Whether qualified",
+        "count": 2
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "preposition-flow",
+      "type": "DATA",
+      "parent_id": "prepositions",
+      "contains": [
+        "w-feeds",
+        "w-routes",
+        "w-to",
+        "w-from",
+        "w-returns_to"
+      ],
+      "properties": {
+        "subcategory": "flow",
+        "description": "Data movement direction",
+        "count": 5
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "preposition-dependency",
+      "type": "DATA",
+      "parent_id": "prepositions",
+      "contains": [
+        "w-binds",
+        "w-depends_on",
+        "w-implements",
+        "w-extends",
+        "w-subject_to"
+      ],
+      "properties": {
+        "subcategory": "dependency",
+        "description": "What constrains what",
+        "count": 5
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "preposition-containment",
+      "type": "DATA",
+      "parent_id": "prepositions",
+      "contains": [
+        "w-contains"
+      ],
+      "properties": {
+        "subcategory": "containment",
+        "description": "",
+        "count": 1
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "preposition-reference",
+      "type": "DATA",
+      "parent_id": "prepositions",
+      "contains": [
+        "w-references"
+      ],
+      "properties": {
+        "subcategory": "reference",
+        "description": "",
+        "count": 1
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "preposition-replacement",
+      "type": "DATA",
+      "parent_id": "prepositions",
+      "contains": [
+        "w-supersedes"
+      ],
+      "properties": {
+        "subcategory": "replacement",
+        "description": "",
+        "count": 1
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "preposition-authority",
+      "type": "DATA",
+      "parent_id": "prepositions",
+      "contains": [
+        "w-governs",
+        "w-pursuant_to",
+        "w-on_behalf_of"
+      ],
+      "properties": {
+        "subcategory": "authority",
+        "description": "",
+        "count": 3
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "preposition-binding",
+      "type": "DATA",
+      "parent_id": "prepositions",
+      "contains": [
+        "w-as",
+        "w-by"
+      ],
+      "properties": {
+        "subcategory": "binding",
+        "description": "Establish identity or criterion",
+        "count": 2
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "conjunction-sequence",
+      "type": "DATA",
+      "parent_id": "conjunctions",
+      "contains": [
+        "w-then",
+        "w-finally"
+      ],
+      "properties": {
+        "subcategory": "sequence",
+        "description": "",
+        "count": 2
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "conjunction-parallel",
+      "type": "DATA",
+      "parent_id": "conjunctions",
+      "contains": [
+        "w-and"
+      ],
+      "properties": {
+        "subcategory": "parallel",
+        "description": "",
+        "count": 1
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "conjunction-alternative",
+      "type": "DATA",
+      "parent_id": "conjunctions",
+      "contains": [
+        "w-or",
+        "w-else"
+      ],
+      "properties": {
+        "subcategory": "alternative",
+        "description": "",
+        "count": 2
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "conjunction-cause",
+      "type": "DATA",
+      "parent_id": "conjunctions",
+      "contains": [
+        "w-if",
+        "w-when",
+        "w-while"
+      ],
+      "properties": {
+        "subcategory": "cause",
+        "description": "",
+        "count": 3
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "conjunction-exception",
+      "type": "DATA",
+      "parent_id": "conjunctions",
+      "contains": [
+        "w-unless",
+        "w-except",
+        "w-notwithstanding",
+        "w-provided_that",
+        "w-whereas"
+      ],
+      "properties": {
+        "subcategory": "exception",
+        "description": "",
+        "count": 5
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "article-specific",
+      "type": "DATA",
+      "parent_id": "articles",
+      "contains": [
+        "w-the",
+        "w-this"
+      ],
+      "properties": {
+        "subcategory": "specific",
+        "description": "",
+        "count": 2
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "article-universal",
+      "type": "DATA",
+      "parent_id": "articles",
+      "contains": [
+        "w-all",
+        "w-each",
+        "w-every"
+      ],
+      "properties": {
+        "subcategory": "universal",
+        "description": "",
+        "count": 3
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "article-existential",
+      "type": "DATA",
+      "parent_id": "articles",
+      "contains": [
+        "w-any",
+        "w-some",
+        "w-a"
+      ],
+      "properties": {
+        "subcategory": "existential",
+        "description": "",
+        "count": 3
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "article-negative",
+      "type": "DATA",
+      "parent_id": "articles",
+      "contains": [
+        "w-no",
+        "w-none"
+      ],
+      "properties": {
+        "subcategory": "negative",
+        "description": "",
+        "count": 2
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "pronoun-self",
+      "type": "DATA",
+      "parent_id": "pronouns",
+      "contains": [
+        "w-self"
+      ],
+      "properties": {
+        "subcategory": "self",
+        "description": "",
+        "count": 1
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "pronoun-result",
+      "type": "DATA",
+      "parent_id": "pronouns",
+      "contains": [
+        "w-result",
+        "w-output"
+      ],
+      "properties": {
+        "subcategory": "result",
+        "description": "",
+        "count": 2
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "pronoun-source",
+      "type": "DATA",
+      "parent_id": "pronouns",
+      "contains": [
+        "w-input",
+        "w-source"
+      ],
+      "properties": {
+        "subcategory": "source",
+        "description": "",
+        "count": 2
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "pronoun-target",
+      "type": "DATA",
+      "parent_id": "pronouns",
+      "contains": [
+        "w-target"
+      ],
+      "properties": {
+        "subcategory": "target",
+        "description": "",
+        "count": 1
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "pronoun-legal_reference",
+      "type": "DATA",
+      "parent_id": "pronouns",
+      "contains": [
+        "w-said"
+      ],
+      "properties": {
+        "subcategory": "legal_reference",
+        "description": "",
+        "count": 1
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "w-process",
+      "type": "DATA",
+      "parent_id": "noun-actors",
+      "contains": [],
+      "properties": {
+        "word": "PROCESS",
+        "number": 1,
+        "speech": "noun",
+        "subcategory": "actors",
+        "source": "computation",
+        "definition": "An executing unit of work with its own state",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-service",
+      "type": "DATA",
+      "parent_id": "noun-actors",
+      "contains": [],
+      "properties": {
+        "word": "SERVICE",
+        "number": 2,
+        "speech": "noun",
+        "subcategory": "actors",
+        "source": "computation",
+        "definition": "A long-lived process that accepts requests",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-function",
+      "type": "DATA",
+      "parent_id": "noun-actors",
+      "contains": [],
+      "properties": {
+        "word": "FUNCTION",
+        "number": 3,
+        "speech": "noun",
+        "subcategory": "actors",
+        "source": "computation",
+        "definition": "A callable unit that accepts input and returns output",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-transform",
+      "type": "DATA",
+      "parent_id": "noun-actors",
+      "contains": [],
+      "properties": {
+        "word": "TRANSFORM",
+        "number": 4,
+        "speech": "noun",
+        "subcategory": "actors",
+        "source": "computation",
+        "definition": "A node that performs exactly one operation",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-party",
+      "type": "DATA",
+      "parent_id": "noun-actors",
+      "contains": [],
+      "properties": {
+        "word": "PARTY",
+        "number": 5,
+        "speech": "noun",
+        "subcategory": "actors",
+        "source": "law",
+        "definition": "A bound entity capable of obligations and permissions",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-agent",
+      "type": "DATA",
+      "parent_id": "noun-actors",
+      "contains": [],
+      "properties": {
+        "word": "AGENT",
+        "number": 6,
+        "speech": "noun",
+        "subcategory": "actors",
+        "source": "law",
+        "definition": "An entity authorized to act on behalf of another",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-principal",
+      "type": "DATA",
+      "parent_id": "noun-actors",
+      "contains": [],
+      "properties": {
+        "word": "PRINCIPAL",
+        "number": 7,
+        "speech": "noun",
+        "subcategory": "actors",
+        "source": "law",
+        "definition": "The entity on whose behalf an agent acts",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-data",
+      "type": "DATA",
+      "parent_id": "noun-artifacts",
+      "contains": [],
+      "properties": {
+        "word": "DATA",
+        "number": 8,
+        "speech": "noun",
+        "subcategory": "artifacts",
+        "source": "computation",
+        "definition": "A typed value: input, output, or intermediate state",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-file",
+      "type": "DATA",
+      "parent_id": "noun-artifacts",
+      "contains": [],
+      "properties": {
+        "word": "FILE",
+        "number": 9,
+        "speech": "noun",
+        "subcategory": "artifacts",
+        "source": "computation",
+        "definition": "A named, persistent byte sequence",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-record",
+      "type": "DATA",
+      "parent_id": "noun-artifacts",
+      "contains": [],
+      "properties": {
+        "word": "RECORD",
+        "number": 10,
+        "speech": "noun",
+        "subcategory": "artifacts",
+        "source": "computation",
+        "definition": "A single structured data item with named fields",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-message",
+      "type": "DATA",
+      "parent_id": "noun-artifacts",
+      "contains": [],
+      "properties": {
+        "word": "MESSAGE",
+        "number": 11,
+        "speech": "noun",
+        "subcategory": "artifacts",
+        "source": "computation",
+        "definition": "A discrete unit of communication between actors",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-stream",
+      "type": "DATA",
+      "parent_id": "noun-artifacts",
+      "contains": [],
+      "properties": {
+        "word": "STREAM",
+        "number": 12,
+        "speech": "noun",
+        "subcategory": "artifacts",
+        "source": "computation",
+        "definition": "An ordered, potentially unbounded sequence of data items",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-resource",
+      "type": "DATA",
+      "parent_id": "noun-artifacts",
+      "contains": [],
+      "properties": {
+        "word": "RESOURCE",
+        "number": 13,
+        "speech": "noun",
+        "subcategory": "artifacts",
+        "source": "computation",
+        "definition": "A managed asset: file, service, endpoint, or data store",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-instrument",
+      "type": "DATA",
+      "parent_id": "noun-artifacts",
+      "contains": [],
+      "properties": {
+        "word": "INSTRUMENT",
+        "number": 14,
+        "speech": "noun",
+        "subcategory": "artifacts",
+        "source": "law",
+        "definition": "A formal document that creates or records rights",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-pipeline",
+      "type": "DATA",
+      "parent_id": "noun-containers",
+      "contains": [],
+      "properties": {
+        "word": "PIPELINE",
+        "number": 15,
+        "speech": "noun",
+        "subcategory": "containers",
+        "source": "computation",
+        "definition": "A container of ordered operations data flows through",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-stage",
+      "type": "DATA",
+      "parent_id": "noun-containers",
+      "contains": [],
+      "properties": {
+        "word": "STAGE",
+        "number": 16,
+        "speech": "noun",
+        "subcategory": "containers",
+        "source": "computation",
+        "definition": "A logical grouping of transforms within a pipeline",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-module",
+      "type": "DATA",
+      "parent_id": "noun-containers",
+      "contains": [],
+      "properties": {
+        "word": "MODULE",
+        "number": 17,
+        "speech": "noun",
+        "subcategory": "containers",
+        "source": "computation",
+        "definition": "A self-contained unit of related functionality",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-namespace",
+      "type": "DATA",
+      "parent_id": "noun-containers",
+      "contains": [],
+      "properties": {
+        "word": "NAMESPACE",
+        "number": 18,
+        "speech": "noun",
+        "subcategory": "containers",
+        "source": "computation",
+        "definition": "A named scope that prevents identifier collision",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-entry",
+      "type": "DATA",
+      "parent_id": "noun-boundaries",
+      "contains": [],
+      "properties": {
+        "word": "ENTRY",
+        "number": 19,
+        "speech": "noun",
+        "subcategory": "boundaries",
+        "source": "computation",
+        "definition": "The point where data enters a scope",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-exit",
+      "type": "DATA",
+      "parent_id": "noun-boundaries",
+      "contains": [],
+      "properties": {
+        "word": "EXIT",
+        "number": 20,
+        "speech": "noun",
+        "subcategory": "boundaries",
+        "source": "computation",
+        "definition": "The point where data leaves a scope",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-interface",
+      "type": "DATA",
+      "parent_id": "noun-boundaries",
+      "contains": [],
+      "properties": {
+        "word": "INTERFACE",
+        "number": 21,
+        "speech": "noun",
+        "subcategory": "boundaries",
+        "source": "computation",
+        "definition": "A contract defining what operations a thing exposes",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-endpoint",
+      "type": "DATA",
+      "parent_id": "noun-boundaries",
+      "contains": [],
+      "properties": {
+        "word": "ENDPOINT",
+        "number": 22,
+        "speech": "noun",
+        "subcategory": "boundaries",
+        "source": "computation",
+        "definition": "A named, addressable point of interaction",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-jurisdiction",
+      "type": "DATA",
+      "parent_id": "noun-boundaries",
+      "contains": [],
+      "properties": {
+        "word": "JURISDICTION",
+        "number": 23,
+        "speech": "noun",
+        "subcategory": "boundaries",
+        "source": "law",
+        "definition": "The scope within which authority is valid",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-error",
+      "type": "DATA",
+      "parent_id": "noun-outcomes",
+      "contains": [],
+      "properties": {
+        "word": "ERROR",
+        "number": 24,
+        "speech": "noun",
+        "subcategory": "outcomes",
+        "source": "computation",
+        "definition": "A named failure condition with a cause",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-exception",
+      "type": "DATA",
+      "parent_id": "noun-outcomes",
+      "contains": [],
+      "properties": {
+        "word": "EXCEPTION",
+        "number": 25,
+        "speech": "noun",
+        "subcategory": "outcomes",
+        "source": "computation",
+        "definition": "An error that interrupts normal flow",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-remedy",
+      "type": "DATA",
+      "parent_id": "noun-outcomes",
+      "contains": [],
+      "properties": {
+        "word": "REMEDY",
+        "number": 26,
+        "speech": "noun",
+        "subcategory": "outcomes",
+        "source": "law",
+        "definition": "The consequence when an obligation is breached",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-filter",
+      "type": "DATA",
+      "parent_id": "verb-transform",
+      "contains": [],
+      "properties": {
+        "word": "FILTER",
+        "number": 27,
+        "speech": "verb",
+        "subcategory": "transform",
+        "source": "computation",
+        "definition": "Select items satisfying a predicate",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-exclude",
+      "type": "DATA",
+      "parent_id": "verb-transform",
+      "contains": [],
+      "properties": {
+        "word": "EXCLUDE",
+        "number": 28,
+        "speech": "verb",
+        "subcategory": "transform",
+        "source": "computation",
+        "definition": "Remove items satisfying a predicate",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-map",
+      "type": "DATA",
+      "parent_id": "verb-transform",
+      "contains": [],
+      "properties": {
+        "word": "MAP",
+        "number": 29,
+        "speech": "verb",
+        "subcategory": "transform",
+        "source": "computation",
+        "definition": "Transform each item independently",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-sort",
+      "type": "DATA",
+      "parent_id": "verb-transform",
+      "contains": [],
+      "properties": {
+        "word": "SORT",
+        "number": 30,
+        "speech": "verb",
+        "subcategory": "transform",
+        "source": "computation",
+        "definition": "Order items by comparison function",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-merge",
+      "type": "DATA",
+      "parent_id": "verb-transform",
+      "contains": [],
+      "properties": {
+        "word": "MERGE",
+        "number": 31,
+        "speech": "verb",
+        "subcategory": "transform",
+        "source": "computation",
+        "definition": "Combine multiple collections into one",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-split",
+      "type": "DATA",
+      "parent_id": "verb-transform",
+      "contains": [],
+      "properties": {
+        "word": "SPLIT",
+        "number": 32,
+        "speech": "verb",
+        "subcategory": "transform",
+        "source": "computation",
+        "definition": "Divide one collection into multiple",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-flatten",
+      "type": "DATA",
+      "parent_id": "verb-transform",
+      "contains": [],
+      "properties": {
+        "word": "FLATTEN",
+        "number": 33,
+        "speech": "verb",
+        "subcategory": "transform",
+        "source": "computation",
+        "definition": "Collapse one level of nesting",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-aggregate",
+      "type": "DATA",
+      "parent_id": "verb-transform",
+      "contains": [],
+      "properties": {
+        "word": "AGGREGATE",
+        "number": 34,
+        "speech": "verb",
+        "subcategory": "transform",
+        "source": "computation",
+        "definition": "Reduce collection to single value",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-group",
+      "type": "DATA",
+      "parent_id": "verb-transform",
+      "contains": [],
+      "properties": {
+        "word": "GROUP",
+        "number": 35,
+        "speech": "verb",
+        "subcategory": "transform",
+        "source": "computation",
+        "definition": "Partition collection by key",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-rename",
+      "type": "DATA",
+      "parent_id": "verb-transform",
+      "contains": [],
+      "properties": {
+        "word": "RENAME",
+        "number": 36,
+        "speech": "verb",
+        "subcategory": "transform",
+        "source": "computation",
+        "definition": "Change field names without changing values",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-batch",
+      "type": "DATA",
+      "parent_id": "verb-transform",
+      "contains": [],
+      "properties": {
+        "word": "BATCH",
+        "number": 37,
+        "speech": "verb",
+        "subcategory": "transform",
+        "source": "computation",
+        "definition": "Group items into fixed-size chunks",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-distinct",
+      "type": "DATA",
+      "parent_id": "verb-transform",
+      "contains": [],
+      "properties": {
+        "word": "DISTINCT",
+        "number": 38,
+        "speech": "verb",
+        "subcategory": "transform",
+        "source": "computation",
+        "definition": "Remove duplicates",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-take",
+      "type": "DATA",
+      "parent_id": "verb-transform",
+      "contains": [],
+      "properties": {
+        "word": "TAKE",
+        "number": 39,
+        "speech": "verb",
+        "subcategory": "transform",
+        "source": "computation",
+        "definition": "Return first N items",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-skip",
+      "type": "DATA",
+      "parent_id": "verb-transform",
+      "contains": [],
+      "properties": {
+        "word": "SKIP",
+        "number": 40,
+        "speech": "verb",
+        "subcategory": "transform",
+        "source": "computation",
+        "definition": "Bypass first N items",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-read",
+      "type": "DATA",
+      "parent_id": "verb-move",
+      "contains": [],
+      "properties": {
+        "word": "READ",
+        "number": 41,
+        "speech": "verb",
+        "subcategory": "move",
+        "source": "computation",
+        "definition": "Input data from external source",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-write",
+      "type": "DATA",
+      "parent_id": "verb-move",
+      "contains": [],
+      "properties": {
+        "word": "WRITE",
+        "number": 42,
+        "speech": "verb",
+        "subcategory": "move",
+        "source": "computation",
+        "definition": "Output data to external destination",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-send",
+      "type": "DATA",
+      "parent_id": "verb-move",
+      "contains": [],
+      "properties": {
+        "word": "SEND",
+        "number": 43,
+        "speech": "verb",
+        "subcategory": "move",
+        "source": "computation",
+        "definition": "Transmit data to another actor",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-receive",
+      "type": "DATA",
+      "parent_id": "verb-move",
+      "contains": [],
+      "properties": {
+        "word": "RECEIVE",
+        "number": 44,
+        "speech": "verb",
+        "subcategory": "move",
+        "source": "computation",
+        "definition": "Accept data from another actor",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-return",
+      "type": "DATA",
+      "parent_id": "verb-move",
+      "contains": [],
+      "properties": {
+        "word": "RETURN",
+        "number": 45,
+        "speech": "verb",
+        "subcategory": "move",
+        "source": "computation",
+        "definition": "Emit final output and terminate",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-request",
+      "type": "DATA",
+      "parent_id": "verb-move",
+      "contains": [],
+      "properties": {
+        "word": "REQUEST",
+        "number": 46,
+        "speech": "verb",
+        "subcategory": "move",
+        "source": "computation",
+        "definition": "Send message expecting a response",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-respond",
+      "type": "DATA",
+      "parent_id": "verb-move",
+      "contains": [],
+      "properties": {
+        "word": "RESPOND",
+        "number": 47,
+        "speech": "verb",
+        "subcategory": "move",
+        "source": "computation",
+        "definition": "Reply to a prior request",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-authenticate",
+      "type": "DATA",
+      "parent_id": "verb-move",
+      "contains": [],
+      "properties": {
+        "word": "AUTHENTICATE",
+        "number": 48,
+        "speech": "verb",
+        "subcategory": "move",
+        "source": "computation",
+        "definition": "Prove identity to another actor",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-deliver",
+      "type": "DATA",
+      "parent_id": "verb-move",
+      "contains": [],
+      "properties": {
+        "word": "DELIVER",
+        "number": 49,
+        "speech": "verb",
+        "subcategory": "move",
+        "source": "law",
+        "definition": "Transfer possession of an artifact to another party",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-assign",
+      "type": "DATA",
+      "parent_id": "verb-move",
+      "contains": [],
+      "properties": {
+        "word": "ASSIGN",
+        "number": 50,
+        "speech": "verb",
+        "subcategory": "move",
+        "source": "law",
+        "definition": "Transfer rights or obligations to another party",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-validate",
+      "type": "DATA",
+      "parent_id": "verb-obligate",
+      "contains": [],
+      "properties": {
+        "word": "VALIDATE",
+        "number": 51,
+        "speech": "verb",
+        "subcategory": "obligate",
+        "source": "computation",
+        "definition": "Assert data satisfies condition; halt if not",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-assert",
+      "type": "DATA",
+      "parent_id": "verb-obligate",
+      "contains": [],
+      "properties": {
+        "word": "ASSERT",
+        "number": 52,
+        "speech": "verb",
+        "subcategory": "obligate",
+        "source": "computation",
+        "definition": "Declare a condition that must be true",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-require",
+      "type": "DATA",
+      "parent_id": "verb-obligate",
+      "contains": [],
+      "properties": {
+        "word": "REQUIRE",
+        "number": 53,
+        "speech": "verb",
+        "subcategory": "obligate",
+        "source": "computation",
+        "definition": "Declare a hard prerequisite",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-shall",
+      "type": "DATA",
+      "parent_id": "verb-obligate",
+      "contains": [],
+      "properties": {
+        "word": "SHALL",
+        "number": 54,
+        "speech": "verb",
+        "subcategory": "obligate",
+        "source": "law",
+        "definition": "Mandatory: party MUST perform action",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-allow",
+      "type": "DATA",
+      "parent_id": "verb-permit",
+      "contains": [],
+      "properties": {
+        "word": "ALLOW",
+        "number": 55,
+        "speech": "verb",
+        "subcategory": "permit",
+        "source": "computation",
+        "definition": "Permit an action without mandating it",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-approve",
+      "type": "DATA",
+      "parent_id": "verb-permit",
+      "contains": [],
+      "properties": {
+        "word": "APPROVE",
+        "number": 56,
+        "speech": "verb",
+        "subcategory": "permit",
+        "source": "computation",
+        "definition": "Accept as satisfying criteria; opposite of REJECT",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-grant",
+      "type": "DATA",
+      "parent_id": "verb-permit",
+      "contains": [],
+      "properties": {
+        "word": "GRANT",
+        "number": 57,
+        "speech": "verb",
+        "subcategory": "permit",
+        "source": "law",
+        "definition": "Confer a right or permission to another party",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-override",
+      "type": "DATA",
+      "parent_id": "verb-permit",
+      "contains": [],
+      "properties": {
+        "word": "OVERRIDE",
+        "number": 58,
+        "speech": "verb",
+        "subcategory": "permit",
+        "source": "law",
+        "definition": "Supersede a constraint or prohibition for this action",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-may",
+      "type": "DATA",
+      "parent_id": "verb-permit",
+      "contains": [],
+      "properties": {
+        "word": "MAY",
+        "number": 59,
+        "speech": "verb",
+        "subcategory": "permit",
+        "source": "law",
+        "definition": "Permitted: party is allowed but not required",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-deny",
+      "type": "DATA",
+      "parent_id": "verb-prohibit",
+      "contains": [],
+      "properties": {
+        "word": "DENY",
+        "number": 60,
+        "speech": "verb",
+        "subcategory": "prohibit",
+        "source": "computation",
+        "definition": "Refuse a requested action",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-reject",
+      "type": "DATA",
+      "parent_id": "verb-prohibit",
+      "contains": [],
+      "properties": {
+        "word": "REJECT",
+        "number": 61,
+        "speech": "verb",
+        "subcategory": "prohibit",
+        "source": "computation",
+        "definition": "Refuse input that does not meet criteria",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-shall_not",
+      "type": "DATA",
+      "parent_id": "verb-prohibit",
+      "contains": [],
+      "properties": {
+        "word": "SHALL_NOT",
+        "number": 62,
+        "speech": "verb",
+        "subcategory": "prohibit",
+        "source": "law",
+        "definition": "Prohibited: party MUST NOT perform action",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-revoke",
+      "type": "DATA",
+      "parent_id": "verb-prohibit",
+      "contains": [],
+      "properties": {
+        "word": "REVOKE",
+        "number": 63,
+        "speech": "verb",
+        "subcategory": "prohibit",
+        "source": "law",
+        "definition": "Withdraw a previously granted right or permission",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-branch",
+      "type": "DATA",
+      "parent_id": "verb-control",
+      "contains": [],
+      "properties": {
+        "word": "BRANCH",
+        "number": 64,
+        "speech": "verb",
+        "subcategory": "control",
+        "source": "computation",
+        "definition": "Route to one of two paths on boolean condition",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-match",
+      "type": "DATA",
+      "parent_id": "verb-control",
+      "contains": [],
+      "properties": {
+        "word": "MATCH",
+        "number": 65,
+        "speech": "verb",
+        "subcategory": "control",
+        "source": "computation",
+        "definition": "Route to one of N paths on pattern",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-retry",
+      "type": "DATA",
+      "parent_id": "verb-control",
+      "contains": [],
+      "properties": {
+        "word": "RETRY",
+        "number": 66,
+        "speech": "verb",
+        "subcategory": "control",
+        "source": "computation",
+        "definition": "Re-attempt failed operation up to bounded count",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-timeout",
+      "type": "DATA",
+      "parent_id": "verb-control",
+      "contains": [],
+      "properties": {
+        "word": "TIMEOUT",
+        "number": 67,
+        "speech": "verb",
+        "subcategory": "control",
+        "source": "computation",
+        "definition": "Bound wall-clock time for an operation",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-throw",
+      "type": "DATA",
+      "parent_id": "verb-control",
+      "contains": [],
+      "properties": {
+        "word": "THROW",
+        "number": 68,
+        "speech": "verb",
+        "subcategory": "control",
+        "source": "computation",
+        "definition": "Generate an error condition; directs flow to error handler",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-exists",
+      "type": "DATA",
+      "parent_id": "verb-control",
+      "contains": [],
+      "properties": {
+        "word": "EXISTS",
+        "number": 69,
+        "speech": "verb",
+        "subcategory": "control",
+        "source": "computation",
+        "definition": "Evaluates true if the noun is present and non-null",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-expire",
+      "type": "DATA",
+      "parent_id": "verb-control",
+      "contains": [],
+      "properties": {
+        "word": "EXPIRE",
+        "number": 70,
+        "speech": "verb",
+        "subcategory": "control",
+        "source": "computation",
+        "definition": "Transition to EXPIRED state; deadline passed",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-equals",
+      "type": "DATA",
+      "parent_id": "verb-control",
+      "contains": [],
+      "properties": {
+        "word": "EQUALS",
+        "number": 71,
+        "speech": "verb",
+        "subcategory": "control",
+        "source": "computation",
+        "definition": "Evaluates true if left and right values are identical",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-exceeds",
+      "type": "DATA",
+      "parent_id": "verb-control",
+      "contains": [],
+      "properties": {
+        "word": "EXCEEDS",
+        "number": 72,
+        "speech": "verb",
+        "subcategory": "control",
+        "source": "computation",
+        "definition": "Evaluates true if left value is greater than right",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-precedes",
+      "type": "DATA",
+      "parent_id": "verb-control",
+      "contains": [],
+      "properties": {
+        "word": "PRECEDES",
+        "number": 73,
+        "speech": "verb",
+        "subcategory": "control",
+        "source": "computation",
+        "definition": "Evaluates true if left value is less than right",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-define",
+      "type": "DATA",
+      "parent_id": "verb-bind",
+      "contains": [],
+      "properties": {
+        "word": "DEFINE",
+        "number": 74,
+        "speech": "verb",
+        "subcategory": "bind",
+        "source": "computation",
+        "definition": "Establish the meaning of a term",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-declare",
+      "type": "DATA",
+      "parent_id": "verb-bind",
+      "contains": [],
+      "properties": {
+        "word": "DECLARE",
+        "number": 75,
+        "speech": "verb",
+        "subcategory": "bind",
+        "source": "computation",
+        "definition": "State a fact or create a named thing",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-implement",
+      "type": "DATA",
+      "parent_id": "verb-bind",
+      "contains": [],
+      "properties": {
+        "word": "IMPLEMENT",
+        "number": 76,
+        "speech": "verb",
+        "subcategory": "bind",
+        "source": "computation",
+        "definition": "Fulfill the contract of an interface",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-nest",
+      "type": "DATA",
+      "parent_id": "verb-bind",
+      "contains": [],
+      "properties": {
+        "word": "NEST",
+        "number": 77,
+        "speech": "verb",
+        "subcategory": "bind",
+        "source": "computation",
+        "definition": "Place one thing structurally inside another",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-augment",
+      "type": "DATA",
+      "parent_id": "verb-bind",
+      "contains": [],
+      "properties": {
+        "word": "AUGMENT",
+        "number": 78,
+        "speech": "verb",
+        "subcategory": "bind",
+        "source": "computation",
+        "definition": "Add capability to an existing thing",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-replace",
+      "type": "DATA",
+      "parent_id": "verb-bind",
+      "contains": [],
+      "properties": {
+        "word": "REPLACE",
+        "number": 79,
+        "speech": "verb",
+        "subcategory": "bind",
+        "source": "computation",
+        "definition": "Entirely substitute one thing for another",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-cite",
+      "type": "DATA",
+      "parent_id": "verb-bind",
+      "contains": [],
+      "properties": {
+        "word": "CITE",
+        "number": 80,
+        "speech": "verb",
+        "subcategory": "bind",
+        "source": "law",
+        "definition": "Formally refer to another entity",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-administer",
+      "type": "DATA",
+      "parent_id": "verb-bind",
+      "contains": [],
+      "properties": {
+        "word": "ADMINISTER",
+        "number": 81,
+        "speech": "verb",
+        "subcategory": "bind",
+        "source": "law",
+        "definition": "Establish and exercise authority over",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-stipulate",
+      "type": "DATA",
+      "parent_id": "verb-bind",
+      "contains": [],
+      "properties": {
+        "word": "STIPULATE",
+        "number": 82,
+        "speech": "verb",
+        "subcategory": "bind",
+        "source": "law",
+        "definition": "Establish a binding agreed-upon condition",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-catch",
+      "type": "DATA",
+      "parent_id": "verb-resolve",
+      "contains": [],
+      "properties": {
+        "word": "CATCH",
+        "number": 83,
+        "speech": "verb",
+        "subcategory": "resolve",
+        "source": "computation",
+        "definition": "Intercept an error and enter recovery",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-handle",
+      "type": "DATA",
+      "parent_id": "verb-resolve",
+      "contains": [],
+      "properties": {
+        "word": "HANDLE",
+        "number": 84,
+        "speech": "verb",
+        "subcategory": "resolve",
+        "source": "computation",
+        "definition": "Process an error condition",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-recover",
+      "type": "DATA",
+      "parent_id": "verb-resolve",
+      "contains": [],
+      "properties": {
+        "word": "RECOVER",
+        "number": 85,
+        "speech": "verb",
+        "subcategory": "resolve",
+        "source": "computation",
+        "definition": "Restore normal operation after failure",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-cure",
+      "type": "DATA",
+      "parent_id": "verb-resolve",
+      "contains": [],
+      "properties": {
+        "word": "CURE",
+        "number": 86,
+        "speech": "verb",
+        "subcategory": "resolve",
+        "source": "law",
+        "definition": "Correct a breach within allowed time",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-indemnify",
+      "type": "DATA",
+      "parent_id": "verb-resolve",
+      "contains": [],
+      "properties": {
+        "word": "INDEMNIFY",
+        "number": 87,
+        "speech": "verb",
+        "subcategory": "resolve",
+        "source": "law",
+        "definition": "Compensate for loss caused by breach",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-string",
+      "type": "DATA",
+      "parent_id": "adjective-type",
+      "contains": [],
+      "properties": {
+        "word": "STRING",
+        "number": 88,
+        "speech": "adjective",
+        "subcategory": "type",
+        "source": "computation",
+        "definition": "Text data type",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-integer",
+      "type": "DATA",
+      "parent_id": "adjective-type",
+      "contains": [],
+      "properties": {
+        "word": "INTEGER",
+        "number": 89,
+        "speech": "adjective",
+        "subcategory": "type",
+        "source": "computation",
+        "definition": "Whole number data type",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-boolean",
+      "type": "DATA",
+      "parent_id": "adjective-type",
+      "contains": [],
+      "properties": {
+        "word": "BOOLEAN",
+        "number": 90,
+        "speech": "adjective",
+        "subcategory": "type",
+        "source": "computation",
+        "definition": "True/false data type",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-array",
+      "type": "DATA",
+      "parent_id": "adjective-type",
+      "contains": [],
+      "properties": {
+        "word": "ARRAY",
+        "number": 91,
+        "speech": "adjective",
+        "subcategory": "type",
+        "source": "computation",
+        "definition": "Ordered collection data type",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-object",
+      "type": "DATA",
+      "parent_id": "adjective-type",
+      "contains": [],
+      "properties": {
+        "word": "OBJECT",
+        "number": 92,
+        "speech": "adjective",
+        "subcategory": "type",
+        "source": "computation",
+        "definition": "Key-value structure data type",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-public",
+      "type": "DATA",
+      "parent_id": "adjective-access",
+      "contains": [],
+      "properties": {
+        "word": "PUBLIC",
+        "number": 93,
+        "speech": "adjective",
+        "subcategory": "access",
+        "source": "computation",
+        "definition": "Accessible to any actor",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-private",
+      "type": "DATA",
+      "parent_id": "adjective-access",
+      "contains": [],
+      "properties": {
+        "word": "PRIVATE",
+        "number": 94,
+        "speech": "adjective",
+        "subcategory": "access",
+        "source": "computation",
+        "definition": "Accessible only to the owning actor",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-protected",
+      "type": "DATA",
+      "parent_id": "adjective-access",
+      "contains": [],
+      "properties": {
+        "word": "PROTECTED",
+        "number": 95,
+        "speech": "adjective",
+        "subcategory": "access",
+        "source": "computation",
+        "definition": "Accessible to the owning actor and its children",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-readonly",
+      "type": "DATA",
+      "parent_id": "adjective-access",
+      "contains": [],
+      "properties": {
+        "word": "READONLY",
+        "number": 96,
+        "speech": "adjective",
+        "subcategory": "access",
+        "source": "computation",
+        "definition": "Can be read but not written",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-confidential",
+      "type": "DATA",
+      "parent_id": "adjective-access",
+      "contains": [],
+      "properties": {
+        "word": "CONFIDENTIAL",
+        "number": 97,
+        "speech": "adjective",
+        "subcategory": "access",
+        "source": "law",
+        "definition": "Restricted to authorized parties only",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-valid",
+      "type": "DATA",
+      "parent_id": "adjective-state",
+      "contains": [],
+      "properties": {
+        "word": "VALID",
+        "number": 98,
+        "speech": "adjective",
+        "subcategory": "state",
+        "source": "computation",
+        "definition": "Satisfies all declared constraints",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-invalid",
+      "type": "DATA",
+      "parent_id": "adjective-state",
+      "contains": [],
+      "properties": {
+        "word": "INVALID",
+        "number": 99,
+        "speech": "adjective",
+        "subcategory": "state",
+        "source": "computation",
+        "definition": "Fails one or more declared constraints",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-null",
+      "type": "DATA",
+      "parent_id": "adjective-state",
+      "contains": [],
+      "properties": {
+        "word": "NULL",
+        "number": 100,
+        "speech": "adjective",
+        "subcategory": "state",
+        "source": "computation",
+        "definition": "Absent; no value",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-empty",
+      "type": "DATA",
+      "parent_id": "adjective-state",
+      "contains": [],
+      "properties": {
+        "word": "EMPTY",
+        "number": 101,
+        "speech": "adjective",
+        "subcategory": "state",
+        "source": "computation",
+        "definition": "Present but containing nothing",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-pending",
+      "type": "DATA",
+      "parent_id": "adjective-state",
+      "contains": [],
+      "properties": {
+        "word": "PENDING",
+        "number": 102,
+        "speech": "adjective",
+        "subcategory": "state",
+        "source": "computation",
+        "definition": "Created but not yet processed",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-active",
+      "type": "DATA",
+      "parent_id": "adjective-state",
+      "contains": [],
+      "properties": {
+        "word": "ACTIVE",
+        "number": 103,
+        "speech": "adjective",
+        "subcategory": "state",
+        "source": "computation",
+        "definition": "Currently in use or executing",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-failed",
+      "type": "DATA",
+      "parent_id": "adjective-state",
+      "contains": [],
+      "properties": {
+        "word": "FAILED",
+        "number": 104,
+        "speech": "adjective",
+        "subcategory": "state",
+        "source": "computation",
+        "definition": "Terminated with error",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-mutable",
+      "type": "DATA",
+      "parent_id": "adjective-state",
+      "contains": [],
+      "properties": {
+        "word": "MUTABLE",
+        "number": 105,
+        "speech": "adjective",
+        "subcategory": "state",
+        "source": "computation",
+        "definition": "Can be changed after creation",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-immutable",
+      "type": "DATA",
+      "parent_id": "adjective-state",
+      "contains": [],
+      "properties": {
+        "word": "IMMUTABLE",
+        "number": 106,
+        "speech": "adjective",
+        "subcategory": "state",
+        "source": "computation",
+        "definition": "Cannot be changed after creation",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-binding",
+      "type": "DATA",
+      "parent_id": "adjective-state",
+      "contains": [],
+      "properties": {
+        "word": "BINDING",
+        "number": 107,
+        "speech": "adjective",
+        "subcategory": "state",
+        "source": "law",
+        "definition": "Creates enforceable obligation",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-void",
+      "type": "DATA",
+      "parent_id": "adjective-state",
+      "contains": [],
+      "properties": {
+        "word": "VOID",
+        "number": 108,
+        "speech": "adjective",
+        "subcategory": "state",
+        "source": "law",
+        "definition": "Without legal effect; as if it never existed",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-enforceable",
+      "type": "DATA",
+      "parent_id": "adjective-state",
+      "contains": [],
+      "properties": {
+        "word": "ENFORCEABLE",
+        "number": 109,
+        "speech": "adjective",
+        "subcategory": "state",
+        "source": "law",
+        "definition": "Can be compelled by remedy",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-expired",
+      "type": "DATA",
+      "parent_id": "adjective-state",
+      "contains": [],
+      "properties": {
+        "word": "EXPIRED",
+        "number": 110,
+        "speech": "adjective",
+        "subcategory": "state",
+        "source": "law",
+        "definition": "Past its deadline; no longer in effect",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-precedent",
+      "type": "DATA",
+      "parent_id": "adjective-state",
+      "contains": [],
+      "properties": {
+        "word": "PRECEDENT",
+        "number": 111,
+        "speech": "adjective",
+        "subcategory": "state",
+        "source": "law",
+        "definition": "Informing but not binding; advisory based on prior decision",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-required",
+      "type": "DATA",
+      "parent_id": "adjective-quantity",
+      "contains": [],
+      "properties": {
+        "word": "REQUIRED",
+        "number": 112,
+        "speech": "adjective",
+        "subcategory": "quantity",
+        "source": "computation",
+        "definition": "Must be present; absence is an error",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-optional",
+      "type": "DATA",
+      "parent_id": "adjective-quantity",
+      "contains": [],
+      "properties": {
+        "word": "OPTIONAL",
+        "number": 113,
+        "speech": "adjective",
+        "subcategory": "quantity",
+        "source": "computation",
+        "definition": "May be absent; absence is acceptable",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-unique",
+      "type": "DATA",
+      "parent_id": "adjective-quantity",
+      "contains": [],
+      "properties": {
+        "word": "UNIQUE",
+        "number": 114,
+        "speech": "adjective",
+        "subcategory": "quantity",
+        "source": "computation",
+        "definition": "Exactly one instance may exist",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-multiple",
+      "type": "DATA",
+      "parent_id": "adjective-quantity",
+      "contains": [],
+      "properties": {
+        "word": "MULTIPLE",
+        "number": 115,
+        "speech": "adjective",
+        "subcategory": "quantity",
+        "source": "computation",
+        "definition": "More than one instance may exist",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-sole",
+      "type": "DATA",
+      "parent_id": "adjective-quantity",
+      "contains": [],
+      "properties": {
+        "word": "SOLE",
+        "number": 116,
+        "speech": "adjective",
+        "subcategory": "quantity",
+        "source": "law",
+        "definition": "One and only one; no others permitted",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-joint",
+      "type": "DATA",
+      "parent_id": "adjective-quantity",
+      "contains": [],
+      "properties": {
+        "word": "JOINT",
+        "number": 117,
+        "speech": "adjective",
+        "subcategory": "quantity",
+        "source": "law",
+        "definition": "Shared equally among multiple parties",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-default",
+      "type": "DATA",
+      "parent_id": "adjective-priority",
+      "contains": [],
+      "properties": {
+        "word": "DEFAULT",
+        "number": 118,
+        "speech": "adjective",
+        "subcategory": "priority",
+        "source": "computation",
+        "definition": "The value used when none is specified",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-critical",
+      "type": "DATA",
+      "parent_id": "adjective-priority",
+      "contains": [],
+      "properties": {
+        "word": "CRITICAL",
+        "number": 119,
+        "speech": "adjective",
+        "subcategory": "priority",
+        "source": "computation",
+        "definition": "Failure is unrecoverable",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-high",
+      "type": "DATA",
+      "parent_id": "adjective-priority",
+      "contains": [],
+      "properties": {
+        "word": "HIGH",
+        "number": 120,
+        "speech": "adjective",
+        "subcategory": "priority",
+        "source": "computation",
+        "definition": "Elevated importance",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-low",
+      "type": "DATA",
+      "parent_id": "adjective-priority",
+      "contains": [],
+      "properties": {
+        "word": "LOW",
+        "number": 121,
+        "speech": "adjective",
+        "subcategory": "priority",
+        "source": "computation",
+        "definition": "Reduced importance",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-material",
+      "type": "DATA",
+      "parent_id": "adjective-priority",
+      "contains": [],
+      "properties": {
+        "word": "MATERIAL",
+        "number": 122,
+        "speech": "adjective",
+        "subcategory": "priority",
+        "source": "law",
+        "definition": "Significant enough to affect decisions",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-subordinate",
+      "type": "DATA",
+      "parent_id": "adjective-priority",
+      "contains": [],
+      "properties": {
+        "word": "SUBORDINATE",
+        "number": 123,
+        "speech": "adjective",
+        "subcategory": "priority",
+        "source": "law",
+        "definition": "Lower in authority hierarchy",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-async",
+      "type": "DATA",
+      "parent_id": "adverb-timing",
+      "contains": [],
+      "properties": {
+        "word": "ASYNC",
+        "number": 124,
+        "speech": "adverb",
+        "subcategory": "timing",
+        "source": "computation",
+        "definition": "Execute without blocking the caller",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-sync",
+      "type": "DATA",
+      "parent_id": "adverb-timing",
+      "contains": [],
+      "properties": {
+        "word": "SYNC",
+        "number": 125,
+        "speech": "adverb",
+        "subcategory": "timing",
+        "source": "computation",
+        "definition": "Execute and block until complete",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-sequential",
+      "type": "DATA",
+      "parent_id": "adverb-timing",
+      "contains": [],
+      "properties": {
+        "word": "SEQUENTIAL",
+        "number": 126,
+        "speech": "adverb",
+        "subcategory": "timing",
+        "source": "computation",
+        "definition": "Execute steps one after another in order",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-parallel",
+      "type": "DATA",
+      "parent_id": "adverb-timing",
+      "contains": [],
+      "properties": {
+        "word": "PARALLEL",
+        "number": 127,
+        "speech": "adverb",
+        "subcategory": "timing",
+        "source": "computation",
+        "definition": "Execute steps simultaneously",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-immediate",
+      "type": "DATA",
+      "parent_id": "adverb-timing",
+      "contains": [],
+      "properties": {
+        "word": "IMMEDIATE",
+        "number": 128,
+        "speech": "adverb",
+        "subcategory": "timing",
+        "source": "computation",
+        "definition": "Execute with no delay",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-lazy",
+      "type": "DATA",
+      "parent_id": "adverb-timing",
+      "contains": [],
+      "properties": {
+        "word": "LAZY",
+        "number": 129,
+        "speech": "adverb",
+        "subcategory": "timing",
+        "source": "computation",
+        "definition": "Defer execution until the result is needed",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-promptly",
+      "type": "DATA",
+      "parent_id": "adverb-timing",
+      "contains": [],
+      "properties": {
+        "word": "PROMPTLY",
+        "number": 130,
+        "speech": "adverb",
+        "subcategory": "timing",
+        "source": "law",
+        "definition": "Within a reasonable time, without unnecessary delay",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-forthwith",
+      "type": "DATA",
+      "parent_id": "adverb-timing",
+      "contains": [],
+      "properties": {
+        "word": "FORTHWITH",
+        "number": 131,
+        "speech": "adverb",
+        "subcategory": "timing",
+        "source": "law",
+        "definition": "Immediately and without any delay",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-within",
+      "type": "DATA",
+      "parent_id": "adverb-timing",
+      "contains": [],
+      "properties": {
+        "word": "WITHIN",
+        "number": 132,
+        "speech": "adverb",
+        "subcategory": "timing",
+        "source": "law",
+        "definition": "Before the specified duration elapses (requires duration)",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-once",
+      "type": "DATA",
+      "parent_id": "adverb-repetition",
+      "contains": [],
+      "properties": {
+        "word": "ONCE",
+        "number": 133,
+        "speech": "adverb",
+        "subcategory": "repetition",
+        "source": "computation",
+        "definition": "Execute exactly one time",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-always",
+      "type": "DATA",
+      "parent_id": "adverb-repetition",
+      "contains": [],
+      "properties": {
+        "word": "ALWAYS",
+        "number": 134,
+        "speech": "adverb",
+        "subcategory": "repetition",
+        "source": "computation",
+        "definition": "Execute every time the condition is met",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-never",
+      "type": "DATA",
+      "parent_id": "adverb-repetition",
+      "contains": [],
+      "properties": {
+        "word": "NEVER",
+        "number": 135,
+        "speech": "adverb",
+        "subcategory": "repetition",
+        "source": "computation",
+        "definition": "Do not execute under any condition",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-bounded",
+      "type": "DATA",
+      "parent_id": "adverb-repetition",
+      "contains": [],
+      "properties": {
+        "word": "BOUNDED",
+        "number": 136,
+        "speech": "adverb",
+        "subcategory": "repetition",
+        "source": "computation",
+        "definition": "Execute up to N times (requires integer)",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-strictly",
+      "type": "DATA",
+      "parent_id": "adverb-degree",
+      "contains": [],
+      "properties": {
+        "word": "STRICTLY",
+        "number": 137,
+        "speech": "adverb",
+        "subcategory": "degree",
+        "source": "computation",
+        "definition": "With zero tolerance for deviation",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-partially",
+      "type": "DATA",
+      "parent_id": "adverb-degree",
+      "contains": [],
+      "properties": {
+        "word": "PARTIALLY",
+        "number": 138,
+        "speech": "adverb",
+        "subcategory": "degree",
+        "source": "computation",
+        "definition": "Affecting some but not all items",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-substantially",
+      "type": "DATA",
+      "parent_id": "adverb-degree",
+      "contains": [],
+      "properties": {
+        "word": "SUBSTANTIALLY",
+        "number": 139,
+        "speech": "adverb",
+        "subcategory": "degree",
+        "source": "law",
+        "definition": "In all material respects; minor deviations tolerated",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-reasonably",
+      "type": "DATA",
+      "parent_id": "adverb-degree",
+      "contains": [],
+      "properties": {
+        "word": "REASONABLY",
+        "number": 140,
+        "speech": "adverb",
+        "subcategory": "degree",
+        "source": "law",
+        "definition": "As a competent party would under the circumstances",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-unconditionally",
+      "type": "DATA",
+      "parent_id": "adverb-condition",
+      "contains": [],
+      "properties": {
+        "word": "UNCONDITIONALLY",
+        "number": 141,
+        "speech": "adverb",
+        "subcategory": "condition",
+        "source": "law",
+        "definition": "Without any prerequisite or qualification",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-conditionally",
+      "type": "DATA",
+      "parent_id": "adverb-condition",
+      "contains": [],
+      "properties": {
+        "word": "CONDITIONALLY",
+        "number": 142,
+        "speech": "adverb",
+        "subcategory": "condition",
+        "source": "law",
+        "definition": "Only if a stated prerequisite is met",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-feeds",
+      "type": "DATA",
+      "parent_id": "preposition-flow",
+      "contains": [],
+      "properties": {
+        "word": "FEEDS",
+        "number": 143,
+        "speech": "preposition",
+        "subcategory": "flow",
+        "source": "computation",
+        "definition": "Data flows unconditionally from source to destination",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-routes",
+      "type": "DATA",
+      "parent_id": "preposition-flow",
+      "contains": [],
+      "properties": {
+        "word": "ROUTES",
+        "number": 144,
+        "speech": "preposition",
+        "subcategory": "flow",
+        "source": "computation",
+        "definition": "Data flows conditionally based on predicate",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-to",
+      "type": "DATA",
+      "parent_id": "preposition-flow",
+      "contains": [],
+      "properties": {
+        "word": "TO",
+        "number": 145,
+        "speech": "preposition",
+        "subcategory": "flow",
+        "source": "computation",
+        "definition": "Directional: data moves toward destination",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-from",
+      "type": "DATA",
+      "parent_id": "preposition-flow",
+      "contains": [],
+      "properties": {
+        "word": "FROM",
+        "number": 146,
+        "speech": "preposition",
+        "subcategory": "flow",
+        "source": "computation",
+        "definition": "Directional: data originates at source",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-returns_to",
+      "type": "DATA",
+      "parent_id": "preposition-flow",
+      "contains": [],
+      "properties": {
+        "word": "RETURNS_TO",
+        "number": 147,
+        "speech": "preposition",
+        "subcategory": "flow",
+        "source": "computation",
+        "definition": "Output flows back to a previous node",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-binds",
+      "type": "DATA",
+      "parent_id": "preposition-dependency",
+      "contains": [],
+      "properties": {
+        "word": "BINDS",
+        "number": 148,
+        "speech": "preposition",
+        "subcategory": "dependency",
+        "source": "computation",
+        "definition": "Schema constrains what a node accepts or produces",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-depends_on",
+      "type": "DATA",
+      "parent_id": "preposition-dependency",
+      "contains": [],
+      "properties": {
+        "word": "DEPENDS_ON",
+        "number": 149,
+        "speech": "preposition",
+        "subcategory": "dependency",
+        "source": "computation",
+        "definition": "Source requires target to function",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-implements",
+      "type": "DATA",
+      "parent_id": "preposition-dependency",
+      "contains": [],
+      "properties": {
+        "word": "IMPLEMENTS",
+        "number": 150,
+        "speech": "preposition",
+        "subcategory": "dependency",
+        "source": "computation",
+        "definition": "Source fulfills the contract of target",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-extends",
+      "type": "DATA",
+      "parent_id": "preposition-dependency",
+      "contains": [],
+      "properties": {
+        "word": "EXTENDS",
+        "number": 151,
+        "speech": "preposition",
+        "subcategory": "dependency",
+        "source": "computation",
+        "definition": "Source adds capability to target",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-subject_to",
+      "type": "DATA",
+      "parent_id": "preposition-dependency",
+      "contains": [],
+      "properties": {
+        "word": "SUBJECT_TO",
+        "number": 152,
+        "speech": "preposition",
+        "subcategory": "dependency",
+        "source": "law",
+        "definition": "Source is constrained by target",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-contains",
+      "type": "DATA",
+      "parent_id": "preposition-containment",
+      "contains": [],
+      "properties": {
+        "word": "CONTAINS",
+        "number": 153,
+        "speech": "preposition",
+        "subcategory": "containment",
+        "source": "computation",
+        "definition": "Parent structurally holds child",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-references",
+      "type": "DATA",
+      "parent_id": "preposition-reference",
+      "contains": [],
+      "properties": {
+        "word": "REFERENCES",
+        "number": 154,
+        "speech": "preposition",
+        "subcategory": "reference",
+        "source": "computation",
+        "definition": "Non-hierarchical cross-reference",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-supersedes",
+      "type": "DATA",
+      "parent_id": "preposition-replacement",
+      "contains": [],
+      "properties": {
+        "word": "SUPERSEDES",
+        "number": 155,
+        "speech": "preposition",
+        "subcategory": "replacement",
+        "source": "computation",
+        "definition": "Source completely replaces target",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-governs",
+      "type": "DATA",
+      "parent_id": "preposition-authority",
+      "contains": [],
+      "properties": {
+        "word": "GOVERNS",
+        "number": 156,
+        "speech": "preposition",
+        "subcategory": "authority",
+        "source": "law",
+        "definition": "Source has authority over target",
+        "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-pursuant_to",
+      "type": "DATA",
+      "parent_id": "preposition-authority",
+      "contains": [],
+      "properties": {
+        "word": "PURSUANT_TO",
+        "number": 157,
+        "speech": "preposition",
+        "subcategory": "authority",
+        "source": "law",
+        "definition": "In accordance with; as directed by",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-on_behalf_of",
+      "type": "DATA",
+      "parent_id": "preposition-authority",
+      "contains": [],
+      "properties": {
+        "word": "ON_BEHALF_OF",
+        "number": 158,
+        "speech": "preposition",
+        "subcategory": "authority",
+        "source": "law",
+        "definition": "Acting with delegated authority for another",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-as",
+      "type": "DATA",
+      "parent_id": "preposition-binding",
+      "contains": [],
+      "properties": {
+        "word": "AS",
+        "number": 159,
+        "speech": "preposition",
+        "subcategory": "binding",
+        "source": "computation",
+        "definition": "Binds an identifier to a type or role",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-by",
+      "type": "DATA",
+      "parent_id": "preposition-binding",
+      "contains": [],
+      "properties": {
+        "word": "BY",
+        "number": 160,
+        "speech": "preposition",
+        "subcategory": "binding",
+        "source": "computation",
+        "definition": "Specifies the key, criterion, or basis for an operation",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-then",
+      "type": "DATA",
+      "parent_id": "conjunction-sequence",
+      "contains": [],
+      "properties": {
+        "word": "THEN",
+        "number": 161,
+        "speech": "conjunction",
+        "subcategory": "sequence",
+        "source": "computation",
+        "definition": "Execute next step after current completes",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-finally",
+      "type": "DATA",
+      "parent_id": "conjunction-sequence",
+      "contains": [],
+      "properties": {
+        "word": "FINALLY",
+        "number": 162,
+        "speech": "conjunction",
+        "subcategory": "sequence",
+        "source": "computation",
+        "definition": "Execute regardless of success or failure",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-and",
+      "type": "DATA",
+      "parent_id": "conjunction-parallel",
+      "contains": [],
+      "properties": {
+        "word": "AND",
+        "number": 163,
+        "speech": "conjunction",
+        "subcategory": "parallel",
+        "source": "computation",
+        "definition": "Execute both; both must succeed",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-or",
+      "type": "DATA",
+      "parent_id": "conjunction-alternative",
+      "contains": [],
+      "properties": {
+        "word": "OR",
+        "number": 164,
+        "speech": "conjunction",
+        "subcategory": "alternative",
+        "source": "computation",
+        "definition": "Execute alternative if first fails or is false",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-else",
+      "type": "DATA",
+      "parent_id": "conjunction-alternative",
+      "contains": [],
+      "properties": {
+        "word": "ELSE",
+        "number": 165,
+        "speech": "conjunction",
+        "subcategory": "alternative",
+        "source": "computation",
+        "definition": "Execute only when preceding condition is false",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-if",
+      "type": "DATA",
+      "parent_id": "conjunction-cause",
+      "contains": [],
+      "properties": {
+        "word": "IF",
+        "number": 166,
+        "speech": "conjunction",
+        "subcategory": "cause",
+        "source": "computation",
+        "definition": "Execute following clause only when condition is true",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-when",
+      "type": "DATA",
+      "parent_id": "conjunction-cause",
+      "contains": [],
+      "properties": {
+        "word": "WHEN",
+        "number": 167,
+        "speech": "conjunction",
+        "subcategory": "cause",
+        "source": "computation",
+        "definition": "Execute following clause upon event occurrence",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-while",
+      "type": "DATA",
+      "parent_id": "conjunction-cause",
+      "contains": [],
+      "properties": {
+        "word": "WHILE",
+        "number": 168,
+        "speech": "conjunction",
+        "subcategory": "cause",
+        "source": "computation",
+        "definition": "Continue executing as long as condition holds",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-unless",
+      "type": "DATA",
+      "parent_id": "conjunction-exception",
+      "contains": [],
+      "properties": {
+        "word": "UNLESS",
+        "number": 169,
+        "speech": "conjunction",
+        "subcategory": "exception",
+        "source": "law",
+        "definition": "Clause does not apply if exception condition is met",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-except",
+      "type": "DATA",
+      "parent_id": "conjunction-exception",
+      "contains": [],
+      "properties": {
+        "word": "EXCEPT",
+        "number": 170,
+        "speech": "conjunction",
+        "subcategory": "exception",
+        "source": "law",
+        "definition": "Everything applies other than the stated carve-out",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-notwithstanding",
+      "type": "DATA",
+      "parent_id": "conjunction-exception",
+      "contains": [],
+      "properties": {
+        "word": "NOTWITHSTANDING",
+        "number": 171,
+        "speech": "conjunction",
+        "subcategory": "exception",
+        "source": "law",
+        "definition": "Overrides any conflicting clause",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-provided_that",
+      "type": "DATA",
+      "parent_id": "conjunction-exception",
+      "contains": [],
+      "properties": {
+        "word": "PROVIDED_THAT",
+        "number": 172,
+        "speech": "conjunction",
+        "subcategory": "exception",
+        "source": "law",
+        "definition": "Clause applies only if the stated condition is met",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-whereas",
+      "type": "DATA",
+      "parent_id": "conjunction-exception",
+      "contains": [],
+      "properties": {
+        "word": "WHEREAS",
+        "number": 173,
+        "speech": "conjunction",
+        "subcategory": "exception",
+        "source": "law",
+        "definition": "Establishes factual context for what follows (preamble only)",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-the",
+      "type": "DATA",
+      "parent_id": "article-specific",
+      "contains": [],
+      "properties": {
+        "word": "THE",
+        "number": 174,
+        "speech": "article",
+        "subcategory": "specific",
+        "source": "",
+        "definition": "One specific, previously identified instance",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-this",
+      "type": "DATA",
+      "parent_id": "article-specific",
+      "contains": [],
+      "properties": {
+        "word": "THIS",
+        "number": 175,
+        "speech": "article",
+        "subcategory": "specific",
+        "source": "",
+        "definition": "The instance in current scope",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-all",
+      "type": "DATA",
+      "parent_id": "article-universal",
+      "contains": [],
+      "properties": {
+        "word": "ALL",
+        "number": 176,
+        "speech": "article",
+        "subcategory": "universal",
+        "source": "",
+        "definition": "Every instance without exception",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-each",
+      "type": "DATA",
+      "parent_id": "article-universal",
+      "contains": [],
+      "properties": {
+        "word": "EACH",
+        "number": 177,
+        "speech": "article",
+        "subcategory": "universal",
+        "source": "",
+        "definition": "Every instance, considered individually",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-every",
+      "type": "DATA",
+      "parent_id": "article-universal",
+      "contains": [],
+      "properties": {
+        "word": "EVERY",
+        "number": 178,
+        "speech": "article",
+        "subcategory": "universal",
+        "source": "",
+        "definition": "Every instance (synonym of ALL, emphasizes completeness)",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-any",
+      "type": "DATA",
+      "parent_id": "article-existential",
+      "contains": [],
+      "properties": {
+        "word": "ANY",
+        "number": 179,
+        "speech": "article",
+        "subcategory": "existential",
+        "source": "",
+        "definition": "At least one; whichever satisfies",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-some",
+      "type": "DATA",
+      "parent_id": "article-existential",
+      "contains": [],
+      "properties": {
+        "word": "SOME",
+        "number": 180,
+        "speech": "article",
+        "subcategory": "existential",
+        "source": "",
+        "definition": "One or more, unspecified which",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-a",
+      "type": "DATA",
+      "parent_id": "article-existential",
+      "contains": [],
+      "properties": {
+        "word": "A",
+        "number": 181,
+        "speech": "article",
+        "subcategory": "existential",
+        "source": "",
+        "definition": "Exactly one, unspecified which",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-no",
+      "type": "DATA",
+      "parent_id": "article-negative",
+      "contains": [],
+      "properties": {
+        "word": "NO",
+        "number": 182,
+        "speech": "article",
+        "subcategory": "negative",
+        "source": "",
+        "definition": "Zero instances",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-none",
+      "type": "DATA",
+      "parent_id": "article-negative",
+      "contains": [],
+      "properties": {
+        "word": "NONE",
+        "number": 183,
+        "speech": "article",
+        "subcategory": "negative",
+        "source": "",
+        "definition": "Zero instances (used without following noun)",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-self",
+      "type": "DATA",
+      "parent_id": "pronoun-self",
+      "contains": [],
+      "properties": {
+        "word": "SELF",
+        "number": 184,
+        "speech": "pronoun",
+        "subcategory": "self",
+        "source": "computation",
+        "definition": "The current actor or scope",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-result",
+      "type": "DATA",
+      "parent_id": "pronoun-result",
+      "contains": [],
+      "properties": {
+        "word": "RESULT",
+        "number": 185,
+        "speech": "pronoun",
+        "subcategory": "result",
+        "source": "computation",
+        "definition": "The output of the most recent verb",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-output",
+      "type": "DATA",
+      "parent_id": "pronoun-result",
+      "contains": [],
+      "properties": {
+        "word": "OUTPUT",
+        "number": 186,
+        "speech": "pronoun",
+        "subcategory": "result",
+        "source": "computation",
+        "definition": "The data produced by a transform",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-input",
+      "type": "DATA",
+      "parent_id": "pronoun-source",
+      "contains": [],
+      "properties": {
+        "word": "INPUT",
+        "number": 187,
+        "speech": "pronoun",
+        "subcategory": "source",
+        "source": "computation",
+        "definition": "The data received by the current operation",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-source",
+      "type": "DATA",
+      "parent_id": "pronoun-source",
+      "contains": [],
+      "properties": {
+        "word": "SOURCE",
+        "number": 188,
+        "speech": "pronoun",
+        "subcategory": "source",
+        "source": "computation",
+        "definition": "The originating node of the current data",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-target",
+      "type": "DATA",
+      "parent_id": "pronoun-target",
+      "contains": [],
+      "properties": {
+        "word": "TARGET",
+        "number": 189,
+        "speech": "pronoun",
+        "subcategory": "target",
+        "source": "computation",
+        "definition": "The destination node of the current action",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-said",
+      "type": "DATA",
+      "parent_id": "pronoun-legal_reference",
+      "contains": [],
+      "properties": {
+        "word": "SAID",
+        "number": 190,
+        "speech": "pronoun",
+        "subcategory": "legal_reference",
+        "source": "law",
+        "definition": "The previously named noun (legal \"the\")",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    }
+  ],
+  "edges": []
+}

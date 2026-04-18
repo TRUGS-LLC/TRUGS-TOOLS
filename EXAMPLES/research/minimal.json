@@ -1,0 +1,45 @@
+{
+  "name": "Research Minimal Example",
+  "version": "1.0.0",
+  "type": "RESEARCH",
+  "branch": "research",
+  "description": "Minimal Research TRUG demonstrating concept and claim",
+  "nodes": [
+    {
+      "id": "concept_1",
+      "type": "CONCEPT",
+      "metric_level": "BASE_CONCEPT",
+      "parent_id": null,
+      "properties": {
+        "name": "Example Technology",
+        "description": "An example technology concept"
+      }
+    },
+    {
+      "id": "claim_1",
+      "type": "CLAIM",
+      "metric_level": "CENTI_CLAIM",
+      "parent_id": "concept_1",
+      "properties": {
+        "claim_text": "This technology is widely adopted",
+        "source_id": "concept_1"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "concept_1",
+      "to_id": "claim_1",
+      "relation": "contains"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "research_structure",
+      "levels": [
+        "CONCEPT",
+        "CLAIM"
+      ]
+    }
+  ]
+}

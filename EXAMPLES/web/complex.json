@@ -1,0 +1,176 @@
+{
+  "name": "Web Complex Example",
+  "version": "1.0.0",
+  "type": "WEB",
+  "branch": "web",
+  "description": "Complex Web TRUG with multiple pages, navigation, and rich sections",
+  "nodes": [
+    {
+      "id": "site_1",
+      "type": "SITE",
+      "metric_level": "KILO_SITE",
+      "parent_id": null,
+      "properties": {
+        "name": "E-Commerce Store",
+        "url": "https://shop.example.com"
+      }
+    },
+    {
+      "id": "page_home",
+      "type": "PAGE",
+      "metric_level": "BASE_PAGE",
+      "parent_id": "site_1",
+      "properties": {
+        "title": "Home",
+        "path": "/"
+      }
+    },
+    {
+      "id": "sec_nav",
+      "type": "SECTION",
+      "metric_level": "CENTI_SECTION",
+      "parent_id": "page_home",
+      "properties": {
+        "title": "Navigation",
+        "type": "nav"
+      }
+    },
+    {
+      "id": "sec_featured",
+      "type": "SECTION",
+      "metric_level": "CENTI_SECTION",
+      "parent_id": "page_home",
+      "properties": {
+        "title": "Featured Products",
+        "type": "grid"
+      }
+    },
+    {
+      "id": "page_products",
+      "type": "PAGE",
+      "metric_level": "BASE_PAGE",
+      "parent_id": "site_1",
+      "properties": {
+        "title": "Products",
+        "path": "/products"
+      }
+    },
+    {
+      "id": "sec_filter",
+      "type": "SECTION",
+      "metric_level": "CENTI_SECTION",
+      "parent_id": "page_products",
+      "properties": {
+        "title": "Filters",
+        "type": "sidebar"
+      }
+    },
+    {
+      "id": "sec_list",
+      "type": "SECTION",
+      "metric_level": "CENTI_SECTION",
+      "parent_id": "page_products",
+      "properties": {
+        "title": "Product List",
+        "type": "listing"
+      }
+    },
+    {
+      "id": "page_cart",
+      "type": "PAGE",
+      "metric_level": "BASE_PAGE",
+      "parent_id": "site_1",
+      "properties": {
+        "title": "Shopping Cart",
+        "path": "/cart"
+      }
+    },
+    {
+      "id": "sec_items",
+      "type": "SECTION",
+      "metric_level": "CENTI_SECTION",
+      "parent_id": "page_cart",
+      "properties": {
+        "title": "Cart Items",
+        "type": "table"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "site_1",
+      "to_id": "page_home",
+      "relation": "contains"
+    },
+    {
+      "from_id": "site_1",
+      "to_id": "page_products",
+      "relation": "contains"
+    },
+    {
+      "from_id": "site_1",
+      "to_id": "page_cart",
+      "relation": "contains"
+    },
+    {
+      "from_id": "page_home",
+      "to_id": "sec_nav",
+      "relation": "contains"
+    },
+    {
+      "from_id": "page_home",
+      "to_id": "sec_featured",
+      "relation": "contains"
+    },
+    {
+      "from_id": "page_products",
+      "to_id": "sec_filter",
+      "relation": "contains"
+    },
+    {
+      "from_id": "page_products",
+      "to_id": "sec_list",
+      "relation": "contains"
+    },
+    {
+      "from_id": "page_cart",
+      "to_id": "sec_items",
+      "relation": "contains"
+    },
+    {
+      "from_id": "page_home",
+      "to_id": "page_products",
+      "relation": "links_to"
+    },
+    {
+      "from_id": "page_home",
+      "to_id": "page_cart",
+      "relation": "links_to"
+    },
+    {
+      "from_id": "page_products",
+      "to_id": "page_cart",
+      "relation": "links_to"
+    },
+    {
+      "from_id": "page_home",
+      "to_id": "page_products",
+      "relation": "navigates_to"
+    },
+    {
+      "from_id": "page_home",
+      "to_id": "sec_nav",
+      "relation": "includes"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "web_structure",
+      "levels": [
+        "SITE",
+        "PAGE",
+        "SECTION"
+      ]
+    }
+  ]
+}

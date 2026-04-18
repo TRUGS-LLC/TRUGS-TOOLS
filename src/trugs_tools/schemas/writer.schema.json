@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TRUGS v1.0 Writer Branch Schema",
+  "description": "Schema for Writer branch TRUGs",
+  "branch": "writer",
+  "graph_type": "WRITER",
+  "node_types": ["BOOK", "CHAPTER", "SECTION", "PARAGRAPH", "CITATION", "REFERENCE"],
+  "relations": ["contains", "cites", "references", "continues", "supports", "contradicts"],
+  "extensions": [],
+  "allOf": [{"$ref": "core.schema.json"}],
+  "properties": {
+    "type": {"const": "WRITER"},
+    "nodes": {
+      "items": {
+        "properties": {
+          "type": {"enum": ["BOOK", "CHAPTER", "SECTION", "PARAGRAPH", "CITATION", "REFERENCE"]}
+        }
+      }
+    }
+  }
+}

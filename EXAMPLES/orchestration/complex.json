@@ -1,0 +1,230 @@
+{
+  "name": "Orchestration Complex Example",
+  "version": "1.0.0",
+  "type": "ORCHESTRATION",
+  "branch": "orchestration",
+  "description": "Complex orchestration TRUG: principal with multiple agents, tasks, permissions, and escalation",
+  "nodes": [
+    {
+      "id": "principal_1",
+      "type": "PRINCIPAL",
+      "metric_level": "HECTO_PRINCIPAL",
+      "parent_id": null,
+      "properties": {
+        "name": "SecurityAdmin",
+        "role": "security_administrator",
+        "description": "Security team lead with full authority over deployment pipeline"
+      }
+    },
+    {
+      "id": "agent_deploy",
+      "type": "AGENT",
+      "metric_level": "DEKA_AGENT",
+      "parent_id": "principal_1",
+      "properties": {
+        "name": "DeployAgent",
+        "role": "deployment_agent",
+        "description": "Handles production deployments"
+      }
+    },
+    {
+      "id": "agent_monitor",
+      "type": "AGENT",
+      "metric_level": "DEKA_AGENT",
+      "parent_id": "principal_1",
+      "properties": {
+        "name": "MonitorAgent",
+        "role": "monitoring_agent",
+        "description": "Monitors service health post-deployment"
+      }
+    },
+    {
+      "id": "task_validate",
+      "type": "TASK",
+      "metric_level": "BASE_TASK",
+      "parent_id": "agent_deploy",
+      "properties": {
+        "name": "validate_artifacts",
+        "action": "validate",
+        "target": "build-artifacts",
+        "status": "pending"
+      }
+    },
+    {
+      "id": "task_deploy",
+      "type": "TASK",
+      "metric_level": "BASE_TASK",
+      "parent_id": "agent_deploy",
+      "properties": {
+        "name": "deploy_to_prod",
+        "action": "deploy",
+        "target": "production-cluster",
+        "status": "pending"
+      }
+    },
+    {
+      "id": "task_healthcheck",
+      "type": "TASK",
+      "metric_level": "BASE_TASK",
+      "parent_id": "agent_monitor",
+      "properties": {
+        "name": "run_healthcheck",
+        "action": "healthcheck",
+        "target": "production-endpoints",
+        "status": "pending"
+      }
+    },
+    {
+      "id": "resource_cluster",
+      "type": "RESOURCE",
+      "metric_level": "KILO_RESOURCE",
+      "parent_id": "principal_1",
+      "properties": {
+        "name": "production_cluster",
+        "resource_type": "kubernetes_cluster",
+        "uri": "k8s://prod-us-east-1",
+        "access_level": "deploy"
+      }
+    },
+    {
+      "id": "perm_deploy",
+      "type": "PERMISSION",
+      "metric_level": "MILLI_PERMISSION",
+      "parent_id": "principal_1",
+      "properties": {
+        "name": "deploy_permission",
+        "scope": "production",
+        "actions": [
+          "deploy",
+          "rollback"
+        ],
+        "granted_to": "agent_deploy"
+      }
+    },
+    {
+      "id": "esc_1",
+      "type": "ESCALATION",
+      "metric_level": "MILLI_ESCALATION",
+      "parent_id": "principal_1",
+      "properties": {
+        "name": "deployment_failure_escalation",
+        "trigger": "healthcheck_failure",
+        "severity": "critical",
+        "notify": "security-oncall",
+        "auto_rollback": true
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "principal_1",
+      "to_id": "agent_deploy",
+      "relation": "contains"
+    },
+    {
+      "from_id": "principal_1",
+      "to_id": "agent_monitor",
+      "relation": "contains"
+    },
+    {
+      "from_id": "principal_1",
+      "to_id": "resource_cluster",
+      "relation": "contains"
+    },
+    {
+      "from_id": "principal_1",
+      "to_id": "perm_deploy",
+      "relation": "contains"
+    },
+    {
+      "from_id": "principal_1",
+      "to_id": "esc_1",
+      "relation": "contains"
+    },
+    {
+      "from_id": "agent_deploy",
+      "to_id": "task_validate",
+      "relation": "contains"
+    },
+    {
+      "from_id": "agent_deploy",
+      "to_id": "task_deploy",
+      "relation": "contains"
+    },
+    {
+      "from_id": "agent_monitor",
+      "to_id": "task_healthcheck",
+      "relation": "contains"
+    },
+    {
+      "from_id": "principal_1",
+      "to_id": "agent_deploy",
+      "relation": "delegates_to"
+    },
+    {
+      "from_id": "principal_1",
+      "to_id": "agent_monitor",
+      "relation": "delegates_to"
+    },
+    {
+      "from_id": "agent_deploy",
+      "to_id": "task_validate",
+      "relation": "delegates_to"
+    },
+    {
+      "from_id": "agent_deploy",
+      "to_id": "task_deploy",
+      "relation": "delegates_to"
+    },
+    {
+      "from_id": "agent_monitor",
+      "to_id": "task_healthcheck",
+      "relation": "delegates_to"
+    },
+    {
+      "from_id": "task_validate",
+      "to_id": "task_deploy",
+      "relation": "leads_to"
+    },
+    {
+      "from_id": "task_deploy",
+      "to_id": "task_healthcheck",
+      "relation": "leads_to"
+    },
+    {
+      "from_id": "perm_deploy",
+      "to_id": "agent_deploy",
+      "relation": "authorizes"
+    },
+    {
+      "from_id": "agent_deploy",
+      "to_id": "resource_cluster",
+      "relation": "accesses"
+    },
+    {
+      "from_id": "agent_deploy",
+      "to_id": "principal_1",
+      "relation": "reports_to"
+    },
+    {
+      "from_id": "agent_monitor",
+      "to_id": "principal_1",
+      "relation": "reports_to"
+    },
+    {
+      "from_id": "task_healthcheck",
+      "to_id": "esc_1",
+      "relation": "escalates_to"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "agent_hierarchy",
+      "levels": [
+        "PRINCIPAL",
+        "AGENT",
+        "TASK"
+      ]
+    }
+  ]
+}

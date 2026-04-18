@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TRUGS v1.0 Nested Branch Schema",
+  "description": "Schema for Nested branch TRUGs — hierarchical graph composition via subgraph references",
+  "branch": "nested",
+  "graph_type": "NESTED",
+  "node_types": ["TASK", "SUBGRAPH", "RESULT"],
+  "relations": ["contains", "precedes", "produces"],
+  "extensions": [],
+  "allOf": [{"$ref": "core.schema.json"}],
+  "properties": {
+    "type": {"const": "NESTED"},
+    "nodes": {
+      "items": {
+        "properties": {
+          "type": {"enum": ["TASK", "SUBGRAPH", "RESULT"]}
+        }
+      }
+    }
+  }
+}

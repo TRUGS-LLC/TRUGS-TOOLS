@@ -1,0 +1,76 @@
+{
+  "name": "Orchestration Simple Example",
+  "version": "1.0.0",
+  "type": "ORCHESTRATION",
+  "branch": "orchestration",
+  "description": "Simple orchestration TRUG: an agent delegates a task with an escalation path",
+  "nodes": [
+    {
+      "id": "agent_1",
+      "type": "AGENT",
+      "metric_level": "DEKA_AGENT",
+      "parent_id": null,
+      "properties": {
+        "name": "DeployBot",
+        "role": "deployment_agent",
+        "description": "Automated deployment agent"
+      }
+    },
+    {
+      "id": "task_1",
+      "type": "TASK",
+      "metric_level": "BASE_TASK",
+      "parent_id": "agent_1",
+      "properties": {
+        "name": "deploy_service",
+        "action": "deploy",
+        "target": "api-service-v2",
+        "status": "pending"
+      }
+    },
+    {
+      "id": "esc_1",
+      "type": "ESCALATION",
+      "metric_level": "MILLI_ESCALATION",
+      "parent_id": "agent_1",
+      "properties": {
+        "name": "deploy_failure_escalation",
+        "trigger": "task_failure",
+        "severity": "high",
+        "notify": "ops-team"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "agent_1",
+      "to_id": "task_1",
+      "relation": "contains"
+    },
+    {
+      "from_id": "agent_1",
+      "to_id": "esc_1",
+      "relation": "contains"
+    },
+    {
+      "from_id": "agent_1",
+      "to_id": "task_1",
+      "relation": "delegates_to"
+    },
+    {
+      "from_id": "task_1",
+      "to_id": "esc_1",
+      "relation": "escalates_to"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "agent_hierarchy",
+      "levels": [
+        "PRINCIPAL",
+        "AGENT",
+        "TASK"
+      ]
+    }
+  ]
+}

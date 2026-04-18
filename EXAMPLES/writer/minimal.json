@@ -1,0 +1,75 @@
+{
+  "name": "Writer Minimal Example",
+  "version": "1.0.0",
+  "type": "WRITER",
+  "branch": "writer",
+  "description": "Minimal Writer TRUG demonstrating document structure",
+  "nodes": [
+    {
+      "id": "book_1",
+      "type": "BOOK",
+      "metric_level": "MEGA_BOOK",
+      "parent_id": null,
+      "properties": {
+        "title": "Example Book",
+        "author": "TRUGS Team"
+      }
+    },
+    {
+      "id": "chapter_1",
+      "type": "CHAPTER",
+      "metric_level": "BASE_CHAPTER",
+      "parent_id": "book_1",
+      "properties": {
+        "title": "Chapter 1",
+        "chapter_number": 1
+      }
+    },
+    {
+      "id": "section_1",
+      "type": "SECTION",
+      "metric_level": "CENTI_SECTION",
+      "parent_id": "chapter_1",
+      "properties": {
+        "heading": "Introduction"
+      }
+    },
+    {
+      "id": "para_1",
+      "type": "PARAGRAPH",
+      "metric_level": "MILLI_PARAGRAPH",
+      "parent_id": "section_1",
+      "properties": {
+        "text": "This is an example paragraph in a TRUGS document."
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "book_1",
+      "to_id": "chapter_1",
+      "relation": "contains"
+    },
+    {
+      "from_id": "chapter_1",
+      "to_id": "section_1",
+      "relation": "contains"
+    },
+    {
+      "from_id": "section_1",
+      "to_id": "para_1",
+      "relation": "contains"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "document_structure",
+      "levels": [
+        "BOOK",
+        "CHAPTER",
+        "SECTION",
+        "PARAGRAPH"
+      ]
+    }
+  ]
+}

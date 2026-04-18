@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TRUGS v1.0 Web Branch Schema",
+  "description": "Schema for Web branch TRUGs",
+  "branch": "web",
+  "graph_type": "WEB",
+  "node_types": ["SITE", "PAGE", "SECTION"],
+  "relations": ["contains", "links_to"],
+  "extensions": [],
+  "allOf": [{"$ref": "core.schema.json"}],
+  "properties": {
+    "type": {"const": "WEB"},
+    "nodes": {
+      "items": {
+        "properties": {
+          "type": {"enum": ["SITE", "PAGE", "SECTION"]}
+        }
+      }
+    }
+  }
+}

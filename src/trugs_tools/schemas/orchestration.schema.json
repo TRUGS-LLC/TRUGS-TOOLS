@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TRUGS v1.0 Orchestration Branch Schema",
+  "description": "Schema for Orchestration branch TRUGs",
+  "branch": "orchestration",
+  "graph_type": "ORCHESTRATION",
+  "node_types": ["AGENT", "PRINCIPAL", "RESOURCE", "PERMISSION", "TASK", "ESCALATION"],
+  "relations": ["contains", "delegates_to", "reports_to", "authorizes", "accesses", "escalates_to"],
+  "extensions": [],
+  "allOf": [{"$ref": "core.schema.json"}],
+  "properties": {
+    "type": {"const": "ORCHESTRATION"},
+    "nodes": {
+      "items": {
+        "properties": {
+          "type": {"enum": ["AGENT", "PRINCIPAL", "RESOURCE", "PERMISSION", "TASK", "ESCALATION"]}
+        }
+      }
+    }
+  }
+}

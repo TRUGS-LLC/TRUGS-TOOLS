@@ -1,0 +1,114 @@
+{
+  "name": "Web Medium Example",
+  "version": "1.0.0",
+  "type": "WEB",
+  "branch": "web",
+  "description": "Medium-complexity Web TRUG with navigation and content sections",
+  "nodes": [
+    {
+      "id": "site_1",
+      "type": "SITE",
+      "metric_level": "KILO_SITE",
+      "parent_id": null,
+      "properties": {
+        "name": "My Blog",
+        "url": "https://blog.example.com",
+        "description": "A personal blog"
+      }
+    },
+    {
+      "id": "page_home",
+      "type": "PAGE",
+      "metric_level": "BASE_PAGE",
+      "parent_id": "site_1",
+      "properties": {
+        "title": "Home",
+        "path": "/",
+        "template": "index.html"
+      }
+    },
+    {
+      "id": "sec_hero",
+      "type": "SECTION",
+      "metric_level": "CENTI_SECTION",
+      "parent_id": "page_home",
+      "properties": {
+        "title": "Hero Banner",
+        "type": "hero"
+      }
+    },
+    {
+      "id": "sec_posts",
+      "type": "SECTION",
+      "metric_level": "CENTI_SECTION",
+      "parent_id": "page_home",
+      "properties": {
+        "title": "Recent Posts",
+        "type": "listing"
+      }
+    },
+    {
+      "id": "page_about",
+      "type": "PAGE",
+      "metric_level": "BASE_PAGE",
+      "parent_id": "site_1",
+      "properties": {
+        "title": "About",
+        "path": "/about",
+        "template": "about.html"
+      }
+    },
+    {
+      "id": "sec_bio",
+      "type": "SECTION",
+      "metric_level": "CENTI_SECTION",
+      "parent_id": "page_about",
+      "properties": {
+        "title": "Biography",
+        "type": "content"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "site_1",
+      "to_id": "page_home",
+      "relation": "contains"
+    },
+    {
+      "from_id": "site_1",
+      "to_id": "page_about",
+      "relation": "contains"
+    },
+    {
+      "from_id": "page_home",
+      "to_id": "sec_hero",
+      "relation": "contains"
+    },
+    {
+      "from_id": "page_home",
+      "to_id": "sec_posts",
+      "relation": "contains"
+    },
+    {
+      "from_id": "page_about",
+      "to_id": "sec_bio",
+      "relation": "contains"
+    },
+    {
+      "from_id": "page_home",
+      "to_id": "page_about",
+      "relation": "links_to"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "web_structure",
+      "levels": [
+        "SITE",
+        "PAGE",
+        "SECTION"
+      ]
+    }
+  ]
+}

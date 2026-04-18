@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trugs-tools"
+version = "1.0.0"
+description = "TRUGS CLI tools — validation, generation, memory, folder lifecycle, AAA protocol. Single `tg` binary with git-style subcommands."
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.11"
+authors = [{ name = "Xepayac LLC" }]
+keywords = ["trugs", "cli", "graph", "spec", "tg"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Code Generators",
+]
+dependencies = [
+    "trugs-store>=0.1.0",
+    "PyYAML>=6.0",
+    "jsonschema>=4.0",
+    "requests>=2.28",
+]
+
+[project.optional-dependencies]
+web = [
+    "httpx>=0.24",
+    "beautifulsoup4>=4.12",
+    "lxml>=4.9",
+]
+llm = [
+    "anthropic>=0.20",
+    "openai>=1.0",
+]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "build",
+    "twine",
+]
+
+[project.urls]
+Homepage = "https://github.com/TRUGS-LLC/TRUGS-TOOLS"
+Issues = "https://github.com/TRUGS-LLC/TRUGS-TOOLS/issues"
+Source = "https://github.com/TRUGS-LLC/TRUGS-TOOLS"
+Documentation = "https://github.com/TRUGS-LLC/TRUGS-TOOLS/blob/main/REFERENCE/"
+
+[project.scripts]
+tg = "trugs_tools.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["trugs_tools*"]
+
+[tool.setuptools.package-data]
+trugs_tools = ["schemas/*.json", "templates/*.json", "data/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]

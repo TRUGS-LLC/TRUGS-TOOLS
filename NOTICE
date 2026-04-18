@@ -1,0 +1,23 @@
+TRUGS Tools (trugs-tools)
+Copyright 2026 Xepayac LLC
+
+This product includes software developed by Xepayac LLC (https://github.com/Xepayac)
+as part of the TRUGS-LLC portfolio (https://github.com/TRUGS-LLC).
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+---
+
+## Provenance
+
+This package consolidates three previously-separate sources:
+
+1. TRUGS-DEVELOPMENT/TRUGS_TOOLS_development/ — private mono-repo folder (folder lifecycle CLIs, branch schemas, web pipeline)
+2. TRUGS-LLC/TRUGS/tools/ — memory + TRL + compliance_check + tget/tupdate/tdelete/tunlink (migrated in `trugs` 2.0.0 breaking release)
+3. Xepayac/TRUGS-AAA (archived) — aaa_validator.py + canonical AAA reference TRUG
+
+See TRUGS-LLC/TRUGS-DEVELOPMENT#1576 for the reorganization that created this package.

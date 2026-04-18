@@ -1,0 +1,124 @@
+{
+  "name": "Knowledge Medium Example",
+  "version": "1.0.0",
+  "type": "KNOWLEDGE",
+  "branch": "knowledge",
+  "description": "Medium knowledge TRUG: two classes with entities and an instance showing ontological relationships",
+  "nodes": [
+    {
+      "id": "class_vehicle",
+      "type": "CLASS",
+      "metric_level": "KILO_CLASS",
+      "parent_id": null,
+      "properties": {
+        "name": "Vehicle",
+        "definition": "Machine used for transporting people or goods",
+        "domain": "transportation"
+      }
+    },
+    {
+      "id": "class_engine",
+      "type": "CLASS",
+      "metric_level": "KILO_CLASS",
+      "parent_id": "class_vehicle",
+      "properties": {
+        "name": "Engine",
+        "definition": "Machine that converts energy into mechanical force",
+        "domain": "engineering"
+      }
+    },
+    {
+      "id": "entity_car",
+      "type": "ENTITY",
+      "metric_level": "BASE_ENTITY",
+      "parent_id": "class_vehicle",
+      "properties": {
+        "name": "Car",
+        "definition": "Four-wheeled motor vehicle for passenger transport",
+        "domain": "transportation"
+      }
+    },
+    {
+      "id": "entity_ev_motor",
+      "type": "ENTITY",
+      "metric_level": "BASE_ENTITY",
+      "parent_id": "class_engine",
+      "properties": {
+        "name": "ElectricMotor",
+        "definition": "Engine powered by electrical energy",
+        "domain": "engineering"
+      }
+    },
+    {
+      "id": "instance_tesla",
+      "type": "INSTANCE",
+      "metric_level": "MILLI_INSTANCE",
+      "parent_id": "class_vehicle",
+      "properties": {
+        "name": "Tesla Model 3",
+        "description": "A specific electric car manufactured by Tesla",
+        "attributes": {
+          "year": 2024,
+          "range_miles": 358
+        }
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "class_vehicle",
+      "to_id": "class_engine",
+      "relation": "contains"
+    },
+    {
+      "from_id": "class_vehicle",
+      "to_id": "entity_car",
+      "relation": "contains"
+    },
+    {
+      "from_id": "class_vehicle",
+      "to_id": "instance_tesla",
+      "relation": "contains"
+    },
+    {
+      "from_id": "class_engine",
+      "to_id": "entity_ev_motor",
+      "relation": "contains"
+    },
+    {
+      "from_id": "entity_car",
+      "to_id": "class_vehicle",
+      "relation": "is_a"
+    },
+    {
+      "from_id": "entity_ev_motor",
+      "to_id": "class_engine",
+      "relation": "is_a"
+    },
+    {
+      "from_id": "instance_tesla",
+      "to_id": "entity_car",
+      "relation": "is_a"
+    },
+    {
+      "from_id": "class_engine",
+      "to_id": "class_vehicle",
+      "relation": "part_of"
+    },
+    {
+      "from_id": "entity_car",
+      "to_id": "entity_ev_motor",
+      "relation": "has_property"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "ontology_hierarchy",
+      "levels": [
+        "CLASS",
+        "ENTITY",
+        "INSTANCE"
+      ]
+    }
+  ]
+}

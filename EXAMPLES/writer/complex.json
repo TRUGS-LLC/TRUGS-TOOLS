@@ -1,0 +1,259 @@
+{
+  "name": "Writer Complex Example",
+  "version": "1.0.0",
+  "type": "WRITER",
+  "branch": "writer",
+  "description": "Complex Writer TRUG with multiple sections, citations, and cross-references",
+  "nodes": [
+    {
+      "id": "doc_1",
+      "type": "DOCUMENT",
+      "metric_level": "MEGA_DOCUMENT",
+      "parent_id": null,
+      "properties": {
+        "title": "Graph Databases Survey",
+        "author": "Research Team",
+        "date": "2026-02-01"
+      }
+    },
+    {
+      "id": "sec_abstract",
+      "type": "SECTION",
+      "metric_level": "CENTI_SECTION",
+      "parent_id": "doc_1",
+      "properties": {
+        "title": "Abstract",
+        "order": 0
+      }
+    },
+    {
+      "id": "para_abs",
+      "type": "PARAGRAPH",
+      "metric_level": "MILLI_PARAGRAPH",
+      "parent_id": "sec_abstract",
+      "properties": {
+        "content": "A comprehensive survey of graph database technologies."
+      }
+    },
+    {
+      "id": "sec_intro",
+      "type": "SECTION",
+      "metric_level": "CENTI_SECTION",
+      "parent_id": "doc_1",
+      "properties": {
+        "title": "Introduction",
+        "order": 1
+      }
+    },
+    {
+      "id": "para_intro",
+      "type": "PARAGRAPH",
+      "metric_level": "MILLI_PARAGRAPH",
+      "parent_id": "sec_intro",
+      "properties": {
+        "content": "Graph databases have become essential for connected data."
+      }
+    },
+    {
+      "id": "sec_review",
+      "type": "SECTION",
+      "metric_level": "CENTI_SECTION",
+      "parent_id": "doc_1",
+      "properties": {
+        "title": "Literature Review",
+        "order": 2
+      }
+    },
+    {
+      "id": "para_rev1",
+      "type": "PARAGRAPH",
+      "metric_level": "MILLI_PARAGRAPH",
+      "parent_id": "sec_review",
+      "properties": {
+        "content": "Neo4j introduced the property graph model in 2007."
+      }
+    },
+    {
+      "id": "cit_neo4j",
+      "type": "CITATION",
+      "metric_level": "MILLI_CITATION",
+      "parent_id": "sec_review",
+      "properties": {
+        "key": "neo4j2007",
+        "text": "Neo4j, 2007"
+      }
+    },
+    {
+      "id": "para_rev2",
+      "type": "PARAGRAPH",
+      "metric_level": "MILLI_PARAGRAPH",
+      "parent_id": "sec_review",
+      "properties": {
+        "content": "RDF and SPARQL provide a standards-based approach."
+      }
+    },
+    {
+      "id": "cit_rdf",
+      "type": "CITATION",
+      "metric_level": "MILLI_CITATION",
+      "parent_id": "sec_review",
+      "properties": {
+        "key": "w3c2004",
+        "text": "W3C, 2004"
+      }
+    },
+    {
+      "id": "sec_conc",
+      "type": "SECTION",
+      "metric_level": "CENTI_SECTION",
+      "parent_id": "doc_1",
+      "properties": {
+        "title": "Conclusion",
+        "order": 3
+      }
+    },
+    {
+      "id": "para_conc",
+      "type": "PARAGRAPH",
+      "metric_level": "MILLI_PARAGRAPH",
+      "parent_id": "sec_conc",
+      "properties": {
+        "content": "Graph databases will continue to grow in importance."
+      }
+    },
+    {
+      "id": "ref_neo4j",
+      "type": "REFERENCE",
+      "metric_level": "MILLI_REFERENCE",
+      "parent_id": "doc_1",
+      "properties": {
+        "key": "neo4j2007",
+        "title": "Neo4j: The Graph Database",
+        "year": "2007"
+      }
+    },
+    {
+      "id": "ref_rdf",
+      "type": "REFERENCE",
+      "metric_level": "MILLI_REFERENCE",
+      "parent_id": "doc_1",
+      "properties": {
+        "key": "w3c2004",
+        "title": "RDF Primer",
+        "year": "2004"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "doc_1",
+      "to_id": "sec_abstract",
+      "relation": "contains"
+    },
+    {
+      "from_id": "doc_1",
+      "to_id": "sec_intro",
+      "relation": "contains"
+    },
+    {
+      "from_id": "doc_1",
+      "to_id": "sec_review",
+      "relation": "contains"
+    },
+    {
+      "from_id": "doc_1",
+      "to_id": "sec_conc",
+      "relation": "contains"
+    },
+    {
+      "from_id": "doc_1",
+      "to_id": "ref_neo4j",
+      "relation": "contains"
+    },
+    {
+      "from_id": "doc_1",
+      "to_id": "ref_rdf",
+      "relation": "contains"
+    },
+    {
+      "from_id": "sec_abstract",
+      "to_id": "para_abs",
+      "relation": "contains"
+    },
+    {
+      "from_id": "sec_intro",
+      "to_id": "para_intro",
+      "relation": "contains"
+    },
+    {
+      "from_id": "sec_review",
+      "to_id": "para_rev1",
+      "relation": "contains"
+    },
+    {
+      "from_id": "sec_review",
+      "to_id": "cit_neo4j",
+      "relation": "contains"
+    },
+    {
+      "from_id": "sec_review",
+      "to_id": "para_rev2",
+      "relation": "contains"
+    },
+    {
+      "from_id": "sec_review",
+      "to_id": "cit_rdf",
+      "relation": "contains"
+    },
+    {
+      "from_id": "sec_conc",
+      "to_id": "para_conc",
+      "relation": "contains"
+    },
+    {
+      "from_id": "cit_neo4j",
+      "to_id": "ref_neo4j",
+      "relation": "cites"
+    },
+    {
+      "from_id": "cit_rdf",
+      "to_id": "ref_rdf",
+      "relation": "cites"
+    },
+    {
+      "from_id": "sec_abstract",
+      "to_id": "sec_intro",
+      "relation": "precedes"
+    },
+    {
+      "from_id": "sec_intro",
+      "to_id": "sec_review",
+      "relation": "precedes"
+    },
+    {
+      "from_id": "sec_review",
+      "to_id": "sec_conc",
+      "relation": "precedes"
+    },
+    {
+      "from_id": "sec_conc",
+      "to_id": "sec_intro",
+      "relation": "references"
+    },
+    {
+      "from_id": "para_intro",
+      "to_id": "ref_neo4j",
+      "relation": "defines"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "document_structure",
+      "levels": [
+        "DOCUMENT",
+        "SECTION",
+        "PARAGRAPH"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,163 @@
+{
+  "name": "Research Complete Example",
+  "version": "1.0.0",
+  "type": "RESEARCH",
+  "branch": "research",
+  "description": "Complete Research TRUG with web sources, papers, claims, and projects",
+  "nodes": [
+    {
+      "id": "graph_1",
+      "type": "RESEARCH_GRAPH",
+      "metric_level": "KILO_RESEARCH_GRAPH",
+      "parent_id": null,
+      "properties": {
+        "name": "Technology Evaluation",
+        "description": "Research graph for technology evaluation"
+      }
+    },
+    {
+      "id": "concept_1",
+      "type": "CONCEPT",
+      "metric_level": "BASE_CONCEPT",
+      "parent_id": "graph_1",
+      "properties": {
+        "name": "Graph Databases",
+        "description": "Database systems using graph structures"
+      }
+    },
+    {
+      "id": "project_1",
+      "type": "PROJECT",
+      "metric_level": "BASE_PROJECT",
+      "parent_id": "graph_1",
+      "properties": {
+        "name": "Neo4j",
+        "description": "Popular graph database",
+        "language": "Java",
+        "license": "GPL-3.0"
+      }
+    },
+    {
+      "id": "source_1",
+      "type": "WEB_SOURCE",
+      "metric_level": "BASE_WEB_SOURCE",
+      "parent_id": "graph_1",
+      "properties": {
+        "url": "https://neo4j.com/docs",
+        "title": "Neo4j Documentation",
+        "accessed_date": "2026-02-10"
+      }
+    },
+    {
+      "id": "author_1",
+      "type": "AUTHOR",
+      "metric_level": "BASE_AUTHOR",
+      "parent_id": "graph_1",
+      "properties": {
+        "name": "Neo4j Inc.",
+        "organization": "Neo4j Inc."
+      }
+    },
+    {
+      "id": "paper_1",
+      "type": "PAPER",
+      "metric_level": "BASE_PAPER",
+      "parent_id": "graph_1",
+      "properties": {
+        "title": "Graph Databases: The Definitive Guide",
+        "published_date": "2020-06-01",
+        "description": "Academic survey of graph database technologies"
+      }
+    },
+    {
+      "id": "claim_1",
+      "type": "CLAIM",
+      "metric_level": "CENTI_CLAIM",
+      "parent_id": "concept_1",
+      "properties": {
+        "claim_text": "Neo4j supports ACID transactions",
+        "source_id": "source_1",
+        "confidence": 0.95
+      }
+    },
+    {
+      "id": "version_1",
+      "type": "VERSION",
+      "metric_level": "CENTI_VERSION",
+      "parent_id": "project_1",
+      "properties": {
+        "version_string": "5.0.0",
+        "release_date": "2022-10-27",
+        "status": "active"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "graph_1",
+      "to_id": "concept_1",
+      "relation": "contains"
+    },
+    {
+      "from_id": "graph_1",
+      "to_id": "project_1",
+      "relation": "contains"
+    },
+    {
+      "from_id": "graph_1",
+      "to_id": "source_1",
+      "relation": "contains"
+    },
+    {
+      "from_id": "graph_1",
+      "to_id": "author_1",
+      "relation": "contains"
+    },
+    {
+      "from_id": "graph_1",
+      "to_id": "paper_1",
+      "relation": "contains"
+    },
+    {
+      "from_id": "concept_1",
+      "to_id": "claim_1",
+      "relation": "contains"
+    },
+    {
+      "from_id": "project_1",
+      "to_id": "version_1",
+      "relation": "contains"
+    },
+    {
+      "from_id": "source_1",
+      "to_id": "claim_1",
+      "relation": "supports",
+      "weight": 0.95
+    },
+    {
+      "from_id": "source_1",
+      "to_id": "author_1",
+      "relation": "authored_by"
+    },
+    {
+      "from_id": "paper_1",
+      "to_id": "source_1",
+      "relation": "cites"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "research_structure",
+      "levels": [
+        "RESEARCH_GRAPH",
+        "CONCEPT",
+        "PROJECT",
+        "WEB_SOURCE",
+        "AUTHOR",
+        "PAPER",
+        "CLAIM",
+        "VERSION"
+      ]
+    }
+  ]
+}

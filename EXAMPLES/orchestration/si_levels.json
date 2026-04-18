@@ -1,0 +1,80 @@
+{
+  "name": "Orchestration SI Metric Levels Example",
+  "version": "1.0.0",
+  "type": "ORCHESTRATION",
+  "branch": "orchestration",
+  "description": "Orchestration TRUG demonstrating SI-prefix metric levels (HECTO, DEKA, BASE, MILLI) instead of legacy MINIMAL/STANDARD",
+  "nodes": [
+    {
+      "id": "principal_1",
+      "type": "PRINCIPAL",
+      "metric_level": "HECTO_PRINCIPAL",
+      "parent_id": null,
+      "properties": {
+        "name": "System Admin",
+        "role": "administrator",
+        "description": "Top-level system administrator"
+      }
+    },
+    {
+      "id": "agent_1",
+      "type": "AGENT",
+      "metric_level": "DEKA_AGENT",
+      "parent_id": "principal_1",
+      "properties": {
+        "name": "Code Reviewer",
+        "role": "reviewer",
+        "description": "Automated code review agent"
+      }
+    },
+    {
+      "id": "task_1",
+      "type": "TASK",
+      "metric_level": "BASE_TASK",
+      "parent_id": "agent_1",
+      "properties": {
+        "name": "Review PR",
+        "status": "PENDING",
+        "priority": "HIGH",
+        "description": "Review pull request for code quality"
+      }
+    },
+    {
+      "id": "resource_1",
+      "type": "RESOURCE",
+      "metric_level": "KILO_RESOURCE",
+      "parent_id": "principal_1",
+      "properties": {
+        "name": "GitHub Repository",
+        "resource_type": "repository",
+        "description": "Source code repository"
+      }
+    },
+    {
+      "id": "permission_1",
+      "type": "PERMISSION",
+      "metric_level": "MILLI_PERMISSION",
+      "parent_id": "principal_1",
+      "properties": {
+        "scope": "read_write",
+        "resource_pattern": "repos/*/pulls",
+        "description": "Read/write access to pull requests"
+      }
+    }
+  ],
+  "edges": [
+    {"from_id": "principal_1", "to_id": "agent_1", "relation": "contains"},
+    {"from_id": "principal_1", "to_id": "resource_1", "relation": "contains"},
+    {"from_id": "principal_1", "to_id": "permission_1", "relation": "contains"},
+    {"from_id": "agent_1", "to_id": "task_1", "relation": "contains"},
+    {"from_id": "agent_1", "to_id": "task_1", "relation": "delegates_to"},
+    {"from_id": "agent_1", "to_id": "resource_1", "relation": "accesses"},
+    {"from_id": "principal_1", "to_id": "permission_1", "relation": "authorizes"}
+  ],
+  "dimensions": [
+    {
+      "name": "agent_hierarchy",
+      "levels": ["PRINCIPAL", "AGENT", "TASK"]
+    }
+  ]
+}

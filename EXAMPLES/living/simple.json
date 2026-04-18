@@ -1,0 +1,83 @@
+{
+  "name": "Living Simple Example",
+  "version": "1.0.0",
+  "type": "LIVING",
+  "branch": "living",
+  "description": "Simple living TRUG: a query triggers a tool execution that produces an entity",
+  "nodes": [
+    {
+      "id": "query_1",
+      "type": "QUERY",
+      "metric_level": "BASE_QUERY",
+      "parent_id": null,
+      "properties": {
+        "name": "weather_query",
+        "text": "What is the current weather in Austin, TX?",
+        "intent": "information_retrieval"
+      }
+    },
+    {
+      "id": "tool_1",
+      "type": "TOOL_EXECUTION",
+      "metric_level": "CENTI_TOOL_EXECUTION",
+      "parent_id": "query_1",
+      "properties": {
+        "name": "weather_api_call",
+        "tool": "weather_api",
+        "parameters": {
+          "location": "Austin, TX"
+        },
+        "status": "completed"
+      }
+    },
+    {
+      "id": "entity_1",
+      "type": "ENTITY",
+      "metric_level": "MILLI_ENTITY",
+      "parent_id": "query_1",
+      "properties": {
+        "name": "austin_weather",
+        "entity_type": "weather_data",
+        "value": {
+          "temperature": "92F",
+          "condition": "sunny"
+        },
+        "source": "weather_api"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "query_1",
+      "to_id": "tool_1",
+      "relation": "contains"
+    },
+    {
+      "from_id": "query_1",
+      "to_id": "entity_1",
+      "relation": "contains"
+    },
+    {
+      "from_id": "query_1",
+      "to_id": "tool_1",
+      "relation": "triggers"
+    },
+    {
+      "from_id": "tool_1",
+      "to_id": "entity_1",
+      "relation": "produces"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "memory_flow",
+      "levels": [
+        "QUERY",
+        "TOOL_EXECUTION",
+        "ENTITY",
+        "SYNTHESIS",
+        "ANSWER"
+      ]
+    }
+  ]
+}

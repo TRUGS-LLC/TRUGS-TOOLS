@@ -1,0 +1,204 @@
+{
+  "name": "Knowledge Complex Example",
+  "version": "1.0.0",
+  "type": "KNOWLEDGE",
+  "branch": "knowledge",
+  "description": "Complex knowledge TRUG: multi-class ontology with concepts, entities, and instances for a medical domain",
+  "nodes": [
+    {
+      "id": "class_disease",
+      "type": "CLASS",
+      "metric_level": "KILO_CLASS",
+      "parent_id": null,
+      "properties": {
+        "name": "Disease",
+        "definition": "Disorder of structure or function in a living organism",
+        "domain": "medicine"
+      }
+    },
+    {
+      "id": "class_treatment",
+      "type": "CLASS",
+      "metric_level": "KILO_CLASS",
+      "parent_id": "class_disease",
+      "properties": {
+        "name": "Treatment",
+        "definition": "Medical care given to a patient for an illness",
+        "domain": "medicine"
+      }
+    },
+    {
+      "id": "concept_inflammation",
+      "type": "CONCEPT",
+      "metric_level": "BASE_CONCEPT",
+      "parent_id": "class_disease",
+      "properties": {
+        "name": "Inflammation",
+        "definition": "Localized physical condition involving heat, swelling, redness, and pain",
+        "domain": "pathology",
+        "abstract": true
+      }
+    },
+    {
+      "id": "entity_diabetes",
+      "type": "ENTITY",
+      "metric_level": "BASE_ENTITY",
+      "parent_id": "class_disease",
+      "properties": {
+        "name": "Type 2 Diabetes",
+        "definition": "Chronic condition affecting glucose metabolism",
+        "domain": "endocrinology",
+        "icd_code": "E11"
+      }
+    },
+    {
+      "id": "entity_arthritis",
+      "type": "ENTITY",
+      "metric_level": "BASE_ENTITY",
+      "parent_id": "class_disease",
+      "properties": {
+        "name": "Rheumatoid Arthritis",
+        "definition": "Autoimmune disease causing joint inflammation",
+        "domain": "rheumatology",
+        "icd_code": "M06.9"
+      }
+    },
+    {
+      "id": "entity_metformin",
+      "type": "ENTITY",
+      "metric_level": "BASE_ENTITY",
+      "parent_id": "class_treatment",
+      "properties": {
+        "name": "Metformin",
+        "definition": "First-line medication for type 2 diabetes",
+        "domain": "pharmacology",
+        "drug_class": "biguanide"
+      }
+    },
+    {
+      "id": "instance_patient_a",
+      "type": "INSTANCE",
+      "metric_level": "MILLI_INSTANCE",
+      "parent_id": "class_disease",
+      "properties": {
+        "name": "Patient A Diagnosis",
+        "description": "Diagnosed with Type 2 Diabetes, managed with Metformin",
+        "attributes": {
+          "onset_year": 2020,
+          "severity": "moderate"
+        }
+      }
+    },
+    {
+      "id": "instance_rx_1",
+      "type": "INSTANCE",
+      "metric_level": "MILLI_INSTANCE",
+      "parent_id": "class_treatment",
+      "properties": {
+        "name": "Metformin Prescription",
+        "description": "500mg twice daily for Patient A",
+        "attributes": {
+          "dosage": "500mg",
+          "frequency": "BID"
+        }
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "class_disease",
+      "to_id": "class_treatment",
+      "relation": "contains"
+    },
+    {
+      "from_id": "class_disease",
+      "to_id": "concept_inflammation",
+      "relation": "contains"
+    },
+    {
+      "from_id": "class_disease",
+      "to_id": "entity_diabetes",
+      "relation": "contains"
+    },
+    {
+      "from_id": "class_disease",
+      "to_id": "entity_arthritis",
+      "relation": "contains"
+    },
+    {
+      "from_id": "class_disease",
+      "to_id": "instance_patient_a",
+      "relation": "contains"
+    },
+    {
+      "from_id": "class_treatment",
+      "to_id": "entity_metformin",
+      "relation": "contains"
+    },
+    {
+      "from_id": "class_treatment",
+      "to_id": "instance_rx_1",
+      "relation": "contains"
+    },
+    {
+      "from_id": "entity_diabetes",
+      "to_id": "class_disease",
+      "relation": "is_a"
+    },
+    {
+      "from_id": "entity_arthritis",
+      "to_id": "class_disease",
+      "relation": "is_a"
+    },
+    {
+      "from_id": "entity_metformin",
+      "to_id": "class_treatment",
+      "relation": "is_a"
+    },
+    {
+      "from_id": "instance_patient_a",
+      "to_id": "entity_diabetes",
+      "relation": "is_a"
+    },
+    {
+      "from_id": "instance_rx_1",
+      "to_id": "entity_metformin",
+      "relation": "is_a"
+    },
+    {
+      "from_id": "concept_inflammation",
+      "to_id": "entity_arthritis",
+      "relation": "causes"
+    },
+    {
+      "from_id": "entity_diabetes",
+      "to_id": "concept_inflammation",
+      "relation": "related_to"
+    },
+    {
+      "from_id": "entity_diabetes",
+      "to_id": "entity_metformin",
+      "relation": "related_to"
+    },
+    {
+      "from_id": "entity_arthritis",
+      "to_id": "concept_inflammation",
+      "relation": "has_property"
+    },
+    {
+      "from_id": "class_treatment",
+      "to_id": "class_disease",
+      "relation": "part_of"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "ontology_hierarchy",
+      "levels": [
+        "CLASS",
+        "ENTITY",
+        "INSTANCE"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,255 @@
+{
+  "name": "Living Complex Example",
+  "version": "1.0.0",
+  "type": "LIVING",
+  "branch": "living",
+  "description": "Complex living TRUG: multi-query research with synthesis across multiple data sources",
+  "nodes": [
+    {
+      "id": "query_main",
+      "type": "QUERY",
+      "metric_level": "BASE_QUERY",
+      "parent_id": null,
+      "properties": {
+        "name": "market_research",
+        "text": "Compare the revenue growth of AAPL, MSFT, and GOOG over the past year",
+        "intent": "comparative_analysis"
+      }
+    },
+    {
+      "id": "query_sub",
+      "type": "QUERY",
+      "metric_level": "BASE_QUERY",
+      "parent_id": "query_main",
+      "properties": {
+        "name": "earnings_followup",
+        "text": "What were the latest earnings results for each company?",
+        "intent": "detail_retrieval"
+      }
+    },
+    {
+      "id": "tool_financials",
+      "type": "TOOL_EXECUTION",
+      "metric_level": "CENTI_TOOL_EXECUTION",
+      "parent_id": "query_main",
+      "properties": {
+        "name": "fetch_financials",
+        "tool": "sec_filings_api",
+        "parameters": {
+          "tickers": [
+            "AAPL",
+            "MSFT",
+            "GOOG"
+          ],
+          "period": "1y"
+        },
+        "status": "completed"
+      }
+    },
+    {
+      "id": "tool_earnings",
+      "type": "TOOL_EXECUTION",
+      "metric_level": "CENTI_TOOL_EXECUTION",
+      "parent_id": "query_sub",
+      "properties": {
+        "name": "fetch_earnings",
+        "tool": "earnings_api",
+        "parameters": {
+          "tickers": [
+            "AAPL",
+            "MSFT",
+            "GOOG"
+          ],
+          "quarters": 4
+        },
+        "status": "completed"
+      }
+    },
+    {
+      "id": "entity_aapl",
+      "type": "ENTITY",
+      "metric_level": "MILLI_ENTITY",
+      "parent_id": "query_main",
+      "properties": {
+        "name": "aapl_revenue",
+        "entity_type": "financial_metric",
+        "value": {
+          "revenue_growth": "8.1%",
+          "annual_revenue": "$394B"
+        },
+        "source": "sec_filings_api"
+      }
+    },
+    {
+      "id": "entity_msft",
+      "type": "ENTITY",
+      "metric_level": "MILLI_ENTITY",
+      "parent_id": "query_main",
+      "properties": {
+        "name": "msft_revenue",
+        "entity_type": "financial_metric",
+        "value": {
+          "revenue_growth": "15.7%",
+          "annual_revenue": "$227B"
+        },
+        "source": "sec_filings_api"
+      }
+    },
+    {
+      "id": "entity_goog",
+      "type": "ENTITY",
+      "metric_level": "MILLI_ENTITY",
+      "parent_id": "query_main",
+      "properties": {
+        "name": "goog_revenue",
+        "entity_type": "financial_metric",
+        "value": {
+          "revenue_growth": "12.3%",
+          "annual_revenue": "$328B"
+        },
+        "source": "sec_filings_api"
+      }
+    },
+    {
+      "id": "synthesis_1",
+      "type": "SYNTHESIS",
+      "metric_level": "MILLI_SYNTHESIS",
+      "parent_id": "query_main",
+      "properties": {
+        "name": "revenue_comparison_synthesis",
+        "method": "comparative_table",
+        "summary": "MSFT leads with 15.7% growth, followed by GOOG at 12.3% and AAPL at 8.1%"
+      }
+    },
+    {
+      "id": "answer_1",
+      "type": "ANSWER",
+      "metric_level": "BASE_ANSWER",
+      "parent_id": "query_main",
+      "properties": {
+        "name": "market_research_answer",
+        "text": "Microsoft leads revenue growth at 15.7%, driven by cloud services. Google follows at 12.3% with strong ad revenue. Apple trails at 8.1% but maintains the highest absolute revenue at $394B.",
+        "confidence": 0.92
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "query_main",
+      "to_id": "query_sub",
+      "relation": "contains"
+    },
+    {
+      "from_id": "query_main",
+      "to_id": "tool_financials",
+      "relation": "contains"
+    },
+    {
+      "from_id": "query_main",
+      "to_id": "entity_aapl",
+      "relation": "contains"
+    },
+    {
+      "from_id": "query_main",
+      "to_id": "entity_msft",
+      "relation": "contains"
+    },
+    {
+      "from_id": "query_main",
+      "to_id": "entity_goog",
+      "relation": "contains"
+    },
+    {
+      "from_id": "query_main",
+      "to_id": "synthesis_1",
+      "relation": "contains"
+    },
+    {
+      "from_id": "query_main",
+      "to_id": "answer_1",
+      "relation": "contains"
+    },
+    {
+      "from_id": "query_sub",
+      "to_id": "tool_earnings",
+      "relation": "contains"
+    },
+    {
+      "from_id": "query_main",
+      "to_id": "tool_financials",
+      "relation": "triggers"
+    },
+    {
+      "from_id": "query_sub",
+      "to_id": "tool_earnings",
+      "relation": "triggers"
+    },
+    {
+      "from_id": "tool_financials",
+      "to_id": "entity_aapl",
+      "relation": "produces"
+    },
+    {
+      "from_id": "tool_financials",
+      "to_id": "entity_msft",
+      "relation": "produces"
+    },
+    {
+      "from_id": "tool_financials",
+      "to_id": "entity_goog",
+      "relation": "produces"
+    },
+    {
+      "from_id": "entity_aapl",
+      "to_id": "synthesis_1",
+      "relation": "synthesizes_to"
+    },
+    {
+      "from_id": "entity_msft",
+      "to_id": "synthesis_1",
+      "relation": "synthesizes_to"
+    },
+    {
+      "from_id": "entity_goog",
+      "to_id": "synthesis_1",
+      "relation": "synthesizes_to"
+    },
+    {
+      "from_id": "synthesis_1",
+      "to_id": "answer_1",
+      "relation": "builds_on"
+    },
+    {
+      "from_id": "tool_earnings",
+      "to_id": "answer_1",
+      "relation": "builds_on"
+    },
+    {
+      "from_id": "answer_1",
+      "to_id": "entity_aapl",
+      "relation": "cites"
+    },
+    {
+      "from_id": "answer_1",
+      "to_id": "entity_msft",
+      "relation": "cites"
+    },
+    {
+      "from_id": "answer_1",
+      "to_id": "entity_goog",
+      "relation": "cites"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "memory_flow",
+      "levels": [
+        "QUERY",
+        "TOOL_EXECUTION",
+        "ENTITY",
+        "SYNTHESIS",
+        "ANSWER"
+      ]
+    }
+  ]
+}

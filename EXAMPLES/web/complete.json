@@ -1,0 +1,125 @@
+{
+  "name": "Web Complete Example",
+  "version": "1.0.0",
+  "type": "WEB",
+  "branch": "web",
+  "description": "Complete Web TRUG with navigation and links",
+  "nodes": [
+    {
+      "id": "site_1",
+      "type": "SITE",
+      "metric_level": "KILO_SITE",
+      "parent_id": null,
+      "properties": {
+        "name": "Documentation Site",
+        "domain": "docs.example.com",
+        "base_url": "https://docs.example.com"
+      }
+    },
+    {
+      "id": "page_home",
+      "type": "PAGE",
+      "metric_level": "BASE_PAGE",
+      "parent_id": "site_1",
+      "properties": {
+        "title": "Home",
+        "url": "/index.html",
+        "description": "Documentation home page"
+      }
+    },
+    {
+      "id": "page_guide",
+      "type": "PAGE",
+      "metric_level": "BASE_PAGE",
+      "parent_id": "site_1",
+      "properties": {
+        "title": "Getting Started",
+        "url": "/guide.html",
+        "description": "Getting started guide"
+      }
+    },
+    {
+      "id": "page_api",
+      "type": "PAGE",
+      "metric_level": "BASE_PAGE",
+      "parent_id": "site_1",
+      "properties": {
+        "title": "API Reference",
+        "url": "/api.html",
+        "description": "API documentation"
+      }
+    },
+    {
+      "id": "section_intro",
+      "type": "SECTION",
+      "metric_level": "CENTI_SECTION",
+      "parent_id": "page_home",
+      "properties": {
+        "heading": "Welcome",
+        "content": "Welcome to our documentation"
+      }
+    },
+    {
+      "id": "section_quick",
+      "type": "SECTION",
+      "metric_level": "CENTI_SECTION",
+      "parent_id": "page_home",
+      "properties": {
+        "heading": "Quick Links",
+        "content": "Navigate to other pages"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "site_1",
+      "to_id": "page_home",
+      "relation": "contains"
+    },
+    {
+      "from_id": "site_1",
+      "to_id": "page_guide",
+      "relation": "contains"
+    },
+    {
+      "from_id": "site_1",
+      "to_id": "page_api",
+      "relation": "contains"
+    },
+    {
+      "from_id": "page_home",
+      "to_id": "section_intro",
+      "relation": "contains"
+    },
+    {
+      "from_id": "page_home",
+      "to_id": "section_quick",
+      "relation": "contains"
+    },
+    {
+      "from_id": "page_home",
+      "to_id": "page_guide",
+      "relation": "links_to"
+    },
+    {
+      "from_id": "page_home",
+      "to_id": "page_api",
+      "relation": "links_to"
+    },
+    {
+      "from_id": "page_guide",
+      "to_id": "page_api",
+      "relation": "links_to"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "navigation",
+      "levels": [
+        "SITE",
+        "PAGE",
+        "SECTION"
+      ]
+    }
+  ]
+}

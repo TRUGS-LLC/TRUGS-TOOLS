@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TRUGS v1.0 Knowledge_v1 Branch Schema",
+  "description": "Unified schema merging Living, Knowledge, and Research branches with Decision vocabulary",
+  "branch": "knowledge_v1",
+  "graph_type": "KNOWLEDGE",
+  "node_types": [
+    "KNOWLEDGE_GRAPH", "CONCEPT", "ENTITY", "CLASS", "INSTANCE",
+    "QUERY", "ANSWER", "SYNTHESIS", "DECISION", "TOOL_EXECUTION",
+    "WEB_SOURCE", "PAPER", "PROJECT", "AUTHOR", "CLAIM", "VERSION"
+  ],
+  "relations": [
+    "contains",
+    "triggers", "produces", "synthesizes_to", "builds_on", "cites",
+    "is_a", "has_property", "part_of", "causes", "related_to",
+    "defines", "supports", "contradicts", "alternative_to",
+    "deprecated_by", "depends_on", "authored_by",
+    "rejects", "invalidates", "supersedes"
+  ],
+  "extensions": [],
+  "allOf": [{"$ref": "core.schema.json"}],
+  "properties": {
+    "type": {"const": "KNOWLEDGE"},
+    "nodes": {
+      "items": {
+        "properties": {
+          "type": {"enum": [
+            "KNOWLEDGE_GRAPH", "CONCEPT", "ENTITY", "CLASS", "INSTANCE",
+            "QUERY", "ANSWER", "SYNTHESIS", "DECISION", "TOOL_EXECUTION",
+            "WEB_SOURCE", "PAPER", "PROJECT", "AUTHOR", "CLAIM", "VERSION"
+          ]}
+        }
+      }
+    }
+  }
+}

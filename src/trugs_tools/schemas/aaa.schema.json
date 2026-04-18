@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TRUGS v1.0 AAA Branch Schema",
+  "description": "Schema for AAA branch TRUGs",
+  "branch": "aaa",
+  "graph_type": "AAA",
+  "node_types": ["AAA", "PHASE", "TASK", "AUDIT", "RISK", "ADR", "DEPENDENCY", "RESEARCH_SOURCE", "QUALITY_GATE", "SUB_ISSUE"],
+  "relations": ["precedes", "depends_on", "blocked_by", "mitigates", "validates", "tracks", "cites", "decides", "implements", "audits"],
+  "extensions": [],
+  "allOf": [{"$ref": "core.schema.json"}],
+  "properties": {
+    "type": {"const": "AAA"},
+    "nodes": {
+      "items": {
+        "properties": {
+          "type": {"enum": ["AAA", "PHASE", "TASK", "AUDIT", "RISK", "ADR", "DEPENDENCY", "RESEARCH_SOURCE", "QUALITY_GATE", "SUB_ISSUE"]}
+        }
+      }
+    }
+  }
+}

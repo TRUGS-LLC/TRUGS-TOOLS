@@ -1,0 +1,77 @@
+{
+  "name": "Knowledge Simple Example",
+  "version": "1.0.0",
+  "type": "KNOWLEDGE",
+  "branch": "knowledge",
+  "description": "Simple knowledge TRUG: a class contains an entity which has an instance",
+  "nodes": [
+    {
+      "id": "class_animal",
+      "type": "CLASS",
+      "metric_level": "KILO_CLASS",
+      "parent_id": null,
+      "properties": {
+        "name": "Animal",
+        "definition": "Living organism that feeds on organic matter",
+        "domain": "biology"
+      }
+    },
+    {
+      "id": "entity_dog",
+      "type": "ENTITY",
+      "metric_level": "BASE_ENTITY",
+      "parent_id": "class_animal",
+      "properties": {
+        "name": "Dog",
+        "definition": "Domesticated carnivorous mammal (Canis familiaris)",
+        "domain": "biology"
+      }
+    },
+    {
+      "id": "instance_rex",
+      "type": "INSTANCE",
+      "metric_level": "MILLI_INSTANCE",
+      "parent_id": "class_animal",
+      "properties": {
+        "name": "Rex",
+        "description": "A specific German Shepherd dog",
+        "attributes": {
+          "breed": "German Shepherd",
+          "age": 5
+        }
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "class_animal",
+      "to_id": "entity_dog",
+      "relation": "contains"
+    },
+    {
+      "from_id": "class_animal",
+      "to_id": "instance_rex",
+      "relation": "contains"
+    },
+    {
+      "from_id": "entity_dog",
+      "to_id": "class_animal",
+      "relation": "is_a"
+    },
+    {
+      "from_id": "instance_rex",
+      "to_id": "entity_dog",
+      "relation": "is_a"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "ontology_hierarchy",
+      "levels": [
+        "CLASS",
+        "ENTITY",
+        "INSTANCE"
+      ]
+    }
+  ]
+}
