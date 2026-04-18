@@ -437,8 +437,8 @@ def test_rendered_source_graph_still_validates(small_graph):
 def test_render_memory_collapses_multiline_body(empty_graph, fixed_now):
     """I1 — a memory body with newlines and markdown syntax must render as
     a single line, not inject headings into MEMORY.md."""
-    from tools.memory import remember
-    from tools.memory_render import render
+    from trugs_tools.memory import remember
+    from trugs_tools.memory_render import render
 
     g = empty_graph
     remember(g, "line1\n# Heading\nline3", memory_type="feedback")

@@ -6,12 +6,7 @@ from pathlib import Path
 from trugs_tools.aaa_renderer import _load_trug, render_aaa_trug
 
 
-CANONICAL_PATH = (
-    Path(__file__).resolve().parents[2]
-    / "TRUGS_AAA"
-    / "examples"
-    / "canonical_example.trug.json"
-)
+CANONICAL_PATH = Path(__file__).resolve().parent / "fixtures" / "aaa_canonical_example.trug.json"
 
 
 def _canonical_data():

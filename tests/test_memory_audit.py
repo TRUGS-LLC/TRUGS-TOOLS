@@ -305,12 +305,10 @@ def test_parse_duration_days_rejects_empty():
 
 
 def _run_cli(*args):
-    script = Path(__file__).parent / "memory_audit.py"
     result = subprocess.run(
-        [sys.executable, str(script), *args],
+        [sys.executable, "-m", "trugs_tools.memory_audit", *args],
         capture_output=True,
         text=True,
-        cwd=str(script.parent),
     )
     return result.returncode, result.stdout, result.stderr
 
@@ -475,8 +473,8 @@ def test_dead_rules_uses_shared_iso_parser(empty_graph, fixed_now):
     """Audit #14 — _parse_iso in this module should route through the shared
     memory._parse_iso_utc helper, same as memory._is_expired.
     """
-    from tools.memory_audit import _parse_iso
-    from tools.memory import _parse_iso_utc
+    from trugs_tools.memory_audit import _parse_iso
+    from trugs_tools.memory import _parse_iso_utc
     # Same inputs → same outputs.
     for sample in (None, "", "not a date", "2026-04-10T00:00:00+00:00", "2026-04-10T00:00:00"):
         assert _parse_iso(sample) == _parse_iso_utc(sample)
@@ -485,7 +483,7 @@ def test_dead_rules_uses_shared_iso_parser(empty_graph, fixed_now):
 # AGENT SHALL VALIDATE PROCESS _parse_duration_days THEN THROW ERROR WHEN DATA result EXCEEDS DATA cap.
 def test_parse_duration_days_overflow_capped():
     """M2 — 99999999y must raise ValueError, not OverflowError."""
-    from tools.memory_audit import _parse_duration_days
+    from trugs_tools.memory_audit import _parse_duration_days
     with pytest.raises(ValueError, match="too large"):
         _parse_duration_days("99999999y")
     # 999y is just under the cap and should still work
@@ -495,7 +493,7 @@ def test_parse_duration_days_overflow_capped():
 # AGENT SHALL VALIDATE PROCESS _parse_duration_days THEN THROW ERROR SUBJECT_TO INVALID DATA source.
 def test_parse_duration_days_rejects_none():
     """L2 — None must raise ValueError, not AttributeError."""
-    from tools.memory_audit import _parse_duration_days
+    from trugs_tools.memory_audit import _parse_duration_days
     with pytest.raises(ValueError, match="string"):
         _parse_duration_days(None)
 
@@ -503,7 +501,7 @@ def test_parse_duration_days_rejects_none():
 # AGENT SHALL VALIDATE PROCESS _parse_duration_days THEN THROW ERROR SUBJECT_TO INVALID DATA type.
 def test_parse_duration_days_rejects_int():
     """L2 — integer input must raise ValueError."""
-    from tools.memory_audit import _parse_duration_days
+    from trugs_tools.memory_audit import _parse_duration_days
     with pytest.raises(ValueError, match="string"):
         _parse_duration_days(123)
 
@@ -511,6 +509,6 @@ def test_parse_duration_days_rejects_int():
 # AGENT SHALL VALIDATE PROCESS _parse_duration_days THEN THROW ERROR SUBJECT_TO DATA whitespace.
 def test_parse_duration_days_rejects_internal_whitespace():
     """L2 — '30 d' with internal whitespace must raise ValueError."""
-    from tools.memory_audit import _parse_duration_days
+    from trugs_tools.memory_audit import _parse_duration_days
     with pytest.raises(ValueError, match="whitespace"):
         _parse_duration_days("30 d")

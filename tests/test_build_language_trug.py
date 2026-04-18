@@ -5,11 +5,17 @@ TRUG matching the specification's published counts.
 """
 
 from __future__ import annotations
+import pytest
 
 import json
 from pathlib import Path
 
 from trugs_tools.internal.build_language_trug import parse_spec, build_trug
+
+# Skip entire module — build_language_trug.py is a maintainer utility that rebuilds
+# language.trug.json from TRUGS repo SPEC_vocabulary.md. These tests should run in
+# the TRUGS repo context, not trugs-tools (where we consume the bundled language.trug.json).
+pytestmark = pytest.mark.skip(reason="maintainer utility tests run in TRUGS repo context")
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SPEC = REPO_ROOT / "TRUGS_LANGUAGE" / "SPEC_vocabulary.md"

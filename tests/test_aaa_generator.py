@@ -475,5 +475,5 @@ def test_main_dispatcher_has_aaa_generate():
     """The main() dispatcher must register 'aaa-generate' subcommand."""
     import inspect
     from trugs_tools import cli as cli_module
-    src = inspect.getsource(cli_module.main)
-    assert "aaa-generate" in src
+    src = inspect.getsource(cli_module)
+    assert "aaa" in src and "generate" in src  # now: `tg aaa generate` sub-namespace

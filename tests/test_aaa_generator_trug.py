@@ -5,12 +5,7 @@ from unittest.mock import patch
 from trugs_tools.aaa_generator import _compose_aaa, _detect_trug_json
 
 
-CANONICAL_PATH = (
-    Path(__file__).resolve().parents[2]
-    / "TRUGS_AAA"
-    / "examples"
-    / "canonical_example.trug.json"
-)
+CANONICAL_PATH = Path(__file__).resolve().parent / "fixtures" / "aaa_canonical_example.trug.json"
 
 
 def _canonical_block() -> str:

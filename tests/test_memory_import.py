@@ -391,7 +391,7 @@ def test_import_report_new_ids_match_count(sample_dir):
 # AGENT SHALL VALIDATE PROCESS strip_yaml_quotes THEN FILTER DATA quotes FROM DATA value THEN HANDLE RECORD mismatched AND RECORD empty_input.
 def test_parse_strip_yaml_double_quotes():
     """Audit #19 — `name: "Format: subtitle"` strips the quotes."""
-    from tools.memory_import import _strip_yaml_quotes
+    from trugs_tools.memory_import import _strip_yaml_quotes
     assert _strip_yaml_quotes('"Hello"') == "Hello"
     assert _strip_yaml_quotes("'Hello'") == "Hello"
     assert _strip_yaml_quotes('"multi: word"') == "multi: word"
@@ -491,7 +491,7 @@ def test_import_checkpoints_partial_progress(tmp_path):
     with tempfile.TemporaryDirectory() as out_dir:
         out = Path(out_dir) / "memory.trug.json"
         # Wrap remember to raise on the 7th call.
-        import tools.memory_import as memory_import
+        import trugs_tools.memory_import as memory_import
         real_remember = memory_import.remember
         counter = [0]
 
@@ -521,7 +521,7 @@ def test_import_checkpoints_partial_progress(tmp_path):
 def test_idempotency_key_no_collision_on_separator_in_content():
     """L3 — two files with colliding raw join but different field boundaries
     must produce different idempotency keys after SHA-256 hashing."""
-    from tools.memory_import import _idempotency_key
+    from trugs_tools.memory_import import _idempotency_key
 
     # File A: text contains \x1f (the old separator)
     key_a = _idempotency_key(

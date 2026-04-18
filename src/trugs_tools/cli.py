@@ -2215,7 +2215,7 @@ def main() -> int:
     
     if argv[0] in ('--version', '-V'):
         print(f"tg (trugs-tools) {__version__} ({__codename__})")
-        return 0
+        raise SystemExit(0)
     
     cmd = argv[0]
     rest = argv[1:]

@@ -330,13 +330,11 @@ def test_format_memory_shows_valid_to(empty_graph):
 
 
 def _run_cli(*args):
-    """Invoke tools/memory.py as a subprocess and return (returncode, stdout, stderr)."""
-    script = Path(__file__).parent / "memory.py"
+    """Invoke trugs_tools.memory as a subprocess and return (returncode, stdout, stderr)."""
     result = subprocess.run(
-        [sys.executable, str(script), *args],
+        [sys.executable, "-m", "trugs_tools.memory", *args],
         capture_output=True,
         text=True,
-        cwd=str(script.parent),
     )
     return result.returncode, result.stdout, result.stderr
 
@@ -483,7 +481,7 @@ def test_save_graph_is_atomic_on_crash_simulation(tmp_path):
     remember(g, "new memory", memory_type="feedback")
 
     # Sabotage json.dump to simulate a crash mid-write.
-    import tools.memory as memory_module
+    import trugs_tools.memory as memory_module
     real_dump = memory_module.json.dump
 
     class Boom(RuntimeError):
@@ -632,13 +630,11 @@ def test_is_expired_uses_shared_parser(empty_graph):
 
 
 def _run_cli_u2(*args):
-    """Invoke tools/memory.py as a subprocess."""
-    script = Path(__file__).parent / "memory.py"
+    """Invoke trugs_tools.memory as a subprocess."""
     result = subprocess.run(
-        [sys.executable, str(script), *args],
+        [sys.executable, "-m", "trugs_tools.memory", *args],
         capture_output=True,
         text=True,
-        cwd=str(script.parent),
     )
     return result.returncode, result.stdout, result.stderr
 
@@ -770,7 +766,7 @@ def test_save_graph_fsyncs_parent_directory(tmp_path, monkeypatch):
     fd after `os.replace`. Monkeypatch `os.fsync` to record calls.
     """
     import os
-    import tools.memory as memory_module
+    import trugs_tools.memory as memory_module
     path = tmp_path / "mem.trug.json"
     init_memory_graph(path)
 
@@ -794,7 +790,7 @@ def test_save_graph_fsyncs_parent_directory(tmp_path, monkeypatch):
 # AGENT SHALL VALIDATE FUNCTION _cmd_render THEN READ DATA graph SUBJECT_TO FUNCTION load_graph.
 def test_cmd_render_uses_load_graph(tmp_path, monkeypatch):
     """Audit round 3 R3-10 — _cmd_render routes through load_graph."""
-    import tools.memory as memory_module
+    import trugs_tools.memory as memory_module
     path = tmp_path / "mem.trug.json"
     init_memory_graph(path)
     g = load_graph(path)
@@ -870,7 +866,7 @@ def test_save_graph_resolves_symlinks(tmp_path):
     """M1 — save_graph through a symlink must preserve the symlink and write
     to the real target, not replace the symlink with a regular file."""
     import os
-    from tools.memory import init_memory_graph, load_graph, save_graph
+    from trugs_tools.memory import init_memory_graph, load_graph, save_graph
 
     real = tmp_path / "real.json"
     link = tmp_path / "link.json"
@@ -895,7 +891,7 @@ def test_save_graph_resolves_symlinks(tmp_path):
 # AGENT SHALL VALIDATE FUNCTION init_memory_graph THEN ASSERT DATA version.
 def test_init_memory_graph_version_is_1_2_0(tmp_path):
     """L1 — init_memory_graph must stamp version 1.2.0, not 1.0.0."""
-    from tools.memory import MEMORY_GRAPH_VERSION, init_memory_graph
+    from trugs_tools.memory import MEMORY_GRAPH_VERSION, init_memory_graph
 
     path = tmp_path / "mem.trug.json"
     g = init_memory_graph(path)
@@ -909,7 +905,7 @@ def test_init_memory_graph_version_is_1_2_0(tmp_path):
 # AGENT SHALL VALIDATE PROCESS remember THEN ASSERT RECORD references_edge SUBJECT_TO DATA ref.
 def test_remember_ref_creates_references_edge(tmp_path):
     """--ref should create a REFERENCES edge from new memory to target."""
-    from tools.memory import init_memory_graph, remember
+    from trugs_tools.memory import init_memory_graph, remember
 
     g = init_memory_graph(tmp_path / "mem.trug.json")
     mid_a = remember(g, "Rule A", memory_type="feedback")
@@ -927,7 +923,7 @@ def test_remember_ref_creates_references_edge(tmp_path):
 # AGENT SHALL VALIDATE PROCESS remember THEN ASSERT RECORD references_edges SUBJECT_TO DATA multiple_refs.
 def test_remember_ref_multiple_targets(tmp_path):
     """Multiple --ref flags should create one REFERENCES edge each."""
-    from tools.memory import init_memory_graph, remember
+    from trugs_tools.memory import init_memory_graph, remember
 
     g = init_memory_graph(tmp_path / "mem.trug.json")
     mid_a = remember(g, "A", memory_type="feedback")
@@ -946,7 +942,7 @@ def test_remember_ref_multiple_targets(tmp_path):
 # AGENT SHALL VALIDATE PROCESS remember THEN DENY RECORD references_edge SUBJECT_TO RECORD missing_ref_target.
 def test_remember_ref_missing_target_skipped(tmp_path):
     """--ref with a non-existent ID should be silently skipped."""
-    from tools.memory import init_memory_graph, remember
+    from trugs_tools.memory import init_memory_graph, remember
 
     g = init_memory_graph(tmp_path / "mem.trug.json")
     mid = remember(g, "Rule", memory_type="feedback", ref=["nonexistent-id"])
@@ -961,7 +957,7 @@ def test_remember_ref_missing_target_skipped(tmp_path):
 # AGENT SHALL VALIDATE PROCESS remember THEN DENY RECORD references_edge SUBJECT_TO DATA null_ref.
 def test_remember_ref_none_creates_no_edges(tmp_path):
     """ref=None should create no REFERENCES edges (backwards compat)."""
-    from tools.memory import init_memory_graph, remember
+    from trugs_tools.memory import init_memory_graph, remember
 
     g = init_memory_graph(tmp_path / "mem.trug.json")
     mid = remember(g, "No refs", memory_type="feedback")
