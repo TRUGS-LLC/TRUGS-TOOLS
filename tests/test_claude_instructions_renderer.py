@@ -173,7 +173,6 @@ def test_load_trug_invalid_type():
 
 
 # AGENT SHALL VALIDATE PROCESS test_output_includes_generated_header.
-@pytest.mark.xfail(reason="renderer does not currently emit GENERATED_HEADER; pre-existing gap, not caused by G1 migration")
 def test_output_includes_generated_header(minimal_trug):
     out = render_claude_instructions(minimal_trug)
     assert GENERATED_HEADER in out
