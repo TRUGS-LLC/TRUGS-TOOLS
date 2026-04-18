@@ -2,7 +2,7 @@
   "name": "TRUGS-TOOLS-SCAFFOLD Folder",
   "version": "1.0.0",
   "type": "PROJECT",
-  "description": "TRUGS CLI tools — validation, generation, memory, folder lifecycle, AAA protocol. Single `tg` binary with git-style subcommands.",
+  "description": "TRUGS CLI tools \u2014 validation, generation, memory, folder lifecycle, AAA protocol. Single `tg` binary with git-style subcommands.",
   "dimensions": {
     "folder_structure": {
       "description": "Folder contents and their relationships",
@@ -34,7 +34,12 @@
         "doc_readme",
         "comp_src",
         "test_suite",
-        "example_set"
+        "example_set",
+        "doc_license",
+        "doc_notice",
+        "config_pyproject",
+        "dir_reference",
+        "dir_branches"
       ],
       "metric_level": "KILO_FOLDER",
       "dimension": "folder_structure"
@@ -85,7 +90,7 @@
         "name": "src",
         "purpose": "Src component",
         "file_count": 76,
-        "loc": 19829
+        "loc": 20153
       },
       "parent_id": "trugs_tools_scaffold_folder",
       "contains": [],
@@ -96,7 +101,7 @@
       "id": "test_suite",
       "type": "TEST_SUITE",
       "properties": {
-        "name": "tests/",
+        "name": "tests",
         "purpose": "Test suite",
         "test_files": 55,
         "test_count": 1989,
@@ -111,7 +116,7 @@
       "id": "example_set",
       "type": "EXAMPLE_SET",
       "properties": {
-        "name": "EXAMPLES/",
+        "name": "EXAMPLES",
         "purpose": "Example files",
         "example_count": 32
       },
@@ -119,6 +124,66 @@
       "contains": [],
       "metric_level": "BASE_EXAMPLE_SET",
       "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_license",
+      "type": "DOCUMENT",
+      "parent_id": "trugs_tools_scaffold_folder",
+      "contains": [],
+      "metric_level": "BASE_DOCUMENT",
+      "dimension": "folder_structure",
+      "properties": {
+        "name": "LICENSE",
+        "description": "Apache 2.0 license text with TRUGS LLC copyright."
+      }
+    },
+    {
+      "id": "doc_notice",
+      "type": "DOCUMENT",
+      "parent_id": "trugs_tools_scaffold_folder",
+      "contains": [],
+      "metric_level": "BASE_DOCUMENT",
+      "dimension": "folder_structure",
+      "properties": {
+        "name": "NOTICE",
+        "description": "Required notices including PATENT NOTICE block per TRUGS-LLC pattern."
+      }
+    },
+    {
+      "id": "config_pyproject",
+      "type": "COMPONENT",
+      "parent_id": "trugs_tools_scaffold_folder",
+      "contains": [],
+      "metric_level": "DEKA_COMPONENT",
+      "dimension": "folder_structure",
+      "properties": {
+        "name": "pyproject.toml",
+        "description": "PEP 517/518 project config. Declares `tg` as the single script entry point."
+      }
+    },
+    {
+      "id": "dir_reference",
+      "type": "COMPONENT",
+      "parent_id": "trugs_tools_scaffold_folder",
+      "contains": [],
+      "metric_level": "DEKA_COMPONENT",
+      "dimension": "folder_structure",
+      "properties": {
+        "name": "REFERENCE",
+        "description": "Spec documentation \u2014 SPEC_*.md, GLOSSARY.md, GUIDE_quickstart.md, REFERENCE_faq.md."
+      }
+    },
+    {
+      "id": "dir_branches",
+      "type": "COMPONENT",
+      "parent_id": "trugs_tools_scaffold_folder",
+      "contains": [],
+      "metric_level": "DEKA_COMPONENT",
+      "dimension": "folder_structure",
+      "properties": {
+        "name": "branches",
+        "description": "Experimental branch vocabularies (law, writer, knowledge, nested, orchestration, mathgame) \u2014 under development."
+      }
     }
   ],
   "edges": [
@@ -170,6 +235,41 @@
       "relation": "contains",
       "weight": 1.0,
       "properties": {}
+    },
+    {
+      "from_id": "trugs_tools_scaffold_folder",
+      "to_id": "doc_license",
+      "relation": "contains",
+      "properties": {},
+      "weight": 1.0
+    },
+    {
+      "from_id": "trugs_tools_scaffold_folder",
+      "to_id": "doc_notice",
+      "relation": "contains",
+      "properties": {},
+      "weight": 1.0
+    },
+    {
+      "from_id": "trugs_tools_scaffold_folder",
+      "to_id": "config_pyproject",
+      "relation": "contains",
+      "properties": {},
+      "weight": 1.0
+    },
+    {
+      "from_id": "trugs_tools_scaffold_folder",
+      "to_id": "dir_reference",
+      "relation": "contains",
+      "properties": {},
+      "weight": 1.0
+    },
+    {
+      "from_id": "trugs_tools_scaffold_folder",
+      "to_id": "dir_branches",
+      "relation": "contains",
+      "properties": {},
+      "weight": 1.0
     }
   ]
 }
