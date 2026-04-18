@@ -38,7 +38,7 @@
 
 **CLI** — Command-line interface for the TRUGS toolchain, providing filesystem commands (`tinit`, `tadd`, `tls`, etc.) for creating and managing TRUGs.
 
-**CLAUDE.md** — Auto-generated agent instructions file rendered from agent_instructions.trug.json by trugs-claude-render. Provides LLM agents with repository rules and conventions.
+**CLAUDE.md** — Auto-generated agent instructions file rendered from agent_instructions.trug.json by tg render claude. Provides LLM agents with repository rules and conventions.
 
 **CONCEPT** — Node type in the Semantic branch representing an abstract idea or meaning unit.
 
@@ -76,13 +76,13 @@
 
 **FUNCTION** — Node type in the Python branch representing a Python function definition.
 
-**`folder-check`** — CLI command (`trugs-folder-check`) that validates folder.trug.json files for structural correctness, node type validity, edge consistency, and filesystem existence. Uses trugs-store internally.
+**`folder-check`** — CLI command (`tg check`) that validates folder.trug.json files for structural correctness, node type validity, edge consistency, and filesystem existence. Uses trugs-store internally.
 
-**`folder-init`** — CLI command (`trugs-folder-init`) that generates a starter folder.trug.json by scanning the filesystem. Uses trugs-store add_node() for bidirectional invariant enforcement.
+**`folder-init`** — CLI command (`tg init`) that generates a starter folder.trug.json by scanning the filesystem. Uses trugs-store add_node() for bidirectional invariant enforcement.
 
-**`folder-render`** — CLI command (`trugs-folder-render`) that regenerates ARCHITECTURE.md from folder.trug.json. Uses trugs-store for loading.
+**`folder-render`** — CLI command (`tg render`) that regenerates ARCHITECTURE.md from folder.trug.json. Uses trugs-store for loading.
 
-**`folder-sync`** — CLI command (`trugs-folder-sync`) that updates folder.trug.json with current filesystem state. Adds nodes for new files, marks missing files stale. Uses trugs-store internally.
+**`folder-sync`** — CLI command (`tg sync`) that updates folder.trug.json with current filesystem state. Adds nodes for new files, marks missing files stale. Uses trugs-store internally.
 
 **`folder.trug.json`** — The single source of truth TRUG file describing a folder's contents. The renderer compiles this file into AAA.md, README.md, and ARCHITECTURE.md.
 

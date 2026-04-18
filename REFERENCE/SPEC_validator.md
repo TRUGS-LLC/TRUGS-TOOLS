@@ -613,21 +613,21 @@ class ValidationError:
 
 ```bash
 # Validate single file
-trugs-validate <file.json>
+tg validate <file.json>
 
 # Validate multiple files
-trugs-validate file1.json file2.json file3.json
+tg validate file1.json file2.json file3.json
 
 # Validate from stdin
-cat example.json | trugs-validate -
+cat example.json | tg validate -
 
 # Output formats
-trugs-validate --format json file.json
-trugs-validate --format text file.json (default)
+tg validate --format json file.json
+tg validate --format text file.json (default)
 
 # Verbosity levels
-trugs-validate --quiet file.json      # Only show summary
-trugs-validate --verbose file.json    # Show all details
+tg validate --quiet file.json      # Only show summary
+tg validate --verbose file.json    # Show all details
 ```
 
 ### Exit Codes
