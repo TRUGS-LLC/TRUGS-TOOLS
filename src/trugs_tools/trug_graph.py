@@ -1,3 +1,6 @@
+# Copyright 2026 TRUGS LLC
+# SPDX-License-Identifier: Apache-2.0
+
 """TrugGraph — domain-agnostic graph model for any TRUG.
 
 Extends BaseGraph with hierarchy-aware accessors for roots, leaves,
@@ -5,6 +8,10 @@ ancestors, descendants, and edge traversal. Works on any TRUG regardless
 of branch vocabulary.
 
 Issue: #618
+
+<trl>
+PROCESS trug_graph SHALL EXPOSE RECORD TrugGraph TO PROVIDE DATA hierarchy AND DATA edge ACROSS ALL TRUG.
+</trl>
 """
 
 from __future__ import annotations
@@ -12,7 +19,6 @@ from __future__ import annotations
 from collections import deque
 
 from trugs_store import BaseGraph
-from trugs_store.memory import InMemoryGraphStore
 
 
 # AGENT claude SHALL DEFINE RECORD truggraph AS RECORD class.
@@ -22,6 +28,10 @@ class TrugGraph(BaseGraph):
     Provides hierarchy-aware accessors (root_nodes, leaf_nodes, ancestors,
     descendants) and edge classification (semantic vs. contains) that work
     on any TRUG — folder TRUGs, compute TRUGs, project TRUGs, etc.
+
+    <trl>
+    RECORD TrugGraph SHALL REPRESENT DATA graph AND SHALL EXPOSE RECORD node AND RECORD edge SUBJECT_TO ANY TRUG branch vocabulary.
+    </trl>
     """
 
     # ── Hierarchy accessors ──────────────────────────────────────────────

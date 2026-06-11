@@ -1,3 +1,6 @@
+# Copyright 2026 TRUGS LLC
+# SPDX-License-Identifier: Apache-2.0
+
 """tdelete — Remove a node and all its connected edges from a TRUG file.
 
 Usage:
@@ -5,6 +8,16 @@ Usage:
     trugs-tdelete graph.trug.json node_id --dry-run
     trugs-tdelete graph.trug.json node_id1 node_id2 node_id3
     trugs-tdelete graph.trug.json node_id --force
+
+Note: this is the explicit-TRUG-file CRUD command (the live ``tg delete`` verb,
+operating on a named ``*.trug.json``). It is distinct from the namesake
+``trugs_folder.tdelete``, which is the folder-graph operation over a
+directory's ``folder.trug.json``. The two are intentionally separate command
+families, not duplicates (AAA #2190 SP1 disposition: retained).
+
+<trl>
+PROCESS tdelete SHALL READ RECORD node FROM FILE trug_json THEN DELETE RECORD node AND ALL EDGE connected TO RECORD node.
+</trl>
 """
 
 import argparse
@@ -13,31 +26,48 @@ import sys
 from typing import Optional
 
 
-# PROCESS loader SHALL READ FILE path THEN RETURN RECORD graph.
 def load_trug(path: str) -> dict:
+    """Load and parse a TRUG JSON file from disk.
+
+    <trl>
+    FUNCTION load_trug SHALL READ FILE path THEN RETURN RECORD graph.
+    </trl>
+    """
     with open(path) as f:
         return json.load(f)
 
 
-# PROCESS saver SHALL WRITE RECORD graph TO FILE path.
 def save_trug(path: str, trug: dict) -> None:
+    """Serialize and write a TRUG graph dict to a JSON file with trailing newline.
+
+    <trl>
+    FUNCTION save_trug SHALL WRITE RECORD graph TO FILE path.
+    </trl>
+    """
     with open(path, "w") as f:
         json.dump(trug, f, indent=2)
         f.write("\n")
 
 
-# AGENT claude SHALL READ DATA argv THEN RETURN INTEGER DATA exit_code.
 def main(argv: Optional[list] = None) -> int:
+    """CLI entry point: parse args, delete nodes and connected edges, return exit code.
+
+    <trl>
+    FUNCTION main SHALL PARSE DATA argv THEN DELETE RECORD node AND RECORD edge FROM FILE trug_json THEN RETURN DATA exit_code.
+    </trl>
+    """
     parser = argparse.ArgumentParser(
         prog="trugs-tdelete",
         description="Remove a node and all its connected edges from a TRUG file.",
     )
     parser.add_argument("trug_file", help="Path to .trug.json file")
     parser.add_argument("node_ids", nargs="+", help="One or more node IDs to delete")
-    parser.add_argument("--dry-run", action="store_true",
-                        help="Show what would be deleted without writing")
-    parser.add_argument("--force", action="store_true",
-                        help="Skip confirmation")
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Show what would be deleted without writing",
+    )
+    parser.add_argument("--force", action="store_true", help="Skip confirmation")
 
     args = parser.parse_args(argv)
 
@@ -76,8 +106,10 @@ def main(argv: Optional[list] = None) -> int:
         print(f"Dry run — would delete from '{args.trug_file}':")
         for nid in args.node_ids:
             print(f"  Node: {nid}")
-        for e in edges_to_remove:
-            print(f"  Edge: {e.get('from_id')} --[{e.get('relation')}]--> {e.get('to_id')}")
+        for edge in edges_to_remove:
+            print(
+                f"  Edge: {edge.get('from_id')} --[{edge.get('relation')}]--> {edge.get('to_id')}"
+            )
         for parent_id, removed in contains_updates:
             print(f"  Contains: remove {removed} from {parent_id}")
         return 0
@@ -100,8 +132,10 @@ def main(argv: Optional[list] = None) -> int:
         print(f"  Node: {nid}")
     if edges_to_remove:
         print(f"  Edges removed: {len(edges_to_remove)}")
-        for e in edges_to_remove:
-            print(f"    {e.get('from_id')} --[{e.get('relation')}]--> {e.get('to_id')}")
+        for edge in edges_to_remove:
+            print(
+                f"    {edge.get('from_id')} --[{edge.get('relation')}]--> {edge.get('to_id')}"
+            )
     return 0
 
 

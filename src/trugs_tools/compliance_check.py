@@ -1,3 +1,6 @@
+# Copyright 2026 TRUGS LLC
+# SPDX-License-Identifier: Apache-2.0
+
 """trugs-compliance-check — mechanical Dark Code compliance verifier.
 
 # PROCESS compliance_check SHALL VALIDATE ALL FILE AGAINST DATA standard_dark_code_compliance
@@ -32,6 +35,10 @@ Exit codes:
 - 1 — compliance % < baseline, or `--strict` and any violation found
 
 See: REFERENCE/STANDARD_dark_code_compliance.md §6 (CI gate)
+
+<trl>
+PROCESS compliance_check SHALL SCAN ALL FILE IN RECORD root THEN VALIDATE DATA compliance AGAINST DATA standard AND RETURN RECORD report.
+</trl>
 """
 
 # AGENT claude SHALL_NOT WRITE ANY FILE TO NAMESPACE zzz_.
@@ -66,13 +73,18 @@ except ImportError:
 # AGENT claude SHALL DEFINE RECORD violation AS A RECORD finding.
 @dataclass
 class Violation:
-    """A single compliance violation. Structured for both human + JSON output."""
+    """A single compliance violation. Structured for both human + JSON output.
 
-    rule: str                   # e.g. "C1"
-    path: Path                  # file where the violation was found
-    line: Optional[int]         # line number (or None for file-level violations)
-    symbol: Optional[str]       # function/class/node name (if applicable)
-    message: str                # human-readable description
+    <trl>
+    RECORD Violation SHALL REPRESENT DATA finding AND SHALL CONTAIN RECORD rule AND RECORD path AND RECORD message.
+    </trl>
+    """
+
+    rule: str  # e.g. "C1"
+    path: Path  # file where the violation was found
+    line: Optional[int]  # line number (or None for file-level violations)
+    symbol: Optional[str]  # function/class/node name (if applicable)
+    message: str  # human-readable description
 
     # AGENT claude SHALL MAP RECORD violation TO RECORD dict.
     def to_dict(self) -> dict[str, Any]:
@@ -95,7 +107,12 @@ class Violation:
 # AGENT claude SHALL DEFINE RECORD report AS A RECORD finding.
 @dataclass
 class Report:
-    """Full compliance report produced by a single audit pass."""
+    """Full compliance report produced by a single audit pass.
+
+    <trl>
+    RECORD Report SHALL AGGREGATE ALL RECORD Violation AND SHALL COMPUTE DATA compliance_percent FROM DATA opportunities AND DATA passed.
+    </trl>
+    """
 
     files_checked: int = 0
     functions_checked: int = 0
@@ -130,9 +147,9 @@ class Report:
         """
         opportunities = (
             self.functions_checked * 2  # C1 + C4 per function
-            + self.tests_checked       # C4 per test
-            + self.nodes_checked        # C3 per TRUG node with trl
-            + self.trug_files_checked   # C7 per TRUG file
+            + self.tests_checked  # C4 per test
+            + self.nodes_checked  # C3 per TRUG node with trl
+            + self.trug_files_checked  # C7 per TRUG file
         )
         if opportunities == 0:
             return 100.0
@@ -159,7 +176,17 @@ class Report:
 # =============================================================================
 
 
-_EXCLUDED_DIR_PREFIXES = ("zzz_", ".git", "__pycache__", ".venv", "venv", ".tox", "node_modules", "dist", "build")
+_EXCLUDED_DIR_PREFIXES = (
+    "zzz_",
+    ".git",
+    "__pycache__",
+    ".venv",
+    "venv",
+    ".tox",
+    "node_modules",
+    "dist",
+    "build",
+)
 _AUTO_GENERATED_FILES = {"ARCHITECTURE.md", "AAA.md", "CLAUDE.md"}
 
 
@@ -171,7 +198,9 @@ def _iter_files(root: Path, suffix: str) -> list[Path]:
     out: list[Path] = []
     for p in sorted(root.rglob(f"*{suffix}")):
         # Walk up the path parts; exclude if any segment starts with an excluded prefix
-        if any(seg.startswith(_EXCLUDED_DIR_PREFIXES) for seg in p.relative_to(root).parts):
+        if any(
+            seg.startswith(_EXCLUDED_DIR_PREFIXES) for seg in p.relative_to(root).parts
+        ):
             continue
         if p.name in _AUTO_GENERATED_FILES:
             continue
@@ -193,7 +222,9 @@ def _is_public(name: str) -> bool:
     return True
 
 
-def _is_test_function(func: ast.FunctionDef | ast.AsyncFunctionDef, parent: Optional[ast.ClassDef]) -> bool:
+def _is_test_function(
+    func: ast.FunctionDef | ast.AsyncFunctionDef, parent: Optional[ast.ClassDef]
+) -> bool:
     # AGENT SHALL CLASSIFY A FUNCTION 'as RECORD test
     #   IF name STARTS 'with "test_" OR parent.name STARTS 'with "Test".
     if func.name.startswith("test_"):
@@ -203,7 +234,9 @@ def _is_test_function(func: ast.FunctionDef | ast.AsyncFunctionDef, parent: Opti
     return False
 
 
-def _extract_preceding_comment_block(source_lines: list[str], def_line: int) -> tuple[str, int]:
+def _extract_preceding_comment_block(
+    source_lines: list[str], def_line: int
+) -> tuple[str, int]:
     """Read comment lines immediately above the given line number.
 
     # PROCESS extract SHALL READ ALL STRING line UPWARD FROM A RECORD line
@@ -298,35 +331,45 @@ def _walk_python(path: Path) -> list[_FunctionRecord]:
     records: list[_FunctionRecord] = []
 
     # AGENT claude SHALL DEFINE FUNCTION visit.
-    def visit(node: ast.AST, parent: Optional[ast.ClassDef] = None, inside_func: bool = False) -> None:
+    def visit(
+        node: ast.AST, parent: Optional[ast.ClassDef] = None, inside_func: bool = False
+    ) -> None:
         # Walk AST children. Functions nested inside other functions are
         # implementation detail — not reported. Methods of classes ARE reported.
         for child in ast.iter_child_nodes(node):
             if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 if _is_public(child.name) and not inside_func:
                     is_test = _is_test_function(child, parent)
-                    comment, clstart = _extract_preceding_comment_block(lines, child.lineno)
-                    records.append(_FunctionRecord(
-                        name=child.name,
-                        line=child.lineno,
-                        is_test=is_test,
-                        is_class=False,
-                        comment_block=comment,
-                        comment_start_line=clstart,
-                    ))
+                    comment, clstart = _extract_preceding_comment_block(
+                        lines, child.lineno
+                    )
+                    records.append(
+                        _FunctionRecord(
+                            name=child.name,
+                            line=child.lineno,
+                            is_test=is_test,
+                            is_class=False,
+                            comment_block=comment,
+                            comment_start_line=clstart,
+                        )
+                    )
                 # Recurse into function body — now we ARE inside a function, so nested defs won't be reported
                 visit(child, parent=None, inside_func=True)
             elif isinstance(child, ast.ClassDef):
                 if _is_public(child.name) and not inside_func:
-                    comment, clstart = _extract_preceding_comment_block(lines, child.lineno)
-                    records.append(_FunctionRecord(
-                        name=child.name,
-                        line=child.lineno,
-                        is_test=False,
-                        is_class=True,
-                        comment_block=comment,
-                        comment_start_line=clstart,
-                    ))
+                    comment, clstart = _extract_preceding_comment_block(
+                        lines, child.lineno
+                    )
+                    records.append(
+                        _FunctionRecord(
+                            name=child.name,
+                            line=child.lineno,
+                            is_test=False,
+                            is_class=True,
+                            comment_block=comment,
+                            comment_start_line=clstart,
+                        )
+                    )
                 # Inside a class, we can still report public methods — class body is not a function body
                 visit(child, parent=child, inside_func=inside_func)
             else:
@@ -404,57 +447,103 @@ def _invariant_properties(graph: dict) -> list[tuple[dict, str]]:
 
 # AGENT compliance SHALL VALIDATE EACH FILE python SUBJECT_TO DATA c1 AND DATA c4.
 def check_python_file(path: Path, report: Report, root: Path) -> None:
-    """Run C1 and C4 on a Python source file."""
+    """Run C1 and C4 on a Python source file.
+
+    <trl>
+    FUNCTION check_python_file SHALL SCAN RECORD path THEN VALIDATE EACH DATA public_def AGAINST DATA c1 AND EACH DATA test_function AGAINST DATA c4 THEN APPEND RECORD Violation TO RECORD report.
+    </trl>
+    """
     records = _walk_python(path)
     for rec in records:
         if rec.is_test:
             report.tests_checked += 1
             # C4: test function comment must start with AGENT SHALL VALIDATE
             if not rec.comment_block:
-                report.violations.append(Violation(
-                    rule="C4", path=path, line=rec.line, symbol=rec.name,
-                    message=f"test function '{rec.name}' has no TRUG/L comment",
-                ))
+                report.violations.append(
+                    Violation(
+                        rule="C4",
+                        path=path,
+                        line=rec.line,
+                        symbol=rec.name,
+                        message=f"test function '{rec.name}' has no TRUG/L comment",
+                    )
+                )
                 continue
             if not _comment_starts_with(rec.comment_block, "AGENT SHALL VALIDATE"):
-                report.violations.append(Violation(
-                    rule="C4", path=path, line=rec.line, symbol=rec.name,
-                    message=f"test function '{rec.name}' comment must start with 'AGENT SHALL VALIDATE'",
-                ))
+                report.violations.append(
+                    Violation(
+                        rule="C4",
+                        path=path,
+                        line=rec.line,
+                        symbol=rec.name,
+                        message=f"test function '{rec.name}' comment must start with 'AGENT SHALL VALIDATE'",
+                    )
+                )
                 continue
             ok, err = _try_parse_trl(rec.comment_block)
             if not ok:
-                report.violations.append(Violation(
-                    rule="C4", path=path, line=rec.line, symbol=rec.name,
-                    message=f"test function '{rec.name}' comment does not parse as TRUG/L: {err}",
-                ))
+                report.violations.append(
+                    Violation(
+                        rule="C4",
+                        path=path,
+                        line=rec.line,
+                        symbol=rec.name,
+                        message=f"test function '{rec.name}' comment does not parse as TRUG/L: {err}",
+                    )
+                )
         else:
             report.functions_checked += 1
             # C1: public def/class must have a function-level TRUG/L comment that parses
             if not rec.comment_block:
-                report.violations.append(Violation(
-                    rule="C1", path=path, line=rec.line, symbol=rec.name,
-                    message=f"public {'class' if rec.is_class else 'function'} '{rec.name}' has no TRUG/L comment",
-                ))
+                report.violations.append(
+                    Violation(
+                        rule="C1",
+                        path=path,
+                        line=rec.line,
+                        symbol=rec.name,
+                        message=f"public {'class' if rec.is_class else 'function'} '{rec.name}' has no TRUG/L comment",
+                    )
+                )
                 continue
             ok, err = _try_parse_trl(rec.comment_block)
             if not ok:
-                report.violations.append(Violation(
-                    rule="C1", path=path, line=rec.line, symbol=rec.name,
-                    message=f"public {'class' if rec.is_class else 'function'} '{rec.name}' comment does not parse as TRUG/L: {err}",
-                ))
+                report.violations.append(
+                    Violation(
+                        rule="C1",
+                        path=path,
+                        line=rec.line,
+                        symbol=rec.name,
+                        message=f"public {'class' if rec.is_class else 'function'} '{rec.name}' comment does not parse as TRUG/L: {err}",
+                    )
+                )
 
 
 # AGENT compliance SHALL VALIDATE EACH FILE trug_json SUBJECT_TO DATA c2 AND DATA c3 AND DATA c5 AND DATA c7.
-def check_trug_file(path: Path, report: Report, root: Path, folder_code_artifacts: Optional[dict[str, dict]] = None, folder_py_names: Optional[set[str]] = None) -> None:
-    """Run C2, C3, C5, C7 on a single `.trug.json` file."""
+def check_trug_file(
+    path: Path,
+    report: Report,
+    root: Path,
+    folder_code_artifacts: Optional[dict[str, dict]] = None,
+    folder_py_names: Optional[set[str]] = None,
+) -> None:
+    """Run C2, C3, C5, C7 on a single `.trug.json` file.
+
+    <trl>
+    FUNCTION check_trug_file SHALL LOAD FILE path THEN VALIDATE DATA c2 AND DATA c3 AND DATA c5 AND DATA c7 AND APPEND RECORD Violation TO RECORD report.
+    </trl>
+    """
     report.trug_files_checked += 1
     graph = _load_trug(path)
     if graph is None:
-        report.violations.append(Violation(
-            rule="C7", path=path, line=None, symbol=None,
-            message="could not parse as JSON",
-        ))
+        report.violations.append(
+            Violation(
+                rule="C7",
+                path=path,
+                line=None,
+                symbol=None,
+                message="could not parse as JSON",
+            )
+        )
         return
 
     # C7: delegate to trugs-folder-check
@@ -468,18 +557,28 @@ def check_trug_file(path: Path, report: Report, root: Path, folder_code_artifact
             report.nodes_checked += 1
             ok, err = _try_parse_trl(trl_sentence)
             if not ok:
-                report.violations.append(Violation(
-                    rule="C3", path=path, line=None, symbol=node.get("id"),
-                    message=f"node '{node.get('id')}' trl property does not parse: {err}",
-                ))
+                report.violations.append(
+                    Violation(
+                        rule="C3",
+                        path=path,
+                        line=None,
+                        symbol=node.get("id"),
+                        message=f"node '{node.get('id')}' trl property does not parse: {err}",
+                    )
+                )
 
     # C5: every TEST node must have at least one outbound VALIDATES edge
     for test_node in _test_nodes(graph):
         if not _has_validates_edge(graph, test_node.get("id", "")):
-            report.violations.append(Violation(
-                rule="C5", path=path, line=None, symbol=test_node.get("id"),
-                message=f"TEST node '{test_node.get('id')}' has no outbound VALIDATES edge",
-            ))
+            report.violations.append(
+                Violation(
+                    rule="C5",
+                    path=path,
+                    line=None,
+                    symbol=test_node.get("id"),
+                    message=f"TEST node '{test_node.get('id')}' has no outbound VALIDATES edge",
+                )
+            )
 
     # C2: for each code-artifact node, confirm a matching public Python name exists in the folder
     # (only runs when folder_py_names is supplied — optional because invocation can skip it)
@@ -491,10 +590,15 @@ def check_trug_file(path: Path, report: Report, root: Path, folder_code_artifact
             if not name:
                 continue
             if name not in folder_py_names:
-                report.violations.append(Violation(
-                    rule="C2", path=path, line=None, symbol=n.get("id"),
-                    message=f"node '{n.get('id')}' ({n.get('type')}) declares name '{name}' but no matching public def/class found in folder",
-                ))
+                report.violations.append(
+                    Violation(
+                        rule="C2",
+                        path=path,
+                        line=None,
+                        symbol=n.get("id"),
+                        message=f"node '{n.get('id')}' ({n.get('type')}) declares name '{name}' but no matching public def/class found in folder",
+                    )
+                )
 
 
 # AGENT compliance SHALL DELEGATE C7 TO PROCESS trugs_validate.
@@ -509,41 +613,66 @@ def _run_folder_check(trug_path: Path, report: Report) -> None:
     # Preferred: in-process validator from the trugs package
     try:
         from trugs_tools import validate as _validate_mod
+
         result_obj = _validate_mod.validate_file(trug_path)
         if not result_obj.valid:
             first_err = result_obj.errors[0] if result_obj.errors else None
-            msg = f"{first_err.code}: {first_err.message}" if first_err else "validate reported errors"
-            report.violations.append(Violation(
-                rule="C7", path=trug_path, line=None, symbol=None,
-                message=f"validate_graph failed: {msg}",
-            ))
+            msg = (
+                f"{first_err.code}: {first_err.message}"
+                if first_err
+                else "validate reported errors"
+            )
+            report.violations.append(
+                Violation(
+                    rule="C7",
+                    path=trug_path,
+                    line=None,
+                    symbol=None,
+                    message=f"validate_graph failed: {msg}",
+                )
+            )
         return
     except ImportError:
         pass  # fall through to subprocess
 
     # Fallback: subprocess, try trugs-validate first, then trugs-folder-check
-    for cmd in (["trugs-validate", str(trug_path)], ["trugs-folder-check", str(trug_path)]):
+    for cmd in (
+        ["trugs-validate", str(trug_path)],
+        ["trugs-folder-check", str(trug_path)],
+    ):
         try:
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
         except (FileNotFoundError, subprocess.TimeoutExpired):
             continue
         if result.returncode != 0:
-            msg = (result.stdout + result.stderr).strip().splitlines()
-            first = msg[0] if msg else f"{cmd[0]} reported errors"
-            report.violations.append(Violation(
-                rule="C7", path=trug_path, line=None, symbol=None,
-                message=f"{cmd[0]} failed: {first}",
-            ))
+            msg_lines = (result.stdout + result.stderr).strip().splitlines()
+            first = msg_lines[0] if msg_lines else f"{cmd[0]} reported errors"
+            report.violations.append(
+                Violation(
+                    rule="C7",
+                    path=trug_path,
+                    line=None,
+                    symbol=None,
+                    message=f"{cmd[0]} failed: {first}",
+                )
+            )
         return
     # Neither validator available — one violation
-    report.violations.append(Violation(
-        rule="C7", path=trug_path, line=None, symbol=None,
-        message="no validator available — install trugs (tools.validate) or trugs-tools (trugs-folder-check)",
-    ))
+    report.violations.append(
+        Violation(
+            rule="C7",
+            path=trug_path,
+            line=None,
+            symbol=None,
+            message="no validator available — install trugs (tools.validate) or trugs-tools (trugs-folder-check)",
+        )
+    )
 
 
 # AGENT compliance SHALL VALIDATE EACH RECORD invariant SUBJECT_TO A RECORD assertion AND A RECORD test.
-def check_invariants_across_repo(root: Path, report: Report, py_files: list[Path], trug_files: list[Path]) -> None:
+def check_invariants_across_repo(
+    root: Path, report: Report, py_files: list[Path], trug_files: list[Path]
+) -> None:
     """C6 — invariants in TRUG must have matching assertions and tests.
 
     Heuristic:
@@ -553,6 +682,10 @@ def check_invariants_across_repo(root: Path, report: Report, py_files: list[Path
     - For each, scan py_files for a test function whose comment mentions
       the invariant name.
     - Report missing assertions and missing tests as separate findings.
+
+    <trl>
+    FUNCTION check_invariants_across_repo SHALL SCAN ALL FILE IN RECORD trug_files THEN CHECK EACH DATA invariant_key AGAINST RECORD py_files AND APPEND RECORD Violation TO RECORD report SUBJECT_TO DATA c6.
+    </trl>
     """
     all_py_text: dict[Path, str] = {}
     for p in py_files:
@@ -576,18 +709,32 @@ def check_invariants_across_repo(root: Path, report: Report, py_files: list[Path
                         found_assertion = True
                     # Does it appear in a test function comment?
                     # Find test function comments: `# AGENT SHALL VALIDATE ... invariant_key ...`
-                    if re.search(rf"#\s*AGENT\s+SHALL\s+VALIDATE[^\n]*{re.escape(inv_key)}", src, re.IGNORECASE):
+                    if re.search(
+                        rf"#\s*AGENT\s+SHALL\s+VALIDATE[^\n]*{re.escape(inv_key)}",
+                        src,
+                        re.IGNORECASE,
+                    ):
                         found_test = True
             if not found_assertion:
-                report.violations.append(Violation(
-                    rule="C6", path=trug_path, line=None, symbol=node.get("id"),
-                    message=f"invariant '{inv_key}' on node '{node.get('id')}' has no matching assertion in code",
-                ))
+                report.violations.append(
+                    Violation(
+                        rule="C6",
+                        path=trug_path,
+                        line=None,
+                        symbol=node.get("id"),
+                        message=f"invariant '{inv_key}' on node '{node.get('id')}' has no matching assertion in code",
+                    )
+                )
             if not found_test:
-                report.violations.append(Violation(
-                    rule="C6", path=trug_path, line=None, symbol=node.get("id"),
-                    message=f"invariant '{inv_key}' on node '{node.get('id')}' has no matching test",
-                ))
+                report.violations.append(
+                    Violation(
+                        rule="C6",
+                        path=trug_path,
+                        line=None,
+                        symbol=node.get("id"),
+                        message=f"invariant '{inv_key}' on node '{node.get('id')}' has no matching test",
+                    )
+                )
 
 
 # =============================================================================
@@ -636,7 +783,12 @@ def _write_baseline(root: Path, report: Report) -> None:
 
 # PROCESS audit SHALL VALIDATE ALL FILE SUBJECT_TO DATA standard THEN RETURN RECORD report.
 def audit(root: Path, strict: bool = False) -> Report:
-    """Run all checks under `root`. Returns a populated Report."""
+    """Run all checks under `root`. Returns a populated Report.
+
+    <trl>
+    FUNCTION audit SHALL SCAN ALL FILE UNDER RECORD root THEN CHECK DATA c1 AND DATA c2 AND DATA c3 AND DATA c4 AND DATA c5 AND DATA c6 AND DATA c7 AND RETURN RECORD report.
+    </trl>
+    """
     report = Report()
 
     py_files = _iter_files(root, ".py")
@@ -676,7 +828,12 @@ def audit(root: Path, strict: bool = False) -> Report:
 
 # AGENT claude SHALL WRITE RECORD report AS STRING DATA output.
 def render_text(report: Report, root: Path) -> str:
-    """Human-readable report."""
+    """Human-readable report.
+
+    <trl>
+    FUNCTION render_text SHALL READ RECORD report THEN RENDER DATA summary AND DATA violations AS DATA text AND RETURN DATA text.
+    </trl>
+    """
     lines: list[str] = []
     lines.append(f"trugs-compliance-check — {root}")
     lines.append("")
@@ -705,15 +862,32 @@ def render_text(report: Report, root: Path) -> str:
 
 # AGENT claude SHALL READ DATA argv THEN RETURN INTEGER DATA exit_code.
 def main(argv: Optional[list[str]] = None) -> int:
-    """CLI entry point."""
+    """CLI entry point.
+
+    <trl>
+    FUNCTION main SHALL PARSE DATA argv THEN RUN FUNCTION audit AND RENDER RECORD report AND RETURN DATA exit_code.
+    </trl>
+    """
     parser = argparse.ArgumentParser(
         prog="trugs-compliance-check",
         description="Mechanical Dark Code compliance verifier (STANDARD_dark_code_compliance.md).",
     )
-    parser.add_argument("path", nargs="?", default=".", help="Repo root or subdirectory to audit.")
-    parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON output.")
-    parser.add_argument("--strict", action="store_true", help="Exit 1 on any violation (vs the default, which compares to baseline).")
-    parser.add_argument("--baseline-update", action="store_true", help="Overwrite .github/compliance-baseline.json with the current report.")
+    parser.add_argument(
+        "path", nargs="?", default=".", help="Repo root or subdirectory to audit."
+    )
+    parser.add_argument(
+        "--json", action="store_true", help="Emit machine-readable JSON output."
+    )
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="Exit 1 on any violation (vs the default, which compares to baseline).",
+    )
+    parser.add_argument(
+        "--baseline-update",
+        action="store_true",
+        help="Overwrite .github/compliance-baseline.json with the current report.",
+    )
     args = parser.parse_args(argv)
 
     root = Path(args.path).resolve()

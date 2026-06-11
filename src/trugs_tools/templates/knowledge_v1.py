@@ -1,3 +1,6 @@
+# Copyright 2026 TRUGS LLC
+# SPDX-License-Identifier: Apache-2.0
+
 """Knowledge_v1 branch templates for TRUGS generator.
 
 Unified vocabulary merging Living (persistent memory), Knowledge (ontology),

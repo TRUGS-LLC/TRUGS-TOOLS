@@ -1,27 +1,28 @@
 {
   "name": "TRUGS Language Vocabulary",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "type": "NAMESPACE",
-  "description": "Canonical TRL vocabulary — 190 words across 8 parts of speech. Generated from SPEC_vocabulary.md by tools/build_language_trug.py.",
+  "description": "Canonical TRL vocabulary — 233 words across 9 parts of speech. Generated from SPEC_vocabulary.md by tools/build_language_trug.py. v2.0.0 adds 21 SI level prefixes for hierarchy transition markers (TRUGS-DEVELOPMENT#1719) and 22 corpus-evidenced words (AAA #2048 / #2018 disposition).",
   "dimensions": {},
   "capabilities": {
     "vocabularies": [
-      "trl_v1"
+      "trl_v2"
     ]
   },
   "meta": {
     "generated_by": "tools/build_language_trug.py",
     "source": "TRUGS_LANGUAGE/SPEC_vocabulary.md",
-    "word_count": 190,
+    "word_count": 233,
     "part_counts": {
       "noun": 26,
-      "verb": 61,
-      "adjective": 36,
+      "verb": 80,
+      "adjective": 39,
       "adverb": 19,
       "preposition": 18,
       "conjunction": 13,
       "article": 10,
-      "pronoun": 7
+      "pronoun": 7,
+      "level_prefix": 21
     }
   },
   "nodes": [
@@ -37,12 +38,13 @@
         "prepositions",
         "conjunctions",
         "articles",
-        "pronouns"
+        "pronouns",
+        "level_prefixes"
       ],
       "properties": {
         "name": "TRUGS Language (TRL)",
-        "version": "1.0.1",
-        "word_count": 190
+        "version": "2.0.0",
+        "word_count": 233
       },
       "metric_level": "KILO_LANGUAGE",
       "dimension": {}
@@ -81,7 +83,7 @@
       ],
       "properties": {
         "speech": "verb",
-        "count": 61
+        "count": 80
       },
       "metric_level": "HECTO_CATEGORY",
       "dimension": {}
@@ -99,7 +101,7 @@
       ],
       "properties": {
         "speech": "adjective",
-        "count": 36
+        "count": 39
       },
       "metric_level": "HECTO_CATEGORY",
       "dimension": {}
@@ -190,6 +192,22 @@
       "properties": {
         "speech": "pronoun",
         "count": 7
+      },
+      "metric_level": "HECTO_CATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "level_prefixes",
+      "type": "DATA",
+      "parent_id": "language",
+      "contains": [
+        "level_prefix-macro",
+        "level_prefix-default",
+        "level_prefix-micro"
+      ],
+      "properties": {
+        "speech": "level_prefix",
+        "count": 21
       },
       "metric_level": "HECTO_CATEGORY",
       "dimension": {}
@@ -308,12 +326,15 @@
         "w-batch",
         "w-distinct",
         "w-take",
-        "w-skip"
+        "w-skip",
+        "w-apply",
+        "w-derive",
+        "w-update"
       ],
       "properties": {
         "subcategory": "transform",
         "description": "Change data shape",
-        "count": 14
+        "count": 17
       },
       "metric_level": "DEKA_SUBCATEGORY",
       "dimension": {}
@@ -332,12 +353,18 @@
         "w-respond",
         "w-authenticate",
         "w-deliver",
-        "w-assign"
+        "w-assign",
+        "w-load",
+        "w-post",
+        "w-emit",
+        "w-produce",
+        "w-append",
+        "w-delegate"
       ],
       "properties": {
         "subcategory": "move",
         "description": "Move data between actors",
-        "count": 10
+        "count": 16
       },
       "metric_level": "DEKA_SUBCATEGORY",
       "dimension": {}
@@ -350,12 +377,14 @@
         "w-validate",
         "w-assert",
         "w-require",
-        "w-shall"
+        "w-shall",
+        "w-assert_not",
+        "w-invariant"
       ],
       "properties": {
         "subcategory": "obligate",
         "description": "Mandate behavior",
-        "count": 4
+        "count": 6
       },
       "metric_level": "DEKA_SUBCATEGORY",
       "dimension": {}
@@ -369,12 +398,14 @@
         "w-approve",
         "w-grant",
         "w-override",
-        "w-may"
+        "w-may",
+        "w-accept",
+        "w-suggest"
       ],
       "properties": {
         "subcategory": "permit",
         "description": "Allow behavior",
-        "count": 5
+        "count": 7
       },
       "metric_level": "DEKA_SUBCATEGORY",
       "dimension": {}
@@ -411,12 +442,17 @@
         "w-expire",
         "w-equals",
         "w-exceeds",
-        "w-precedes"
+        "w-precedes",
+        "w-execute",
+        "w-invoke",
+        "w-halt",
+        "w-complete",
+        "w-pass"
       ],
       "properties": {
         "subcategory": "control",
         "description": "Direct execution flow",
-        "count": 10
+        "count": 15
       },
       "metric_level": "DEKA_SUBCATEGORY",
       "dimension": {}
@@ -434,12 +470,13 @@
         "w-replace",
         "w-cite",
         "w-administer",
-        "w-stipulate"
+        "w-stipulate",
+        "w-have"
       ],
       "properties": {
         "subcategory": "bind",
         "description": "Establish meaning or structural relationships",
-        "count": 9
+        "count": 10
       },
       "metric_level": "DEKA_SUBCATEGORY",
       "dimension": {}
@@ -539,12 +576,15 @@
         "w-unique",
         "w-multiple",
         "w-sole",
-        "w-joint"
+        "w-joint",
+        "w-only",
+        "w-at_least",
+        "w-exactly"
       ],
       "properties": {
         "subcategory": "quantity",
         "description": "How many / whether required",
-        "count": 6
+        "count": 9
       },
       "metric_level": "DEKA_SUBCATEGORY",
       "dimension": {}
@@ -982,6 +1022,69 @@
         "subcategory": "legal_reference",
         "description": "",
         "count": 1
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "level_prefix-macro",
+      "type": "DATA",
+      "parent_id": "level_prefixes",
+      "contains": [
+        "w-yotta",
+        "w-zetta",
+        "w-exa",
+        "w-peta",
+        "w-tera",
+        "w-giga",
+        "w-mega",
+        "w-kilo",
+        "w-hecto",
+        "w-deka"
+      ],
+      "properties": {
+        "subcategory": "macro",
+        "description": "Zoom out — scaling factors above 10⁰",
+        "count": 10
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "level_prefix-default",
+      "type": "DATA",
+      "parent_id": "level_prefixes",
+      "contains": [
+        "w-base"
+      ],
+      "properties": {
+        "subcategory": "default",
+        "description": "Ground zero — the generally accessible plane",
+        "count": 1
+      },
+      "metric_level": "DEKA_SUBCATEGORY",
+      "dimension": {}
+    },
+    {
+      "id": "level_prefix-micro",
+      "type": "DATA",
+      "parent_id": "level_prefixes",
+      "contains": [
+        "w-deci",
+        "w-centi",
+        "w-milli",
+        "w-micro",
+        "w-nano",
+        "w-pico",
+        "w-femto",
+        "w-atto",
+        "w-zepto",
+        "w-yocto"
+      ],
+      "properties": {
+        "subcategory": "micro",
+        "description": "Zoom in — scaling factors below 10⁰",
+        "count": 10
       },
       "metric_level": "DEKA_SUBCATEGORY",
       "dimension": {}
@@ -1667,13 +1770,64 @@
       "dimension": {}
     },
     {
+      "id": "w-apply",
+      "type": "DATA",
+      "parent_id": "verb-transform",
+      "contains": [],
+      "properties": {
+        "word": "APPLY",
+        "number": 41,
+        "speech": "verb",
+        "subcategory": "transform",
+        "source": "computation",
+        "definition": "Apply a rule, transform, or patch to a target",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-derive",
+      "type": "DATA",
+      "parent_id": "verb-transform",
+      "contains": [],
+      "properties": {
+        "word": "DERIVE",
+        "number": 42,
+        "speech": "verb",
+        "subcategory": "transform",
+        "source": "computation",
+        "definition": "Produce a derived artifact from a source",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-update",
+      "type": "DATA",
+      "parent_id": "verb-transform",
+      "contains": [],
+      "properties": {
+        "word": "UPDATE",
+        "number": 43,
+        "speech": "verb",
+        "subcategory": "transform",
+        "source": "computation",
+        "definition": "Mutate existing state in place; distinct from WRITE",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
       "id": "w-read",
       "type": "DATA",
       "parent_id": "verb-move",
       "contains": [],
       "properties": {
         "word": "READ",
-        "number": 41,
+        "number": 44,
         "speech": "verb",
         "subcategory": "move",
         "source": "computation",
@@ -1690,7 +1844,7 @@
       "contains": [],
       "properties": {
         "word": "WRITE",
-        "number": 42,
+        "number": 45,
         "speech": "verb",
         "subcategory": "move",
         "source": "computation",
@@ -1707,7 +1861,7 @@
       "contains": [],
       "properties": {
         "word": "SEND",
-        "number": 43,
+        "number": 46,
         "speech": "verb",
         "subcategory": "move",
         "source": "computation",
@@ -1724,7 +1878,7 @@
       "contains": [],
       "properties": {
         "word": "RECEIVE",
-        "number": 44,
+        "number": 47,
         "speech": "verb",
         "subcategory": "move",
         "source": "computation",
@@ -1741,7 +1895,7 @@
       "contains": [],
       "properties": {
         "word": "RETURN",
-        "number": 45,
+        "number": 48,
         "speech": "verb",
         "subcategory": "move",
         "source": "computation",
@@ -1758,7 +1912,7 @@
       "contains": [],
       "properties": {
         "word": "REQUEST",
-        "number": 46,
+        "number": 49,
         "speech": "verb",
         "subcategory": "move",
         "source": "computation",
@@ -1775,7 +1929,7 @@
       "contains": [],
       "properties": {
         "word": "RESPOND",
-        "number": 47,
+        "number": 50,
         "speech": "verb",
         "subcategory": "move",
         "source": "computation",
@@ -1792,7 +1946,7 @@
       "contains": [],
       "properties": {
         "word": "AUTHENTICATE",
-        "number": 48,
+        "number": 51,
         "speech": "verb",
         "subcategory": "move",
         "source": "computation",
@@ -1809,7 +1963,7 @@
       "contains": [],
       "properties": {
         "word": "DELIVER",
-        "number": 49,
+        "number": 52,
         "speech": "verb",
         "subcategory": "move",
         "source": "law",
@@ -1826,11 +1980,113 @@
       "contains": [],
       "properties": {
         "word": "ASSIGN",
-        "number": 50,
+        "number": 53,
         "speech": "verb",
         "subcategory": "move",
         "source": "law",
         "definition": "Transfer rights or obligations to another party",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-load",
+      "type": "DATA",
+      "parent_id": "verb-move",
+      "contains": [],
+      "properties": {
+        "word": "LOAD",
+        "number": 54,
+        "speech": "verb",
+        "subcategory": "move",
+        "source": "computation",
+        "definition": "Read data into working context; distinct from READ",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-post",
+      "type": "DATA",
+      "parent_id": "verb-move",
+      "contains": [],
+      "properties": {
+        "word": "POST",
+        "number": 55,
+        "speech": "verb",
+        "subcategory": "move",
+        "source": "computation",
+        "definition": "Publish to a channel or issue thread; distinct from SEND",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-emit",
+      "type": "DATA",
+      "parent_id": "verb-move",
+      "contains": [],
+      "properties": {
+        "word": "EMIT",
+        "number": 56,
+        "speech": "verb",
+        "subcategory": "move",
+        "source": "computation",
+        "definition": "Produce an artifact or event to an outward channel",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-produce",
+      "type": "DATA",
+      "parent_id": "verb-move",
+      "contains": [],
+      "properties": {
+        "word": "PRODUCE",
+        "number": 57,
+        "speech": "verb",
+        "subcategory": "move",
+        "source": "computation",
+        "definition": "Generate output from an operation",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-append",
+      "type": "DATA",
+      "parent_id": "verb-move",
+      "contains": [],
+      "properties": {
+        "word": "APPEND",
+        "number": 58,
+        "speech": "verb",
+        "subcategory": "move",
+        "source": "computation",
+        "definition": "Add an item to the end of an ordered log or list",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-delegate",
+      "type": "DATA",
+      "parent_id": "verb-move",
+      "contains": [],
+      "properties": {
+        "word": "DELEGATE",
+        "number": 59,
+        "speech": "verb",
+        "subcategory": "move",
+        "source": "computation",
+        "definition": "Hand off a stage to another agent to perform",
         "core": false
       },
       "metric_level": "BASE_WORD",
@@ -1843,7 +2099,7 @@
       "contains": [],
       "properties": {
         "word": "VALIDATE",
-        "number": 51,
+        "number": 60,
         "speech": "verb",
         "subcategory": "obligate",
         "source": "computation",
@@ -1860,7 +2116,7 @@
       "contains": [],
       "properties": {
         "word": "ASSERT",
-        "number": 52,
+        "number": 61,
         "speech": "verb",
         "subcategory": "obligate",
         "source": "computation",
@@ -1877,7 +2133,7 @@
       "contains": [],
       "properties": {
         "word": "REQUIRE",
-        "number": 53,
+        "number": 62,
         "speech": "verb",
         "subcategory": "obligate",
         "source": "computation",
@@ -1894,12 +2150,46 @@
       "contains": [],
       "properties": {
         "word": "SHALL",
-        "number": 54,
+        "number": 63,
         "speech": "verb",
         "subcategory": "obligate",
         "source": "law",
         "definition": "Mandatory: party MUST perform action",
         "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-assert_not",
+      "type": "DATA",
+      "parent_id": "verb-obligate",
+      "contains": [],
+      "properties": {
+        "word": "ASSERT_NOT",
+        "number": 64,
+        "speech": "verb",
+        "subcategory": "obligate",
+        "source": "computation",
+        "definition": "Declare a condition that must never be true; negative dual of ASSERT",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-invariant",
+      "type": "DATA",
+      "parent_id": "verb-obligate",
+      "contains": [],
+      "properties": {
+        "word": "INVARIANT",
+        "number": 65,
+        "speech": "verb",
+        "subcategory": "obligate",
+        "source": "computation",
+        "definition": "Declare a condition that must hold across all time, not just at one point",
+        "core": false
       },
       "metric_level": "BASE_WORD",
       "dimension": {}
@@ -1911,7 +2201,7 @@
       "contains": [],
       "properties": {
         "word": "ALLOW",
-        "number": 55,
+        "number": 66,
         "speech": "verb",
         "subcategory": "permit",
         "source": "computation",
@@ -1928,7 +2218,7 @@
       "contains": [],
       "properties": {
         "word": "APPROVE",
-        "number": 56,
+        "number": 67,
         "speech": "verb",
         "subcategory": "permit",
         "source": "computation",
@@ -1945,7 +2235,7 @@
       "contains": [],
       "properties": {
         "word": "GRANT",
-        "number": 57,
+        "number": 68,
         "speech": "verb",
         "subcategory": "permit",
         "source": "law",
@@ -1962,7 +2252,7 @@
       "contains": [],
       "properties": {
         "word": "OVERRIDE",
-        "number": 58,
+        "number": 69,
         "speech": "verb",
         "subcategory": "permit",
         "source": "law",
@@ -1979,12 +2269,46 @@
       "contains": [],
       "properties": {
         "word": "MAY",
-        "number": 59,
+        "number": 70,
         "speech": "verb",
         "subcategory": "permit",
         "source": "law",
         "definition": "Permitted: party is allowed but not required",
         "core": true
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-accept",
+      "type": "DATA",
+      "parent_id": "verb-permit",
+      "contains": [],
+      "properties": {
+        "word": "ACCEPT",
+        "number": 71,
+        "speech": "verb",
+        "subcategory": "permit",
+        "source": "computation",
+        "definition": "Accept a result or proposal at a decision gate",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-suggest",
+      "type": "DATA",
+      "parent_id": "verb-permit",
+      "contains": [],
+      "properties": {
+        "word": "SUGGEST",
+        "number": 72,
+        "speech": "verb",
+        "subcategory": "permit",
+        "source": "computation",
+        "definition": "Recommend a non-binding course of action",
+        "core": false
       },
       "metric_level": "BASE_WORD",
       "dimension": {}
@@ -1996,7 +2320,7 @@
       "contains": [],
       "properties": {
         "word": "DENY",
-        "number": 60,
+        "number": 73,
         "speech": "verb",
         "subcategory": "prohibit",
         "source": "computation",
@@ -2013,7 +2337,7 @@
       "contains": [],
       "properties": {
         "word": "REJECT",
-        "number": 61,
+        "number": 74,
         "speech": "verb",
         "subcategory": "prohibit",
         "source": "computation",
@@ -2030,7 +2354,7 @@
       "contains": [],
       "properties": {
         "word": "SHALL_NOT",
-        "number": 62,
+        "number": 75,
         "speech": "verb",
         "subcategory": "prohibit",
         "source": "law",
@@ -2047,7 +2371,7 @@
       "contains": [],
       "properties": {
         "word": "REVOKE",
-        "number": 63,
+        "number": 76,
         "speech": "verb",
         "subcategory": "prohibit",
         "source": "law",
@@ -2064,7 +2388,7 @@
       "contains": [],
       "properties": {
         "word": "BRANCH",
-        "number": 64,
+        "number": 77,
         "speech": "verb",
         "subcategory": "control",
         "source": "computation",
@@ -2081,7 +2405,7 @@
       "contains": [],
       "properties": {
         "word": "MATCH",
-        "number": 65,
+        "number": 78,
         "speech": "verb",
         "subcategory": "control",
         "source": "computation",
@@ -2098,7 +2422,7 @@
       "contains": [],
       "properties": {
         "word": "RETRY",
-        "number": 66,
+        "number": 79,
         "speech": "verb",
         "subcategory": "control",
         "source": "computation",
@@ -2115,7 +2439,7 @@
       "contains": [],
       "properties": {
         "word": "TIMEOUT",
-        "number": 67,
+        "number": 80,
         "speech": "verb",
         "subcategory": "control",
         "source": "computation",
@@ -2132,7 +2456,7 @@
       "contains": [],
       "properties": {
         "word": "THROW",
-        "number": 68,
+        "number": 81,
         "speech": "verb",
         "subcategory": "control",
         "source": "computation",
@@ -2149,7 +2473,7 @@
       "contains": [],
       "properties": {
         "word": "EXISTS",
-        "number": 69,
+        "number": 82,
         "speech": "verb",
         "subcategory": "control",
         "source": "computation",
@@ -2166,7 +2490,7 @@
       "contains": [],
       "properties": {
         "word": "EXPIRE",
-        "number": 70,
+        "number": 83,
         "speech": "verb",
         "subcategory": "control",
         "source": "computation",
@@ -2183,7 +2507,7 @@
       "contains": [],
       "properties": {
         "word": "EQUALS",
-        "number": 71,
+        "number": 84,
         "speech": "verb",
         "subcategory": "control",
         "source": "computation",
@@ -2200,7 +2524,7 @@
       "contains": [],
       "properties": {
         "word": "EXCEEDS",
-        "number": 72,
+        "number": 85,
         "speech": "verb",
         "subcategory": "control",
         "source": "computation",
@@ -2217,11 +2541,96 @@
       "contains": [],
       "properties": {
         "word": "PRECEDES",
-        "number": 73,
+        "number": 86,
         "speech": "verb",
         "subcategory": "control",
         "source": "computation",
         "definition": "Evaluates true if left value is less than right",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-execute",
+      "type": "DATA",
+      "parent_id": "verb-control",
+      "contains": [],
+      "properties": {
+        "word": "EXECUTE",
+        "number": 87,
+        "speech": "verb",
+        "subcategory": "control",
+        "source": "computation",
+        "definition": "Run a unit of work",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-invoke",
+      "type": "DATA",
+      "parent_id": "verb-control",
+      "contains": [],
+      "properties": {
+        "word": "INVOKE",
+        "number": 88,
+        "speech": "verb",
+        "subcategory": "control",
+        "source": "computation",
+        "definition": "Call an interface, function, or process",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-halt",
+      "type": "DATA",
+      "parent_id": "verb-control",
+      "contains": [],
+      "properties": {
+        "word": "HALT",
+        "number": 89,
+        "speech": "verb",
+        "subcategory": "control",
+        "source": "computation",
+        "definition": "Stop a process immediately",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-complete",
+      "type": "DATA",
+      "parent_id": "verb-control",
+      "contains": [],
+      "properties": {
+        "word": "COMPLETE",
+        "number": 90,
+        "speech": "verb",
+        "subcategory": "control",
+        "source": "computation",
+        "definition": "Bring an operation to its finished state",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-pass",
+      "type": "DATA",
+      "parent_id": "verb-control",
+      "contains": [],
+      "properties": {
+        "word": "PASS",
+        "number": 91,
+        "speech": "verb",
+        "subcategory": "control",
+        "source": "computation",
+        "definition": "Satisfy a check or gate",
         "core": false
       },
       "metric_level": "BASE_WORD",
@@ -2234,7 +2643,7 @@
       "contains": [],
       "properties": {
         "word": "DEFINE",
-        "number": 74,
+        "number": 92,
         "speech": "verb",
         "subcategory": "bind",
         "source": "computation",
@@ -2251,7 +2660,7 @@
       "contains": [],
       "properties": {
         "word": "DECLARE",
-        "number": 75,
+        "number": 93,
         "speech": "verb",
         "subcategory": "bind",
         "source": "computation",
@@ -2268,7 +2677,7 @@
       "contains": [],
       "properties": {
         "word": "IMPLEMENT",
-        "number": 76,
+        "number": 94,
         "speech": "verb",
         "subcategory": "bind",
         "source": "computation",
@@ -2285,7 +2694,7 @@
       "contains": [],
       "properties": {
         "word": "NEST",
-        "number": 77,
+        "number": 95,
         "speech": "verb",
         "subcategory": "bind",
         "source": "computation",
@@ -2302,7 +2711,7 @@
       "contains": [],
       "properties": {
         "word": "AUGMENT",
-        "number": 78,
+        "number": 96,
         "speech": "verb",
         "subcategory": "bind",
         "source": "computation",
@@ -2319,7 +2728,7 @@
       "contains": [],
       "properties": {
         "word": "REPLACE",
-        "number": 79,
+        "number": 97,
         "speech": "verb",
         "subcategory": "bind",
         "source": "computation",
@@ -2336,7 +2745,7 @@
       "contains": [],
       "properties": {
         "word": "CITE",
-        "number": 80,
+        "number": 98,
         "speech": "verb",
         "subcategory": "bind",
         "source": "law",
@@ -2353,7 +2762,7 @@
       "contains": [],
       "properties": {
         "word": "ADMINISTER",
-        "number": 81,
+        "number": 99,
         "speech": "verb",
         "subcategory": "bind",
         "source": "law",
@@ -2370,11 +2779,28 @@
       "contains": [],
       "properties": {
         "word": "STIPULATE",
-        "number": 82,
+        "number": 100,
         "speech": "verb",
         "subcategory": "bind",
         "source": "law",
         "definition": "Establish a binding agreed-upon condition",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-have",
+      "type": "DATA",
+      "parent_id": "verb-bind",
+      "contains": [],
+      "properties": {
+        "word": "HAVE",
+        "number": 101,
+        "speech": "verb",
+        "subcategory": "bind",
+        "source": "computation",
+        "definition": "Possess a property or attribute (SHALL HAVE)",
         "core": false
       },
       "metric_level": "BASE_WORD",
@@ -2387,7 +2813,7 @@
       "contains": [],
       "properties": {
         "word": "CATCH",
-        "number": 83,
+        "number": 102,
         "speech": "verb",
         "subcategory": "resolve",
         "source": "computation",
@@ -2404,7 +2830,7 @@
       "contains": [],
       "properties": {
         "word": "HANDLE",
-        "number": 84,
+        "number": 103,
         "speech": "verb",
         "subcategory": "resolve",
         "source": "computation",
@@ -2421,7 +2847,7 @@
       "contains": [],
       "properties": {
         "word": "RECOVER",
-        "number": 85,
+        "number": 104,
         "speech": "verb",
         "subcategory": "resolve",
         "source": "computation",
@@ -2438,7 +2864,7 @@
       "contains": [],
       "properties": {
         "word": "CURE",
-        "number": 86,
+        "number": 105,
         "speech": "verb",
         "subcategory": "resolve",
         "source": "law",
@@ -2455,7 +2881,7 @@
       "contains": [],
       "properties": {
         "word": "INDEMNIFY",
-        "number": 87,
+        "number": 106,
         "speech": "verb",
         "subcategory": "resolve",
         "source": "law",
@@ -2472,7 +2898,7 @@
       "contains": [],
       "properties": {
         "word": "STRING",
-        "number": 88,
+        "number": 107,
         "speech": "adjective",
         "subcategory": "type",
         "source": "computation",
@@ -2489,7 +2915,7 @@
       "contains": [],
       "properties": {
         "word": "INTEGER",
-        "number": 89,
+        "number": 108,
         "speech": "adjective",
         "subcategory": "type",
         "source": "computation",
@@ -2506,7 +2932,7 @@
       "contains": [],
       "properties": {
         "word": "BOOLEAN",
-        "number": 90,
+        "number": 109,
         "speech": "adjective",
         "subcategory": "type",
         "source": "computation",
@@ -2523,7 +2949,7 @@
       "contains": [],
       "properties": {
         "word": "ARRAY",
-        "number": 91,
+        "number": 110,
         "speech": "adjective",
         "subcategory": "type",
         "source": "computation",
@@ -2540,7 +2966,7 @@
       "contains": [],
       "properties": {
         "word": "OBJECT",
-        "number": 92,
+        "number": 111,
         "speech": "adjective",
         "subcategory": "type",
         "source": "computation",
@@ -2557,7 +2983,7 @@
       "contains": [],
       "properties": {
         "word": "PUBLIC",
-        "number": 93,
+        "number": 112,
         "speech": "adjective",
         "subcategory": "access",
         "source": "computation",
@@ -2574,7 +3000,7 @@
       "contains": [],
       "properties": {
         "word": "PRIVATE",
-        "number": 94,
+        "number": 113,
         "speech": "adjective",
         "subcategory": "access",
         "source": "computation",
@@ -2591,7 +3017,7 @@
       "contains": [],
       "properties": {
         "word": "PROTECTED",
-        "number": 95,
+        "number": 114,
         "speech": "adjective",
         "subcategory": "access",
         "source": "computation",
@@ -2608,7 +3034,7 @@
       "contains": [],
       "properties": {
         "word": "READONLY",
-        "number": 96,
+        "number": 115,
         "speech": "adjective",
         "subcategory": "access",
         "source": "computation",
@@ -2625,7 +3051,7 @@
       "contains": [],
       "properties": {
         "word": "CONFIDENTIAL",
-        "number": 97,
+        "number": 116,
         "speech": "adjective",
         "subcategory": "access",
         "source": "law",
@@ -2642,7 +3068,7 @@
       "contains": [],
       "properties": {
         "word": "VALID",
-        "number": 98,
+        "number": 117,
         "speech": "adjective",
         "subcategory": "state",
         "source": "computation",
@@ -2659,7 +3085,7 @@
       "contains": [],
       "properties": {
         "word": "INVALID",
-        "number": 99,
+        "number": 118,
         "speech": "adjective",
         "subcategory": "state",
         "source": "computation",
@@ -2676,7 +3102,7 @@
       "contains": [],
       "properties": {
         "word": "NULL",
-        "number": 100,
+        "number": 119,
         "speech": "adjective",
         "subcategory": "state",
         "source": "computation",
@@ -2693,7 +3119,7 @@
       "contains": [],
       "properties": {
         "word": "EMPTY",
-        "number": 101,
+        "number": 120,
         "speech": "adjective",
         "subcategory": "state",
         "source": "computation",
@@ -2710,7 +3136,7 @@
       "contains": [],
       "properties": {
         "word": "PENDING",
-        "number": 102,
+        "number": 121,
         "speech": "adjective",
         "subcategory": "state",
         "source": "computation",
@@ -2727,7 +3153,7 @@
       "contains": [],
       "properties": {
         "word": "ACTIVE",
-        "number": 103,
+        "number": 122,
         "speech": "adjective",
         "subcategory": "state",
         "source": "computation",
@@ -2744,7 +3170,7 @@
       "contains": [],
       "properties": {
         "word": "FAILED",
-        "number": 104,
+        "number": 123,
         "speech": "adjective",
         "subcategory": "state",
         "source": "computation",
@@ -2761,7 +3187,7 @@
       "contains": [],
       "properties": {
         "word": "MUTABLE",
-        "number": 105,
+        "number": 124,
         "speech": "adjective",
         "subcategory": "state",
         "source": "computation",
@@ -2778,7 +3204,7 @@
       "contains": [],
       "properties": {
         "word": "IMMUTABLE",
-        "number": 106,
+        "number": 125,
         "speech": "adjective",
         "subcategory": "state",
         "source": "computation",
@@ -2795,7 +3221,7 @@
       "contains": [],
       "properties": {
         "word": "BINDING",
-        "number": 107,
+        "number": 126,
         "speech": "adjective",
         "subcategory": "state",
         "source": "law",
@@ -2812,7 +3238,7 @@
       "contains": [],
       "properties": {
         "word": "VOID",
-        "number": 108,
+        "number": 127,
         "speech": "adjective",
         "subcategory": "state",
         "source": "law",
@@ -2829,7 +3255,7 @@
       "contains": [],
       "properties": {
         "word": "ENFORCEABLE",
-        "number": 109,
+        "number": 128,
         "speech": "adjective",
         "subcategory": "state",
         "source": "law",
@@ -2846,7 +3272,7 @@
       "contains": [],
       "properties": {
         "word": "EXPIRED",
-        "number": 110,
+        "number": 129,
         "speech": "adjective",
         "subcategory": "state",
         "source": "law",
@@ -2863,7 +3289,7 @@
       "contains": [],
       "properties": {
         "word": "PRECEDENT",
-        "number": 111,
+        "number": 130,
         "speech": "adjective",
         "subcategory": "state",
         "source": "law",
@@ -2880,7 +3306,7 @@
       "contains": [],
       "properties": {
         "word": "REQUIRED",
-        "number": 112,
+        "number": 131,
         "speech": "adjective",
         "subcategory": "quantity",
         "source": "computation",
@@ -2897,7 +3323,7 @@
       "contains": [],
       "properties": {
         "word": "OPTIONAL",
-        "number": 113,
+        "number": 132,
         "speech": "adjective",
         "subcategory": "quantity",
         "source": "computation",
@@ -2914,7 +3340,7 @@
       "contains": [],
       "properties": {
         "word": "UNIQUE",
-        "number": 114,
+        "number": 133,
         "speech": "adjective",
         "subcategory": "quantity",
         "source": "computation",
@@ -2931,7 +3357,7 @@
       "contains": [],
       "properties": {
         "word": "MULTIPLE",
-        "number": 115,
+        "number": 134,
         "speech": "adjective",
         "subcategory": "quantity",
         "source": "computation",
@@ -2948,7 +3374,7 @@
       "contains": [],
       "properties": {
         "word": "SOLE",
-        "number": 116,
+        "number": 135,
         "speech": "adjective",
         "subcategory": "quantity",
         "source": "law",
@@ -2965,11 +3391,62 @@
       "contains": [],
       "properties": {
         "word": "JOINT",
-        "number": 117,
+        "number": 136,
         "speech": "adjective",
         "subcategory": "quantity",
         "source": "law",
         "definition": "Shared equally among multiple parties",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-only",
+      "type": "DATA",
+      "parent_id": "adjective-quantity",
+      "contains": [],
+      "properties": {
+        "word": "ONLY",
+        "number": 137,
+        "speech": "adjective",
+        "subcategory": "quantity",
+        "source": "computation",
+        "definition": "Exclusively; no other instance or case is permitted",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-at_least",
+      "type": "DATA",
+      "parent_id": "adjective-quantity",
+      "contains": [],
+      "properties": {
+        "word": "AT_LEAST",
+        "number": 138,
+        "speech": "adjective",
+        "subcategory": "quantity",
+        "source": "computation",
+        "definition": "Lower-bound cardinality; the count is N or more",
+        "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-exactly",
+      "type": "DATA",
+      "parent_id": "adjective-quantity",
+      "contains": [],
+      "properties": {
+        "word": "EXACTLY",
+        "number": 139,
+        "speech": "adjective",
+        "subcategory": "quantity",
+        "source": "computation",
+        "definition": "Exact cardinality; the count is precisely N",
         "core": false
       },
       "metric_level": "BASE_WORD",
@@ -2982,7 +3459,7 @@
       "contains": [],
       "properties": {
         "word": "DEFAULT",
-        "number": 118,
+        "number": 140,
         "speech": "adjective",
         "subcategory": "priority",
         "source": "computation",
@@ -2999,7 +3476,7 @@
       "contains": [],
       "properties": {
         "word": "CRITICAL",
-        "number": 119,
+        "number": 141,
         "speech": "adjective",
         "subcategory": "priority",
         "source": "computation",
@@ -3016,7 +3493,7 @@
       "contains": [],
       "properties": {
         "word": "HIGH",
-        "number": 120,
+        "number": 142,
         "speech": "adjective",
         "subcategory": "priority",
         "source": "computation",
@@ -3033,7 +3510,7 @@
       "contains": [],
       "properties": {
         "word": "LOW",
-        "number": 121,
+        "number": 143,
         "speech": "adjective",
         "subcategory": "priority",
         "source": "computation",
@@ -3050,7 +3527,7 @@
       "contains": [],
       "properties": {
         "word": "MATERIAL",
-        "number": 122,
+        "number": 144,
         "speech": "adjective",
         "subcategory": "priority",
         "source": "law",
@@ -3067,7 +3544,7 @@
       "contains": [],
       "properties": {
         "word": "SUBORDINATE",
-        "number": 123,
+        "number": 145,
         "speech": "adjective",
         "subcategory": "priority",
         "source": "law",
@@ -3084,7 +3561,7 @@
       "contains": [],
       "properties": {
         "word": "ASYNC",
-        "number": 124,
+        "number": 146,
         "speech": "adverb",
         "subcategory": "timing",
         "source": "computation",
@@ -3101,7 +3578,7 @@
       "contains": [],
       "properties": {
         "word": "SYNC",
-        "number": 125,
+        "number": 147,
         "speech": "adverb",
         "subcategory": "timing",
         "source": "computation",
@@ -3118,7 +3595,7 @@
       "contains": [],
       "properties": {
         "word": "SEQUENTIAL",
-        "number": 126,
+        "number": 148,
         "speech": "adverb",
         "subcategory": "timing",
         "source": "computation",
@@ -3135,7 +3612,7 @@
       "contains": [],
       "properties": {
         "word": "PARALLEL",
-        "number": 127,
+        "number": 149,
         "speech": "adverb",
         "subcategory": "timing",
         "source": "computation",
@@ -3152,7 +3629,7 @@
       "contains": [],
       "properties": {
         "word": "IMMEDIATE",
-        "number": 128,
+        "number": 150,
         "speech": "adverb",
         "subcategory": "timing",
         "source": "computation",
@@ -3169,7 +3646,7 @@
       "contains": [],
       "properties": {
         "word": "LAZY",
-        "number": 129,
+        "number": 151,
         "speech": "adverb",
         "subcategory": "timing",
         "source": "computation",
@@ -3186,7 +3663,7 @@
       "contains": [],
       "properties": {
         "word": "PROMPTLY",
-        "number": 130,
+        "number": 152,
         "speech": "adverb",
         "subcategory": "timing",
         "source": "law",
@@ -3203,7 +3680,7 @@
       "contains": [],
       "properties": {
         "word": "FORTHWITH",
-        "number": 131,
+        "number": 153,
         "speech": "adverb",
         "subcategory": "timing",
         "source": "law",
@@ -3220,7 +3697,7 @@
       "contains": [],
       "properties": {
         "word": "WITHIN",
-        "number": 132,
+        "number": 154,
         "speech": "adverb",
         "subcategory": "timing",
         "source": "law",
@@ -3237,7 +3714,7 @@
       "contains": [],
       "properties": {
         "word": "ONCE",
-        "number": 133,
+        "number": 155,
         "speech": "adverb",
         "subcategory": "repetition",
         "source": "computation",
@@ -3254,7 +3731,7 @@
       "contains": [],
       "properties": {
         "word": "ALWAYS",
-        "number": 134,
+        "number": 156,
         "speech": "adverb",
         "subcategory": "repetition",
         "source": "computation",
@@ -3271,7 +3748,7 @@
       "contains": [],
       "properties": {
         "word": "NEVER",
-        "number": 135,
+        "number": 157,
         "speech": "adverb",
         "subcategory": "repetition",
         "source": "computation",
@@ -3288,7 +3765,7 @@
       "contains": [],
       "properties": {
         "word": "BOUNDED",
-        "number": 136,
+        "number": 158,
         "speech": "adverb",
         "subcategory": "repetition",
         "source": "computation",
@@ -3305,7 +3782,7 @@
       "contains": [],
       "properties": {
         "word": "STRICTLY",
-        "number": 137,
+        "number": 159,
         "speech": "adverb",
         "subcategory": "degree",
         "source": "computation",
@@ -3322,7 +3799,7 @@
       "contains": [],
       "properties": {
         "word": "PARTIALLY",
-        "number": 138,
+        "number": 160,
         "speech": "adverb",
         "subcategory": "degree",
         "source": "computation",
@@ -3339,7 +3816,7 @@
       "contains": [],
       "properties": {
         "word": "SUBSTANTIALLY",
-        "number": 139,
+        "number": 161,
         "speech": "adverb",
         "subcategory": "degree",
         "source": "law",
@@ -3356,7 +3833,7 @@
       "contains": [],
       "properties": {
         "word": "REASONABLY",
-        "number": 140,
+        "number": 162,
         "speech": "adverb",
         "subcategory": "degree",
         "source": "law",
@@ -3373,7 +3850,7 @@
       "contains": [],
       "properties": {
         "word": "UNCONDITIONALLY",
-        "number": 141,
+        "number": 163,
         "speech": "adverb",
         "subcategory": "condition",
         "source": "law",
@@ -3390,7 +3867,7 @@
       "contains": [],
       "properties": {
         "word": "CONDITIONALLY",
-        "number": 142,
+        "number": 164,
         "speech": "adverb",
         "subcategory": "condition",
         "source": "law",
@@ -3407,7 +3884,7 @@
       "contains": [],
       "properties": {
         "word": "FEEDS",
-        "number": 143,
+        "number": 165,
         "speech": "preposition",
         "subcategory": "flow",
         "source": "computation",
@@ -3424,7 +3901,7 @@
       "contains": [],
       "properties": {
         "word": "ROUTES",
-        "number": 144,
+        "number": 166,
         "speech": "preposition",
         "subcategory": "flow",
         "source": "computation",
@@ -3441,7 +3918,7 @@
       "contains": [],
       "properties": {
         "word": "TO",
-        "number": 145,
+        "number": 167,
         "speech": "preposition",
         "subcategory": "flow",
         "source": "computation",
@@ -3458,7 +3935,7 @@
       "contains": [],
       "properties": {
         "word": "FROM",
-        "number": 146,
+        "number": 168,
         "speech": "preposition",
         "subcategory": "flow",
         "source": "computation",
@@ -3475,7 +3952,7 @@
       "contains": [],
       "properties": {
         "word": "RETURNS_TO",
-        "number": 147,
+        "number": 169,
         "speech": "preposition",
         "subcategory": "flow",
         "source": "computation",
@@ -3492,7 +3969,7 @@
       "contains": [],
       "properties": {
         "word": "BINDS",
-        "number": 148,
+        "number": 170,
         "speech": "preposition",
         "subcategory": "dependency",
         "source": "computation",
@@ -3509,7 +3986,7 @@
       "contains": [],
       "properties": {
         "word": "DEPENDS_ON",
-        "number": 149,
+        "number": 171,
         "speech": "preposition",
         "subcategory": "dependency",
         "source": "computation",
@@ -3526,7 +4003,7 @@
       "contains": [],
       "properties": {
         "word": "IMPLEMENTS",
-        "number": 150,
+        "number": 172,
         "speech": "preposition",
         "subcategory": "dependency",
         "source": "computation",
@@ -3543,7 +4020,7 @@
       "contains": [],
       "properties": {
         "word": "EXTENDS",
-        "number": 151,
+        "number": 173,
         "speech": "preposition",
         "subcategory": "dependency",
         "source": "computation",
@@ -3560,7 +4037,7 @@
       "contains": [],
       "properties": {
         "word": "SUBJECT_TO",
-        "number": 152,
+        "number": 174,
         "speech": "preposition",
         "subcategory": "dependency",
         "source": "law",
@@ -3577,7 +4054,7 @@
       "contains": [],
       "properties": {
         "word": "CONTAINS",
-        "number": 153,
+        "number": 175,
         "speech": "preposition",
         "subcategory": "containment",
         "source": "computation",
@@ -3594,7 +4071,7 @@
       "contains": [],
       "properties": {
         "word": "REFERENCES",
-        "number": 154,
+        "number": 176,
         "speech": "preposition",
         "subcategory": "reference",
         "source": "computation",
@@ -3611,7 +4088,7 @@
       "contains": [],
       "properties": {
         "word": "SUPERSEDES",
-        "number": 155,
+        "number": 177,
         "speech": "preposition",
         "subcategory": "replacement",
         "source": "computation",
@@ -3628,7 +4105,7 @@
       "contains": [],
       "properties": {
         "word": "GOVERNS",
-        "number": 156,
+        "number": 178,
         "speech": "preposition",
         "subcategory": "authority",
         "source": "law",
@@ -3645,7 +4122,7 @@
       "contains": [],
       "properties": {
         "word": "PURSUANT_TO",
-        "number": 157,
+        "number": 179,
         "speech": "preposition",
         "subcategory": "authority",
         "source": "law",
@@ -3662,7 +4139,7 @@
       "contains": [],
       "properties": {
         "word": "ON_BEHALF_OF",
-        "number": 158,
+        "number": 180,
         "speech": "preposition",
         "subcategory": "authority",
         "source": "law",
@@ -3679,7 +4156,7 @@
       "contains": [],
       "properties": {
         "word": "AS",
-        "number": 159,
+        "number": 181,
         "speech": "preposition",
         "subcategory": "binding",
         "source": "computation",
@@ -3696,7 +4173,7 @@
       "contains": [],
       "properties": {
         "word": "BY",
-        "number": 160,
+        "number": 182,
         "speech": "preposition",
         "subcategory": "binding",
         "source": "computation",
@@ -3713,7 +4190,7 @@
       "contains": [],
       "properties": {
         "word": "THEN",
-        "number": 161,
+        "number": 183,
         "speech": "conjunction",
         "subcategory": "sequence",
         "source": "computation",
@@ -3730,7 +4207,7 @@
       "contains": [],
       "properties": {
         "word": "FINALLY",
-        "number": 162,
+        "number": 184,
         "speech": "conjunction",
         "subcategory": "sequence",
         "source": "computation",
@@ -3747,7 +4224,7 @@
       "contains": [],
       "properties": {
         "word": "AND",
-        "number": 163,
+        "number": 185,
         "speech": "conjunction",
         "subcategory": "parallel",
         "source": "computation",
@@ -3764,7 +4241,7 @@
       "contains": [],
       "properties": {
         "word": "OR",
-        "number": 164,
+        "number": 186,
         "speech": "conjunction",
         "subcategory": "alternative",
         "source": "computation",
@@ -3781,7 +4258,7 @@
       "contains": [],
       "properties": {
         "word": "ELSE",
-        "number": 165,
+        "number": 187,
         "speech": "conjunction",
         "subcategory": "alternative",
         "source": "computation",
@@ -3798,7 +4275,7 @@
       "contains": [],
       "properties": {
         "word": "IF",
-        "number": 166,
+        "number": 188,
         "speech": "conjunction",
         "subcategory": "cause",
         "source": "computation",
@@ -3815,7 +4292,7 @@
       "contains": [],
       "properties": {
         "word": "WHEN",
-        "number": 167,
+        "number": 189,
         "speech": "conjunction",
         "subcategory": "cause",
         "source": "computation",
@@ -3832,7 +4309,7 @@
       "contains": [],
       "properties": {
         "word": "WHILE",
-        "number": 168,
+        "number": 190,
         "speech": "conjunction",
         "subcategory": "cause",
         "source": "computation",
@@ -3849,7 +4326,7 @@
       "contains": [],
       "properties": {
         "word": "UNLESS",
-        "number": 169,
+        "number": 191,
         "speech": "conjunction",
         "subcategory": "exception",
         "source": "law",
@@ -3866,7 +4343,7 @@
       "contains": [],
       "properties": {
         "word": "EXCEPT",
-        "number": 170,
+        "number": 192,
         "speech": "conjunction",
         "subcategory": "exception",
         "source": "law",
@@ -3883,7 +4360,7 @@
       "contains": [],
       "properties": {
         "word": "NOTWITHSTANDING",
-        "number": 171,
+        "number": 193,
         "speech": "conjunction",
         "subcategory": "exception",
         "source": "law",
@@ -3900,7 +4377,7 @@
       "contains": [],
       "properties": {
         "word": "PROVIDED_THAT",
-        "number": 172,
+        "number": 194,
         "speech": "conjunction",
         "subcategory": "exception",
         "source": "law",
@@ -3917,7 +4394,7 @@
       "contains": [],
       "properties": {
         "word": "WHEREAS",
-        "number": 173,
+        "number": 195,
         "speech": "conjunction",
         "subcategory": "exception",
         "source": "law",
@@ -3934,7 +4411,7 @@
       "contains": [],
       "properties": {
         "word": "THE",
-        "number": 174,
+        "number": 196,
         "speech": "article",
         "subcategory": "specific",
         "source": "",
@@ -3951,7 +4428,7 @@
       "contains": [],
       "properties": {
         "word": "THIS",
-        "number": 175,
+        "number": 197,
         "speech": "article",
         "subcategory": "specific",
         "source": "",
@@ -3968,7 +4445,7 @@
       "contains": [],
       "properties": {
         "word": "ALL",
-        "number": 176,
+        "number": 198,
         "speech": "article",
         "subcategory": "universal",
         "source": "",
@@ -3985,7 +4462,7 @@
       "contains": [],
       "properties": {
         "word": "EACH",
-        "number": 177,
+        "number": 199,
         "speech": "article",
         "subcategory": "universal",
         "source": "",
@@ -4002,7 +4479,7 @@
       "contains": [],
       "properties": {
         "word": "EVERY",
-        "number": 178,
+        "number": 200,
         "speech": "article",
         "subcategory": "universal",
         "source": "",
@@ -4019,7 +4496,7 @@
       "contains": [],
       "properties": {
         "word": "ANY",
-        "number": 179,
+        "number": 201,
         "speech": "article",
         "subcategory": "existential",
         "source": "",
@@ -4036,7 +4513,7 @@
       "contains": [],
       "properties": {
         "word": "SOME",
-        "number": 180,
+        "number": 202,
         "speech": "article",
         "subcategory": "existential",
         "source": "",
@@ -4053,7 +4530,7 @@
       "contains": [],
       "properties": {
         "word": "A",
-        "number": 181,
+        "number": 203,
         "speech": "article",
         "subcategory": "existential",
         "source": "",
@@ -4070,7 +4547,7 @@
       "contains": [],
       "properties": {
         "word": "NO",
-        "number": 182,
+        "number": 204,
         "speech": "article",
         "subcategory": "negative",
         "source": "",
@@ -4087,7 +4564,7 @@
       "contains": [],
       "properties": {
         "word": "NONE",
-        "number": 183,
+        "number": 205,
         "speech": "article",
         "subcategory": "negative",
         "source": "",
@@ -4104,7 +4581,7 @@
       "contains": [],
       "properties": {
         "word": "SELF",
-        "number": 184,
+        "number": 206,
         "speech": "pronoun",
         "subcategory": "self",
         "source": "computation",
@@ -4121,7 +4598,7 @@
       "contains": [],
       "properties": {
         "word": "RESULT",
-        "number": 185,
+        "number": 207,
         "speech": "pronoun",
         "subcategory": "result",
         "source": "computation",
@@ -4138,7 +4615,7 @@
       "contains": [],
       "properties": {
         "word": "OUTPUT",
-        "number": 186,
+        "number": 208,
         "speech": "pronoun",
         "subcategory": "result",
         "source": "computation",
@@ -4155,7 +4632,7 @@
       "contains": [],
       "properties": {
         "word": "INPUT",
-        "number": 187,
+        "number": 209,
         "speech": "pronoun",
         "subcategory": "source",
         "source": "computation",
@@ -4172,7 +4649,7 @@
       "contains": [],
       "properties": {
         "word": "SOURCE",
-        "number": 188,
+        "number": 210,
         "speech": "pronoun",
         "subcategory": "source",
         "source": "computation",
@@ -4189,7 +4666,7 @@
       "contains": [],
       "properties": {
         "word": "TARGET",
-        "number": 189,
+        "number": 211,
         "speech": "pronoun",
         "subcategory": "target",
         "source": "computation",
@@ -4206,12 +4683,390 @@
       "contains": [],
       "properties": {
         "word": "SAID",
-        "number": 190,
+        "number": 212,
         "speech": "pronoun",
         "subcategory": "legal_reference",
         "source": "law",
         "definition": "The previously named noun (legal \"the\")",
         "core": false
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-yotta",
+      "type": "DATA",
+      "parent_id": "level_prefix-macro",
+      "contains": [],
+      "properties": {
+        "word": "YOTTA",
+        "number": 213,
+        "speech": "level_prefix",
+        "subcategory": "macro",
+        "source": "shared",
+        "definition": "SI prefix 10²⁴ — largest macro scale",
+        "core": false,
+        "factor": "1e24"
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-zetta",
+      "type": "DATA",
+      "parent_id": "level_prefix-macro",
+      "contains": [],
+      "properties": {
+        "word": "ZETTA",
+        "number": 214,
+        "speech": "level_prefix",
+        "subcategory": "macro",
+        "source": "shared",
+        "definition": "SI prefix 10²¹",
+        "core": false,
+        "factor": "1e21"
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-exa",
+      "type": "DATA",
+      "parent_id": "level_prefix-macro",
+      "contains": [],
+      "properties": {
+        "word": "EXA",
+        "number": 215,
+        "speech": "level_prefix",
+        "subcategory": "macro",
+        "source": "shared",
+        "definition": "SI prefix 10¹⁸",
+        "core": false,
+        "factor": "1e18"
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-peta",
+      "type": "DATA",
+      "parent_id": "level_prefix-macro",
+      "contains": [],
+      "properties": {
+        "word": "PETA",
+        "number": 216,
+        "speech": "level_prefix",
+        "subcategory": "macro",
+        "source": "shared",
+        "definition": "SI prefix 10¹⁵",
+        "core": false,
+        "factor": "1e15"
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-tera",
+      "type": "DATA",
+      "parent_id": "level_prefix-macro",
+      "contains": [],
+      "properties": {
+        "word": "TERA",
+        "number": 217,
+        "speech": "level_prefix",
+        "subcategory": "macro",
+        "source": "shared",
+        "definition": "SI prefix 10¹²",
+        "core": false,
+        "factor": "1e12"
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-giga",
+      "type": "DATA",
+      "parent_id": "level_prefix-macro",
+      "contains": [],
+      "properties": {
+        "word": "GIGA",
+        "number": 218,
+        "speech": "level_prefix",
+        "subcategory": "macro",
+        "source": "shared",
+        "definition": "SI prefix 10⁹",
+        "core": false,
+        "factor": "1e9"
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-mega",
+      "type": "DATA",
+      "parent_id": "level_prefix-macro",
+      "contains": [],
+      "properties": {
+        "word": "MEGA",
+        "number": 219,
+        "speech": "level_prefix",
+        "subcategory": "macro",
+        "source": "shared",
+        "definition": "SI prefix 10⁶",
+        "core": false,
+        "factor": "1e6"
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-kilo",
+      "type": "DATA",
+      "parent_id": "level_prefix-macro",
+      "contains": [],
+      "properties": {
+        "word": "KILO",
+        "number": 220,
+        "speech": "level_prefix",
+        "subcategory": "macro",
+        "source": "shared",
+        "definition": "SI prefix 10³",
+        "core": false,
+        "factor": "1e3"
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-hecto",
+      "type": "DATA",
+      "parent_id": "level_prefix-macro",
+      "contains": [],
+      "properties": {
+        "word": "HECTO",
+        "number": 221,
+        "speech": "level_prefix",
+        "subcategory": "macro",
+        "source": "shared",
+        "definition": "SI prefix 10²",
+        "core": false,
+        "factor": "1e2"
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-deka",
+      "type": "DATA",
+      "parent_id": "level_prefix-macro",
+      "contains": [],
+      "properties": {
+        "word": "DEKA",
+        "number": 222,
+        "speech": "level_prefix",
+        "subcategory": "macro",
+        "source": "shared",
+        "definition": "SI prefix 10¹ — smallest macro scale",
+        "core": false,
+        "factor": "1e1"
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-base",
+      "type": "DATA",
+      "parent_id": "level_prefix-default",
+      "contains": [],
+      "properties": {
+        "word": "BASE",
+        "number": 223,
+        "speech": "level_prefix",
+        "subcategory": "default",
+        "source": "shared",
+        "definition": "Default consumption level — no prefix scaling, the generally accessible plane",
+        "core": false,
+        "factor": "1e0"
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-deci",
+      "type": "DATA",
+      "parent_id": "level_prefix-micro",
+      "contains": [],
+      "properties": {
+        "word": "DECI",
+        "number": 224,
+        "speech": "level_prefix",
+        "subcategory": "micro",
+        "source": "shared",
+        "definition": "SI prefix 10⁻¹ — largest micro scale",
+        "core": false,
+        "factor": "1e-1"
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-centi",
+      "type": "DATA",
+      "parent_id": "level_prefix-micro",
+      "contains": [],
+      "properties": {
+        "word": "CENTI",
+        "number": 225,
+        "speech": "level_prefix",
+        "subcategory": "micro",
+        "source": "shared",
+        "definition": "SI prefix 10⁻²",
+        "core": false,
+        "factor": "1e-2"
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-milli",
+      "type": "DATA",
+      "parent_id": "level_prefix-micro",
+      "contains": [],
+      "properties": {
+        "word": "MILLI",
+        "number": 226,
+        "speech": "level_prefix",
+        "subcategory": "micro",
+        "source": "shared",
+        "definition": "SI prefix 10⁻³",
+        "core": false,
+        "factor": "1e-3"
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-micro",
+      "type": "DATA",
+      "parent_id": "level_prefix-micro",
+      "contains": [],
+      "properties": {
+        "word": "MICRO",
+        "number": 227,
+        "speech": "level_prefix",
+        "subcategory": "micro",
+        "source": "shared",
+        "definition": "SI prefix 10⁻⁶",
+        "core": false,
+        "factor": "1e-6"
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-nano",
+      "type": "DATA",
+      "parent_id": "level_prefix-micro",
+      "contains": [],
+      "properties": {
+        "word": "NANO",
+        "number": 228,
+        "speech": "level_prefix",
+        "subcategory": "micro",
+        "source": "shared",
+        "definition": "SI prefix 10⁻⁹",
+        "core": false,
+        "factor": "1e-9"
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-pico",
+      "type": "DATA",
+      "parent_id": "level_prefix-micro",
+      "contains": [],
+      "properties": {
+        "word": "PICO",
+        "number": 229,
+        "speech": "level_prefix",
+        "subcategory": "micro",
+        "source": "shared",
+        "definition": "SI prefix 10⁻¹²",
+        "core": false,
+        "factor": "1e-12"
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-femto",
+      "type": "DATA",
+      "parent_id": "level_prefix-micro",
+      "contains": [],
+      "properties": {
+        "word": "FEMTO",
+        "number": 230,
+        "speech": "level_prefix",
+        "subcategory": "micro",
+        "source": "shared",
+        "definition": "SI prefix 10⁻¹⁵",
+        "core": false,
+        "factor": "1e-15"
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-atto",
+      "type": "DATA",
+      "parent_id": "level_prefix-micro",
+      "contains": [],
+      "properties": {
+        "word": "ATTO",
+        "number": 231,
+        "speech": "level_prefix",
+        "subcategory": "micro",
+        "source": "shared",
+        "definition": "SI prefix 10⁻¹⁸",
+        "core": false,
+        "factor": "1e-18"
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-zepto",
+      "type": "DATA",
+      "parent_id": "level_prefix-micro",
+      "contains": [],
+      "properties": {
+        "word": "ZEPTO",
+        "number": 232,
+        "speech": "level_prefix",
+        "subcategory": "micro",
+        "source": "shared",
+        "definition": "SI prefix 10⁻²¹",
+        "core": false,
+        "factor": "1e-21"
+      },
+      "metric_level": "BASE_WORD",
+      "dimension": {}
+    },
+    {
+      "id": "w-yocto",
+      "type": "DATA",
+      "parent_id": "level_prefix-micro",
+      "contains": [],
+      "properties": {
+        "word": "YOCTO",
+        "number": 233,
+        "speech": "level_prefix",
+        "subcategory": "micro",
+        "source": "shared",
+        "definition": "SI prefix 10⁻²⁴ — smallest micro scale",
+        "core": false,
+        "factor": "1e-24"
       },
       "metric_level": "BASE_WORD",
       "dimension": {}

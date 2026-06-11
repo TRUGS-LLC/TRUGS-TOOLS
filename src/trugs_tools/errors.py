@@ -1,4 +1,12 @@
-"""Error types and formatting for TRUGS validation."""
+# Copyright 2026 TRUGS LLC
+# SPDX-License-Identifier: Apache-2.0
+
+"""Error types and formatting for TRUGS validation.
+
+<trl>
+PROCESS errors SHALL DEFINE RECORD ValidationError AND RECORD ValidationResult TO REPRESENT DATA validation_outcome.
+</trl>
+"""
 
 from typing import Optional, Dict, Any
 
@@ -6,43 +14,47 @@ from typing import Optional, Dict, Any
 # AGENT claude SHALL DEFINE RECORD validationerror AS RECORD class.
 class ValidationError:
     """Represents a validation error in a TRUG file.
-    
+
     Attributes:
         code: Error code (e.g., 'DUPLICATE_NODE_ID')
         message: Human-readable error message
         location: Location in the TRUG (e.g., 'nodes[3]')
         node_id: Optional node ID involved in error
         details: Additional error details
+
+    <trl>
+    RECORD ValidationError SHALL REPRESENT DATA validation_error AND SHALL EXPOSE DATA code AND DATA message AND DATA location.
+    </trl>
     """
-    
+
     def __init__(
         self,
         code: str,
         message: str,
         location: str = "",
         node_id: Optional[str] = None,
-        details: Optional[Dict[str, Any]] = None
+        details: Optional[Dict[str, Any]] = None,
     ):
         self.code = code
         self.message = message
         self.location = location
         self.node_id = node_id
         self.details = details or {}
-    
+
     def __str__(self) -> str:
         """Format error as string."""
         parts = [f"[{self.code}]"]
-        
+
         if self.location:
             parts.append(f"at {self.location}")
-        
+
         if self.node_id:
             parts.append(f"(node: {self.node_id})")
-        
+
         parts.append(f"- {self.message}")
-        
+
         return " ".join(parts)
-    
+
     # AGENT claude SHALL DEFINE FUNCTION to_dict.
     def to_dict(self) -> Dict[str, Any]:
         """Convert error to dictionary."""
@@ -58,18 +70,22 @@ class ValidationError:
 # AGENT claude SHALL DEFINE RECORD validationresult AS RECORD class.
 class ValidationResult:
     """Result of TRUG validation.
-    
+
     Attributes:
         valid: Whether the TRUG is valid
         errors: List of validation errors
         warnings: List of validation warnings
+
+    <trl>
+    RECORD ValidationResult SHALL REPRESENT DATA validation_outcome AND SHALL CONTAIN RECORD ValidationError SUBJECT_TO valid EQUALS FALSE.
+    </trl>
     """
-    
+
     def __init__(self):
         self.valid = True
         self.errors: list[ValidationError] = []
         self.warnings: list[ValidationError] = []
-    
+
     # AGENT claude SHALL DEFINE FUNCTION add_error.
     def add_error(
         self,
@@ -77,13 +93,13 @@ class ValidationResult:
         message: str,
         location: str = "",
         node_id: Optional[str] = None,
-        details: Optional[Dict[str, Any]] = None
+        details: Optional[Dict[str, Any]] = None,
     ) -> None:
         """Add a validation error."""
         error = ValidationError(code, message, location, node_id, details)
         self.errors.append(error)
         self.valid = False
-    
+
     # AGENT claude SHALL DEFINE FUNCTION add_warning.
     def add_warning(
         self,
@@ -91,16 +107,16 @@ class ValidationResult:
         message: str,
         location: str = "",
         node_id: Optional[str] = None,
-        details: Optional[Dict[str, Any]] = None
+        details: Optional[Dict[str, Any]] = None,
     ) -> None:
         """Add a validation warning."""
         warning = ValidationError(code, message, location, node_id, details)
         self.warnings.append(warning)
-    
+
     def __bool__(self) -> bool:
         """Allow using result as boolean (True if valid)."""
         return self.valid
-    
+
     def __str__(self) -> str:
         """Format result as string."""
         if self.valid:
@@ -110,7 +126,7 @@ class ValidationResult:
             return msg
         else:
             return f"✗ Invalid TRUG ({len(self.errors)} error(s))"
-    
+
     # AGENT claude SHALL DEFINE FUNCTION to_dict.
     def to_dict(self) -> Dict[str, Any]:
         """Convert result to dictionary."""

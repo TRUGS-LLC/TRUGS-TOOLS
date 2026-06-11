@@ -1,3 +1,6 @@
+# Copyright 2026 TRUGS LLC
+# SPDX-License-Identifier: Apache-2.0
+
 """Nested branch templates for TRUGS generator.
 
 Hierarchical graph composition templates modeling parent-subgraph
@@ -29,7 +32,7 @@ def generate_nested_minimal() -> Dict[str, Any]:
             {
                 "id": "task_root",
                 "type": "TASK",
-                "metric_level": "BASE_TASK",
+                "metric_level": "DEKA_TASK",
                 "parent_id": None,
                 "properties": {
                     "name": "Data Pipeline",
@@ -40,7 +43,7 @@ def generate_nested_minimal() -> Dict[str, Any]:
             {
                 "id": "subgraph_ingest",
                 "type": "SUBGRAPH",
-                "metric_level": "DEKA_SUBGRAPH",
+                "metric_level": "BASE_SUBGRAPH",
                 "parent_id": "task_root",
                 "properties": {
                     "name": "Ingest Workflow",
@@ -51,7 +54,7 @@ def generate_nested_minimal() -> Dict[str, Any]:
             {
                 "id": "subgraph_transform",
                 "type": "SUBGRAPH",
-                "metric_level": "DEKA_SUBGRAPH",
+                "metric_level": "BASE_SUBGRAPH",
                 "parent_id": "task_root",
                 "properties": {
                     "name": "Transform Workflow",
@@ -92,7 +95,7 @@ def generate_nested_complete() -> Dict[str, Any]:
             {
                 "id": "task_root",
                 "type": "TASK",
-                "metric_level": "BASE_TASK",
+                "metric_level": "HECTO_TASK",
                 "parent_id": None,
                 "properties": {
                     "name": "Data Pipeline",
@@ -103,7 +106,7 @@ def generate_nested_complete() -> Dict[str, Any]:
             {
                 "id": "task_validate",
                 "type": "TASK",
-                "metric_level": "BASE_TASK",
+                "metric_level": "DEKA_TASK",
                 "parent_id": "task_root",
                 "properties": {
                     "name": "Validate Outputs",
@@ -147,7 +150,7 @@ def generate_nested_complete() -> Dict[str, Any]:
             {
                 "id": "result_ingest",
                 "type": "RESULT",
-                "metric_level": "MILLI_RESULT",
+                "metric_level": "BASE_RESULT",
                 "parent_id": "subgraph_ingest",
                 "properties": {
                     "name": "Ingest Output",
@@ -158,7 +161,7 @@ def generate_nested_complete() -> Dict[str, Any]:
             {
                 "id": "result_pipeline",
                 "type": "RESULT",
-                "metric_level": "MILLI_RESULT",
+                "metric_level": "DEKA_RESULT",
                 "parent_id": "task_root",
                 "properties": {
                     "name": "Pipeline Result",
