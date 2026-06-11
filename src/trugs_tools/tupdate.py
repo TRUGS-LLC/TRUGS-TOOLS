@@ -1,3 +1,6 @@
+# Copyright 2026 TRUGS LLC
+# SPDX-License-Identifier: Apache-2.0
+
 """tupdate — Update properties on an existing node in a TRUG file.
 
 Usage:
@@ -6,23 +9,44 @@ Usage:
     trugs-tupdate graph.trug.json node_id --type ENTITY
     trugs-tupdate graph.trug.json node_id --parent new_parent_id
     trugs-tupdate graph.trug.json node_id --set key=value --dry-run
+
+Note: this is the explicit-TRUG-file CRUD command (the live ``tg update`` verb,
+operating on a named ``*.trug.json``). It is distinct from the namesake
+``trugs_folder.tupdate``, which is the folder-graph operation over a
+directory's ``folder.trug.json``. The two are intentionally separate command
+families, not duplicates (AAA #2190 SP1 disposition: retained).
+
+<trl>
+PROCESS tupdate SHALL LOAD RECORD graph FROM FILE trug_json THEN WRITE DATA property TO RECORD node AND SAVE FILE trug_json.
+</trl>
 """
 
 import argparse
 import json
 import sys
-from pathlib import Path
 from typing import Any, Optional
 
 
 # PROCESS loader SHALL READ FILE path THEN RETURN RECORD graph.
 def load_trug(path: str) -> dict:
+    """Read a TRUG JSON file from disk and return it as a dict.
+
+    <trl>
+    FUNCTION load_trug SHALL READ FILE path THEN RETURN RECORD graph.
+    </trl>
+    """
     with open(path) as f:
         return json.load(f)
 
 
 # PROCESS saver SHALL WRITE RECORD graph TO FILE path.
 def save_trug(path: str, trug: dict) -> None:
+    """Serialise a TRUG graph dict to a JSON file, with trailing newline.
+
+    <trl>
+    FUNCTION save_trug SHALL WRITE RECORD graph TO FILE path.
+    </trl>
+    """
     with open(path, "w") as f:
         json.dump(trug, f, indent=2)
         f.write("\n")
@@ -30,7 +54,12 @@ def save_trug(path: str, trug: dict) -> None:
 
 # PROCESS parser SHALL MAP STRING DATA input TO RECORD value.
 def parse_value(raw: str) -> Any:
-    """Infer type from string value."""
+    """Infer type from string value: boolean, null, int, float, or string.
+
+    <trl>
+    FUNCTION parse_value SHALL MAP DATA raw_string TO RECORD value SUBJECT_TO TYPE_INFERENCE.
+    </trl>
+    """
     if raw.lower() == "true":
         return True
     if raw.lower() == "false":
@@ -50,7 +79,12 @@ def parse_value(raw: str) -> Any:
 
 # PROCESS updater SHALL WRITE RECORD value TO RECORD node.
 def set_nested(d: dict, key: str, value: Any) -> None:
-    """Set a value using dot notation (e.g., 'metadata.source')."""
+    """Set a value using dot notation (e.g., 'metadata.source'), creating intermediate dicts as needed.
+
+    <trl>
+    FUNCTION set_nested SHALL WRITE RECORD value TO RECORD node SUBJECT_TO DOT_NOTATION key.
+    </trl>
+    """
     parts = key.split(".")
     for part in parts[:-1]:
         if part not in d or not isinstance(d[part], dict):
@@ -61,20 +95,29 @@ def set_nested(d: dict, key: str, value: Any) -> None:
 
 # AGENT claude SHALL READ DATA argv THEN RETURN INTEGER DATA exit_code.
 def main(argv: Optional[list] = None) -> int:
+    """CLI entry point: parse arguments, locate the target node, apply updates, and write the result.
+
+    <trl>
+    FUNCTION main SHALL PARSE DATA argv THEN WRITE DATA property TO RECORD node THEN RETURN INTEGER exit_code.
+    </trl>
+    """
     parser = argparse.ArgumentParser(
         prog="trugs-tupdate",
         description="Update properties on an existing node in a TRUG file.",
     )
     parser.add_argument("trug_file", help="Path to .trug.json file")
     parser.add_argument("node_id", help="ID of the node to update")
-    parser.add_argument("--set", action="append", metavar="KEY=VALUE",
-                        help="Set a property (repeatable)")
-    parser.add_argument("--type", dest="new_type",
-                        help="Change node type")
-    parser.add_argument("--parent", dest="new_parent",
-                        help="Change parent_id")
-    parser.add_argument("--dry-run", action="store_true",
-                        help="Show changes without writing")
+    parser.add_argument(
+        "--set",
+        action="append",
+        metavar="KEY=VALUE",
+        help="Set a property (repeatable)",
+    )
+    parser.add_argument("--type", dest="new_type", help="Change node type")
+    parser.add_argument("--parent", dest="new_parent", help="Change parent_id")
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Show changes without writing"
+    )
 
     args = parser.parse_args(argv)
 
@@ -106,7 +149,10 @@ def main(argv: Optional[list] = None) -> int:
         props = node.setdefault("properties", {})
         for kv in args.set:
             if "=" not in kv:
-                print(f"Error: invalid --set format '{kv}', expected KEY=VALUE", file=sys.stderr)
+                print(
+                    f"Error: invalid --set format '{kv}', expected KEY=VALUE",
+                    file=sys.stderr,
+                )
                 return 1
             key, raw_value = kv.split("=", 1)
             value = parse_value(raw_value)

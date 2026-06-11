@@ -1,3 +1,6 @@
+# Copyright 2026 TRUGS LLC
+# SPDX-License-Identifier: Apache-2.0
+
 """TrugAnalyzer — structural graph analysis for any TRUG.
 
 Provides 8 static analysis methods over TrugGraph:
@@ -12,6 +15,10 @@ Provides 8 static analysis methods over TrugGraph:
 All methods are stateless static methods. No mutation of TrugGraph.
 
 Issue: #618
+
+<trl>
+PROCESS analyzer SHALL COMPUTE DATA metrics FROM RECORD graph AND SHALL RETURN RESULT TO COMPONENT truganalyzer.
+</trl>
 """
 
 from __future__ import annotations
@@ -34,6 +41,10 @@ class TrugComplexityMetrics:
         edge_density: Semantic edges / nodes (0.0 if no nodes).
         node_count: Total number of nodes.
         edge_count: Number of semantic edges (excludes contains).
+
+    <trl>
+    RECORD TrugComplexityMetrics SHALL REPRESENT DATA metrics AND SHALL CONTAIN DATA cyclomatic AND DATA edge_density AND DATA max_depth.
+    </trl>
     """
 
     cyclomatic: int
@@ -45,14 +56,24 @@ class TrugComplexityMetrics:
 
 
 # Relations that propagate staleness.
-_STALE_PROPAGATION_RELATIONS = frozenset({
-    "uses", "implements", "produces", "depends_on",
-})
+_STALE_PROPAGATION_RELATIONS = frozenset(
+    {
+        "uses",
+        "implements",
+        "produces",
+        "depends_on",
+    }
+)
 
 
 # AGENT claude SHALL DEFINE RECORD truganalyzer AS RECORD class.
 class TrugAnalyzer:
-    """Static analysis of TrugGraph structure. All methods are stateless."""
+    """Static analysis of TrugGraph structure. All methods are stateless.
+
+    <trl>
+    RECORD TrugAnalyzer SHALL COMPUTE DATA analysis FROM RECORD graph AND SHALL RETURN RESULT reachability AND RESULT dominators AND RESULT metrics.
+    </trl>
+    """
 
     # AGENT claude SHALL DEFINE FUNCTION find_unreachable_nodes.
     @staticmethod
@@ -135,7 +156,7 @@ class TrugAnalyzer:
 
         # All contains[] entries
         for node in graph.get_all_nodes():
-            for child_id in (node.get("contains") or []):
+            for child_id in node.get("contains") or []:
                 referenced.add(child_id)
 
         roots = set(graph.root_nodes())
@@ -199,12 +220,16 @@ class TrugAnalyzer:
         def intersect(b1: str, b2: str) -> str:
             finger1, finger2 = b1, b2
             while finger1 != finger2:
-                while rpo_index.get(finger1, len(rpo)) > rpo_index.get(finger2, len(rpo)):
+                while rpo_index.get(finger1, len(rpo)) > rpo_index.get(
+                    finger2, len(rpo)
+                ):
                     parent = idom.get(finger1)
                     if parent is None:
                         break
                     finger1 = parent
-                while rpo_index.get(finger2, len(rpo)) > rpo_index.get(finger1, len(rpo)):
+                while rpo_index.get(finger2, len(rpo)) > rpo_index.get(
+                    finger1, len(rpo)
+                ):
                     parent = idom.get(finger2)
                     if parent is None:
                         break
@@ -426,10 +451,10 @@ class TrugAnalyzer:
 
         # Backtrack
         path: list[str] = []
-        curr: str | None = best_leaf
-        while curr is not None:
-            path.append(curr)
-            curr = pred.get(curr)
+        cursor: str | None = best_leaf
+        while cursor is not None:
+            path.append(cursor)
+            cursor = pred.get(cursor)
         path.reverse()
         return path
 

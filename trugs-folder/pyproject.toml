@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trugs-folder"
+version = "2.0.0a1"
+description = "TRUGS cartography reference tool (trug-a-folder) — filesystem <-> TRUG graph sync + ARCHITECTURE.md render. TRUGS 2.0 staging mirror (private dev)."
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.11"
+authors = [{ name = "Xepayac LLC" }]
+keywords = ["trugs", "cli", "graph", "cartography", "folder", "architecture"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Code Generators",
+]
+# T2 sits ABOVE T1: depends on the language core (trugs-tools) + the graph store
+# (trugs-store). It NEVER depends on any T3 system package (trugs-start) — the
+# A1/c2 tier-discipline invariant the AAA #2373 cleave exists to establish.
+dependencies = [
+    "trugs-tools>=2.0.0a1",
+    "trugs-store>=0.1.0",
+    "PyYAML>=6.0",
+    "jsonschema>=4.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+]
+
+[project.scripts]
+trug-a-folder = "trugs_folder.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/TRUGS-LLC/TRUGS-TOOLS"
+Issues = "https://github.com/TRUGS-LLC/TRUGS-TOOLS/issues"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["trugs_folder*"]
+
+[tool.mypy]
+python_version = "3.11"
+
+[[tool.mypy.overrides]]
+module = ["trugs_store", "trugs_store.*", "trugs_tools", "trugs_tools.*", "pydantic"]
+ignore_missing_imports = true

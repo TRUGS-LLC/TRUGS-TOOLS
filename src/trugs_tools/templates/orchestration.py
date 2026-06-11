@@ -1,3 +1,6 @@
+# Copyright 2026 TRUGS LLC
+# SPDX-License-Identifier: Apache-2.0
+
 """Orchestration branch templates for TRUGS generator.
 
 Multi-agent coordination templates modeling agent hierarchies,
@@ -147,7 +150,7 @@ def generate_orchestration_complete() -> Dict[str, Any]:
             {
                 "id": "resource_db",
                 "type": "RESOURCE",
-                "metric_level": "KILO_RESOURCE",
+                "metric_level": "DEKA_RESOURCE",
                 "parent_id": "principal_1",
                 "properties": {
                     "name": "Primary Database",

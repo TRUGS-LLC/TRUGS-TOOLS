@@ -1,3 +1,6 @@
+# Copyright 2026 TRUGS LLC
+# SPDX-License-Identifier: Apache-2.0
+
 """tunlink — Remove a specific edge from a TRUG file.
 
 Usage:
@@ -6,6 +9,16 @@ Usage:
     trugs-tunlink graph.trug.json --from source_id --all
     trugs-tunlink graph.trug.json --to target_id --all
     trugs-tunlink graph.trug.json --from source_id --to target_id --dry-run
+
+Note: this is the explicit-TRUG-file edge command (the live ``tg unlink`` verb,
+operating on a named ``*.trug.json``). It is distinct from the namesake
+``trugs_folder.tunlink``, which is the folder-graph operation over a
+directory's ``folder.trug.json``. The two are intentionally separate command
+families, not duplicates (AAA #2190 SP1 disposition: retained).
+
+<trl>
+PROCESS tunlink SHALL FILTER RECORD edge FROM FILE trug_file THEN WRITE RECORD graph TO FILE trug_file.
+</trl>
 """
 
 import argparse
@@ -14,36 +27,50 @@ import sys
 from typing import Optional
 
 
-# PROCESS loader SHALL READ FILE path THEN RETURN RECORD graph.
 def load_trug(path: str) -> dict:
+    """Load a TRUG JSON file and return it as a dict.
+
+    <trl>
+    FUNCTION load_trug SHALL READ FILE path THEN RETURN RECORD graph.
+    </trl>
+    """
     with open(path) as f:
         return json.load(f)
 
 
-# PROCESS saver SHALL WRITE RECORD graph TO FILE path.
 def save_trug(path: str, trug: dict) -> None:
+    """Serialize a TRUG dict and write it to a JSON file with a trailing newline.
+
+    <trl>
+    FUNCTION save_trug SHALL WRITE RECORD graph TO FILE path.
+    </trl>
+    """
     with open(path, "w") as f:
         json.dump(trug, f, indent=2)
         f.write("\n")
 
 
-# AGENT claude SHALL READ DATA argv THEN RETURN INTEGER DATA exit_code.
 def main(argv: Optional[list] = None) -> int:
+    """Parse arguments, filter matching edges from the TRUG file, and report results.
+
+    <trl>
+    FUNCTION main SHALL PARSE DATA argv THEN FILTER RECORD edge FROM RECORD graph THEN RETURN DATA exit_code.
+    </trl>
+    """
     parser = argparse.ArgumentParser(
         prog="trugs-tunlink",
         description="Remove a specific edge from a TRUG file.",
     )
     parser.add_argument("trug_file", help="Path to .trug.json file")
-    parser.add_argument("--from", dest="from_id",
-                        help="Source node ID")
-    parser.add_argument("--to", dest="to_id",
-                        help="Target node ID")
-    parser.add_argument("--relation",
-                        help="Edge relation type to match")
-    parser.add_argument("--all", action="store_true",
-                        help="Remove all matching edges")
-    parser.add_argument("--dry-run", action="store_true",
-                        help="Show what would be removed without writing")
+    parser.add_argument("--from", dest="from_id", help="Source node ID")
+    parser.add_argument("--to", dest="to_id", help="Target node ID")
+    parser.add_argument("--relation", help="Edge relation type to match")
+    parser.add_argument("--all", action="store_true", help="Remove all matching edges")
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Show what would be removed without writing",
+    )
 
     args = parser.parse_args(argv)
 
@@ -86,9 +113,9 @@ def main(argv: Optional[list] = None) -> int:
 
     if args.dry_run:
         print(f"Dry run — would remove {len(to_remove)} edge(s):")
-        for e in to_remove:
-            rel = e.get("relation", "?")
-            print(f"  {e.get('from_id')} --[{rel}]--> {e.get('to_id')}")
+        for edge in to_remove:
+            rel = edge.get("relation", "?")
+            print(f"  {edge.get('from_id')} --[{rel}]--> {edge.get('to_id')}")
         return 0
 
     # Remove edges
@@ -97,9 +124,9 @@ def main(argv: Optional[list] = None) -> int:
     save_trug(args.trug_file, trug)
 
     print(f"Removed {len(to_remove)} edge(s):")
-    for e in to_remove:
-        rel = e.get("relation", "?")
-        print(f"  {e.get('from_id')} --[{rel}]--> {e.get('to_id')}")
+    for edge in to_remove:
+        rel = edge.get("relation", "?")
+        print(f"  {edge.get('from_id')} --[{rel}]--> {edge.get('to_id')}")
     return 0
 
 

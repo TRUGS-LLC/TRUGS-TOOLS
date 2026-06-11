@@ -1,6 +1,9 @@
+# Copyright 2026 TRUGS LLC
+# SPDX-License-Identifier: Apache-2.0
+
 """Build language.trug.json from SPEC_vocabulary.md.
 
-Parses the canonical vocabulary spec (190 words across 8 parts of speech)
+Parses the canonical vocabulary spec (211 words across 9 parts of speech)
 and emits a fully-populated language TRUG that the TRL compiler can consume.
 
 Re-run this whenever SPEC_vocabulary.md changes. The output file is a
@@ -20,9 +23,52 @@ import sys
 from pathlib import Path
 from typing import Optional
 
-PART_HEADING_RE = re.compile(r"^## (\d+)\.\s+(\w+)(?:\s+—\s+([^()]+))?\s*\((\d+)\)\s*$")
+# Widened from `(\w+)` to `([\w ]+?)` (non-greedy) to match the multi-word
+# heading "Level Prefixes" added for TRUGS 2.0 (TRUGS-DEVELOPMENT#1719).
+PART_HEADING_RE = re.compile(r"^## (\d+)\.\s+([\w ]+?)(?:\s+—\s+([^()]+))?\s*\((\d+)\)\s*$")
 SUBCAT_HEADING_RE = re.compile(r"^### ([\w/ ]+?)\s*\((\d+)\)(?:\s+—\s+(.+))?\s*$")
 ROW_RE = re.compile(r"^\|\s*(\d+)\s*\|")
+
+# Plural→singular map for part-of-speech headings. Explicit because
+# `rstrip("s")` gives wrong answers for irregular plurals
+# (e.g. "Prefixes" → "Prefixe").
+PART_HEADING_NORMALIZE = {
+    "nouns": "noun",
+    "verbs": "verb",
+    "adjectives": "adjective",
+    "adverbs": "adverb",
+    "prepositions": "preposition",
+    "conjunctions": "conjunction",
+    "articles": "article",
+    "pronouns": "pronoun",
+    "level prefixes": "level_prefix",
+}
+
+# Singular→plural map for part-of-speech container IDs. The default
+# `f"{p}s"` produces wrong forms for "level_prefix" (would emit
+# "level_prefixs" instead of "level_prefixes").
+PART_PLURAL = {
+    "noun": "nouns",
+    "verb": "verbs",
+    "adjective": "adjectives",
+    "adverb": "adverbs",
+    "preposition": "prepositions",
+    "conjunction": "conjunctions",
+    "article": "articles",
+    "pronoun": "pronouns",
+    "level_prefix": "level_prefixes",
+}
+
+# SI factor strings (as they appear in the spec) to numeric form.
+# Used to produce a `factor` property on level_prefix word nodes.
+LEVEL_PREFIX_FACTOR = {
+    "10²⁴": "1e24", "10²¹": "1e21", "10¹⁸": "1e18", "10¹⁵": "1e15",
+    "10¹²": "1e12", "10⁹": "1e9", "10⁶": "1e6", "10³": "1e3",
+    "10²": "1e2", "10¹": "1e1", "10⁰": "1e0",
+    "10⁻¹": "1e-1", "10⁻²": "1e-2", "10⁻³": "1e-3", "10⁻⁶": "1e-6",
+    "10⁻⁹": "1e-9", "10⁻¹²": "1e-12", "10⁻¹⁵": "1e-15",
+    "10⁻¹⁸": "1e-18", "10⁻²¹": "1e-21", "10⁻²⁴": "1e-24",
+}
 
 
 def _parse_row(line: str) -> Optional[tuple]:
@@ -68,8 +114,12 @@ def parse_spec(spec_text: str) -> list[dict]:
     for line in spec_text.splitlines():
         m = PART_HEADING_RE.match(line)
         if m:
-            current_part = m.group(2).lower().rstrip("s")
-            # Normalise "Nouns" -> "noun", etc.
+            raw = m.group(2).strip().lower()
+            current_part = PART_HEADING_NORMALIZE.get(raw)
+            if current_part is None:
+                # Default: spaces → underscores, strip trailing 's'.
+                # Acceptable for regular plurals not in the explicit map.
+                current_part = raw.replace(" ", "_").rstrip("s")
             current_subcat = None
             current_subcat_desc = None
             continue
@@ -120,15 +170,15 @@ def build_trug(records: list[dict]) -> dict:
         "id": "language",
         "type": "NAMESPACE",
         "parent_id": None,
-        "contains": [f"{p}s" for p in parts_order],
-        "properties": {"name": "TRUGS Language (TRL)", "version": "1.0.1", "word_count": len(records)},
+        "contains": [PART_PLURAL.get(p, f"{p}s") for p in parts_order],
+        "properties": {"name": "TRUGS Language (TRL)", "version": "2.0.0", "word_count": len(records)},
         "metric_level": "KILO_LANGUAGE",
         "dimension": {},
     })
 
     # Part-of-speech containers
     for part in parts_order:
-        part_id = f"{part}s"
+        part_id = PART_PLURAL.get(part, f"{part}s")
         part_records = [r for r in records if r["part_of_speech"] == part]
         subcat_ids = [f"{part}-{s}" for s in subcats_order[part]]
         nodes.append({
@@ -151,44 +201,64 @@ def build_trug(records: list[dict]) -> dict:
             nodes.append({
                 "id": sub_id,
                 "type": "DATA",
-                "parent_id": f"{part}s",
+                "parent_id": PART_PLURAL.get(part, f"{part}s"),
                 "contains": word_ids,
                 "properties": {
                     "subcategory": sub,
                     "description": desc,
                     "count": len(sub_records),
                 },
-                "metric_level": "DECA_SUBCATEGORY",
+                "metric_level": "DEKA_SUBCATEGORY",
                 "dimension": {},
             })
 
     # Word nodes
     for r in records:
+        props = {
+            "word": r["word"],
+            "number": r["number"],
+            "speech": r["part_of_speech"],
+            "subcategory": r["subcategory"],
+            "source": r["source"],
+            "definition": r["definition"],
+            "core": r["core"],
+        }
+        # Level prefixes use a 4-col Factor table format in the spec
+        # (#, Word, Factor, Definition). _parse_row mapped cells[2]
+        # ("Factor") into source. Re-interpret: source = "shared" by
+        # convention (level prefixes have no domain), factor goes into
+        # its own property, and definition is enriched with the factor
+        # so each row carries a meaningful definition (most spec rows
+        # leave the Definition cell empty in the macro/micro tables).
+        if r["part_of_speech"] == "level_prefix":
+            factor_str = props["source"]
+            props["source"] = "shared"
+            props["factor"] = LEVEL_PREFIX_FACTOR.get(factor_str, factor_str)
+            bare = props["definition"].strip()
+            if r["word"] == "BASE":
+                # BASE has a bespoke definition; preserve verbatim if present.
+                props["definition"] = bare or "Default consumption level"
+            elif bare:
+                props["definition"] = f"SI prefix {factor_str} — {bare.lower()}"
+            else:
+                props["definition"] = f"SI prefix {factor_str}"
         nodes.append({
             "id": f"w-{r['word'].lower()}",
             "type": "DATA",
             "parent_id": f"{r['part_of_speech']}-{r['subcategory']}",
             "contains": [],
-            "properties": {
-                "word": r["word"],
-                "number": r["number"],
-                "speech": r["part_of_speech"],
-                "subcategory": r["subcategory"],
-                "source": r["source"],
-                "definition": r["definition"],
-                "core": r["core"],
-            },
+            "properties": props,
             "metric_level": "BASE_WORD",
             "dimension": {},
         })
 
     trug = {
         "name": "TRUGS Language Vocabulary",
-        "version": "1.0.1",
+        "version": "2.0.0",
         "type": "NAMESPACE",
-        "description": "Canonical TRL vocabulary — 190 words across 8 parts of speech. Generated from SPEC_vocabulary.md by tools/build_language_trug.py.",
+        "description": "Canonical TRL vocabulary — 211 words across 9 parts of speech. Generated from SPEC_vocabulary.md by tools/build_language_trug.py. v2.0.0 adds 21 SI level prefixes for hierarchy transition markers (TRUGS-DEVELOPMENT#1719).",
         "dimensions": {},
-        "capabilities": {"vocabularies": ["trl_v1"]},
+        "capabilities": {"vocabularies": ["trl_v2"]},
         "meta": {
             "generated_by": "tools/build_language_trug.py",
             "source": "TRUGS_LANGUAGE/SPEC_vocabulary.md",

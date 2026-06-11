@@ -1,3 +1,6 @@
+# Copyright 2026 TRUGS LLC
+# SPDX-License-Identifier: Apache-2.0
+
 """TRUGS branch schema loader and validator.
 
 Provides functions to load, list, and validate TRUG branch schemas.

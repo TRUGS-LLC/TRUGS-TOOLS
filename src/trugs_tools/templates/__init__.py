@@ -1,3 +1,6 @@
+# Copyright 2026 TRUGS LLC
+# SPDX-License-Identifier: Apache-2.0
+
 """Template __init__.py for TRUGS generator templates."""
 
 from trugs_tools.templates.web import generate_web_minimal, generate_web_complete

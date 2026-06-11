@@ -1,3 +1,6 @@
+# Copyright 2026 TRUGS LLC
+# SPDX-License-Identifier: Apache-2.0
+
 """Web branch templates for TRUGS generator."""
 
 from typing import Dict, Any
