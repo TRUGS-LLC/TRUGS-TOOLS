@@ -1,0 +1,11 @@
+TRUGS Folder (trugs-folder) — TRUGS cartography reference tool
+Copyright 2026 TRUGS LLC
+
+Licensed under the Apache License, Version 2.0.
+
+PATENT NOTICE
+
+This license does not cover self-developing graph systems. Graph structures or substrates
+that modify themselves during execution are the subject of U.S. patent
+application 19/575,491. See https://github.com/Xepayac/XEPAYAC_LLC for
+AGPL 3.0 and commercial licensing.

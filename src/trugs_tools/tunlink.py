@@ -58,8 +58,17 @@ def main(argv: Optional[list] = None) -> int:
     </trl>
     """
     parser = argparse.ArgumentParser(
-        prog="trugs-tunlink",
+        prog="trug unlink",
         description="Remove a specific edge from a TRUG file.",
+        epilog="""examples:
+  trug unlink graph.trug.json --from a_node --to b_node
+  trug unlink graph.trug.json --from a_node --all --dry-run
+
+exit codes:
+  0  success
+  1  no matching edge / file error
+  2  usage error (bad flags or arguments)""",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("trug_file", help="Path to .trug.json file")
     parser.add_argument("--from", dest="from_id", help="Source node ID")

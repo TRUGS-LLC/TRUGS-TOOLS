@@ -1,4 +1,4 @@
-TRUGS Tools (trugs-tools) — Unified CLI for the TRUGS specification
+TRUGS Tools (trugs-tools) — the TRUGS language CLI (`trug`)
 Copyright 2026 TRUGS LLC
 
 Licensed under the Apache License, Version 2.0.
@@ -7,22 +7,22 @@ PATENT NOTICE
 
 This license does not cover self-developing graph systems. Graph structures or substrates
 that modify themselves during execution are the subject of U.S. patent
-application 19/575,491. See https://github.com/Xepayac/XEPAYAC_LLC for
-AGPL 3.0 and commercial licensing.
+application 19/575,491. Such systems are separately licensed from Xepayac LLC —
+see https://github.com/Xepayac/XEPAYAC_LLC for AGPL 3.0 and commercial licensing.
 
 ---
 
 PROVENANCE
 
-This package consolidates three previously-separate sources:
+This package consolidates previously-separate sources:
 
 1. TRUGS-DEVELOPMENT/TRUGS_TOOLS_development/ (private Xepayac/TRUGS-DEVELOPMENT mono-repo folder)
-   — folder lifecycle CLIs, branch schemas, templates, web pipeline
+   — language-core CLIs, branch schemas, templates
 
 2. TRUGS-LLC/TRUGS/tools/ (migrated in the `trugs` 2.0.0 breaking release)
-   — memory subsystem, TRL compiler, compliance_check, validate, tget/tupdate/tdelete/tunlink
+   — TRL compiler, compliance_check, validate, graph-node CRUD (tget/tupdate/tdelete/tunlink)
 
-3. Xepayac/TRUGS-AAA (archived)
-   — aaa_validator.py now exposed as `tg aaa validate`
+As of 2.0.0 this package ships the language CLI `trug` only. Folder
+cartography lives in the sibling `trugs-folder` package (`trug-a-folder`).
 
 See TRUGS-LLC/TRUGS-DEVELOPMENT#1576 for the portfolio reorganization EPIC.

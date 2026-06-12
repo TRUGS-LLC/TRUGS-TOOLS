@@ -271,13 +271,22 @@ def main(argv: Optional[list[str]] = None) -> int:
     import sys
 
     parser = argparse.ArgumentParser(
-        prog="tg audit vocab",
+        prog="trug audit vocab",
         description=(
             "Tokenize every <trl> block under PATH and report every "
             "out-of-vocabulary WORD token (position-independent membership "
             "check — no parse, so grammar/syntax errors cannot mask vocab "
             "drift). Reporting only — never modifies source files."
         ),
+        epilog="""examples:
+  trug audit vocab AGENT/skills/
+  trug audit vocab README.md -f json
+
+exit codes:
+  0  no out-of-vocabulary tokens
+  1  out-of-vocabulary tokens found
+  2  usage error (bad flags or arguments)""",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
         "path",

@@ -1,6 +1,13 @@
 # TRUGS Tools
 
-**CLI toolkit for the TRUGS specification.** One binary `tg` with git-style nested subcommands — validation, generation, memory, folder lifecycle, AAA protocol, and more.
+**The TRUGS language CLI.** One binary, `trug` — validate TRUG graphs, compile
+and decompile TRL, graph-node CRUD, Dark Code compliance, and corpus audit.
+Implements TRUGS 2.0 (`core_v2.0.0`).
+
+TRUG/L (TRL) is a constrained subset of English: every valid sentence compiles
+to a graph and every graph decompiles back to the sentence, losslessly. You
+write TRL when communicating; you store and validate TRUGS (the JSON graph)
+when executing. The sentence is the graph.
 
 ## Install
 
@@ -11,57 +18,59 @@ pip install trugs-tools
 ## Quickstart
 
 ```bash
-tg --help                # see all commands
-tg init my-project       # create folder.trug.json
-tg check                 # validate it
-tg compliance .          # Dark Code compliance scan
-tg memory remember ~/.../memory.trug.json "decision text" --type project --rule "terse"
-tg aaa validate my-issue.aaa.md
+trug --help                          # the verb list, one summary per verb
+trug validate first.trug.json        # the 12 structural rules -> VALID / INVALID
+trug trl compile hello.trl           # TRL sentence -> TRUG graph
+trug trl decompile hello.trug.json   # graph -> the sentence, losslessly
+trug compliance src/                 # Dark Code compliance scan
 ```
+
+New to TRUGS? The five-minute on-ramp:
+**[GETTING_STARTED.md](https://github.com/TRUGS-LLC/TRUGS/blob/main/GETTING_STARTED.md)**
 
 ## Command surface
 
-36 operations under one binary:
+Eight verbs on the `trug` binary:
 
-- **Lifecycle:** `init`, `check`, `sync`, `render`, `validate`
-- **Inspection:** `info`, `ls`, `where`, `find`
-- **CRUD:** `add`, `get`, `update`, `delete`, `mv`, `link`, `unlink`, `dim`
-- **Special:** `compliance`, `trl`, `export`, `import`
-- **Memory:** `tg memory <sub>` — 8 subs including remember/recall/forget/associate/render/audit/import/reconcile
-- **AAA:** `tg aaa <sub>` — generate, validate
-- **EPIC:** `tg epic sync`
+| verb | what it does |
+|------|--------------|
+| `validate` | Validate a TRUG JSON file against the 12 structural rules |
+| `trl` | Compile / decompile / validate TRL ↔ TRUG |
+| `get` | Read full content of a node in a TRUG graph |
+| `update` | Update properties on an existing node |
+| `delete` | Remove nodes and their connected edges |
+| `unlink` | Remove specific edges from a TRUG graph |
+| `compliance` | Dark Code compliance check over a source tree |
+| `audit` | Corpus-side audit bridges (markdown / vocab) |
+
+Every verb documents examples and exit codes: `trug <verb> --help`.
+
+Folder cartography — keeping a directory tree and its TRUG graph in sync and
+rendering `ARCHITECTURE.md` — is the sibling package
+[`trugs-folder`](./trugs-folder/) (binary: `trug-a-folder`).
 
 ## Role in the TRUGS-LLC portfolio
 
-- **[TRUGS](https://github.com/TRUGS-LLC/TRUGS)** — spec (CORE + TRL + reference papers). Zero CLIs, zero code.
-- **[TRUGS-AGENT](https://github.com/TRUGS-LLC/TRUGS-AGENT)** — marketing hub + orientation (concept folders with examples). Zero install to read.
-- **TRUGS-TOOLS** (this repo) — reference + implementation (CLIs + schemas + tests). Install when you want automation.
-- **[TRUGS-STORE](https://github.com/TRUGS-LLC/TRUGS-STORE)** — swappable graph storage backend.
+- **[TRUGS](https://github.com/TRUGS-LLC/TRUGS)** — the specification (CORE + TRL + reference papers) and the [getting-started guide](https://github.com/TRUGS-LLC/TRUGS/blob/main/GETTING_STARTED.md).
+- **TRUGS-TOOLS** (this repo) — the language CLI `trug` (this package) + the cartography tool `trug-a-folder` ([trugs-folder/](./trugs-folder/)).
+- **[TRUGS-STORE](https://github.com/TRUGS-LLC/TRUGS-STORE)** — the swappable graph-storage backend both tools sit on.
 
 ## Documentation
 
-- [CHANGELOG.md](./CHANGELOG.md) — version history
-- [REFERENCE/](./REFERENCE/) — SPEC_*.md docs for each tool
-- [branches/](./branches/) — experimental branch vocabularies
+- [CHANGELOG.md](./CHANGELOG.md) — version history, including the 2.0 boundary statement and the v1 migration table
+- [GETTING_STARTED.md](https://github.com/TRUGS-LLC/TRUGS/blob/main/GETTING_STARTED.md) — the on-ramp
+- [SECURITY.md](./SECURITY.md) · [CONTRIBUTING.md](./CONTRIBUTING.md)
 
-## Development — the Tier-1 gate
-
-One command reads GREEN across the release-polish layers (AAA #1976 Phase 7 / #2190):
+## Development
 
 ```bash
-make dev      # install dev/test tooling (ruff, mypy, pytest + extras)
-make check    # the Tier-1 gate — secrets / format / lint / types / tests + Layer-4
+make dev      # install dev/test tooling
+make check    # the Tier-1 gate — secrets / format / lint / types / tests + self-validation
 ```
 
-`make check` runs, in order: `gitleaks` (secrets) · `ruff format --check` · `ruff check` ·
-`mypy` · `pytest` · **`tg validate`** on the repo's own `folder.trug.json` + every
-`EXAMPLES/**` TRUG. That last step is **Layer-4 self-description** — the engine validates
-its own graph against TRUGS's 16-rule CORE. `tests/test_validator_self_coherence.py`
-guards the invariant that the `tg validate` CLI and the in-process `validate_trug()`
-function always return the same verdict, so no Layer-4 result ships on an incoherent
-validator. The lint/type/test scope is the core engine + `filesystem/` CLI today and
-widens as the remaining subpackages reach the same bar.
+The last `make check` step is Layer-4 self-description: the engine validates
+the repo's own `folder.trug.json` against the TRUGS CORE rules it implements.
 
 ## License
 
-Apache-2.0 — see [LICENSE](./LICENSE)
+Apache-2.0 — see [LICENSE](./LICENSE) and [NOTICE](./NOTICE).

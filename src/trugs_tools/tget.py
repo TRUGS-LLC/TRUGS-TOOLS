@@ -112,8 +112,17 @@ def main(argv: Optional[list] = None) -> int:
     </trl>
     """
     parser = argparse.ArgumentParser(
-        prog="trugs-tget",
+        prog="trug get",
         description="Read full content of a specific node from a TRUG file.",
+        epilog="""examples:
+  trug get graph.trug.json my_node
+  trug get graph.trug.json my_node --edges -f json
+
+exit codes:
+  0  success
+  1  node not found / file error
+  2  usage error (bad flags or arguments)""",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("trug_file", help="Path to .trug.json file")
     parser.add_argument("node_id", help="ID of the node to read")

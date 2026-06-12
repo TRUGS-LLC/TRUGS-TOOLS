@@ -4,15 +4,16 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "trugs-folder"
-version = "2.0.0a1"
-description = "TRUGS cartography reference tool (trug-a-folder) — filesystem <-> TRUG graph sync + ARCHITECTURE.md render. TRUGS 2.0 staging mirror (private dev)."
+version = "2.0.0"
+description = "TRUGS cartography reference tool — sync a filesystem with its TRUG graph and render ARCHITECTURE.md. Single `trug-a-folder` binary. Implements TRUGS 2.0 (core_v2.0.0)."
 readme = "README.md"
 license = { text = "Apache-2.0" }
 requires-python = ">=3.11"
-authors = [{ name = "Xepayac LLC" }]
+authors = [{ name = "TRUGS LLC" }]
 keywords = ["trugs", "cli", "graph", "cartography", "folder", "architecture"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    # A18 decision (AAA #2416, HITM 2026-06-11): 2.0 launches as Beta.
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
@@ -25,8 +26,8 @@ classifiers = [
 # (trugs-store). It NEVER depends on any T3 system package (trugs-start) — the
 # A1/c2 tier-discipline invariant the AAA #2373 cleave exists to establish.
 dependencies = [
-    "trugs-tools>=2.0.0a1",
-    "trugs-store>=0.1.0",
+    "trugs-tools>=2.0.0",
+    "trugs-store>=2.0.0",
     "PyYAML>=6.0",
     "jsonschema>=4.0",
 ]
@@ -43,9 +44,13 @@ trug-a-folder = "trugs_folder.cli:main"
 [project.urls]
 Homepage = "https://github.com/TRUGS-LLC/TRUGS-TOOLS"
 Issues = "https://github.com/TRUGS-LLC/TRUGS-TOOLS/issues"
+Documentation = "https://github.com/TRUGS-LLC/TRUGS/blob/main/GETTING_STARTED.md"
+Changelog = "https://github.com/TRUGS-LLC/TRUGS-TOOLS/blob/main/trugs-folder/CHANGELOG.md"
 
 [tool.setuptools]
 package-dir = { "" = "src" }
+# e8 (AAA #2416): dists carry the license + patent notice explicitly.
+license-files = ["LICENSE", "NOTICE"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

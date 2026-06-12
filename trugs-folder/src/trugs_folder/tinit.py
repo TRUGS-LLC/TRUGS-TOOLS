@@ -16,6 +16,7 @@ from typing import Any, Dict, Optional, Union
 
 from trugs_folder.utils import (
     TRUG_FILENAME,
+    infer_metric_level,
     infer_node_type,
     make_node_id,
     save_graph,
@@ -132,7 +133,7 @@ def _scan_directory(dirpath: Path, trug: Dict[str, Any], root_id: str) -> None:
 
         node_id = make_node_id(item.name)
         node_type = "FOLDER" if item.is_dir() else infer_node_type(item)
-        metric = "KILO_FOLDER" if item.is_dir() else f"BASE_{node_type}"
+        metric = "KILO_FOLDER" if item.is_dir() else infer_metric_level(node_type)
 
         node: Dict[str, Any] = {
             "id": node_id,
@@ -148,3 +149,14 @@ def _scan_directory(dirpath: Path, trug: Dict[str, Any], root_id: str) -> None:
         }
         trug["nodes"].append(node)
         root_node["contains"].append(node_id)
+        # Bidirectional invariant: every contains-array entry needs its
+        # matching 'contains' edge or the graph fails folder_check (#53).
+        trug["edges"].append(
+            {
+                "from_id": root_id,
+                "to_id": node_id,
+                "relation": "contains",
+                "weight": 1.0,
+                "properties": {},
+            }
+        )

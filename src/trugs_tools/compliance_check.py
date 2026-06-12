@@ -869,8 +869,17 @@ def main(argv: Optional[list[str]] = None) -> int:
     </trl>
     """
     parser = argparse.ArgumentParser(
-        prog="trugs-compliance-check",
+        prog="trug compliance",
         description="Mechanical Dark Code compliance verifier (STANDARD_dark_code_compliance.md).",
+        epilog="""examples:
+  trug compliance src/
+  trug compliance --json --strict
+
+exit codes:
+  0  compliant
+  1  findings present
+  2  usage error (bad flags or arguments)""",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
         "path", nargs="?", default=".", help="Repo root or subdirectory to audit."

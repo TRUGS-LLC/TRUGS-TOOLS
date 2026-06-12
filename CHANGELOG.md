@@ -7,10 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Release notes accumulating toward the next `trugs-tools` v2.0 PyPI publish. Bundles
-AAA #1976 Phase 7 four-repo polish work + cross-repo sub-phase deliverables per the
-bundled-release policy (`mem-98505a37`). Cut to a dated `## [2.0.0]` heading at v2.0
-release time per the AAA #1976 Phase 7 coordination checkpoint.
+Nothing yet.
+
+## [2.0.0] — 2026-06-12
+
+The TRUGS 2.0 commons release. Bundles AAA #1976 Phase 7 four-repo polish work +
+cross-repo sub-phase deliverables per the bundled-release policy (`mem-98505a37`).
+Published to PyPI together with `trugs-folder` 2.0.0 and `trugs-store` 2.0.0 — the
+three-package Apache commons kit (dependency order `trugs-store` < `trugs-tools` <
+`trugs-folder`).
+
+## The 2.0 boundary statement
+
+`trugs-tools` 1.0.0 was the last Apache release containing the memory, AAA, and
+epic system family under the unified `tg` binary. As of 2.0, the Apache commons
+is exactly two packages:
+
+- **`trugs-tools`** — the language CLI, `trug` (this package);
+- **`trugs-folder`** — folder cartography, `trug-a-folder`.
+
+The system tier — self-developing graph workflows — is not part of the Apache
+commons. Per the [NOTICE](./NOTICE), such systems are the subject of U.S.
+patent application 19/575,491 and are separately licensed from Xepayac LLC
+(AGPL 3.0 and commercial licensing: https://github.com/Xepayac/XEPAYAC_LLC).
+
+`trugs-tools` 1.0.0 remains available on PyPI unchanged; existing v1 graph
+files are data and are untouched by any of this.
+
+### Migrating from v1 (`tg`) to 2.0
+
+| v1 verb (`tg …`) | 2.0 home |
+|---|---|
+| `tg validate` | `trug validate` |
+| `tg trl compile/decompile/validate` | `trug trl compile/decompile/validate` |
+| `tg get` / `tg update` / `tg delete` / `tg unlink` | `trug get` / `trug update` / `trug delete` / `trug unlink` |
+| `tg compliance` | `trug compliance` |
+| `tg init` / `check` / `sync` / `render` / `info` / `ls` / `where` / `find` / `add` / `mv` / `link` / `dim` / `export` / `import` | `trug-a-folder <same verb>` (package `trugs-folder`) |
+| `tg memory …` / `tg aaa …` / `tg epic …` | not in the 2.0 Apache packages — remain available in `trugs-tools` 1.0.0; see the boundary statement above |
 
 ## Added
 

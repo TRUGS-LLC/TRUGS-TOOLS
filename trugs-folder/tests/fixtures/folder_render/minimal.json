@@ -1,0 +1,46 @@
+{
+  "name": "Minimal Folder",
+  "version": "1.0.0",
+  "type": "PROJECT",
+  "description": "A minimal test folder",
+  "dimensions": {},
+  "capabilities": {},
+  "nodes": [
+    {
+      "id": "root_folder",
+      "type": "FOLDER",
+      "properties": {
+        "name": "MINIMAL",
+        "purpose": "Minimal test folder",
+        "phase": "VISION",
+        "status": "ACTIVE",
+        "version": "0.1.0"
+      },
+      "parent_id": null,
+      "contains": ["doc_readme"],
+      "metric_level": "KILO_FOLDER",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_readme",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "README.md",
+        "purpose": "Human quickstart",
+        "format": "markdown"
+      },
+      "parent_id": "root_folder",
+      "contains": [],
+      "metric_level": "BASE_DOCUMENT",
+      "dimension": "folder_structure"
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "root_folder",
+      "to_id": "doc_readme",
+      "relation": "contains",
+      "weight": 1.0
+    }
+  ]
+}
