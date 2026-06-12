@@ -53,6 +53,139 @@ from trugs_folder.folder_map import map_folder_trugs
 from trugs_store.persistence.dual_write import write_trug
 
 
+# Per-verb help epilogs (A5, STANDARD_cli_help.md): copy-pasteable examples +
+# documented exit codes. Additive prose only — the flag contract is frozen (I4).
+_EPILOGS = {
+    "info": """\
+examples:
+  trug-a-folder info folder.trug.json
+  trug-a-folder info graph.trug.json -f json
+
+exit codes:
+  0  success
+  1  file not found / invalid JSON / error
+  2  usage error (bad flags or arguments)""",
+    "init": """\
+examples:
+  trug-a-folder init myproject --scan -d "My first mapped folder"
+  trug-a-folder init . --force -n "My Project"
+
+exit codes:
+  0  success
+  1  folder.trug.json already exists (without --force) / error
+  2  usage error (bad flags or arguments)""",
+    "add": """\
+examples:
+  trug-a-folder add main.py docs/notes.md
+  trug-a-folder add config.json -t DOCUMENT --purpose "App config"
+
+exit codes:
+  0  success
+  1  duplicate node / missing graph / error
+  2  usage error (bad flags or arguments)""",
+    "ls": """\
+examples:
+  trug-a-folder ls
+  trug-a-folder ls --edges -f json
+
+exit codes:
+  0  success
+  1  no folder.trug.json found / error
+  2  usage error (bad flags or arguments)""",
+    "find": """\
+examples:
+  trug-a-folder find -t COMPONENT
+  trug-a-folder find -n '\\.py$' -f json
+
+exit codes:
+  0  success (including zero matches)
+  1  no folder.trug.json found / error
+  2  usage error (bad flags or arguments)""",
+    "where": """\
+examples:
+  trug-a-folder where renderer
+  trug-a-folder where 'folder_.*' -f json
+
+exit codes:
+  0  success (including zero matches)
+  1  error
+  2  usage error (bad flags or arguments)""",
+    "mv": """\
+examples:
+  trug-a-folder mv main_py --name app.py
+  trug-a-folder mv notes_md --parent docs
+
+exit codes:
+  0  success
+  1  node not found / error
+  2  usage error (bad flags or arguments)""",
+    "link": """\
+examples:
+  trug-a-folder link main_py utils_py -r uses
+  trug-a-folder link main_py utils_py -r uses --remove
+
+exit codes:
+  0  success
+  1  invalid relation / node not found / error
+  2  usage error (bad flags or arguments)""",
+    "dim": """\
+examples:
+  trug-a-folder dim list
+  trug-a-folder dim add -n security -d "Security view"
+  trug-a-folder dim set --node main_py -n security
+
+exit codes:
+  0  success
+  1  missing required option for the action / error
+  2  usage error (bad flags or arguments)""",
+    "check": """\
+examples:
+  trug-a-folder check myproject
+  trug-a-folder check --all --strict
+
+exit codes:
+  0  all checks passed
+  1  errors found (or warnings, with --strict)
+  2  runtime error / no folder.trug.json files found""",
+    "render": """\
+examples:
+  trug-a-folder render architecture myproject
+  trug-a-folder render architecture --all --root .
+
+exit codes:
+  0  success
+  1  folder.trug.json not found / render error
+  2  write error""",
+    "sync": """\
+examples:
+  trug-a-folder sync myproject
+  trug-a-folder sync --all --no-tests
+
+exit codes:
+  0  success
+  1  no folder.trug.json / not a directory
+  2  runtime error (or partial failure with --all)""",
+    "export": """\
+examples:
+  trug-a-folder export myproject
+  trug-a-folder export --all --root .
+
+exit codes:
+  0  success
+  1  graph not in database / error
+  2  usage error (bad flags or arguments)""",
+    "import": """\
+examples:
+  trug-a-folder import myproject
+  trug-a-folder import --all --root .
+
+exit codes:
+  0  success
+  1  import error
+  2  usage error (bad flags or arguments)""",
+}
+
+
 # AGENT claude SHALL DEFINE FUNCTION validate_command.
 
 
@@ -73,7 +206,9 @@ def info_command(args: Optional[list] = None) -> int:
     </trl>
     """
     parser = argparse.ArgumentParser(
-        prog="trugs-info", description="Show information about TRUG files"
+        prog="trug-a-folder info", description="Show information about TRUG files",
+        epilog=_EPILOGS["info"],
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("file", help="TRUG file to analyze")
     parser.add_argument(
@@ -168,7 +303,9 @@ def tinit_command(args: Optional[list] = None) -> int:
     </trl>
     """
     parser = argparse.ArgumentParser(
-        prog="trugs tinit", description="Initialize folder.trug.json in a directory"
+        prog="trug-a-folder init", description="Initialize folder.trug.json in a directory",
+        epilog=_EPILOGS["init"],
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
         "directory",
@@ -224,7 +361,9 @@ def tadd_command(args: Optional[list] = None) -> int:
     </trl>
     """
     parser = argparse.ArgumentParser(
-        prog="trugs tadd", description="Add files to the TRUG graph"
+        prog="trug-a-folder add", description="Add files to the TRUG graph",
+        epilog=_EPILOGS["add"],
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("files", nargs="+", help="Files to add")
     parser.add_argument(
@@ -269,7 +408,9 @@ def tls_command(args: Optional[list] = None) -> int:
     </trl>
     """
     parser = argparse.ArgumentParser(
-        prog="trugs tls", description="List directory contents with TRUG metadata"
+        prog="trug-a-folder ls", description="List directory contents with TRUG metadata",
+        epilog=_EPILOGS["ls"],
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
         "directory", nargs="?", default=".", help="Directory to list (default: .)"
@@ -377,7 +518,9 @@ def tfind_command(args: Optional[list] = None) -> int:
     </trl>
     """
     parser = argparse.ArgumentParser(
-        prog="trugs tfind", description="Query nodes in a TRUG graph"
+        prog="trug-a-folder find", description="Query nodes in a TRUG graph",
+        epilog=_EPILOGS["find"],
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
         "-C", "--directory", default=".", help="Directory containing folder.trug.json"
@@ -430,8 +573,10 @@ def twhere_command(args: Optional[list] = None) -> int:
     </trl>
     """
     parser = argparse.ArgumentParser(
-        prog="trugs twhere",
+        prog="trug-a-folder where",
         description="Search across all folder.trug.json files for a concept, node, or file",
+        epilog=_EPILOGS["where"],
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("query", help="Search term (regex supported)")
     parser.add_argument(
@@ -483,7 +628,9 @@ def tmove_command(args: Optional[list] = None) -> int:
     </trl>
     """
     parser = argparse.ArgumentParser(
-        prog="trugs tmove", description="Move/rename a node in the TRUG graph"
+        prog="trug-a-folder mv", description="Move/rename a node in the TRUG graph",
+        epilog=_EPILOGS["mv"],
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("node_id", help="Node ID to move/rename")
     parser.add_argument(
@@ -519,7 +666,9 @@ def tlink_command(args: Optional[list] = None) -> int:
     </trl>
     """
     parser = argparse.ArgumentParser(
-        prog="trugs tlink", description="Create or remove typed edges between nodes"
+        prog="trug-a-folder link", description="Create or remove typed edges between nodes",
+        epilog=_EPILOGS["link"],
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("from_id", help="Source node ID")
     parser.add_argument("to_id", help="Target node ID")
@@ -801,7 +950,9 @@ def tdim_command(args: Optional[list] = None) -> int:
     </trl>
     """
     parser = argparse.ArgumentParser(
-        prog="trugs tdim", description="Manage dimensions in a TRUG graph"
+        prog="trug-a-folder dim", description="Manage dimensions in a TRUG graph",
+        epilog=_EPILOGS["dim"],
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
         "action", choices=["add", "remove", "list", "set"], help="Dimension action"
@@ -990,8 +1141,10 @@ def folder_check_command(args: Optional[list] = None) -> int:
     </trl>
     """
     parser = argparse.ArgumentParser(
-        prog="trugs-folder-check",
+        prog="trug-a-folder check",
         description="Validate folder.trug.json files against governance spec",
+        epilog=_EPILOGS["check"],
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
         "paths",
@@ -1074,8 +1227,10 @@ def folder_render_command(args: Optional[list] = None) -> int:
     </trl>
     """
     parser = argparse.ArgumentParser(
-        prog="trugs-folder-render",
+        prog="trug-a-folder render",
         description="Render ARCHITECTURE.md from folder.trug.json files",
+        epilog=_EPILOGS["render"],
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
         "path",
@@ -1336,8 +1491,10 @@ def folder_sync_command(args: Optional[list] = None) -> int:
     </trl>
     """
     parser = argparse.ArgumentParser(
-        prog="trugs-folder-sync",
+        prog="trug-a-folder sync",
         description="Sync folder.trug.json with current filesystem state",
+        epilog=_EPILOGS["sync"],
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
         "path",
@@ -1525,8 +1682,10 @@ def folder_export_command(args: Optional[list] = None) -> int:
     </trl>
     """
     parser = argparse.ArgumentParser(
-        prog="trugs-folder-export",
+        prog="trug-a-folder export",
         description="Export folder.trug.json from PostgreSQL database",
+        epilog=_EPILOGS["export"],
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
         "path",
@@ -1597,8 +1756,10 @@ def folder_import_command(args: Optional[list] = None) -> int:
     </trl>
     """
     parser = argparse.ArgumentParser(
-        prog="trugs-folder-import",
+        prog="trug-a-folder import",
         description="Import folder.trug.json into PostgreSQL database",
+        epilog=_EPILOGS["import"],
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
         "path",
@@ -1660,6 +1821,10 @@ def _carto_render(argv):
     """trug-a-folder render [architecture] — commons render is architecture-only."""
     target = argv[0] if argv else "architecture"
     rest = argv[1:] if argv else []
+    if target in ("-h", "--help", "help"):
+        # Route to the architecture renderer's argparse help — the only
+        # commons render target, so its help IS the verb's help.
+        return folder_render_command(["--help"])
     if target == "architecture":
         return folder_render_command(rest)
     print(
@@ -1688,6 +1853,25 @@ _FOLDER_DISPATCH = {
     "import": lambda argv: folder_import_command(argv),
 }
 
+# One-line verb summaries for the top-level banner (A4, STANDARD_cli_help.md).
+# Keys MUST mirror _FOLDER_DISPATCH — test_help_bar.py asserts the two agree.
+_FOLDER_SUMMARIES = {
+    "init": "Initialize folder.trug.json in a directory",
+    "check": "Validate folder.trug.json against the governance rules",
+    "sync": "Reconcile folder.trug.json with the filesystem",
+    "render": "Render ARCHITECTURE.md from folder.trug.json",
+    "info": "Show summary information about a TRUG file",
+    "ls": "List directory contents with TRUG metadata",
+    "where": "Search all folder graphs for a concept, node, or file",
+    "find": "Query nodes in a TRUG graph by type/name/dimension",
+    "add": "Add files to the TRUG graph",
+    "mv": "Move/rename a node in the TRUG graph",
+    "link": "Create or remove typed edges between nodes",
+    "dim": "Manage dimensions in a TRUG graph",
+    "export": "Export folder.trug.json from the database",
+    "import": "Import folder.trug.json into the database",
+}
+
 
 def main(argv=None) -> int:
     """trug-a-folder entry point — cartography verbs only (T3-free)."""
@@ -1696,7 +1880,10 @@ def main(argv=None) -> int:
     if not argv or argv[0] in ("-h", "--help", "help"):
         print("trug-a-folder — TRUGS cartography (filesystem <-> TRUG graph)\n")
         print("usage: trug-a-folder <verb> [args...]\n")
-        print("verbs: " + ", ".join(_FOLDER_DISPATCH))
+        print("verbs:")
+        for verb, summary in _FOLDER_SUMMARIES.items():
+            print(f"  {verb:<12} {summary}")
+        print("\nRun 'trug-a-folder <verb> --help' for verb-specific usage and examples.")
         return 0
     cmd, rest = argv[0], argv[1:]
     handler = _FOLDER_DISPATCH.get(cmd)

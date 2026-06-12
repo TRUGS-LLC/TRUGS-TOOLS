@@ -1,0 +1,56 @@
+{
+  "name": "Cross Folder Test",
+  "version": "1.0.0",
+  "type": "PROJECT",
+  "description": "Test cross-folder dependencies",
+  "dimensions": {},
+  "capabilities": {},
+  "nodes": [
+    {
+      "id": "root_folder",
+      "type": "FOLDER",
+      "properties": {
+        "name": "CROSS_FOLDER",
+        "purpose": "Test cross-folder deps",
+        "phase": "CODING",
+        "status": "ACTIVE",
+        "version": "1.0.0"
+      },
+      "parent_id": null,
+      "contains": ["comp_a", "comp_b"],
+      "metric_level": "KILO_FOLDER",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "comp_a",
+      "type": "COMPONENT",
+      "properties": {
+        "name": "component_a",
+        "purpose": "First component"
+      },
+      "parent_id": "root_folder",
+      "contains": [],
+      "metric_level": "DEKA_COMPONENT",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "comp_b",
+      "type": "COMPONENT",
+      "properties": {
+        "name": "component_b",
+        "purpose": "Second component"
+      },
+      "parent_id": "root_folder",
+      "contains": [],
+      "metric_level": "DEKA_COMPONENT",
+      "dimension": "folder_structure"
+    }
+  ],
+  "edges": [
+    {"from_id": "root_folder", "to_id": "comp_a", "relation": "contains", "weight": 1.0},
+    {"from_id": "root_folder", "to_id": "comp_b", "relation": "contains", "weight": 1.0},
+    {"from_id": "comp_a", "to_id": "comp_b", "relation": "uses", "weight": 0.9},
+    {"from_id": "comp_a", "to_id": "trugs_tools:comp_validator", "relation": "uses", "weight": 0.8},
+    {"from_id": "comp_b", "to_id": "trugs_protocol:spec_core", "relation": "implements", "weight": 1.0}
+  ]
+}

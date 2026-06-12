@@ -33,11 +33,33 @@ def _invoke(module: str, args) -> int:
             sys.argv = saved
 
 
+_AUDIT_HELP = """\
+usage: trug audit <markdown|vocab> [args...]
+
+Corpus-side audit bridges — extract and check TRL embedded in artifacts.
+
+subcommands:
+  markdown   Extract <trl> blocks from markdown files and parse-check them
+  vocab      Scan files for out-of-vocabulary TRL verbs
+
+examples:
+  trug audit markdown AAA/AAA_1234_plan.md
+  trug audit vocab src/
+
+exit codes:
+  0  audit passed
+  1  audit findings present
+  2  usage error (missing/unknown subcommand)"""
+
+
 def _dispatch_audit(argv) -> int:
     """trug audit <markdown|vocab> — corpus-side audit bridges (T1 audit/ package)."""
     if not argv:
         print("trug audit: expected subcommand (markdown|vocab)", flush=True)
         return 2
+    if argv[0] in ("-h", "--help", "help"):
+        print(_AUDIT_HELP, flush=True)
+        return 0
     sub, rest = argv[0], argv[1:]
     if sub == "markdown":
         from trugs_tools.audit.extract_trl import main as _audit_markdown
@@ -66,6 +88,19 @@ _TRUG_DISPATCH = {
     "audit": _dispatch_audit,
 }
 
+# One-line verb summaries for the top-level banner (A4, STANDARD_cli_help.md).
+# Keys MUST mirror _TRUG_DISPATCH — test_help_bar.py asserts the two agree.
+_TRUG_SUMMARIES = {
+    "validate": "Validate a TRUG JSON file against the 12 structural rules",
+    "trl": "Compile / decompile / validate TRL <-> TRUG",
+    "get": "Read full content of a node in a TRUG graph",
+    "update": "Update properties on an existing node",
+    "delete": "Remove nodes and their connected edges",
+    "unlink": "Remove specific edges from a TRUG graph",
+    "compliance": "Dark Code compliance check over a source tree",
+    "audit": "Corpus-side audit bridges (markdown / vocab)",
+}
+
 
 def main(argv=None) -> int:
     """trug entry point — language verbs only (T2/T3-free)."""
@@ -74,7 +109,10 @@ def main(argv=None) -> int:
     if not argv or argv[0] in ("-h", "--help", "help"):
         print("trug — the TRUGS language CLI (validate / compile / graph CRUD)\n")
         print("usage: trug <verb> [args...]\n")
-        print("verbs: " + ", ".join(_TRUG_DISPATCH))
+        print("verbs:")
+        for verb, summary in _TRUG_SUMMARIES.items():
+            print(f"  {verb:<12} {summary}")
+        print("\nRun 'trug <verb> --help' for verb-specific usage and examples.")
         return 0
     cmd, rest = argv[0], argv[1:]
     handler = _TRUG_DISPATCH.get(cmd)

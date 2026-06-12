@@ -17,6 +17,7 @@ from typing import Any, Dict, List, Optional, Union
 from trugs_folder.utils import (
     get_node_by_id,
     get_root_node,
+    infer_metric_level,
     infer_node_type,
     load_graph,
     make_node_id,
@@ -76,7 +77,7 @@ def tadd(
         ntype = node_type or (
             "FOLDER" if filepath.is_dir() else infer_node_type(filepath)
         )
-        metric = "KILO_FOLDER" if ntype == "FOLDER" else f"BASE_{ntype}"
+        metric = "KILO_FOLDER" if ntype == "FOLDER" else infer_metric_level(ntype)
 
         node: Dict[str, Any] = {
             "id": node_id,

@@ -1,0 +1,26 @@
+{
+  "name": "Empty Collections Folder",
+  "version": "1.0.0",
+  "type": "PROJECT",
+  "description": "Test with no edges, no TEST_SUITE, no EXAMPLE_SET",
+  "dimensions": {},
+  "capabilities": {},
+  "nodes": [
+    {
+      "id": "root_folder",
+      "type": "FOLDER",
+      "properties": {
+        "name": "EMPTY",
+        "purpose": "Empty collections test",
+        "phase": "VISION",
+        "status": "ACTIVE",
+        "version": "0.1.0"
+      },
+      "parent_id": null,
+      "contains": [],
+      "metric_level": "KILO_FOLDER",
+      "dimension": "folder_structure"
+    }
+  ],
+  "edges": []
+}

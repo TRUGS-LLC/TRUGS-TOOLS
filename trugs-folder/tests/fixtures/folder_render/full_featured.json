@@ -1,0 +1,168 @@
+{
+  "name": "Full Featured Folder",
+  "version": "2.0.0",
+  "type": "PROJECT",
+  "description": "A comprehensive test project with all node types",
+  "dimensions": {
+    "complexity": {"description": "Component complexity dimension"}
+  },
+  "capabilities": {
+    "extensions": ["custom_ext"],
+    "vocabularies": ["project_v1"]
+  },
+  "nodes": [
+    {
+      "id": "root_folder",
+      "type": "FOLDER",
+      "properties": {
+        "name": "FULL_FEATURED",
+        "purpose": "Comprehensive test project",
+        "phase": "CODING",
+        "status": "ACTIVE",
+        "version": "2.0.0"
+      },
+      "parent_id": null,
+      "contains": ["comp_main", "comp_utils", "spec_main", "test_suite", "example_set", "schema_core", "template_main", "doc_aaa", "doc_readme"],
+      "metric_level": "KILO_FOLDER",
+      "dimension": "complexity"
+    },
+    {
+      "id": "comp_main",
+      "type": "COMPONENT",
+      "properties": {
+        "name": "main_component",
+        "purpose": "Primary component",
+        "files": ["src/main.py", "src/utils.py", "src/helpers.py"],
+        "file_count": 3,
+        "loc": 450
+      },
+      "parent_id": "root_folder",
+      "contains": [],
+      "metric_level": "DEKA_COMPONENT",
+      "dimension": "complexity"
+    },
+    {
+      "id": "comp_utils",
+      "type": "COMPONENT",
+      "properties": {
+        "name": "utils_component",
+        "purpose": "Utility functions",
+        "files": ["src/utils.py"],
+        "file_count": 1,
+        "loc": 120
+      },
+      "parent_id": "root_folder",
+      "contains": [],
+      "metric_level": "DEKA_COMPONENT",
+      "dimension": "complexity"
+    },
+    {
+      "id": "spec_main",
+      "type": "SPECIFICATION",
+      "properties": {
+        "name": "SPEC.md",
+        "purpose": "Main specification document",
+        "format": "markdown"
+      },
+      "parent_id": "root_folder",
+      "contains": [],
+      "metric_level": "BASE_SPECIFICATION",
+      "dimension": "complexity"
+    },
+    {
+      "id": "test_suite",
+      "type": "TEST_SUITE",
+      "properties": {
+        "name": "tests/",
+        "purpose": "Complete test suite",
+        "test_count": 150,
+        "coverage": "95%",
+        "test_files": 8
+      },
+      "parent_id": "root_folder",
+      "contains": [],
+      "metric_level": "BASE_TEST_SUITE",
+      "dimension": "complexity"
+    },
+    {
+      "id": "example_set",
+      "type": "EXAMPLE_SET",
+      "properties": {
+        "name": "examples/",
+        "purpose": "Usage examples for all features",
+        "example_count": 12
+      },
+      "parent_id": "root_folder",
+      "contains": [],
+      "metric_level": "BASE_EXAMPLE_SET",
+      "dimension": "complexity"
+    },
+    {
+      "id": "schema_core",
+      "type": "SCHEMA",
+      "properties": {
+        "name": "schemas/core.json",
+        "purpose": "Core JSON schema"
+      },
+      "parent_id": "root_folder",
+      "contains": [],
+      "metric_level": "BASE_SCHEMA",
+      "dimension": "complexity"
+    },
+    {
+      "id": "template_main",
+      "type": "TEMPLATE",
+      "properties": {
+        "name": "templates/main.py",
+        "purpose": "Main project template"
+      },
+      "parent_id": "root_folder",
+      "contains": [],
+      "metric_level": "BASE_TEMPLATE",
+      "dimension": "complexity"
+    },
+    {
+      "id": "doc_aaa",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "AAA.md",
+        "purpose": "Development tracking",
+        "format": "markdown"
+      },
+      "parent_id": "root_folder",
+      "contains": [],
+      "metric_level": "BASE_DOCUMENT",
+      "dimension": "complexity"
+    },
+    {
+      "id": "doc_readme",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "README.md",
+        "purpose": "Human quickstart",
+        "format": "markdown"
+      },
+      "parent_id": "root_folder",
+      "contains": [],
+      "metric_level": "BASE_DOCUMENT",
+      "dimension": "complexity"
+    }
+  ],
+  "edges": [
+    {"from_id": "root_folder", "to_id": "comp_main", "relation": "contains", "weight": 1.0},
+    {"from_id": "root_folder", "to_id": "comp_utils", "relation": "contains", "weight": 1.0},
+    {"from_id": "root_folder", "to_id": "spec_main", "relation": "contains", "weight": 1.0},
+    {"from_id": "root_folder", "to_id": "test_suite", "relation": "contains", "weight": 1.0},
+    {"from_id": "root_folder", "to_id": "example_set", "relation": "contains", "weight": 1.0},
+    {"from_id": "root_folder", "to_id": "schema_core", "relation": "contains", "weight": 1.0},
+    {"from_id": "root_folder", "to_id": "template_main", "relation": "contains", "weight": 1.0},
+    {"from_id": "root_folder", "to_id": "doc_aaa", "relation": "contains", "weight": 1.0},
+    {"from_id": "root_folder", "to_id": "doc_readme", "relation": "contains", "weight": 1.0},
+    {"from_id": "comp_main", "to_id": "spec_main", "relation": "implements", "weight": 1.0},
+    {"from_id": "comp_main", "to_id": "comp_utils", "relation": "uses", "weight": 0.8},
+    {"from_id": "test_suite", "to_id": "comp_main", "relation": "tests", "weight": 1.0},
+    {"from_id": "test_suite", "to_id": "comp_utils", "relation": "tests", "weight": 1.0},
+    {"from_id": "comp_main", "to_id": "external_lib:core_module", "relation": "uses", "weight": 0.7},
+    {"from_id": "schema_core", "to_id": "protocol:spec_schema", "relation": "implements", "weight": 0.95}
+  ]
+}

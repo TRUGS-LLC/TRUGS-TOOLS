@@ -1,0 +1,99 @@
+{
+  "name": "Stale Docs Folder",
+  "version": "1.0.0",
+  "type": "PROJECT",
+  "description": "Test trust notices",
+  "dimensions": {},
+  "capabilities": {},
+  "nodes": [
+    {
+      "id": "root_folder",
+      "type": "FOLDER",
+      "properties": {
+        "name": "STALE_TEST",
+        "purpose": "Test trust notices",
+        "phase": "CODING",
+        "status": "ACTIVE",
+        "version": "1.0.0"
+      },
+      "parent_id": null,
+      "contains": ["doc_aaa", "doc_readme", "doc_arch", "doc_conflict"],
+      "metric_level": "KILO_FOLDER",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_aaa",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "AAA.md",
+        "purpose": "Development tracking",
+        "format": "markdown",
+        "stale": true,
+        "stale_reason": "AAA.md claims phase=VISION but TRUG is phase=CODING",
+        "last_verified": "2026-02-18",
+        "trug_hash": "abc123"
+      },
+      "parent_id": "root_folder",
+      "contains": [],
+      "metric_level": "BASE_DOCUMENT",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_readme",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "README.md",
+        "purpose": "Human quickstart",
+        "format": "markdown",
+        "verified": true,
+        "verified_by": "Xepayac",
+        "verified_date": "2026-01-01",
+        "stale": false,
+        "trug_hash": "def456"
+      },
+      "parent_id": "root_folder",
+      "contains": [],
+      "metric_level": "BASE_DOCUMENT",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_arch",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "ARCHITECTURE.md",
+        "purpose": "Dense reference",
+        "format": "markdown",
+        "verified": false,
+        "stale": false
+      },
+      "parent_id": "root_folder",
+      "contains": [],
+      "metric_level": "BASE_DOCUMENT",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_conflict",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "GLOSSARY.md",
+        "purpose": "Terminology reference",
+        "format": "markdown",
+        "verified": true,
+        "stale": true,
+        "stale_reason": "Drift detected after verification",
+        "last_verified": "2026-02-20",
+        "trug_hash": "ghi789"
+      },
+      "parent_id": "root_folder",
+      "contains": [],
+      "metric_level": "BASE_DOCUMENT",
+      "dimension": "folder_structure"
+    }
+  ],
+  "edges": [
+    {"from_id": "root_folder", "to_id": "doc_aaa", "relation": "contains", "weight": 1.0},
+    {"from_id": "root_folder", "to_id": "doc_readme", "relation": "contains", "weight": 1.0},
+    {"from_id": "root_folder", "to_id": "doc_arch", "relation": "contains", "weight": 1.0},
+    {"from_id": "root_folder", "to_id": "doc_conflict", "relation": "contains", "weight": 1.0}
+  ]
+}

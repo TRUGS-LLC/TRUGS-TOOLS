@@ -205,6 +205,11 @@ def get_root_node(trug: Dict[str, Any]) -> Optional[Dict[str, Any]]:
 def infer_node_type(filepath: Union[str, Path]) -> str:
     """Infer TRUG node type from file extension.
 
+    Emits only governance-valid types (folder_check.VALID_NODE_TYPES is
+    the canonical vocabulary, #56): code files are COMPONENT, prose and
+    structured-data files are DOCUMENT, test-suffixed files are TEST_SUITE.
+    SCHEMA is reserved for *.schema.json — a generic .json is not a schema.
+
     Args:
         filepath: Path to file
 
@@ -216,34 +221,35 @@ def infer_node_type(filepath: Union[str, Path]) -> str:
     </trl>
     """
     ext_map = {
-        ".py": "SOURCE",
-        ".go": "SOURCE",
-        ".rs": "SOURCE",
-        ".js": "SOURCE",
-        ".ts": "SOURCE",
-        ".jsx": "SOURCE",
-        ".tsx": "SOURCE",
-        ".c": "SOURCE",
-        ".cpp": "SOURCE",
-        ".h": "SOURCE",
-        ".java": "SOURCE",
-        ".rb": "SOURCE",
+        ".py": "COMPONENT",
+        ".go": "COMPONENT",
+        ".rs": "COMPONENT",
+        ".js": "COMPONENT",
+        ".ts": "COMPONENT",
+        ".jsx": "COMPONENT",
+        ".tsx": "COMPONENT",
+        ".c": "COMPONENT",
+        ".cpp": "COMPONENT",
+        ".h": "COMPONENT",
+        ".java": "COMPONENT",
+        ".rb": "COMPONENT",
         ".md": "DOCUMENT",
         ".txt": "DOCUMENT",
         ".rst": "DOCUMENT",
-        ".json": "CONFIGURATION",
-        ".yaml": "CONFIGURATION",
-        ".yml": "CONFIGURATION",
-        ".toml": "CONFIGURATION",
-        ".ini": "CONFIGURATION",
-        ".cfg": "CONFIGURATION",
+        ".json": "DOCUMENT",
+        ".yaml": "DOCUMENT",
+        ".yml": "DOCUMENT",
+        ".toml": "DOCUMENT",
+        ".ini": "DOCUMENT",
+        ".cfg": "DOCUMENT",
         ".trug.json": "SPECIFICATION",
-        ".test.py": "TEST",
-        ".test.js": "TEST",
-        ".test.ts": "TEST",
-        "_test.go": "TEST",
-        ".spec.js": "TEST",
-        ".spec.ts": "TEST",
+        ".schema.json": "SCHEMA",
+        ".test.py": "TEST_SUITE",
+        ".test.js": "TEST_SUITE",
+        ".test.ts": "TEST_SUITE",
+        "_test.go": "TEST_SUITE",
+        ".spec.js": "TEST_SUITE",
+        ".spec.ts": "TEST_SUITE",
     }
     path = Path(filepath)
     name = path.name
@@ -255,7 +261,31 @@ def infer_node_type(filepath: Union[str, Path]) -> str:
 
     # Check simple extension
     suffix = path.suffix.lower()
-    return ext_map.get(suffix, "SOURCE")
+    return ext_map.get(suffix, "COMPONENT")
+
+
+# AGENT claude SHALL DEFINE FUNCTION infer_metric_level.
+def infer_metric_level(node_type: str) -> str:
+    """Return the governance metric_level for a node type.
+
+    Sourced from folder_check.VALID_NODE_TYPES (the canonical vocabulary)
+    so scan/add/sync output always passes check rule 5 — COMPONENT is
+    DEKA_COMPONENT, not BASE_COMPONENT. Types outside the vocabulary
+    (caller-supplied) keep the legacy BASE_<type> derivation.
+
+    Args:
+        node_type: TRUG node type string
+
+    Returns:
+        metric_level string
+
+    <trl>
+    FUNCTION infer_metric_level SHALL MAP DATA node_type TO DATA metric_level THEN RETURN DATA metric_level.
+    </trl>
+    """
+    from trugs_folder.folder_check import VALID_NODE_TYPES
+
+    return VALID_NODE_TYPES.get(node_type, f"BASE_{node_type}")
 
 
 # AGENT claude SHALL DEFINE FUNCTION make_node_id.

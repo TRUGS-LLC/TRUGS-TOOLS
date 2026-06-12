@@ -2154,8 +2154,18 @@ def main(argv: Optional[list] = None) -> int:
     </trl>
     """
     parser = argparse.ArgumentParser(
-        prog="trugs-trl",
+        prog="trug trl",
         description="TRL compiler — compile/decompile/validate TRL ↔ TRUG.",
+        epilog="""examples:
+  trug trl compile hello.trl
+  trug trl decompile hello.trug.json
+  trug trl validate hello.trug.json
+
+exit codes:
+  0  success / valid
+  1  parse or validation failure
+  2  usage error (bad flags or arguments)""",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     sub = parser.add_subparsers(dest="command", required=True)
     for cmd, help_text in [

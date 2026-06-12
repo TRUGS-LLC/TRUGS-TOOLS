@@ -102,8 +102,17 @@ def main(argv: Optional[list] = None) -> int:
     </trl>
     """
     parser = argparse.ArgumentParser(
-        prog="trugs-tupdate",
+        prog="trug update",
         description="Update properties on an existing node in a TRUG file.",
+        epilog="""examples:
+  trug update graph.trug.json my_node --set status=done
+  trug update graph.trug.json my_node --type DOCUMENT --dry-run
+
+exit codes:
+  0  success
+  1  node not found / file error
+  2  usage error (bad flags or arguments)""",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("trug_file", help="Path to .trug.json file")
     parser.add_argument("node_id", help="ID of the node to update")

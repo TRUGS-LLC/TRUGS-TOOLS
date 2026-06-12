@@ -458,12 +458,21 @@ def main(argv: Optional[list[str]] = None) -> int:
     import sys
 
     parser = argparse.ArgumentParser(
-        prog="tg audit markdown",
+        prog="trug audit markdown",
         description=(
             "Extract every <trl>...</trl> block from markdown files under PATH "
             "and validate each against the canonical TRL parser. Reporting only — "
             "never modifies source files."
         ),
+        epilog="""examples:
+  trug audit markdown AAA/AAA_1234_plan.md
+  trug audit markdown docs/ -f json
+
+exit codes:
+  0  all blocks parse
+  1  parse failures present
+  2  usage error (bad flags or arguments)""",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
         "path",

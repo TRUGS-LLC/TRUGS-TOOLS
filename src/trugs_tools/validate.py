@@ -929,6 +929,21 @@ def validate_file(path: Path) -> ValidationResult:
 # ─── CLI ───────────────────────────────────────────────────────────────────────
 
 
+_HELP = """\
+usage: trug validate <file.trug.json> | --all [dir]
+
+Validate a TRUG JSON file against the 12 structural rules. With --all,
+validate every *.json / *.trug.json under a directory.
+
+examples:
+  trug validate first.trug.json
+  trug validate --all ./graphs
+
+exit codes:
+  0  VALID (all files pass)
+  1  INVALID, file error, or no files found"""
+
+
 # AGENT claude SHALL READ DATA argv THEN RETURN INTEGER DATA exit_code.
 def main():
     """CLI entry point: validate one file or all files in a directory.
@@ -937,10 +952,11 @@ def main():
     FUNCTION main SHALL READ DATA argv THEN VALIDATE FILE path THEN RETURN DATA exit_code.
     </trl>
     """
+    if len(sys.argv) > 1 and sys.argv[1] in ("-h", "--help", "help"):
+        print(_HELP)
+        sys.exit(0)
     if len(sys.argv) < 2:
-        print(
-            "Usage: python -m trugs_llc.tools.validate <file.trug.json> [--all <dir>]"
-        )
+        print(_HELP)
         sys.exit(1)
 
     if sys.argv[1] == "--all":
