@@ -1,0 +1,640 @@
+{
+  "name": "trugs-tools",
+  "version": "2.0.0a1",
+  "type": "PROJECT",
+  "description": "TRUGS unified CLI and library \u2014 graph engine, 16-rule validator, TRL compiler, folder-graph lifecycle, memory substrate, AAA/EPIC tooling, web research pipeline.",
+  "dimensions": {
+    "folder_structure": {
+      "description": "Top-level repo structure \u2014 package, tests, examples, reference, docs",
+      "base_level": "BASE"
+    },
+    "build": {
+      "description": "Build, packaging, and CI configuration",
+      "base_level": "BASE"
+    },
+    "examples": {
+      "description": "Worked TRUG examples validated against CORE",
+      "base_level": "BASE"
+    },
+    "research": {
+      "description": "Proposal documents authored against the TRUGS spec",
+      "base_level": "BASE"
+    }
+  },
+  "capabilities": {
+    "extensions": [],
+    "vocabularies": [
+      "project_v1"
+    ],
+    "profiles": []
+  },
+  "nodes": [
+    {
+      "id": "root",
+      "type": "FOLDER",
+      "properties": {
+        "name": "trugs-tools",
+        "purpose": "The TRUGS unified CLI and library (the `tg` command) \u2014 graph engine, 16-rule validator, TRL compiler, folder-graph lifecycle, memory substrate, AAA/EPIC tooling, web research pipeline."
+      },
+      "parent_id": null,
+      "contains": [
+        "doc_readme",
+        "doc_agent",
+        "doc_license",
+        "doc_notice",
+        "doc_changelog",
+        "doc_pyproject",
+        "comp_src",
+        "comp_tests",
+        "comp_examples",
+        "comp_reference",
+        "folder_branches",
+        "folder_proposal",
+        "folder_ci_proposed",
+        "doc_contributing",
+        "doc_security"
+      ],
+      "metric_level": "KILO_FOLDER",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_readme",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "README.md",
+        "purpose": "Overview \u2014 what trugs-tools is, install, the tg command surface, links to the TRUGS spec."
+      },
+      "parent_id": "root",
+      "contains": [],
+      "metric_level": "BASE_DOCUMENT",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_agent",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "AGENT.md",
+        "purpose": "Agent instructions \u2014 TRL vocabulary primer, repo navigation, validation commands."
+      },
+      "parent_id": "root",
+      "contains": [],
+      "metric_level": "BASE_DOCUMENT",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_license",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "LICENSE",
+        "purpose": "Apache 2.0 \u2014 TRUGS LLC."
+      },
+      "parent_id": "root",
+      "contains": [],
+      "metric_level": "BASE_DOCUMENT",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_notice",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "NOTICE",
+        "purpose": "Apache 2.0 attribution + patent notice + provenance (consolidation of three prior sources)."
+      },
+      "parent_id": "root",
+      "contains": [],
+      "metric_level": "BASE_DOCUMENT",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_changelog",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "CHANGELOG.md",
+        "purpose": "Keep-a-Changelog \u2014 notable changes; [Unreleased] accumulates toward the v2.0 PyPI publish."
+      },
+      "parent_id": "root",
+      "contains": [],
+      "metric_level": "BASE_DOCUMENT",
+      "dimension": "build"
+    },
+    {
+      "id": "doc_pyproject",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "pyproject.toml",
+        "purpose": "Python package metadata: name=trugs-tools, version=2.0.0a1, Apache-2.0, the tg console script + ruff/mypy config."
+      },
+      "parent_id": "root",
+      "contains": [],
+      "metric_level": "BASE_DOCUMENT",
+      "dimension": "build"
+    },
+    {
+      "id": "comp_src",
+      "type": "COMPONENT",
+      "properties": {
+        "name": "src",
+        "purpose": "The Python package source tree (src/trugs_tools) \u2014 core engine plus filesystem/memory/audit/web/migration/templates/internal/schemas subpackages.",
+        "file_count": 97
+      },
+      "parent_id": "root",
+      "contains": [
+        "comp_core",
+        "comp_filesystem",
+        "comp_memory",
+        "comp_audit",
+        "comp_migration",
+        "comp_internal",
+        "comp_templates",
+        "comp_web",
+        "comp_schemas",
+        "comp_data"
+      ],
+      "metric_level": "DEKA_COMPONENT",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "comp_core",
+      "type": "COMPONENT",
+      "properties": {
+        "name": "trugs_tools (core engine)",
+        "purpose": "Top-level graph/CLI engine \u2014 tg dispatch (cli.py), TRUG model (trug_graph.py), 16-rule validator (validator.py/validate.py/rules.py), TRL compiler (trl.py), renderers, generators, AAA + EPIC + compliance + events + the t* explicit-file CRUD verbs.",
+        "file_count": 28
+      },
+      "parent_id": "comp_src",
+      "contains": [],
+      "metric_level": "DEKA_COMPONENT",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "comp_filesystem",
+      "type": "COMPONENT",
+      "properties": {
+        "name": "trugs_tools/filesystem",
+        "purpose": "Folder-graph lifecycle CLIs \u2014 init/check/sync/render of folder.trug.json, branch schemas, scope resolution.",
+        "file_count": 21
+      },
+      "parent_id": "comp_src",
+      "contains": [],
+      "metric_level": "DEKA_COMPONENT",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "comp_memory",
+      "type": "COMPONENT",
+      "properties": {
+        "name": "trugs_tools/memory",
+        "purpose": "Memory substrate \u2014 reorganizer (sole mutator), recall, producers, derived-field updaters, cultivation, level-stratified render.",
+        "file_count": 14
+      },
+      "parent_id": "comp_src",
+      "contains": [],
+      "metric_level": "DEKA_COMPONENT",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "comp_audit",
+      "type": "COMPONENT",
+      "properties": {
+        "name": "trugs_tools/audit",
+        "purpose": "Corpus-side audit bridges \u2014 markdown <trl> extraction + position-independent vocab scan (tg audit markdown/vocab).",
+        "file_count": 3
+      },
+      "parent_id": "comp_src",
+      "contains": [],
+      "metric_level": "DEKA_COMPONENT",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "comp_migration",
+      "type": "COMPONENT",
+      "properties": {
+        "name": "trugs_tools/migration",
+        "purpose": "One-shot schema/version migration helpers.",
+        "file_count": 2
+      },
+      "parent_id": "comp_src",
+      "contains": [],
+      "metric_level": "DEKA_COMPONENT",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "comp_internal",
+      "type": "COMPONENT",
+      "properties": {
+        "name": "trugs_tools/internal",
+        "purpose": "Internal shared helpers not part of the public API surface.",
+        "file_count": 2
+      },
+      "parent_id": "comp_src",
+      "contains": [],
+      "metric_level": "DEKA_COMPONENT",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "comp_templates",
+      "type": "COMPONENT",
+      "properties": {
+        "name": "trugs_tools/templates",
+        "purpose": "Branch scaffolding templates (knowledge/nested/orchestration/web/writer).",
+        "file_count": 6
+      },
+      "parent_id": "comp_src",
+      "contains": [],
+      "metric_level": "DEKA_COMPONENT",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "comp_web",
+      "type": "COMPONENT",
+      "properties": {
+        "name": "trugs_tools/web",
+        "purpose": "Web research pipeline \u2014 crawler/extractor/credibility/hub orchestration (S3 #2191 polish territory).",
+        "file_count": 20
+      },
+      "parent_id": "comp_src",
+      "contains": [],
+      "metric_level": "DEKA_COMPONENT",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "comp_schemas",
+      "type": "COMPONENT",
+      "properties": {
+        "name": "trugs_tools/schemas",
+        "purpose": "JSON schema definitions for TRUG validation.",
+        "file_count": 1
+      },
+      "parent_id": "comp_src",
+      "contains": [],
+      "metric_level": "DEKA_COMPONENT",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "comp_data",
+      "type": "COMPONENT",
+      "properties": {
+        "name": "trugs_tools/data",
+        "purpose": "Bundled data \u2014 language.trug.json (the self-defining TRL graph).",
+        "file_count": 1
+      },
+      "parent_id": "comp_src",
+      "contains": [],
+      "metric_level": "DEKA_COMPONENT",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "comp_tests",
+      "type": "TEST_SUITE",
+      "properties": {
+        "name": "tests",
+        "purpose": "Pytest suite covering the engine, filesystem, memory, audit, and web pipeline.",
+        "file_count": 98
+      },
+      "parent_id": "root",
+      "contains": [],
+      "metric_level": "BASE_TEST_SUITE",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "comp_examples",
+      "type": "COMPONENT",
+      "properties": {
+        "name": "EXAMPLES",
+        "purpose": "Worked TRUG examples across branches (knowledge/living/nested/research/web/writer/orchestration/cross_branch) \u2014 all validate against CORE.",
+        "file_count": 32
+      },
+      "parent_id": "root",
+      "contains": [],
+      "metric_level": "DEKA_COMPONENT",
+      "dimension": "examples"
+    },
+    {
+      "id": "comp_reference",
+      "type": "COMPONENT",
+      "properties": {
+        "name": "REFERENCE",
+        "purpose": "Reference docs \u2014 per-verb SPEC_*.md, GLOSSARY, quickstart, FAQ.",
+        "file_count": 13
+      },
+      "parent_id": "root",
+      "contains": [],
+      "metric_level": "DEKA_COMPONENT",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "folder_branches",
+      "type": "FOLDER",
+      "properties": {
+        "name": "branches",
+        "purpose": "Domain branch specifications (knowledge/law/mathgame/nested/\u2026) \u2014 vocabulary READMEs."
+      },
+      "parent_id": "root",
+      "contains": [],
+      "metric_level": "KILO_FOLDER",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "folder_proposal",
+      "type": "FOLDER",
+      "properties": {
+        "name": "PROPOSAL",
+        "purpose": "Proposal documents authored against the TRUGS spec."
+      },
+      "parent_id": "root",
+      "contains": [],
+      "metric_level": "KILO_FOLDER",
+      "dimension": "research"
+    },
+    {
+      "id": "folder_ci_proposed",
+      "type": "FOLDER",
+      "properties": {
+        "name": "ci-proposed",
+        "purpose": "Staged Tier-1 CI workflow (check.yml) pending activation by a maintainer with GitHub `workflow` scope. Move to .github/workflows/ to activate, then remove this node (AAA #2190 SP3)."
+      },
+      "parent_id": "root",
+      "contains": [],
+      "metric_level": "KILO_FOLDER",
+      "dimension": "build"
+    },
+    {
+      "id": "doc_contributing",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "CONTRIBUTING.md",
+        "purpose": "Contribution guidelines (inbound=outbound Apache-2.0; patent carve-out per NOTICE)"
+      },
+      "parent_id": "root",
+      "contains": [],
+      "metric_level": "BASE_DOCUMENT",
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_security",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "SECURITY.md",
+        "purpose": "Security policy / vulnerability disclosure"
+      },
+      "parent_id": "root",
+      "contains": [],
+      "metric_level": "BASE_DOCUMENT",
+      "dimension": "folder_structure"
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "root",
+      "to_id": "doc_readme",
+      "relation": "contains",
+      "properties": {}
+    },
+    {
+      "from_id": "root",
+      "to_id": "doc_agent",
+      "relation": "contains",
+      "properties": {}
+    },
+    {
+      "from_id": "root",
+      "to_id": "doc_license",
+      "relation": "contains",
+      "properties": {}
+    },
+    {
+      "from_id": "root",
+      "to_id": "doc_notice",
+      "relation": "contains",
+      "properties": {}
+    },
+    {
+      "from_id": "root",
+      "to_id": "doc_changelog",
+      "relation": "contains",
+      "properties": {}
+    },
+    {
+      "from_id": "root",
+      "to_id": "doc_pyproject",
+      "relation": "contains",
+      "properties": {}
+    },
+    {
+      "from_id": "root",
+      "to_id": "comp_src",
+      "relation": "contains",
+      "properties": {}
+    },
+    {
+      "from_id": "root",
+      "to_id": "comp_tests",
+      "relation": "contains",
+      "properties": {}
+    },
+    {
+      "from_id": "root",
+      "to_id": "comp_examples",
+      "relation": "contains",
+      "properties": {}
+    },
+    {
+      "from_id": "root",
+      "to_id": "comp_reference",
+      "relation": "contains",
+      "properties": {}
+    },
+    {
+      "from_id": "root",
+      "to_id": "folder_branches",
+      "relation": "contains",
+      "properties": {}
+    },
+    {
+      "from_id": "root",
+      "to_id": "folder_proposal",
+      "relation": "contains",
+      "properties": {}
+    },
+    {
+      "from_id": "root",
+      "to_id": "folder_ci_proposed",
+      "relation": "contains",
+      "properties": {}
+    },
+    {
+      "from_id": "comp_src",
+      "to_id": "comp_core",
+      "relation": "contains",
+      "properties": {}
+    },
+    {
+      "from_id": "comp_src",
+      "to_id": "comp_filesystem",
+      "relation": "contains",
+      "properties": {}
+    },
+    {
+      "from_id": "comp_src",
+      "to_id": "comp_memory",
+      "relation": "contains",
+      "properties": {}
+    },
+    {
+      "from_id": "comp_src",
+      "to_id": "comp_audit",
+      "relation": "contains",
+      "properties": {}
+    },
+    {
+      "from_id": "comp_src",
+      "to_id": "comp_migration",
+      "relation": "contains",
+      "properties": {}
+    },
+    {
+      "from_id": "comp_src",
+      "to_id": "comp_internal",
+      "relation": "contains",
+      "properties": {}
+    },
+    {
+      "from_id": "comp_src",
+      "to_id": "comp_templates",
+      "relation": "contains",
+      "properties": {}
+    },
+    {
+      "from_id": "comp_src",
+      "to_id": "comp_web",
+      "relation": "contains",
+      "properties": {}
+    },
+    {
+      "from_id": "comp_src",
+      "to_id": "comp_schemas",
+      "relation": "contains",
+      "properties": {}
+    },
+    {
+      "from_id": "comp_src",
+      "to_id": "comp_data",
+      "relation": "contains",
+      "properties": {}
+    },
+    {
+      "from_id": "doc_readme",
+      "to_id": "root",
+      "relation": "describes",
+      "properties": {}
+    },
+    {
+      "from_id": "comp_tests",
+      "to_id": "comp_src",
+      "relation": "tests",
+      "properties": {
+        "scope": "pytest suite exercises the package"
+      }
+    },
+    {
+      "from_id": "comp_examples",
+      "to_id": "comp_src",
+      "relation": "uses",
+      "properties": {
+        "scope": "examples are validated by the tg engine"
+      }
+    },
+    {
+      "from_id": "comp_reference",
+      "to_id": "comp_src",
+      "relation": "describes",
+      "properties": {
+        "scope": "per-verb reference for the tg surface"
+      }
+    },
+    {
+      "from_id": "comp_filesystem",
+      "to_id": "comp_core",
+      "relation": "uses",
+      "properties": {
+        "scope": "built on the core graph engine"
+      }
+    },
+    {
+      "from_id": "comp_memory",
+      "to_id": "comp_core",
+      "relation": "uses",
+      "properties": {
+        "scope": "built on the core graph engine"
+      }
+    },
+    {
+      "from_id": "comp_audit",
+      "to_id": "comp_core",
+      "relation": "uses",
+      "properties": {
+        "scope": "built on the core graph engine"
+      }
+    },
+    {
+      "from_id": "comp_web",
+      "to_id": "comp_core",
+      "relation": "uses",
+      "properties": {
+        "scope": "built on the core graph engine"
+      }
+    },
+    {
+      "from_id": "comp_migration",
+      "to_id": "comp_core",
+      "relation": "uses",
+      "properties": {
+        "scope": "built on the core graph engine"
+      }
+    },
+    {
+      "from_id": "comp_templates",
+      "to_id": "comp_core",
+      "relation": "uses",
+      "properties": {
+        "scope": "built on the core graph engine"
+      }
+    },
+    {
+      "from_id": "comp_internal",
+      "to_id": "comp_core",
+      "relation": "uses",
+      "properties": {
+        "scope": "built on the core graph engine"
+      }
+    },
+    {
+      "from_id": "comp_schemas",
+      "to_id": "comp_core",
+      "relation": "uses",
+      "properties": {
+        "scope": "built on the core graph engine"
+      }
+    },
+    {
+      "from_id": "comp_core",
+      "to_id": "comp_data",
+      "relation": "uses",
+      "properties": {
+        "scope": "core loads bundled language.trug.json"
+      }
+    },
+    {
+      "from_id": "root",
+      "to_id": "doc_contributing",
+      "relation": "contains",
+      "properties": {}
+    },
+    {
+      "from_id": "root",
+      "to_id": "doc_security",
+      "relation": "contains",
+      "properties": {}
+    }
+  ]
+}
