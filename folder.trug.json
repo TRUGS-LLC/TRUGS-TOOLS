@@ -52,7 +52,8 @@
         "folder_proposal",
         "folder_ci_proposed",
         "doc_contributing",
-        "doc_security"
+        "doc_security",
+        "comp_trugs_folder"
       ],
       "metric_level": "KILO_FOLDER",
       "dimension": "folder_structure"
@@ -381,6 +382,19 @@
       "contains": [],
       "metric_level": "BASE_DOCUMENT",
       "dimension": "folder_structure"
+    },
+    {
+      "id": "comp_trugs_folder",
+      "type": "COMPONENT",
+      "properties": {
+        "name": "trugs-folder",
+        "purpose": "Co-published sibling package — TRUGS cartography (`trug-a-folder` binary): keep a directory tree and its folder.trug.json in sync, validate folder governance, render ARCHITECTURE.md. Own pyproject/LICENSE/NOTICE/src/tests; ships to PyPI as trugs-folder 2.0.0.",
+        "file_count": 46
+      },
+      "parent_id": "root",
+      "contains": [],
+      "metric_level": "DEKA_COMPONENT",
+      "dimension": "folder_structure"
     }
   ],
   "edges": [
@@ -633,6 +647,12 @@
     {
       "from_id": "root",
       "to_id": "doc_security",
+      "relation": "contains",
+      "properties": {}
+    },
+    {
+      "from_id": "root",
+      "to_id": "comp_trugs_folder",
       "relation": "contains",
       "properties": {}
     }
