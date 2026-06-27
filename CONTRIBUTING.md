@@ -18,8 +18,8 @@ of a release batch rather than as your individual commit.
 ## Development
 
 ```bash
-pip install -e ".[test]"
-python -m pytest tests/
+make dev      # editable installs: the trug CLI + the bundled trugs-folder suite
+make check    # the Tier-1 gate — the bundled trugs-folder tests + self-validation
 ```
 
 The canonical language spec lives in [TRUGS-LLC/TRUGS](https://github.com/TRUGS-LLC/TRUGS) —

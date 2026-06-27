@@ -1,0 +1,30 @@
+{
+  "name": "first",
+  "version": "1.0.0",
+  "type": "PROJECT",
+  "dimension": "system",
+  "dimensions": { "system": { "description": "The example system dimension." } },
+  "nodes": [
+    {
+      "id": "first_project",
+      "type": "PROJECT",
+      "properties": { "name": "first", "purpose": "A minimal valid TRUG graph for the quickstart." },
+      "parent_id": null,
+      "contains": ["api_service"],
+      "metric_level": "BASE_PROJECT",
+      "dimension": "system"
+    },
+    {
+      "id": "api_service",
+      "type": "SERVICE",
+      "properties": { "name": "api", "purpose": "Validate incoming records." },
+      "parent_id": "first_project",
+      "contains": [],
+      "metric_level": "BASE_SERVICE",
+      "dimension": "system"
+    }
+  ],
+  "edges": [
+    { "from_id": "first_project", "to_id": "api_service", "relation": "CONTAINS" }
+  ]
+}

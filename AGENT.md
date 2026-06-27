@@ -4,37 +4,43 @@ You are reading the entry point for LLM agents consuming this repository.
 
 ## Role
 
-TRUGS-TOOLS is **reference + implementation** in the TRUGS-LLC portfolio. It provides all CLIs needed to operate on TRUGs. For spec + pedagogy, see:
+TRUGS-TOOLS is the **reference language toolchain** of the TRUGS-LLC portfolio:
+the `trug` CLI and the CORE validator that the rest of the commons imports and
+that the public most directly installs. For the specification and pedagogy, see:
 
-- TRUGS-LLC/TRUGS (spec: CORE + TRL + papers)
-- TRUGS-LLC/TRUGS-AGENT (marketing hub + concept tutorials with examples)
+- TRUGS-LLC/TRUGS — the spec (CORE + TRL + reference papers) and the getting-started guide
 
 ## Package
 
 - PyPI: `pip install trugs-tools`
-- Single binary: `tg`
+- Single binary: `trug`
 - Python module: `trugs_tools`
 
-## Command tree (see `tg --help` for canonical)
+## Command surface (run `trug --help` for the canonical list)
+
+Eight verbs on the `trug` binary — no god-command-tree, no hidden sub-namespaces.
+This public wheel ships the language tier only:
 
 ```
-tg init|check|sync|render|validate|info|ls|where|find|add|get|update|delete|mv|link|unlink|dim|compliance|trl|export|import
-tg memory <remember|recall|forget|associate|render|audit|import|reconcile>
-tg aaa <generate|validate>
-tg epic <sync>
-tg render <architecture|agent|claude|aaa>
+trug validate     Validate a TRUG JSON file against the 12 structural rules
+trug trl          Compile / decompile / validate TRL <-> TRUG
+trug get          Read full content of a node in a TRUG graph
+trug update       Update properties on an existing node
+trug delete       Remove nodes and their connected edges
+trug unlink       Remove specific edges from a TRUG graph
+trug compliance   Dark Code compliance check over a source tree
+trug audit        Corpus-side audit bridges (markdown / vocab)
 ```
+
+Run `trug <verb> --help` for verb-specific usage, examples, and exit codes.
 
 ## Navigation
 
-- `src/trugs_tools/` — CLI implementation
-- `src/trugs_tools/internal/` — maintainer utilities (not `tg` subcommands; invoke via `python -m ...`)
-- `branches/` — experimental branch vocabularies (CORE covers most cases)
-- `tests/` — unit + integration tests
-- `REFERENCE/` — SPEC_*.md docs for each tool
-- `EXAMPLES/` — runnable examples (schema-validation fixtures)
+- `src/trugs_tools/` — the `trug` CLI + CORE validator implementation
+- `src/trugs_tools/internal/` — maintainer utilities (not `trug` subcommands; invoke via `python -m ...`)
+- `trugs-folder/` — the sibling cartography package (binary: `trug-a-folder`) and its bundled suite
 
 ## Spec dependencies
 
 - CORE (7 node fields + 3 edge fields): `TRUGS-LLC/TRUGS/TRUGS_PROTOCOL/CORE.md`
-- TRL (211-word vocabulary across 9 parts of speech): `TRUGS-LLC/TRUGS/TRUGS_LANGUAGE/`
+- TRL (the constrained-English vocabulary across 9 parts of speech): `TRUGS-LLC/TRUGS/TRUGS_LANGUAGE/`

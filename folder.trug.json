@@ -1,8 +1,8 @@
 {
   "name": "trugs-tools",
-  "version": "2.0.0a1",
+  "version": "2.0.0",
   "type": "PROJECT",
-  "description": "TRUGS unified CLI and library \u2014 graph engine, 16-rule validator, TRL compiler, folder-graph lifecycle, memory substrate, AAA/EPIC tooling, web research pipeline.",
+  "description": "TRUGS language CLI \u2014 validate TRUG graphs, compile and decompile TRL, graph-node CRUD, Dark Code compliance, and corpus audit. The `trug` binary; implements TRUGS 2.0 (core_v2.0.0).",
   "dimensions": {
     "folder_structure": {
       "description": "Top-level repo structure \u2014 package, tests, examples, reference, docs",

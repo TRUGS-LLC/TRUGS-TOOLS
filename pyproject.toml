@@ -61,8 +61,11 @@ include = ["trugs_tools*"]
 [tool.setuptools.package-data]
 trugs_tools = ["data/*.json", "schemas/*.json"]
 
+# AAA #2736: the core trugs_tools suite is Tier-2 (deferred); the documented green
+# floor is the bundled trugs-folder 554-test suite (ADR-004). `make dev` installs both
+# packages editable so a bare `pytest` from the repo root collects this suite cleanly.
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["trugs-folder/tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
