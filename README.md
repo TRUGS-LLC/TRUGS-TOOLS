@@ -20,8 +20,8 @@ pip install trugs-tools
 ```bash
 trug --help                          # the verb list, one summary per verb
 trug validate first.trug.json        # the 12 structural rules -> VALID / INVALID
-trug trl compile hello.trl           # TRL sentence -> TRUG graph
-trug trl decompile hello.trug.json   # graph -> the sentence, losslessly
+trug trl compile hello.trl > hello.trug.json   # TRL sentence -> TRUG graph (saved to file)
+trug trl decompile hello.trug.json             # graph -> the sentence, losslessly
 trug compliance src/                 # Dark Code compliance scan
 ```
 
@@ -64,8 +64,8 @@ rendering `ARCHITECTURE.md` — is the sibling package
 ## Development
 
 ```bash
-make dev      # install dev/test tooling
-make check    # the Tier-1 gate — secrets / format / lint / types / tests + self-validation
+make dev      # editable installs: the trug CLI + the bundled trugs-folder suite
+make check    # the Tier-1 gate — the bundled trugs-folder tests + self-validation
 ```
 
 The last `make check` step is Layer-4 self-description: the engine validates
