@@ -11,6 +11,7 @@ PROCESS twatch SHALL MONITOR FILE folder_trug_json AND SHALL EMIT DATA rendered_
 </trl>
 """
 
+import sys
 import time
 from pathlib import Path
 from typing import Callable, Dict, Optional, Union
@@ -80,9 +81,17 @@ def twatch(
 
         except KeyboardInterrupt:
             break
-        except Exception:
+        except Exception as e:
             if once:
                 raise
+            # Surface the failure instead of spinning silently forever on a
+            # persistently-broken TRUG (audit #25); keep watching — the next
+            # edit may fix it.
+            print(
+                f"twatch: render cycle failed ({e.__class__.__name__}: {e}) — "
+                f"retrying in {interval}s",
+                file=sys.stderr,
+            )
             time.sleep(interval)
 
     return last_results

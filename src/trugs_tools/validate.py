@@ -4,7 +4,8 @@
 """TRUGS validator — enforces all 16 CORE rules.
 
 Rules 1-9: Structural (always enforced)
-Rules 10-16: Compositional (enforced when core_v1.0.0 declared)
+Rules 10-16: Compositional (enforced when core_v2.0.0 declared; the retired
+core_v1.0.0 is hard-rejected — TRUGS is v2-only, not back compatible)
 
 Usage:
     python -m trugs_llc.tools.validate <file.trug.json>
@@ -319,12 +320,48 @@ def _op_class(operation: str) -> Optional[str]:
     return None
 
 
-def _has_core_v091(trug: Dict[str, Any]) -> bool:
+CORE_VOCABULARY = "core_v2.0.0"
+# v1 is retired, not grandfathered (HITM no-back-compat ruling 2026-07-13):
+# declaring it must fail loud, never pass silently — a graph asking for
+# validation and being quietly told yes is the defect class of #3071.
+RETIRED_VOCABULARIES = frozenset({"core_v1.0.0"})
+
+
+def _declared_vocabularies(trug: Dict[str, Any]) -> List[str]:
     caps = trug.get("capabilities", {})
     if not isinstance(caps, dict):
-        return False
+        return []
     vocabs = caps.get("vocabularies", [])
-    return "core_v1.0.0" in vocabs
+    if not isinstance(vocabs, list):
+        return []
+    # Non-string entries are excluded here (they cannot declare anything and
+    # must not crash the retirement intersection) — _vocabularies_shape_error
+    # reports them loudly; this filter is never a silent path on its own.
+    return [v for v in vocabs if isinstance(v, str)]
+
+
+def _vocabularies_shape_error(trug: Dict[str, Any]) -> Optional[str]:
+    # A malformed declaration must fail LOUD: coercing a mistyped
+    # capabilities.vocabularies to "no declaration" would let a string-form
+    # declaration of the retired core_v1.0.0 pass silently — the exact
+    # defect class of #3071. (A non-dict capabilities block is already
+    # rejected by rule_8.)
+    caps = trug.get("capabilities", {})
+    if not isinstance(caps, dict) or "vocabularies" not in caps:
+        return None
+    vocabs = caps["vocabularies"]
+    if not isinstance(vocabs, list):
+        return (
+            "capabilities.vocabularies must be an array of strings, "
+            f"got {type(vocabs).__name__}"
+        )
+    if any(not isinstance(v, str) for v in vocabs):
+        return "capabilities.vocabularies must contain only strings"
+    return None
+
+
+def _declares_core_vocabulary(trug: Dict[str, Any]) -> bool:
+    return CORE_VOCABULARY in _declared_vocabularies(trug)
 
 
 # ─── Rules 1-9: Structural ────────────────────────────────────────────────────
@@ -614,7 +651,7 @@ def rule_9_metric_level_format(trug: Dict[str, Any], r: ValidationResult):
             )
 
 
-# ─── Rules 10-16: Compositional (opt-in via core_v1.0.0) ──────────────────────
+# ─── Rules 10-16: Compositional (armed by core_v2.0.0) ────────────────────────
 
 
 # PROCESS validator SHALL ASSERT EACH RECORD subject THEN MATCH RECORD operation BY RECORD entity.
@@ -667,6 +704,12 @@ def rule_11_operation_object(trug: Dict[str, Any], r: ValidationResult):
     node_map = {n.get("id"): n for n in trug.get("nodes", []) if n.get("id")}
     for edge in trug.get("edges", []):
         rel = edge.get("relation", "")
+        # Modal bindings (actor→operation) are rule_14's jurisdiction, not the
+        # verb-object table — SPEC_grammar scopes this rule to operation-to-target
+        # edges, and SHALL's dual listing in OP_OBLIGATE would otherwise sweep the
+        # modal edge into this scan (#3061).
+        if rel in MODALS:
+            continue
         if rel not in ALL_OPERATIONS:
             continue
         tid = edge.get("to_id")
@@ -892,8 +935,25 @@ def validate(trug: Dict[str, Any]) -> ValidationResult:
     rule_8_extension_declaration(trug, r)
     rule_9_metric_level_format(trug, r)
 
-    # Rules 10-16: only when core_v1.0.0 declared
-    if _has_core_v091(trug):
+    # A malformed vocabularies field fails loud before any gate decision —
+    # it must never silently degrade to "no declaration" (#3071 audit F1).
+    shape_err = _vocabularies_shape_error(trug)
+    if shape_err:
+        r.error("INVALID_FIELD_TYPE", shape_err, "capabilities.vocabularies")
+
+    # A retired vocabulary short-circuits the compositional tier: structural
+    # verdicts above stand, the tier does not arm, and exactly one
+    # RETIRED_VOCABULARY error is emitted — never a warning (#3071).
+    retired = RETIRED_VOCABULARIES.intersection(_declared_vocabularies(trug))
+    if retired:
+        r.error(
+            "RETIRED_VOCABULARY",
+            f"Vocabulary '{'|'.join(sorted(retired))}' is retired — TRUGS is "
+            f"v2-only; declare '{CORE_VOCABULARY}'",
+            "capabilities.vocabularies",
+        )
+    # Rules 10-16: armed by core_v2.0.0
+    elif _declares_core_vocabulary(trug):
         rule_10_subject_operation(trug, r)
         rule_11_operation_object(trug, r)
         rule_12_modifier_entity(trug, r)
@@ -932,8 +992,10 @@ def validate_file(path: Path) -> ValidationResult:
 _HELP = """\
 usage: trug validate <file.trug.json> | --all [dir]
 
-Validate a TRUG JSON file against the 12 structural rules. With --all,
-validate every *.json / *.trug.json under a directory.
+Validate a TRUG JSON file against the CORE rules: 9 structural (always) + 7
+compositional (when the graph declares core_v2.0.0; declaring the retired
+core_v1.0.0 is rejected). With --all, validate every *.json / *.trug.json
+under a directory.
 
 examples:
   trug validate first.trug.json

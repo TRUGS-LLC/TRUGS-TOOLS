@@ -1528,9 +1528,12 @@ def folder_sync_command(args: Optional[list] = None) -> int:
     parser.add_argument(
         "--prune-after",
         type=int,
-        default=7,
+        default=0,
         dest="prune_after",
-        help="Remove nodes stale for N consecutive syncs (0 disables, default 7)",
+        help=(
+            "Remove nodes stale for N consecutive syncs "
+            "(default 0: never prune; sync never removes nodes unless set)"
+        ),
     )
 
     parsed = parser.parse_args(args)
