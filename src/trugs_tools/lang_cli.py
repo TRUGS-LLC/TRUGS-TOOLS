@@ -15,22 +15,41 @@ Entry point: ``trug <verb> [args...]``. The unified `tg` god-binary (which adds
 cartography + memory/aaa/epic system verbs) lives in the trugs_start seed.
 """
 import importlib
+import inspect
 import sys
+
+
+def _accepts_positional(fn) -> bool:
+    """True when `fn` can take the argv slice as a positional argument.
+
+    Signature inspection replaces the old call-then-catch-TypeError dance: a
+    TypeError raised INSIDE a handler must propagate as the handler's own bug,
+    never be misread as a signature mismatch and silently re-run with mutated
+    sys.argv (double side effects, masked traceback — audit #16).
+    """
+    try:
+        params = inspect.signature(fn).parameters.values()
+    except (TypeError, ValueError):
+        return True  # no introspectable signature (C-level) — call positionally
+    return any(
+        p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD, p.VAR_POSITIONAL)
+        for p in params
+    )
 
 
 def _invoke(module: str, args) -> int:
     """Delegate to a T1 module's main(); tolerate argv-reading legacy handlers."""
     mod = importlib.import_module(f"trugs_tools.{module}")
     fn = mod.main
-    try:
+    if _accepts_positional(fn):
         return fn(args) or 0
-    except TypeError:
-        saved = sys.argv[:]
-        sys.argv = ["handler"] + list(args or [])
-        try:
-            return fn() or 0
-        finally:
-            sys.argv = saved
+    # Zero-positional handler (e.g. validate.main) reads sys.argv itself.
+    saved = sys.argv[:]
+    sys.argv = ["handler"] + list(args or [])
+    try:
+        return fn() or 0
+    finally:
+        sys.argv = saved
 
 
 _AUDIT_HELP = """\
@@ -91,7 +110,7 @@ _TRUG_DISPATCH = {
 # One-line verb summaries for the top-level banner (A4, STANDARD_cli_help.md).
 # Keys MUST mirror _TRUG_DISPATCH — test_help_bar.py asserts the two agree.
 _TRUG_SUMMARIES = {
-    "validate": "Validate a TRUG JSON file against the 12 structural rules",
+    "validate": "Validate a TRUG graph against the CORE ruleset (9 structural + 7 compositional, core_v2.0.0)",
     "trl": "Compile / decompile / validate TRL <-> TRUG",
     "get": "Read full content of a node in a TRUG graph",
     "update": "Update properties on an existing node",

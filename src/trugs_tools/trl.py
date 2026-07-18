@@ -1163,14 +1163,88 @@ def _parse_sentence(tokens: list[Token], pos: int, lang: dict) -> tuple[Sentence
 
 # ─── Compile (TRUG/L → TRUG) ─────────────────────────────────────────
 
+# The CORE vocabulary the completion pass declares so a compiled graph exercises
+# the full CORE-16 tier (structural rules 1-9 + compositional rules 10-16), not
+# just the structural floor. Mirrors validate.CORE_VOCABULARY (AAA #3071); kept
+# as a local literal so trl.py imports no validator internals.
+CORE_VOCABULARY = "core_v2.0.0"
+
+# Default graph name when the caller supplies none (e.g. stdin input). Deterministic.
+_DEFAULT_GRAPH_NAME = "trug_graph"
+
+
+def _complete_graph(nodes: list, edges: list, name: str) -> dict:
+    """Turn a compiled fragment into a complete, `tg validate`-VALID TRUG (AAA #3062).
+
+    Deterministic post-pass (option-1 ruling): fills every fragment node's 7 CORE
+    fields, appends a synthetic ``type: PROJECT`` root at ``BASE_PROJECT`` that
+    contains all fragment nodes as ``DECI_<TYPE>`` leaves, and wraps the whole in
+    the CORE envelope declaring ``core_v2.0.0``.
+
+    Additive-only (A9): each fragment node's ``id``/``type``/``properties`` content
+    is preserved unchanged — only the absent CORE fields are added (and a
+    ``properties: {}`` default where the key was absent). The level-directive
+    presentation stamp (``properties.metric_level``) is never read or promoted to
+    the CORE ``metric_level`` field (ADR-002). The root id is fixed at ``root``
+    with deterministic iterate-until-free suffixing on collision (ADR-004).
+    """
+    dim = "system"
+
+    # ADR-004: fixed root id 'root'; suffix until free so a source that authored
+    # an entity literally named 'root' (or 'root-1', …) never id-collides.
+    existing_ids = {n["id"] for n in nodes}
+    root_id = "root"
+    suffix = 1
+    while root_id in existing_ids:
+        root_id = f"root-{suffix}"
+        suffix += 1
+
+    child_ids = []
+    for n in nodes:
+        n.setdefault("properties", {})       # A9: absent -> {} counts as unchanged
+        n["parent_id"] = root_id
+        n.setdefault("contains", [])
+        n["metric_level"] = f"DECI_{n['type']}"  # BASE root >= DECI child (rule 4)
+        n["dimension"] = dim
+        child_ids.append(n["id"])
+
+    nodes.append(
+        {
+            "id": root_id,
+            "type": "PROJECT",
+            "properties": {},
+            "parent_id": None,
+            "contains": child_ids,
+            "metric_level": "BASE_PROJECT",
+            "dimension": dim,
+        }
+    )
+
+    return {
+        "name": name,
+        "version": "1.0.0",
+        "type": "PROJECT",
+        "dimension": dim,
+        "dimensions": {dim: {"description": f"Compiled TRUG graph: {name}"}},
+        "nodes": nodes,
+        "edges": edges,
+        "capabilities": {"vocabularies": [CORE_VOCABULARY]},
+    }
+
 
 # PROCESS compiler SHALL MAP STRING DATA source TO RECORD graph.
-def compile(src_or_sentences, lang: Optional[dict] = None) -> dict:
-    """Compile TRUG/L into a TRUG graph fragment (nodes + edges).
+def compile(
+    src_or_sentences, lang: Optional[dict] = None, name: Optional[str] = None
+) -> dict:
+    """Compile TRUG/L into a complete, `tg validate`-VALID TRUG graph.
 
-    Accepts a string or a pre-parsed list[Sentence]. Returns a graph
-    dict with keys {nodes, edges}. Deterministic — the same input
-    always produces the same graph.
+    Accepts a string or a pre-parsed list[Sentence]. Returns a complete graph:
+    the CORE envelope (name/version/type/dimension/dimensions + a ``core_v2.0.0``
+    capability declaration), every node carrying its 7 CORE fields, and a synthetic
+    ``PROJECT`` root containing the compiled nodes (AAA #3062 — the taught
+    author->compile->validate loop closes with no manual envelope step).
+    Deterministic — the same input always produces the same graph. ``name`` sets the
+    graph name (the CLI passes the input file's stem; default ``trug_graph``).
 
     <trl>
     FUNCTION compile SHALL COMPILE DATA source THEN RETURN RECORD graph.
@@ -1489,7 +1563,10 @@ def compile(src_or_sentences, lang: Optional[dict] = None) -> dict:
             sentence, _node_count_before, first_op_id=first_op
         )
 
-    return {"nodes": nodes, "edges": edges}
+    # AAA #3062: complete the fragment into a VALID TRUG. Runs as a post-pass
+    # (appends the root; never prepends) so the per-sentence node indexing above
+    # is untouched. `name` defaults deterministically when the caller gives none.
+    return _complete_graph(nodes, edges, name or _DEFAULT_GRAPH_NAME)
 
 
 # ─── Decompile (TRUG → TRL) ───────────────────────────────────────────
@@ -2026,6 +2103,14 @@ _SUBJ_VERB_OK: set[tuple[str, str]] = (
 
 _NEGATIVE_ARTICLES = {"NO", "NONE"}
 
+# Node types that are STRUCTURAL rather than TRL nouns, and so are exempt from
+# the Rule-1 noun-vocabulary check. TRANSFORM is the operation-node type the
+# compiler emits; PROJECT is the synthetic completion root (AAA #3062 / ADR-003)
+# — every completed graph now carries one, and the fleet convention already
+# roots hand-authored graphs at a `type: PROJECT` node. Neither is one of the
+# 26 TRL nouns, so both are whitelisted here rather than added to the vocabulary.
+_STRUCTURAL_NODE_TYPES = {"TRANSFORM", "PROJECT"}
+
 
 # PROCESS validator SHALL VALIDATE RECORD graph SUBJECT_TO DATA vocabulary.
 def validate(graph: dict, lang: Optional[dict] = None) -> list[str]:
@@ -2065,7 +2150,7 @@ def validate(graph: dict, lang: Optional[dict] = None) -> list[str]:
     for n in graph.get("nodes", []):
         if "type" not in n:
             errors.append(f"node {n.get('id', '?')}: missing type")
-        elif n["type"] == "TRANSFORM":
+        elif n["type"] in _STRUCTURAL_NODE_TYPES:
             pass
         elif n["type"] not in nouns:
             errors.append(
@@ -2200,7 +2285,9 @@ exit codes:
 
     try:
         if ns.command == "compile":
-            print(json.dumps(compile(src), indent=2))
+            # Graph name from the input file's stem; stdin ('-') gets the default.
+            graph_name = Path(ns.file).stem if ns.file != "-" else _DEFAULT_GRAPH_NAME
+            print(json.dumps(compile(src, name=graph_name), indent=2))
         elif ns.command == "decompile":
             print(decompile(_parse_json_input()))
         elif ns.command == "validate":

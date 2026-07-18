@@ -19,6 +19,13 @@ from typing import Any, Dict, List, Optional, Set, Union
 
 from trugs_store import JsonFilePersistence
 
+# tgcli-1 reconcile (AAA #2930 SP3): the WRITE vocabulary is the single source
+# of truth. `tg link` writes edges using `tlink.VALID_RELATIONS` (the uppercase
+# semantic set); `tg check` previously validated against a disjoint lowercase
+# set, so every written edge failed its own round-trip. Import the write set
+# and fold it into the check set so the two can never desync again.
+from trugs_folder.tlink import VALID_RELATIONS as _WRITE_RELATIONS
+
 
 # -- Governance constants (from TRUGS_FILES/SPEC_folder_governance.md) --------
 
@@ -34,7 +41,9 @@ VALID_NODE_TYPES: Dict[str, str] = {
     "TEMPLATE": "BASE_TEMPLATE",
 }
 
-VALID_INTERNAL_RELATIONS: Set[str] = {
+# The lowercase governance vocabulary (structural + descriptive relations from
+# SPEC_folder_governance.md). `contains` is the load-bearing structural relation.
+_GOVERNANCE_INTERNAL_RELATIONS: Set[str] = {
     "contains",
     "uses",
     "produces",
@@ -44,6 +53,11 @@ VALID_INTERNAL_RELATIONS: Set[str] = {
     "describes",
     "governs",
 }
+
+# tgcli-1 reconcile: the check vocabulary is the UNION of the governance
+# relations and every relation `tg link` can write (tlink.VALID_RELATIONS).
+# A written edge now always round-trips through `tg check`.
+VALID_INTERNAL_RELATIONS: Set[str] = _GOVERNANCE_INTERNAL_RELATIONS | _WRITE_RELATIONS
 
 VALID_CROSS_FOLDER_RELATIONS: Set[str] = {
     "uses",

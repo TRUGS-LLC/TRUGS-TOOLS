@@ -18,7 +18,6 @@ PROCESS folder_sync SHALL SCAN FILE folder_trug_json THEN PATCH RECORD node WITH
 </trl>
 """
 
-import json
 import logging
 import re
 from dataclasses import dataclass, field
@@ -87,7 +86,7 @@ def sync_folder_trug(
     path: Union[str, Path],
     run_tests: bool = True,
     dry_run: bool = False,
-    prune_after: int = 7,
+    prune_after: int = 0,
 ) -> SyncResult:
     """Sync a folder.trug.json with the current filesystem state.
 
@@ -96,7 +95,8 @@ def sync_folder_trug(
         run_tests: If True, run pytest to count tests.
         dry_run: If True, do not write changes to disk.
         prune_after: Remove nodes stale for this many consecutive syncs.
-                     0 disables pruning.
+                     0 (the default) disables pruning — sync never removes
+                     nodes unless pruning is explicitly requested.
 
     Returns:
         SyncResult describing what changed.
@@ -119,9 +119,15 @@ def sync_folder_trug(
             f"No folder.trug.json found: {trug_file}. Use folder-init first."
         )
 
-    # Step 1: Load existing TRUG
-    with open(trug_file, "r", encoding="utf-8") as f:
-        existing = json.load(f)
+    # Step 1: Load existing TRUG — via the store-aware read so a Postgres
+    # deployment (PORT_DSN set) reads the same backend the Step-6 dual_write
+    # writes to; a raw json.load here read stale JSON under Postgres and could
+    # reintroduce or drop nodes (audit #21). Without PORT_DSN this is exactly
+    # the old json.load. Local import mirrors the write site: trugs_folder
+    # depends on trugs_store only at sync time.
+    from trugs_store.persistence.dual_write import read_trug
+
+    existing = read_trug(trug_file)
 
     # Step 2: Re-scan filesystem using folder-init scanners
     fresh_nodes = _scan_all(folder_path, run_tests=run_tests)

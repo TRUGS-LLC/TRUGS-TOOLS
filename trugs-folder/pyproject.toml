@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "trugs-folder"
-version = "2.0.0"
+version = "2.1.0"
 description = "TRUGS cartography reference tool — sync a filesystem with its TRUG graph and render ARCHITECTURE.md. Single `trug-a-folder` binary. Implements TRUGS 2.0 (core_v2.0.0)."
 readme = "README.md"
 license = { text = "Apache-2.0" }
