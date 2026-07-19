@@ -8,6 +8,12 @@ Research (bibliographic), and Decision (architectural conclusions).
 
 Replaces the former living.py, knowledge.py, and research.py templates.
 See BRANCHES.md knowledge_v1 section and issue #622/#620.
+
+
+<trl>
+DEFINE "knowledge_templates" AS MODULE.
+MODULE knowledge_templates CONTAINS FUNCTION generate_knowledge_v1_minimal AND FUNCTION generate_knowledge_v1_complete.
+</trl>
 """
 
 from typing import Dict, Any

@@ -1,7 +1,13 @@
 # Copyright 2026 TRUGS LLC
 # SPDX-License-Identifier: Apache-2.0
 
-"""Web branch templates for TRUGS generator."""
+"""Web branch templates for TRUGS generator.
+
+<trl>
+DEFINE "web_templates" AS MODULE.
+MODULE web_templates CONTAINS FUNCTION generate_web_minimal AND FUNCTION generate_web_complete.
+</trl>
+"""
 
 from typing import Dict, Any
 

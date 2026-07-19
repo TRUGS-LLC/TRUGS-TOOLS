@@ -5,6 +5,12 @@
 
 Multi-agent coordination templates modeling agent hierarchies,
 task delegation, resource access, and escalation paths.
+
+
+<trl>
+DEFINE "orchestration_templates" AS MODULE.
+MODULE orchestration_templates CONTAINS FUNCTION generate_orchestration_minimal AND FUNCTION generate_orchestration_complete.
+</trl>
 """
 
 from typing import Dict, Any

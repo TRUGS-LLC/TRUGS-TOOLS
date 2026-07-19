@@ -7,6 +7,13 @@ Modules in this package walk where artifacts actually live (markdown corpora,
 filesystem trees, archive directories) and delegate per-unit validation to
 the canonical parsers/validators (`trugs_tools.trl`, `trugs_tools.validator`,
 etc.). Reporting only — no auto-fix.
+
+
+<trl>
+DEFINE "audit" AS MODULE.
+MODULE audit CONTAINS FUNCTION extract_blocks AND FUNCTION audit_file AND FUNCTION audit_path.
+MODULE audit DEPENDS_ON MODULE trl AND MODULE validator.
+</trl>
 """
 
 from trugs_tools.audit.extract_trl import (

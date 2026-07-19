@@ -1,7 +1,13 @@
 # Copyright 2026 TRUGS LLC
 # SPDX-License-Identifier: Apache-2.0
 
-"""Filesystem commands for TRUGS - graph-enriched folder operations."""
+"""Filesystem commands for TRUGS - graph-enriched folder operations.
+
+<trl>
+DEFINE "trugs_folder" AS MODULE.
+MODULE trugs_folder CONTAINS FUNCTION load_graph AND FUNCTION save_graph AND FUNCTION validate_graph.
+</trl>
+"""
 
 from trugs_folder.utils import load_graph, save_graph, validate_graph
 from trugs_folder.tinit import tinit

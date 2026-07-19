@@ -1,7 +1,13 @@
 # Copyright 2026 TRUGS LLC
 # SPDX-License-Identifier: Apache-2.0
 
-"""Template __init__.py for TRUGS generator templates."""
+"""Template __init__.py for TRUGS generator templates.
+
+<trl>
+DEFINE "templates" AS MODULE.
+MODULE templates CONTAINS FUNCTION generate_writer_minimal AND FUNCTION generate_web_minimal.
+</trl>
+"""
 
 from trugs_tools.templates.web import generate_web_minimal, generate_web_complete
 from trugs_tools.templates.writer import generate_writer_minimal, generate_writer_complete

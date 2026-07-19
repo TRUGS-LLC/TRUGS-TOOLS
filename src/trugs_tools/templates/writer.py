@@ -1,7 +1,13 @@
 # Copyright 2026 TRUGS LLC
 # SPDX-License-Identifier: Apache-2.0
 
-"""Writer branch templates for TRUGS generator."""
+"""Writer branch templates for TRUGS generator.
+
+<trl>
+DEFINE "writer_templates" AS MODULE.
+MODULE writer_templates CONTAINS FUNCTION generate_writer_minimal AND FUNCTION generate_writer_complete.
+</trl>
+"""
 
 from typing import Dict, Any
 
