@@ -13,6 +13,12 @@ Usage:
     python3 tools/build_language_trug.py \\
         TRUGS_LANGUAGE/SPEC_vocabulary.md \\
         TRUGS_LANGUAGE/language.trug.json
+
+
+<trl>
+DEFINE "build_language_trug" AS PROCESS.
+PROCESS build_language_trug SHALL READ FILE spec_vocabulary THEN WRITE FILE language_trug.
+</trl>
 """
 
 from __future__ import annotations

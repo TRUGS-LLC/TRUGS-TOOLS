@@ -6,6 +6,12 @@
 Hierarchical graph composition templates modeling parent-subgraph
 relationships via reference — sub-graphs are loaded lazily with
 no ID conflicts between levels.
+
+
+<trl>
+DEFINE "nested_templates" AS MODULE.
+MODULE nested_templates CONTAINS FUNCTION generate_nested_minimal AND FUNCTION generate_nested_complete.
+</trl>
 """
 
 from typing import Dict, Any

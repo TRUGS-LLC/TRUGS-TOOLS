@@ -5,6 +5,13 @@
 
 Provides functions to load, list, and validate TRUG branch schemas.
 All schemas are loaded from JSON files in this directory.
+
+
+<trl>
+DEFINE "schemas" AS MODULE.
+MODULE schemas CONTAINS FUNCTION load_branch_schema AND FUNCTION list_branch_schemas AND FUNCTION get_branch_node_types.
+MODULE schemas DEPENDS_ON MODULE json.
+</trl>
 """
 
 from __future__ import annotations

@@ -6,6 +6,13 @@
 Validation, generation, analysis, memory, and AAA tooling for TRUGS.
 Provides the `tg` CLI and the public Python API for building, parsing,
 compiling, decompiling, and validating TRUG graphs.
+
+
+<trl>
+DEFINE "trugs_tools" AS MODULE.
+MODULE trugs_tools CONTAINS FUNCTION validate_trug AND FUNCTION generate_trug.
+MODULE trugs_tools DEPENDS_ON MODULE validator AND MODULE generator.
+</trl>
 """
 
 from importlib.metadata import PackageNotFoundError, version as _dist_version
