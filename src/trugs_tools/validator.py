@@ -1,7 +1,7 @@
 # Copyright 2026 TRUGS LLC
 # SPDX-License-Identifier: Apache-2.0
 
-"""TRUGS validator - validates TRUG files against TRUGS v1.0 specification.
+"""TRUGS validator - validates TRUG files against TRUGS v2.0 specification.
 
 <trl>
 PROCESS validator SHALL LOAD RECORD trug_data THEN VALIDATE DATA graph THEN RETURN RECORD ValidationResult.

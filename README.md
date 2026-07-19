@@ -19,7 +19,7 @@ pip install trugs-tools
 
 ```bash
 trug --help                          # the verb list, one summary per verb
-trug validate first.trug.json        # the 12 structural rules -> VALID / INVALID
+trug validate first.trug.json        # the 16 CORE rules -> VALID / INVALID
 trug trl compile hello.trl > hello.trug.json   # TRL sentence -> TRUG graph (saved to file)
 trug trl decompile hello.trug.json             # graph -> the sentence, losslessly
 trug compliance src/                 # Dark Code compliance scan
@@ -34,7 +34,7 @@ Eight verbs on the `trug` binary:
 
 | verb | what it does |
 |------|--------------|
-| `validate` | Validate a TRUG JSON file against the 12 structural rules |
+| `validate` | Validate a TRUG JSON file against the 16 CORE rules |
 | `trl` | Compile / decompile / validate TRL ↔ TRUG |
 | `get` | Read full content of a node in a TRUG graph |
 | `update` | Update properties on an existing node |

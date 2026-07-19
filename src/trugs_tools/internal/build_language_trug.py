@@ -3,7 +3,7 @@
 
 """Build language.trug.json from SPEC_vocabulary.md.
 
-Parses the canonical vocabulary spec (211 words across 9 parts of speech)
+Parses the canonical vocabulary spec (233 words across 9 parts of speech)
 and emits a fully-populated language TRUG that the TRL compiler can consume.
 
 Re-run this whenever SPEC_vocabulary.md changes. The output file is a
@@ -256,7 +256,7 @@ def build_trug(records: list[dict]) -> dict:
         "name": "TRUGS Language Vocabulary",
         "version": "2.0.0",
         "type": "NAMESPACE",
-        "description": "Canonical TRL vocabulary — 211 words across 9 parts of speech. Generated from SPEC_vocabulary.md by tools/build_language_trug.py. v2.0.0 adds 21 SI level prefixes for hierarchy transition markers (TRUGS-DEVELOPMENT#1719).",
+        "description": "Canonical TRL vocabulary — 233 words across 9 parts of speech. Generated from SPEC_vocabulary.md by tools/build_language_trug.py. v2.0.0 adds 21 SI level prefixes for hierarchy transition markers (TRUGS-DEVELOPMENT#1719).",
         "dimensions": {},
         "capabilities": {"vocabularies": ["trl_v2"]},
         "meta": {

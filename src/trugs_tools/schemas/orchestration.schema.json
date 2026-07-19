@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "TRUGS v1.0 Orchestration Branch Schema",
+  "title": "TRUGS v2.0 Orchestration Branch Schema",
   "description": "Schema for Orchestration branch TRUGs",
   "branch": "orchestration",
   "graph_type": "ORCHESTRATION",
