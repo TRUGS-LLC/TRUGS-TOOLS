@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "TRUGS v1.0 AAA Branch Schema",
+  "title": "TRUGS v2.0 AAA Branch Schema",
   "description": "Schema for AAA branch TRUGs",
   "branch": "aaa",
   "graph_type": "AAA",

@@ -3,7 +3,7 @@
 
 r"""TRL compiler — deterministic TRL ↔ TRUG round-trip.
 
-TRL (TRUGS Language) is a closed 211-word subset of English (across 9 parts
+TRL (TRUGS Language) is a closed 233-word subset of English (across 9 parts
 of speech). Every valid sentence round-trips through a TRUG graph with no
 information loss beyond sugar tokens and presentation-only level directives
 (per ADR-002 / TRUGS-DEVELOPMENT#1719). This module implements that round-trip.
@@ -588,7 +588,7 @@ class TRLSyntaxError(TRLError):
 
 # AGENT claude SHALL DEFINE RECORD vocabulary_error AS A RECORD exception.
 class TRLVocabularyError(TRLError):
-    """Word is not in the 211-word TRUG/L vocabulary.
+    """Word is not in the 233-word TRUG/L vocabulary.
 
     <trl>
     RECORD TRLVocabularyError SHALL REPRESENT DATA vocabulary_error SUBJECT_TO DATA unknown_word.
