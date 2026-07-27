@@ -31,4 +31,4 @@ This project is licensed under **Apache-2.0** (see `LICENSE` and `NOTICE`).
 By submitting a contribution you agree it is provided under the same license
 (inbound = outbound). Note the patent carve-out in `NOTICE`: self-developing
 graph systems are out of scope for this commons and are licensed separately
-by Xepayac LLC.
+by Arek Starr LLC.

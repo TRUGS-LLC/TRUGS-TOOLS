@@ -28,8 +28,9 @@ is exactly two packages:
 
 The system tier — self-developing graph workflows — is not part of the Apache
 commons. Per the [NOTICE](./NOTICE), such systems are the subject of U.S.
-patent application 19/575,491 and are separately licensed from Xepayac LLC
-(AGPL 3.0 and commercial licensing: https://github.com/Xepayac/XEPAYAC_LLC).
+patent application 19/575,491, owned by William E. Leigh III, and are
+separately licensed from Arek Starr LLC under license from the owner
+(AGPL 3.0 and commercial licensing: hello@arekstarr.ai).
 
 `trugs-tools` 1.0.0 remains available on PyPI unchanged; existing v1 graph
 files are data and are untouched by any of this.
