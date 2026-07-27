@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "trugs-tools"
-version = "2.1.0"
+version = "2.1.2"
 description = "TRUGS language CLI — validate TRUG graphs, compile and lint TRL, graph-node CRUD, compliance and corpus audit. Single `trug` binary. Implements TRUGS 2.0 (core_v2.0.0)."
 readme = "README.md"
 license = { text = "Apache-2.0" }
@@ -34,6 +34,9 @@ dependencies = [
 test = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
+    # AAA #65 SP1: RFC-8785 byte-oracles for the content-identity digest — TEST-ONLY.
+    "jcs>=0.2.1",
+    "rfc8785>=0.1.4",
 ]
 
 # AAA #2373 commons cleave: this T1 package now ships the language CLI `trug`
@@ -61,11 +64,8 @@ include = ["trugs_tools*"]
 [tool.setuptools.package-data]
 trugs_tools = ["data/*.json", "schemas/*.json"]
 
-# AAA #2736: the core trugs_tools suite is Tier-2 (deferred); the documented green
-# floor is the bundled trugs-folder 554-test suite (ADR-004). `make dev` installs both
-# packages editable so a bare `pytest` from the repo root collects this suite cleanly.
 [tool.pytest.ini_options]
-testpaths = ["trugs-folder/tests"]
+testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
