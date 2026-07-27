@@ -7,5 +7,6 @@ PATENT NOTICE
 
 This license does not cover self-developing graph systems. Graph structures or substrates
 that modify themselves during execution are the subject of U.S. patent
-application 19/575,491. See https://github.com/Xepayac/XEPAYAC_LLC for
-AGPL 3.0 and commercial licensing.
+application 19/575,491, owned by William E. Leigh III. Such systems are
+separately licensed from Arek Starr LLC under license from the owner.
+For AGPL 3.0 and commercial licensing, contact hello@arekstarr.ai.
