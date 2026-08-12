@@ -256,6 +256,18 @@ class TestEdgeRelations:
 
     # AGENT SHALL VALIDATE PROCESS test_invalid_internal_relation.
     def test_invalid_internal_relation(self, tmp_path):
+        # The relation under test used to be EXTENDS, and the assertion went
+        # stale rather than wrong: the tgcli-1 reconcile folded every relation
+        # `link` can write into the check vocabulary, precisely so that a written
+        # edge always round-trips through `check`. EXTENDS is in
+        # tlink.VALID_RELATIONS, so `check` accepting it is the fixed behaviour,
+        # not a regression — and this assertion had been failing ever since,
+        # which is why `make check` was red while advertising a green floor.
+        #
+        # The test's purpose is intact and worth keeping: an internal relation
+        # outside the vocabulary must be reported. It now names one that is
+        # genuinely outside it, so the test cannot go stale again the moment the
+        # writable set grows.
         trug = _minimal_trug()
         trug["nodes"].append({
             "id": "doc_readme",
@@ -269,11 +281,45 @@ class TestEdgeRelations:
         trug["edges"].append({
             "from_id": "test_folder",
             "to_id": "doc_readme",
-            "relation": "EXTENDS",
+            "relation": "TRANSMOGRIFIES",
         })
         p = _write_trug(tmp_path, trug)
         r = check_folder_trug(p, check_filesystem=False)
-        assert any("invalid internal relation 'EXTENDS'" in e for e in r.errors)
+        assert any("invalid internal relation 'TRANSMOGRIFIES'" in e for e in r.errors)
+
+    # AGENT SHALL VALIDATE PROCESS test_writable_relations_round_trip.
+    def test_writable_relations_round_trip(self, tmp_path):
+        """Every relation `link` can write must survive `check`.
+
+        This is the invariant the tgcli-1 reconcile established, and nothing
+        pinned it — which is how the assertion above was left contradicting it
+        for a whole release cycle. Pinning the rule rather than one instance of
+        it means a future divergence between the two vocabularies fails here
+        instead of going unnoticed.
+        """
+        from trugs_folder.tlink import VALID_RELATIONS
+
+        for relation in sorted(VALID_RELATIONS):
+            trug = _minimal_trug()
+            trug["nodes"].append({
+                "id": "doc_readme",
+                "type": "DOCUMENT",
+                "properties": {"name": "README.md"},
+                "parent_id": "test_folder",
+                "contains": [],
+                "metric_level": "BASE_DOCUMENT",
+                "dimension": "folder_structure",
+            })
+            trug["edges"].append({
+                "from_id": "test_folder",
+                "to_id": "doc_readme",
+                "relation": relation,
+            })
+            p = _write_trug(tmp_path, trug)
+            r = check_folder_trug(p, check_filesystem=False)
+            assert not any("invalid internal relation" in e for e in r.errors), (
+                f"`link` can write {relation!r} but `check` rejects it"
+            )
 
     # AGENT SHALL VALIDATE PROCESS test_valid_cross_folder_relation.
     def test_valid_cross_folder_relation(self, tmp_path):

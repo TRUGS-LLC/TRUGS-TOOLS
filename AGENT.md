@@ -22,7 +22,9 @@ Eight verbs on the `trug` binary — no god-command-tree, no hidden sub-namespac
 This public wheel ships the language tier only:
 
 ```
-trug validate     Validate a TRUG JSON file against the 12 structural rules
+trug validate     Validate a TRUG JSON file against the 16 CORE rules
+                  (9 structural, always; 7 compositional when the graph
+                  declares core_v2.0.0)
 trug trl          Compile / decompile / validate TRL <-> TRUG
 trug get          Read full content of a node in a TRUG graph
 trug update       Update properties on an existing node

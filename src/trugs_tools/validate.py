@@ -423,16 +423,62 @@ def rule_3_hierarchy_consistency(trug: Dict[str, Any], r: ValidationResult):
     node_map = {n.get("id"): n for n in trug.get("nodes", []) if n.get("id")}
     for nid, node in node_map.items():
         pid = node.get("parent_id")
-        if pid and pid in node_map:
-            parent = node_map[pid]
-            if nid not in parent.get("contains", []):
+        # `is not None`, not truthiness: `parent_id: ""` names no node either, and
+        # rule_7 permits it (it *is* a str) while rule_6 sees the field present — so
+        # a truthiness guard would leave the empty string as the one dangling
+        # reference still certified VALID, and would contradict `contains: [""]`,
+        # which errors. One broken link, one verdict, whichever way it is written.
+        if pid is not None and isinstance(pid, str):
+            if pid not in node_map:
+                # A reference to a node that does not exist. Until #9 this branch
+                # did not exist: the guard read `if pid and pid in node_map`, so a
+                # dangling parent_id SKIPPED the check and the graph was reported
+                # VALID. Silence on a broken reference is the worst answer a
+                # validator can give — rule_2 has always erred here for edges, and
+                # hierarchy is now held to the same standard.
                 r.error(
-                    "INCONSISTENT_HIERARCHY",
-                    f"'{nid}' has parent_id='{pid}' but parent's contains[] missing it",
+                    "DANGLING_PARENT_ID",
+                    f"'{nid}' has parent_id='{pid}' but no node with that id exists",
                     node_id=nid,
                 )
-        for cid in node.get("contains", []):
-            if cid in node_map:
+            else:
+                parent = node_map[pid]
+                contains = parent.get("contains")
+                if not isinstance(contains, list) or nid not in contains:
+                    r.error(
+                        "INCONSISTENT_HIERARCHY",
+                        f"'{nid}' has parent_id='{pid}' but parent's contains[] missing it",
+                        node_id=nid,
+                    )
+        cont = node.get("contains")
+        if not isinstance(cont, list):
+            # Type errors are rule_7's to report; skipping here avoids a second,
+            # noisier diagnosis of the same defect (and avoids iterating a string
+            # character by character).
+            continue
+        for cid in cont:
+            if not isinstance(cid, str):
+                # An unhashable element (dict, list) would raise TypeError from the
+                # membership test below, and validate_file catches only JSON/OS
+                # errors — so `tg validate --all` would abort mid-corpus and leave
+                # every remaining file unchecked. rule_7 does not inspect element
+                # types, so reporting it here is not a double diagnosis.
+                r.error(
+                    "INVALID_FIELD_TYPE",
+                    f"Node '{nid}': contains[] entries must be strings, got "
+                    f"{type(cid).__name__}",
+                    node_id=nid,
+                )
+                continue
+            if cid not in node_map:
+                # Same inversion as above: the guard was `if cid in node_map`, so a
+                # contains[] entry naming a nonexistent node was silently ignored.
+                r.error(
+                    "DANGLING_CONTAINS",
+                    f"'{nid}' lists '{cid}' in contains[] but no node with that id exists",
+                    node_id=nid,
+                )
+            else:
                 child = node_map[cid]
                 if child.get("parent_id") != nid:
                     r.error(
@@ -440,6 +486,62 @@ def rule_3_hierarchy_consistency(trug: Dict[str, Any], r: ValidationResult):
                         f"'{nid}' lists '{cid}' in contains[] but child's parent_id='{child.get('parent_id')}'",
                         node_id=nid,
                     )
+
+    _reject_hierarchy_cycles(node_map, r)
+
+
+# A cycle is bounded by the graph, but a 100k-node ring would otherwise render a
+# ~1MB single error message and blow up anything that logs or stores findings.
+_CYCLE_PATH_LIMIT = 12
+
+
+# PROCESS validator SHALL REJECT RECORD node SUBJECT_TO RECORD parent_id EQUALS RECORD cycle.
+def _reject_hierarchy_cycles(node_map: Dict[str, Any], r: ValidationResult):
+    """Reject any cycle in the parent_id chain, including a node parented to itself.
+
+    Walking parent_id alone is sufficient: the checks above already require that
+    every resolvable contains[] entry names a child whose parent_id points back,
+    so a cycle expressed through contains[] necessarily appears in the parent
+    chain too. A cycle is reported once, at its entry point, rather than once per
+    member.
+
+    <trl>
+    FUNCTION reject_hierarchy_cycles SHALL VALIDATE RECORD parent_id THEN SHALL REJECT RECORD node SUBJECT_TO RECORD cycle.
+    </trl>
+    """
+    UNVISITED, INPROGRESS, DONE = 0, 1, 2
+    state: Dict[str, int] = {nid: UNVISITED for nid in node_map}
+
+    for start in node_map:
+        if state[start] != UNVISITED:
+            continue
+        path: List[str] = []
+        cur: Optional[str] = start
+        while cur is not None and state.get(cur) == UNVISITED:
+            state[cur] = INPROGRESS
+            path.append(cur)
+            nxt = node_map[cur].get("parent_id")
+            cur = nxt if isinstance(nxt, str) and nxt in node_map else None
+        if cur is not None and state.get(cur) == INPROGRESS:
+            ring = path[path.index(cur):]
+            # Report from a CANONICAL member, not from whichever node the outer
+            # loop happened to reach first: node_map follows document order, so an
+            # order-only reshuffle of the same graph would otherwise yield a
+            # different node_id and a different message for an identical defect,
+            # and any consumer keying on node_id for suppression would break.
+            pivot = ring.index(min(ring))
+            ring = ring[pivot:] + ring[:pivot]
+            shown = ring if len(ring) <= _CYCLE_PATH_LIMIT else (
+                ring[:_CYCLE_PATH_LIMIT] + [f"... ({len(ring) - _CYCLE_PATH_LIMIT} more)"]
+            )
+            r.error(
+                "HIERARCHY_CYCLE",
+                f"parent_id chain forms a cycle of {len(ring)} node(s): "
+                + " -> ".join(shown + [ring[0]]),
+                node_id=ring[0],
+            )
+        for nid in path:
+            state[nid] = DONE
 
 
 # PROCESS validator SHALL VALIDATE RECORD parent SUBJECT_TO RECORD child THEN ASSERT RECORD metric_level.

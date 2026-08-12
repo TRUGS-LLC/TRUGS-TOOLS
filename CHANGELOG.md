@@ -9,6 +9,175 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing yet.
 
+## [2.2.0] — 2026-08-11
+
+**`validate` now rejects graphs it previously accepted.** If you validate TRUG files in CI, expect
+`trug validate` to exit `1` where it exited `0`. This is a deliberate tightening, not a regression:
+the validator was certifying broken hierarchies as `VALID`.
+
+### Changed — `validate` rejects broken hierarchies
+
+`rule_3` (hierarchy consistency) carried two skip-guards. A reference naming a node that does not
+exist caused the consistency check to be *skipped* rather than failed, so the graph came back `VALID`
+and the command exited `0`. There was separately no acyclicity check anywhere, so a node could be its
+own parent and still validate. `rule_2` has always erred on a dangling *edge* reference; hierarchy is
+now held to the same standard.
+
+| Code | Rejects |
+|---|---|
+| `DANGLING_PARENT_ID` | `parent_id` names a node that does not exist — including `parent_id: ""` |
+| `DANGLING_CONTAINS` | a `contains[]` entry names a node that does not exist |
+| `HIERARCHY_CYCLE` | the parent chain closes on itself, including a node parented to itself |
+| `INVALID_FIELD_TYPE` | a `contains[]` entry that is not a string |
+
+The rule *count* is unchanged: these are new error codes inside rule 3, not new rules. The CORE
+ruleset remains 16 — 9 structural, always, plus 7 compositional when the graph declares
+`core_v2.0.0`.
+
+The cross-folder `FOLDER:node_id` reference form remains edges-only. It is rejected in `parent_id`
+and `contains[]`, deliberately and asymmetrically with `rule_2`: a parent must live in the same
+graph.
+
+### Fixed — a crash that read as a clean run
+
+A `contains[]` entry that was a dict or a list raised an uncaught `TypeError` from the membership
+test. `validate_file` catches only JSON and OS errors, so `trug validate --all` aborted mid-corpus
+and left every remaining file unvalidated — indistinguishable from success to a gate that reads only
+the exit code. Such entries now report `INVALID_FIELD_TYPE`.
+
+`HIERARCHY_CYCLE` reporting is order-independent (an order-only reshuffle of the same graph produces
+the same message) and bounded (a large ring reports 12 members and its true length, rather than
+rendering the whole ring).
+
+### Fixed — the commands that write graphs no longer produce ones `validate` rejects
+
+Tightening the validator exposed five defects in the verbs that write hierarchies, all of the same
+shape: the bidirectional link was maintained on one side only. Each reported success while emitting a
+graph the same release rejects.
+
+- **`trug delete`** stripped deleted ids from every surviving `contains[]` and never repaired the
+  orphaned children's `parent_id`. Orphans are now adopted by their nearest surviving ancestor —
+  walking up through the whole deleted set — or become roots when none survives. Reported in the
+  output and in `--dry-run`.
+- **`trug update --parent`** had neither an existence check nor an ancestor check: a nonexistent
+  parent printed a warning and wrote anyway, and a node could be made its own parent silently. Both
+  are now refused with exit `1` and nothing written. Validation happens before any mutation.
+- **`trug-a-folder mv --parent`** checked that the new parent exists, not that it is a
+  non-descendant. Moving a node under its own child now refuses.
+- **`trug-a-folder sync --prune-after N`** repaired only the root `FOLDER` node's `contains[]` when
+  pruning, orphaning a pruned parent's children. Every surviving `contains[]` is now repaired and
+  orphans re-parented by the same rule as `delete`.
+
+Re-parenting maintains all three halves of containment — `parent_id`, the parent's `contains[]`, and
+the containment edge. `trug update --parent` previously moved the first two and left the edge
+pointing at the parent the node had left. A graph that expressed containment only through
+`contains[]` acquires no edge: these commands repair the links they move and do not author structure
+that was never written.
+
+### Fixed — packaging
+
+`LICENSE`, `NOTICE` and `README.md` are back in the sdist and the wheel, and the PyPI project page
+renders again. They had been absent since 2.1.1 — see that entry.
+
+### Fixed — documentation
+
+`AGENT.md` described `trug validate` as checking "the 12 structural rules". The count has been 16
+since 2.0; the README was corrected in 2.1.2 and this file was missed. The repo's own
+`folder.trug.json` carried the same stale claim in two node descriptions.
+
+---
+
+## [2.1.2] — 2026-07-27
+
+The public release of the content-identity digest — already published as 2.1.1 two days earlier, from
+the staging mirror, without a corresponding public commit. See 2.1.1 for the feature. This version
+exists to restore the promote-then-publish ordering; publishing ahead of promotion had wedged the
+release-parity gate.
+
+### Fixed
+
+Stale specification labels shipping in 2.1.1, corrected across the package: "TRUGS v1.0" → "TRUGS
+v2.0" in the validator and in eight schema titles and descriptions; the TRL vocabulary count 211 →
+233; and the README's "12 structural rules" → "16 CORE rules".
+
+### Known defect
+
+The packaging regression introduced in 2.1.1 (below) is present in this release too, and is fixed in
+2.2.0.
+
+## [2.1.1] — 2026-07-25
+
+**Published from the staging mirror with no corresponding public release commit.** No commit in this
+repository has ever carried version `2.1.1`; it is on PyPI and was promoted here as 2.1.2. Recorded
+rather than omitted, because a version gap with no entry is exactly what sends a reader looking for a
+yanked release.
+
+### Added
+
+`trugs_tools.digest` — a stdlib-only RFC-8785/JCS canonical encoder and a layered content-addressed
+tree digest producing a self-describing `tci1-sha256-<hex>` identifier. Three layers: `L0`
+`structural_identity` (a Merkle fold over `contains`, order-insensitive, plus the sorted de-duplicated
+edge set), `L1` `artifact_identity` (the default), and `L2` `dimension_identity` (per-dimension). The
+reserved `_derived` namespace is excluded so volatile fields never churn identity; content references
+are used literally and never resolved, keeping the function pure; non-finite numbers and integers
+outside the I-JSON safe range are rejected rather than coerced.
+
+It is a **library API only** — no CLI verb, and not re-exported from the package root. Import it as
+`from trugs_tools.digest import digest`.
+
+Adds no runtime dependency. `jcs` and `rfc8785` were added to the `test` extra as byte-oracles.
+
+### Known defect — fixed in 2.2.0
+
+`LICENSE`, `NOTICE` and `README.md` were dropped from the sdist and the wheel, and the PyPI long
+description became empty, so the project page has rendered blank from this release onward. The cause
+was the move of the publish source to the staging tree, which does not carry those files while
+`pyproject.toml` continued to declare them; the build emitted a single warning and exited `0`. Both
+2.1.1 and 2.1.2 are affected and neither has been yanked.
+
+## [2.1.0] — 2026-07-18
+
+Released together with `trugs-folder` 2.1.0.
+
+### Changed — breaking
+
+- **`trl compile` returns a complete graph.** It previously returned a bare `{nodes, edges}` fragment;
+  it now returns a full TRUG that `trug validate` accepts — CORE envelope, every node carrying its
+  seven CORE fields, a synthetic `PROJECT` root containing the compiled nodes, and a
+  `capabilities.vocabularies: ["core_v2.0.0"]` declaration.
+- **The compositional tier is armed by `core_v2.0.0`.** Rules 10–16 were previously armed only by
+  `core_v1.0.0`, so a graph declaring the current vocabulary received the nine structural rules and
+  nothing else.
+- **`core_v1.0.0` is now rejected** with `RETIRED_VOCABULARY`, short-circuiting the compositional tier.
+  Structural verdicts still stand.
+- **`trug-a-folder sync` no longer prunes by default.** `--prune-after` moved from `7` to `0`; nodes
+  are removed only when pruning is explicitly requested.
+
+### Added
+
+`trl.compile()` accepts a `name` argument setting the graph name. The CLI passes the input file's
+stem; input from stdin gets the deterministic default `trug_graph`.
+
+### Fixed
+
+- A malformed `capabilities.vocabularies` — not a list, or a list containing non-strings — now fails
+  with `INVALID_FIELD_TYPE` instead of degrading silently to "no declaration", which had let a
+  string-form declaration of the retired vocabulary pass unnoticed.
+- Rule 11 no longer false-positives on modal edges (`SHALL`, `SHALL_NOT`, `MAY`); modal actor-to-
+  operation bindings are rule 14's jurisdiction.
+- `trl validate` accepts `PROJECT` as a structural node type, so graphs carrying the new completion
+  root pass the noun-vocabulary check.
+- CLI verb dispatch inspects the handler's signature instead of calling it and catching `TypeError`,
+  so a `TypeError` raised *inside* a handler surfaces as that handler's bug rather than being misread
+  as a signature mismatch and silently re-run.
+- `trug-a-folder check` no longer rejects edge relations that `trug-a-folder link` itself writes.
+
+### Removed
+
+`rules.py` shrank from 600 lines to 91, dropping a second, drift-prone copy of rules 1–9 and
+`validate_required_root_fields`. No user-visible effect: nothing called them. The module now holds
+only the two verdict-neutral warning checks it was actually wired for.
+
 ## [2.0.0] — 2026-06-12
 
 The TRUGS 2.0 commons release. Bundles AAA #1976 Phase 7 four-repo polish work +

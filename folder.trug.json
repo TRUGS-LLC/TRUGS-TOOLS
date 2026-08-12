@@ -26,7 +26,7 @@
       "type": "FOLDER",
       "properties": {
         "name": "trugs-tools",
-        "purpose": "The TRUGS language CLI (the `trug` binary) \u2014 TRUG graph validation against the 12 structural rules, TRL compile/decompile, graph-node CRUD, Dark Code compliance, and corpus audit. Co-publishes the trugs-folder cartography package (`trug-a-folder`)."
+        "purpose": "The TRUGS language CLI (the `trug` binary) \u2014 TRUG graph validation against the 16 CORE rules, TRL compile/decompile, graph-node CRUD, Dark Code compliance, and corpus audit. Co-publishes the trugs-folder cartography package (`trug-a-folder`)."
       },
       "parent_id": null,
       "contains": [
@@ -144,7 +144,7 @@
       "type": "COMPONENT",
       "properties": {
         "name": "trugs_tools (core engine)",
-        "purpose": "Top-level graph/CLI engine \u2014 `trug` dispatch (lang_cli.py), the TRUG model + 12-rule validator, the TRL compiler, graph-node CRUD, and Dark Code compliance.",
+        "purpose": "Top-level graph/CLI engine \u2014 `trug` dispatch (lang_cli.py), the TRUG model + 16-rule CORE validator, the TRL compiler, graph-node CRUD, and Dark Code compliance.",
         "file_count": 28
       },
       "parent_id": "comp_src",
@@ -259,7 +259,7 @@
       "type": "DOCUMENT",
       "properties": {
         "name": "Makefile",
-        "purpose": "GNU Makefile \u2014 `make dev` (editable installs of the trug CLI + the bundled trugs-folder suite) and `make check` (the trugs-folder 554-test floor + Layer-4 self-validation of folder.trug.json)."
+        "purpose": "GNU Makefile \u2014 `make dev` (editable installs of the trug CLI + the bundled trugs-folder suite) and `make check` (the bundled trugs-folder suite + Layer-4 self-validation of folder.trug.json)."
       },
       "parent_id": "root",
       "contains": [],
