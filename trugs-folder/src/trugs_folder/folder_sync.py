@@ -96,7 +96,10 @@ def sync_folder_trug(
         dry_run: If True, do not write changes to disk.
         prune_after: Remove nodes stale for this many consecutive syncs.
                      0 (the default) disables pruning — sync never removes
-                     nodes unless pruning is explicitly requested.
+                     nodes unless pruning is explicitly requested. A pruned
+                     node's surviving children are re-parented onto their
+                     nearest surviving ancestor, so pruning never leaves a
+                     dangling parent_id behind.
 
     Returns:
         SyncResult describing what changed.
@@ -290,6 +293,12 @@ def sync_folder_trug(
         # Remove pruned nodes (preserve order, deterministic)
         if pruned_ids:
             pruned_set = set(pruned_ids)
+            # Capture the parent chain BEFORE the nodes are dropped — the
+            # nearest-surviving-ancestor walk below has to climb through the
+            # pruned nodes, which no longer exist once the list is filtered.
+            parent_of: Dict[str, Optional[str]] = {
+                n["id"]: n.get("parent_id") for n in existing_nodes
+            }
             existing_nodes[:] = [n for n in existing_nodes if n["id"] not in pruned_set]
             # Remove edges referencing pruned nodes
             edges = existing.get("edges", [])
@@ -299,10 +308,73 @@ def sync_folder_trug(
                 if e.get("from_id") not in pruned_set
                 and e.get("to_id") not in pruned_set
             ]
-            # Remove from FOLDER contains
-            if folder_node is not None:
-                contains = folder_node.get("contains", [])
-                folder_node["contains"] = [c for c in contains if c not in pruned_set]
+            # Remove pruned ids from EVERY survivor's contains, not just the
+            # FOLDER's: a pruned COMPONENT can itself be an intermediate
+            # parent, and a stale id left in an intermediate node's contains
+            # is an INVALID_CONTAINS_REFERENCE.
+            for node in existing_nodes:
+                contains = node.get("contains")
+                if isinstance(contains, list):
+                    node["contains"] = [c for c in contains if c not in pruned_set]
+            # Re-parent the orphans a pruned parent leaves behind. Pruning
+            # removed the node but not its children, so every survivor whose
+            # parent_id names a pruned node is now a DANGLING_PARENT_ID.
+            # Each one is adopted by its nearest surviving ancestor, or
+            # becomes a root when no ancestor survives.
+            for node in existing_nodes:
+                old_parent_id = node.get("parent_id")
+                if old_parent_id not in pruned_set:
+                    continue
+                new_parent_id = _nearest_surviving_ancestor(
+                    node["id"], parent_of, pruned_set
+                )
+                node["parent_id"] = new_parent_id
+                if new_parent_id is not None:
+                    adopter = next(
+                        (n for n in existing_nodes if n["id"] == new_parent_id), None
+                    )
+                    if adopter is not None:
+                        adopter_contains = adopter.get("contains")
+                        if not isinstance(adopter_contains, list):
+                            adopter_contains = []
+                        if node["id"] not in adopter_contains:
+                            adopter_contains.append(node["id"])
+                        adopter["contains"] = adopter_contains
+                    # contains[] and the contains EDGE are two halves of one
+                    # fact — folder-check errors on a contains entry with no
+                    # matching edge, so the adoption has to record both. The
+                    # edge to the pruned parent was dropped in the filter above.
+                    #
+                    # Guarded the same way the contains[] append above is: an
+                    # adopter that ALREADY held a containment edge to this node
+                    # (a grandparent listing a grandchild alongside the pruned
+                    # parent) would otherwise collect a second identical one.
+                    # Nothing flags a duplicate edge today, which is exactly why
+                    # it would accumulate silently across repeated syncs.
+                    already = any(
+                        e.get("from_id") == new_parent_id
+                        and e.get("to_id") == node["id"]
+                        and e.get("relation") == "contains"
+                        for e in edges
+                    )
+                    if not already:
+                        edges.append(
+                            {
+                                "from_id": new_parent_id,
+                                "to_id": node["id"],
+                                "relation": "contains",
+                                "weight": 1.0,
+                                "properties": {},
+                            }
+                        )
+                result.changes.append(
+                    f"Re-parented: {node['id']} "
+                    f"({old_parent_id} → {new_parent_id}, parent pruned)"
+                )
+            # Pruning removed edges and adoption added them; the reported
+            # total has to be the post-prune count, not the pre-prune one.
+            existing["edges"] = edges
+            result.edges_total = len(edges)
             result.pruned_nodes.extend(pruned_ids)
             for pid in pruned_ids:
                 result.changes.append(f"Pruned: {pid} (stale >= {prune_after} syncs)")
@@ -418,6 +490,34 @@ def _scan_all(folder_path: Path, run_tests: bool = True) -> List[dict]:
     if example_node:
         nodes.append(example_node)
     return nodes
+
+
+def _nearest_surviving_ancestor(
+    node_id: str,
+    parent_of: Dict[str, Optional[str]],
+    pruned: Set[str],
+) -> Optional[str]:
+    """Return the closest ancestor of node_id that survived pruning.
+
+    Climbs the pre-prune parent chain in parent_of, skipping pruned nodes,
+    and returns the first ancestor that is still in the graph. Returns None
+    when no ancestor survives — the orphan becomes a root rather than
+    keeping a parent_id that names nothing.
+
+    An ancestor absent from parent_of is not a survivor either: it never
+    existed, so returning it would swap one dangling parent_id for another.
+
+    The walk is bounded by a seen-set so a pre-existing parent_id cycle
+    terminates instead of spinning.
+    """
+    seen: Set[str] = {node_id}
+    current = parent_of.get(node_id)
+    while current is not None and current in parent_of and current not in seen:
+        if current not in pruned:
+            return current
+        seen.add(current)
+        current = parent_of.get(current)
+    return None
 
 
 def _find_folder_node(nodes: List[dict]) -> Optional[dict]:

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "trugs-folder"
-version = "2.1.0"
+version = "2.2.0"
 description = "TRUGS cartography reference tool — sync a filesystem with its TRUG graph and render ARCHITECTURE.md. Single `trug-a-folder` binary. Implements TRUGS 2.0 (core_v2.0.0)."
 readme = "README.md"
 license = { text = "Apache-2.0" }
@@ -25,9 +25,22 @@ classifiers = [
 # T2 sits ABOVE T1: depends on the language core (trugs-tools) + the graph store
 # (trugs-store). It NEVER depends on any T3 system package (trugs-start) — the
 # A1/c2 tier-discipline invariant the AAA #2373 cleave exists to establish.
+#
+# The tier siblings carry MAJOR CAPS, and the lower bound on trugs-tools is a
+# floor rather than a nicety. This package re-exports the language core's
+# validator as its own public API (`utils.validate_graph`, listed in
+# `__init__.__all__`), so a trugs-tools release that changes what `validate`
+# accepts changes what THIS package's documented function returns. Before the
+# cap, `trugs-tools>=2.0.0` was unbounded: 2.2.0 tightened the CORE validator to
+# reject dangling `parent_id`/`contains[]` references and hierarchy cycles, and
+# every existing `pip install trugs-folder` would have picked that up on its next
+# resolve with no version signal of any kind. The floor says which semantics this
+# release means; the cap says a future major must be chosen, not inherited.
+# Third-party pins are left as floors deliberately — the argument above is about
+# a sibling whose behaviour we re-publish, not about dependencies generally.
 dependencies = [
-    "trugs-tools>=2.0.0",
-    "trugs-store>=2.0.0",
+    "trugs-tools>=2.2.0,<3",
+    "trugs-store>=2.0.0,<3",
     "PyYAML>=6.0",
     "jsonschema>=4.0",
 ]

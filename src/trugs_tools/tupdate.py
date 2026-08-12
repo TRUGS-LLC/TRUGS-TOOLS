@@ -8,6 +8,7 @@ Usage:
     trugs-tupdate graph.trug.json node_id --set name="New Name" --set confidence=0.8
     trugs-tupdate graph.trug.json node_id --type ENTITY
     trugs-tupdate graph.trug.json node_id --parent new_parent_id
+    trugs-tupdate graph.trug.json node_id --parent null
     trugs-tupdate graph.trug.json node_id --set key=value --dry-run
 
 Note: this is the explicit-TRUG-file CRUD command (the live ``tg update`` verb,
@@ -17,7 +18,7 @@ directory's ``folder.trug.json``. The two are intentionally separate command
 families, not duplicates (AAA #2190 SP1 disposition: retained).
 
 <trl>
-PROCESS tupdate SHALL LOAD RECORD graph FROM FILE trug_json THEN WRITE DATA property TO RECORD node AND SAVE FILE trug_json.
+PROCESS tupdate SHALL LOAD RECORD graph FROM FILE trug_json THEN WRITE DATA property TO RECORD node SUBJECT_TO VALID RECORD parent_id AND SAVE FILE trug_json.
 </trl>
 """
 
@@ -93,12 +94,51 @@ def set_nested(d: dict, key: str, value: Any) -> None:
     d[parts[-1]] = value
 
 
+# PROCESS validator SHALL READ RECORD parent_id FROM RECORD graph THEN RETURN RECORD cycle.
+def cycle_from_reparent(
+    node_map: dict, node_id: str, new_parent_id: str
+) -> Optional[list]:
+    """Return the parent_id ring a re-parent would close, or None if it is safe.
+
+    Walks upward from the PROPOSED parent. Reaching ``node_id`` means the
+    proposal names the node itself or one of its descendants, so the re-parent
+    would close a cycle; the returned list is that ring, read as child -> parent
+    and ending back on ``node_id`` — the same shape rule_3's HIERARCHY_CYCLE
+    reports. Walking parent_id alone is sufficient here for the same reason it
+    is sufficient there: contains[] must point back at its child's parent_id, so
+    a cycle through contains[] appears in the parent chain too.
+
+    The walk is bounded by the set of ids already visited, so a graph that
+    ALREADY contains a cycle terminates instead of spinning — re-parenting a
+    node OUT of such a cycle is exactly the repair --parent exists to make, and
+    it must not hang.
+
+    <trl>
+    FUNCTION cycle_from_reparent SHALL READ RECORD parent_id FROM RECORD graph BOUNDED THEN RETURN RECORD cycle.
+    </trl>
+    """
+    ring = [node_id]
+    seen: set = set()
+    cur: Any = new_parent_id
+    while isinstance(cur, str) and cur not in seen:
+        ring.append(cur)
+        if cur == node_id:
+            return ring
+        seen.add(cur)
+        ancestor = node_map.get(cur)
+        cur = ancestor.get("parent_id") if ancestor is not None else None
+    # Either we reached a root (parent_id None/absent, or a dangling reference),
+    # or we re-entered a pre-existing ring that does not pass through node_id —
+    # not ours to report, and not a reason to refuse this re-parent.
+    return None
+
+
 # AGENT claude SHALL READ DATA argv THEN RETURN INTEGER DATA exit_code.
 def main(argv: Optional[list] = None) -> int:
     """CLI entry point: parse arguments, locate the target node, apply updates, and write the result.
 
     <trl>
-    FUNCTION main SHALL PARSE DATA argv THEN WRITE DATA property TO RECORD node THEN RETURN INTEGER exit_code.
+    FUNCTION main SHALL PARSE DATA argv THEN WRITE DATA property TO RECORD node SUBJECT_TO VALID RECORD parent_id THEN RETURN INTEGER exit_code.
     </trl>
     """
     parser = argparse.ArgumentParser(
@@ -110,7 +150,8 @@ def main(argv: Optional[list] = None) -> int:
 
 exit codes:
   0  success
-  1  node not found / file error
+  1  node or new parent not found / re-parent would create a hierarchy cycle
+     / file error
   2  usage error (bad flags or arguments)""",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -140,22 +181,32 @@ exit codes:
         print(f"Error: {e}", file=sys.stderr)
         return 1
 
-    # Find the node
-    node = None
+    # Index the graph once: the node lookup, the --parent existence check, and
+    # the ancestor walk all resolve ids against this one map. First id wins, so a
+    # graph with duplicate ids resolves to the same node the old scan-and-break
+    # loops reached. Non-string ids are skipped rather than keyed (an unhashable
+    # id would otherwise raise here); they matched nothing before either.
+    node_map: dict = {}
     for n in trug.get("nodes", []):
-        if n.get("id") == args.node_id:
-            node = n
-            break
+        nid = n.get("id")
+        if isinstance(nid, str) and nid not in node_map:
+            node_map[nid] = n
+
+    # Find the node
+    node = node_map.get(args.node_id)
 
     if node is None:
         print(f"Error: node '{args.node_id}' not found", file=sys.stderr)
         return 1
 
-    changes = []
+    # ─── validate everything BEFORE touching `trug` ──────────────────────────
+    # Every refusal below returns while the graph is still pristine. The old code
+    # removed the node from its OLD parent's contains[] before it checked
+    # anything about the new one, so a refusal left a half-re-parented graph in
+    # memory — harmless only because nothing had been saved yet, and a trap for
+    # the next editor who moves a save earlier or adds a second write.
 
-    # Apply --set
     if args.set:
-        props = node.setdefault("properties", {})
         for kv in args.set:
             if "=" not in kv:
                 print(
@@ -163,6 +214,40 @@ exit codes:
                     file=sys.stderr,
                 )
                 return 1
+
+    # `--parent null` detaches the node to root. It names no node, so neither the
+    # existence check nor the cycle check applies to it.
+    new_parent = None
+    if args.new_parent:
+        new_parent = args.new_parent if args.new_parent != "null" else None
+
+    if new_parent is not None:
+        if new_parent not in node_map:
+            # Previously a warning: the re-parent was written anyway and left a
+            # DANGLING_PARENT_ID behind, with exit 0 to say it went fine.
+            print(f"Error: new parent '{new_parent}' not found", file=sys.stderr)
+            return 1
+
+        ring = cycle_from_reparent(node_map, args.node_id, new_parent)
+        if ring is not None:
+            # Previously not checked at all: `--parent <self>` exited 0 without
+            # even a warning and wrote a HIERARCHY_CYCLE into the file.
+            print(
+                f"Error: new parent '{new_parent}' is node '{args.node_id}' or one "
+                f"of its descendants; re-parenting would create a hierarchy cycle: "
+                f"{' -> '.join(ring)}",
+                file=sys.stderr,
+            )
+            return 1
+
+    # ─── apply ───────────────────────────────────────────────────────────────
+
+    changes = []
+
+    # Apply --set
+    if args.set:
+        props = node.setdefault("properties", {})
+        for kv in args.set:
             key, raw_value = kv.split("=", 1)
             value = parse_value(raw_value)
             old = props.get(key)
@@ -180,29 +265,58 @@ exit codes:
         old_parent_id = node.get("parent_id")
         node_id = node.get("id")
 
-        # Remove from old parent's contains[]
-        if old_parent_id:
-            for n in trug.get("nodes", []):
-                if n.get("id") == old_parent_id:
-                    contains = n.get("contains", [])
-                    if node_id in contains:
-                        contains.remove(node_id)
-                    break
+        # Remove from old parent's contains[]. The isinstance guard keeps a
+        # malformed parent_id (rule_7's to report, not ours) from reaching a dict
+        # lookup: an unhashable one would raise here, where the old scan-and-
+        # compare merely matched nothing.
+        if isinstance(old_parent_id, str) and old_parent_id:
+            old_parent = node_map.get(old_parent_id)
+            if old_parent is not None:
+                contains = old_parent.get("contains", [])
+                if node_id in contains:
+                    contains.remove(node_id)
 
-        # Set new parent_id
-        new_parent = args.new_parent if args.new_parent != "null" else None
+        # Set new parent_id (`new_parent` was resolved and checked above)
         node["parent_id"] = new_parent
 
-        # Add to new parent's contains[]
+        # Add to new parent's contains[] — existence is already proven, so there
+        # is no not-found branch left to fall through to.
+        #
+        # The result is assigned BACK rather than mutated in place. `.get(k, [])`
+        # on a parent carrying no `contains` key hands back a fresh list, and
+        # appending to it drops the reciprocal link on the floor: the child gets
+        # its parent_id and the parent never learns it has a child, which reads
+        # as INCONSISTENT_HIERARCHY. Only reachable on input that is already
+        # INVALID (rule_6 requires the key), but silently losing half of the very
+        # link this block exists to maintain is not the behaviour to have there.
         if new_parent:
-            for n in trug.get("nodes", []):
-                if n.get("id") == new_parent:
-                    contains = n.get("contains", [])
-                    if node_id not in contains:
-                        contains.append(node_id)
+            parent_node = node_map[new_parent]
+            contains = parent_node.get("contains")
+            if not isinstance(contains, list):
+                contains = []
+            if node_id not in contains:
+                contains.append(node_id)
+            parent_node["contains"] = contains
+
+            # Move the containment EDGE to follow the node. contains[] and the
+            # edge are two halves of one fact, and re-parenting maintained only
+            # the array — so a moved node kept an edge from the parent it had
+            # left and had none from the parent it had joined. The CORE validator
+            # does not read edges for hierarchy, which is why this survived; the
+            # folder-graph checker does, and reports it.
+            #
+            # The existing edge is RETARGETED, not replaced by a fresh literal,
+            # so whatever shape the graph gives its edges is preserved. A graph
+            # that expressed containment only through contains[] gains no edge —
+            # re-parenting repairs the link it moved, and authors nothing new.
+            for edge in trug.get("edges", []):
+                if (
+                    edge.get("to_id") == node_id
+                    and edge.get("from_id") == old_parent_id
+                    and str(edge.get("relation", "")).lower() == "contains"
+                ):
+                    edge["from_id"] = new_parent
                     break
-            else:
-                print(f"Warning: new parent '{new_parent}' not found", file=sys.stderr)
 
         changes.append(f"  parent_id: {old_parent_id!r} → {new_parent!r}")
 
