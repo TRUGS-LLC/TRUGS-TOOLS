@@ -5,7 +5,9 @@
 
 Re-scans a folder using the same scanners as folder-init, then patches
 factual properties (counts, LOC, phase) on existing nodes while preserving
-all human-curated edges and properties.
+human-curated properties. Edges are preserved except for additions for new
+nodes and, under opt-in pruning, removal of incident edges and additions for
+reparented children.
 
 Hard Rules:
   1. Preserve edges except additions for NEW nodes and incident edges of pruned nodes.

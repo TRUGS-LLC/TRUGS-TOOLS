@@ -8,8 +8,8 @@ Rules 10-16: Compositional (enforced when core_v2.0.0 declared; the retired
 core_v1.0.0 is hard-rejected — TRUGS is v2-only, not back compatible)
 
 Usage:
-    python -m trugs_llc.tools.validate <file.trug.json>
-    python -m trugs_llc.tools.validate --all <directory>
+    trug validate <file.trug.json>
+    trug validate --all <directory>
 
 <trl>
 PROCESS validate SHALL VALIDATE RECORD trug_graph AGAINST ALL RECORD rule THEN RETURN RECORD validation_result.

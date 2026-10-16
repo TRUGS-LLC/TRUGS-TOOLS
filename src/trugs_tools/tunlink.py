@@ -4,13 +4,13 @@
 """tunlink — Remove a specific edge from a TRUG file.
 
 Usage:
-    trugs-tunlink graph.trug.json --from source_id --to target_id
-    trugs-tunlink graph.trug.json --from source_id --to target_id --relation REFERENCES
-    trugs-tunlink graph.trug.json --from source_id --all
-    trugs-tunlink graph.trug.json --to target_id --all
-    trugs-tunlink graph.trug.json --from source_id --to target_id --dry-run
+    trug unlink graph.trug.json --from source_id --to target_id
+    trug unlink graph.trug.json --from source_id --to target_id --relation REFERENCES
+    trug unlink graph.trug.json --from source_id --all
+    trug unlink graph.trug.json --to target_id --all
+    trug unlink graph.trug.json --from source_id --to target_id --dry-run
 
-Note: this is the explicit-TRUG-file edge command (the live ``tg unlink`` verb,
+Note: this is the explicit-TRUG-file edge command (the live ``trug unlink`` verb,
 operating on a named ``*.trug.json``). It is distinct from the namesake
 ``trugs_folder.tunlink``, which is the folder-graph operation over a
 directory's ``folder.trug.json``. The two are intentionally separate command

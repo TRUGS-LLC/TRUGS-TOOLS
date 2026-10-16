@@ -4,14 +4,14 @@
 """tupdate — Update properties on an existing node in a TRUG file.
 
 Usage:
-    trugs-tupdate graph.trug.json node_id --set key=value
-    trugs-tupdate graph.trug.json node_id --set name="New Name" --set confidence=0.8
-    trugs-tupdate graph.trug.json node_id --type ENTITY
-    trugs-tupdate graph.trug.json node_id --parent new_parent_id
-    trugs-tupdate graph.trug.json node_id --parent null
-    trugs-tupdate graph.trug.json node_id --set key=value --dry-run
+    trug update graph.trug.json node_id --set key=value
+    trug update graph.trug.json node_id --set name="New Name" --set confidence=0.8
+    trug update graph.trug.json node_id --type ENTITY
+    trug update graph.trug.json node_id --parent new_parent_id
+    trug update graph.trug.json node_id --parent null
+    trug update graph.trug.json node_id --set key=value --dry-run
 
-Note: this is the explicit-TRUG-file CRUD command (the live ``tg update`` verb,
+Note: this is the explicit-TRUG-file CRUD command (the live ``trug update`` verb,
 operating on a named ``*.trug.json``). It is distinct from the namesake
 ``trugs_folder.tupdate``, which is the folder-graph operation over a
 directory's ``folder.trug.json``. The two are intentionally separate command

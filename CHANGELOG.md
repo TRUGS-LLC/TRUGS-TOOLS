@@ -267,6 +267,9 @@ tg derive <producer_name> --out PATH              # custom output path
 tg derive <producer_name> --canonical CANONICAL   # override canonical path
 ```
 
+Correction, 2026-10-16: The `tg derive` section above records historical system-tier staging.
+This public language package does not ship that verb.
+
 ### `trugs_tools.memory.producers` package (AAA (private reference removed) sub-phase 1)
 
 New public package providing:
@@ -280,6 +283,10 @@ New public package providing:
 Sub-phase 1 ships the scaffolding only; sub-phase 2 will register
 `producer_llm_glance_load` (USER-pinned + ELIGIBLE-ranked + ≤200 entries +
 SI-prefix-grouped per ADR-003).
+
+Correction, 2026-10-16: The `trugs_tools.memory.producers` section above records historical
+system-tier staging. This public language package has no `trugs_tools.memory`
+package and does not ship those producer APIs.
 
 ### Recall-aware `ranking_signal` + `citation_scan` (AAA (private reference removed) sub-phase 3, Flavor-2)
 
@@ -307,6 +314,10 @@ recency. Two pieces:
 The inherited AAA (private reference removed) `edge_update_recognition` interface is satisfied by the
 reorganizer's existing `_handle_edge_created` (which already maintains
 `last_edge_close_count`); no separate updater is shipped.
+
+Correction, 2026-10-16: The recall-aware ranking and citation-scan section above records historical
+system-tier staging. This public language package does not ship those memory
+APIs or the reorganizer.
 
 ### `tg audit vocab` + `tg audit markdown --all-errors` (AAA (private reference removed) SP1+SP2)
 
@@ -370,3 +381,7 @@ validator rule no longer fires on a zero-constituent authored rule.
 
 Additive + backward-compatible: pre-migration stores still validate under the new
 `tg` (old `meta` nodes are untouched; the migration is opt-in and reversible).
+
+Correction, 2026-10-16: The directive-memory section above records historical
+system-tier staging. This public language package does not ship memory, the
+reorganizer, or `tg memory migrate-directive`.

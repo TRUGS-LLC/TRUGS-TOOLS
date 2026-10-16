@@ -4,12 +4,12 @@
 """tdelete — Remove a node and all its connected edges from a TRUG file.
 
 Usage:
-    trugs-tdelete graph.trug.json node_id
-    trugs-tdelete graph.trug.json node_id --dry-run
-    trugs-tdelete graph.trug.json node_id1 node_id2 node_id3
-    trugs-tdelete graph.trug.json node_id --force
+    trug delete graph.trug.json node_id
+    trug delete graph.trug.json node_id --dry-run
+    trug delete graph.trug.json node_id1 node_id2 node_id3
+    trug delete graph.trug.json node_id --force
 
-Note: this is the explicit-TRUG-file CRUD command (the live ``tg delete`` verb,
+Note: this is the explicit-TRUG-file CRUD command (the live ``trug delete`` verb,
 operating on a named ``*.trug.json``). It is distinct from the namesake
 ``trugs_folder.tdelete``, which is the folder-graph operation over a
 directory's ``folder.trug.json``. The two are intentionally separate command

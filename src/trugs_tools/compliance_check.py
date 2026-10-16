@@ -1,18 +1,19 @@
 # Copyright 2026 TRUGS LLC
 # SPDX-License-Identifier: Apache-2.0
 
-"""trugs-compliance-check — mechanical Dark Code compliance verifier.
+"""trug compliance — mechanical Dark Code compliance verifier.
 
 # PROCESS compliance_check SHALL VALIDATE ALL FILE AGAINST DATA standard_dark_code_compliance
 #   THEN SEND RECORD report TO PARTY developer.
 
-Implements the checks specified in `REFERENCE/STANDARD_dark_code_compliance.md`:
+Implements checks from the public TRUGS-LLC/TRUGS standard:
+https://github.com/TRUGS-LLC/TRUGS/blob/main/STANDARD_dark_code_compliance.md
 
 - **C1** — every public `def` / `class` in `*.py` has a function-level TRUG/L
-  comment immediately above it that parses via `tools/trl.py`.
+  comment immediately above it that parses via `src/trugs_tools/trl.py`.
 - **C2** — every public `def` / `class` has a corresponding FUNCTION / PROCESS
   / CLASS / METHOD / STAGE node in the folder's `.trug.json`.
-- **C3** — every TRUG node with a `trl` property parses via `tools/trl.py`.
+- **C3** — every TRUG node with a `trl` property parses via `src/trugs_tools/trl.py`.
 - **C4** — every test function has a comment starting with
   `AGENT SHALL VALIDATE` that parses.
 - **C5** — every TEST node in the TRUG has at least one outbound `VALIDATES`
@@ -24,10 +25,10 @@ Implements the checks specified in `REFERENCE/STANDARD_dark_code_compliance.md`:
 
 Usage:
 
-    trugs-compliance-check [PATH]                 # audit a repo or subtree
-    trugs-compliance-check --json [PATH]          # machine-readable output
-    trugs-compliance-check --strict [PATH]        # exit 1 on ANY violation
-    trugs-compliance-check --baseline-update [PATH]
+    trug compliance [PATH]                 # audit a repo or subtree
+    trug compliance --json [PATH]          # machine-readable output
+    trug compliance --strict [PATH]        # exit 1 on ANY violation
+    trug compliance --baseline-update [PATH]
         # rewrite .github/compliance-baseline.json with current numbers
 
 Exit codes:
@@ -35,7 +36,7 @@ Exit codes:
 - 0 — compliance % ≥ baseline (or baseline does not exist)
 - 1 — compliance % < baseline, or `--strict` and any violation found
 
-See: REFERENCE/STANDARD_dark_code_compliance.md §6 (CI gate)
+See the public standard linked above, §6 (CI gate).
 
 <trl>
 PROCESS compliance_check SHALL SCAN ALL FILE IN RECORD root THEN VALIDATE DATA compliance AGAINST DATA standard AND RETURN RECORD report.
@@ -606,10 +607,10 @@ def check_trug_file(
 def _run_folder_check(trug_path: Path, report: Report) -> None:
     """C7 — validate a TRUG file against CORE rules.
 
-    Preferred: in-process import of tools.validate (always available in TRUGS itself
-    and in any repo that installs the `trugs` package). Falls back to subprocess
-    `trugs-validate` for resilience, and `trugs-folder-check` if that's the tool
-    available in the environment.
+    Preferred: in-process import of `trugs_tools.validate`, supplied by
+    `trugs-tools`. On import failure, tries the legacy subprocess commands
+    `trugs-validate` and `trugs-folder-check` if separately available in the
+    environment; neither is an entry point of the bundled packages.
     """
     # Preferred: in-process validator from the trugs package
     try:
@@ -665,7 +666,7 @@ def _run_folder_check(trug_path: Path, report: Report) -> None:
             path=trug_path,
             line=None,
             symbol=None,
-            message="no validator available — install trugs (tools.validate) or trugs-tools (trugs-folder-check)",
+            message="no validator available — install trugs-tools for trugs_tools.validate",
         )
     )
 
@@ -836,7 +837,7 @@ def render_text(report: Report, root: Path) -> str:
     </trl>
     """
     lines: list[str] = []
-    lines.append(f"trugs-compliance-check — {root}")
+    lines.append(f"trug compliance — {root}")
     lines.append("")
     lines.append(f"  Files checked:       {report.files_checked}")
     lines.append(f"  Functions checked:   {report.functions_checked}")

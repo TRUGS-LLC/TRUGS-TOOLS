@@ -64,8 +64,8 @@ as spec-clarification issues against SPEC_grammar.md.
 
 3. **Node IDs for identified subjects/objects** — the identifier is the
    node id (e.g. `PARTY system` → id "system"). For anonymous nouns
-   (bare `RECORD` with no identifier), no node is emitted in v0.1 —
-   those appear with articles/adjectives in later grammar subsets.
+   (bare `RECORD` with no identifier), the compiler emits a node with
+   an id formed from the lowercase noun and a per-noun counter.
 """
 
 from __future__ import annotations
@@ -2222,7 +2222,7 @@ def validate(graph: dict, lang: Optional[dict] = None) -> list[str]:
 
 # AGENT claude SHALL READ DATA argv THEN RETURN INTEGER DATA exit_code.
 def main(argv: Optional[list] = None) -> int:
-    """CLI entry point for `trugs-trl` (compile / decompile / validate).
+    """CLI entry point for `trug trl` (compile / decompile / validate).
 
     Exit codes:
       0 — success
@@ -2243,8 +2243,8 @@ def main(argv: Optional[list] = None) -> int:
 
 exit codes:
   0  success / valid
-  1  parse or validation failure
-  2  usage error (bad flags or arguments)""",
+  1  validation failure
+  2  input or usage error (including TRL syntax/grammar errors)""",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     sub = parser.add_subparsers(dest="command", required=True)

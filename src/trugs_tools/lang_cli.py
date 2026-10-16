@@ -108,7 +108,7 @@ _TRUG_DISPATCH = {
 }
 
 # One-line verb summaries for the top-level banner (A4, STANDARD_cli_help.md).
-# Keys MUST mirror _TRUG_DISPATCH — test_help_bar.py asserts the two agree.
+# Keys MUST mirror _TRUG_DISPATCH.
 _TRUG_SUMMARIES = {
     "validate": "Validate a TRUG graph against the CORE ruleset (9 structural + 7 compositional, core_v2.0.0)",
     "trl": "Compile / decompile / validate TRL <-> TRUG",

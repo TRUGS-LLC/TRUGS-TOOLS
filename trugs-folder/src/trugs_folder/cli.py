@@ -1857,7 +1857,7 @@ _FOLDER_DISPATCH = {
 }
 
 # One-line verb summaries for the top-level banner (A4, STANDARD_cli_help.md).
-# Keys MUST mirror _FOLDER_DISPATCH — test_help_bar.py asserts the two agree.
+# Keys MUST mirror _FOLDER_DISPATCH.
 _FOLDER_SUMMARIES = {
     "init": "Initialize folder.trug.json in a directory",
     "check": "Validate folder.trug.json against the governance rules",

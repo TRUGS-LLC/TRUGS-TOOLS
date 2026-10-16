@@ -88,7 +88,7 @@
       "type": "DOCUMENT",
       "properties": {
         "name": "NOTICE",
-        "purpose": "Apache 2.0 attribution + patent notice + provenance (consolidation of three prior sources)."
+        "purpose": "Apache attribution notice."
       },
       "parent_id": "root",
       "contains": [],
@@ -125,7 +125,7 @@
       "properties": {
         "name": "src",
         "purpose": "The Python package source tree (src/trugs_tools) \u2014 the `trug` CLI engine plus the audit/internal/templates/schemas/data subpackages.",
-        "file_count": 97
+        "file_count": 37
       },
       "parent_id": "root",
       "contains": [
@@ -145,7 +145,7 @@
       "properties": {
         "name": "trugs_tools (core engine)",
         "purpose": "Top-level graph/CLI engine \u2014 `trug` dispatch (lang_cli.py), the TRUG model + 16-rule CORE validator, the TRL compiler, graph-node CRUD, and Dark Code compliance.",
-        "file_count": 28
+        "file_count": 16
       },
       "parent_id": "comp_src",
       "contains": [],
@@ -197,7 +197,7 @@
       "properties": {
         "name": "trugs_tools/schemas",
         "purpose": "JSON schema definitions for TRUG validation.",
-        "file_count": 1
+        "file_count": 9
       },
       "parent_id": "comp_src",
       "contains": [],
@@ -222,7 +222,7 @@
       "type": "DOCUMENT",
       "properties": {
         "name": "CONTRIBUTING.md",
-        "purpose": "Contribution guidelines (inbound=outbound Apache-2.0; patent carve-out per NOTICE)"
+        "purpose": "Contribution guidelines (inbound=outbound Apache-2.0; scope note in README.md)"
       },
       "parent_id": "root",
       "contains": [],

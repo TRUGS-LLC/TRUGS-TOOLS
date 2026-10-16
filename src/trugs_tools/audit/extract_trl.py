@@ -442,7 +442,7 @@ def _format_json_all_errors(results: Iterable[FileErrors]) -> str:
 # ─── CLI ─────────────────────────────────────────────────────────────────
 
 def main(argv: Optional[list[str]] = None) -> int:
-    """``tg audit markdown PATH [--format text|json] [--verbose] [--all-errors]``.
+    """``trug audit markdown PATH [--format text|json] [--verbose] [--all-errors]``.
 
     Default mode reports the first error per block (the canonical first-error
     contract). ``--all-errors`` switches to the error-recovery path: every

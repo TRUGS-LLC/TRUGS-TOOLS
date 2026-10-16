@@ -21,8 +21,8 @@ def validate_trug(trug: Union[Dict[str, Any], str, Path]) -> ValidationResult:
 
     AAA (private reference removed) (SP3): this is now a thin **delegator** to the single canonical
     validator (`trugs_tools.validate.validate` — the spec's CORE-16 reference,
-    which is exactly what `tg validate` runs). The previous lenient 9-rule fork
-    is removed so the library API, the `tg` CLI, and the test suite all agree on
+    which is exactly what `trug validate` runs). The previous lenient 9-rule fork
+    is removed so the library API, the `trug` CLI, and the test suite all agree on
     one verdict (ASSERT validate_trug SHALL DELEGATE TO canonical_validator;
     INVARIANT validator_self_coherence SHALL HOLD).
 
