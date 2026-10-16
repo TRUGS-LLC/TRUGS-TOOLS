@@ -312,7 +312,7 @@ exit codes:
     args = parser.parse_args(argv)
     root = Path(args.path)
     if not root.exists():
-        print(f"tg audit vocab: path does not exist: {root}", file=sys.stderr)
+        print(f"trug audit vocab: path does not exist: {root}", file=sys.stderr)
         return 2
 
     lang = load_language(args.language)

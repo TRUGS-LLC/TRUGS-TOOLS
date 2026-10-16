@@ -62,7 +62,7 @@ from typing import Any, Optional
 try:
     from trugs_tools import trl as _trl
 except ImportError:
-    # Support running as `python tools/compliance_check.py ...` from repo root.
+    # Add the source root to the import path when running this module directly.
     sys.path.insert(0, str(Path(__file__).parent.parent))
     from trugs_tools import trl as _trl  # type: ignore
 
@@ -548,7 +548,7 @@ def check_trug_file(
         )
         return
 
-    # C7: delegate to trugs-folder-check
+    # C7: validate CORE rules via _run_folder_check
     _run_folder_check(path, report)
 
     # C3: every node with trl property must parse via trl.py
@@ -612,7 +612,7 @@ def _run_folder_check(trug_path: Path, report: Report) -> None:
     `trugs-validate` and `trugs-folder-check` if separately available in the
     environment; neither is an entry point of the bundled packages.
     """
-    # Preferred: in-process validator from the trugs package
+    # Preferred: in-process validator from the trugs-tools package
     try:
         from trugs_tools import validate as _validate_mod
 
