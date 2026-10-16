@@ -19,7 +19,7 @@ from typing import Any, Dict, List, Optional, Set, Union
 
 from trugs_store import JsonFilePersistence
 
-# tgcli-1 reconcile (AAA #2930 SP3): the WRITE vocabulary is the single source
+# tgcli-1 reconcile (AAA (private reference removed) SP3): the WRITE vocabulary is the single source
 # of truth. `tg link` writes edges using `tlink.VALID_RELATIONS` (the uppercase
 # semantic set); `tg check` previously validated against a disjoint lowercase
 # set, so every written edge failed its own round-trip. Import the write set

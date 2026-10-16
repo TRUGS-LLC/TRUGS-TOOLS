@@ -7,7 +7,7 @@ Unified vocabulary merging Living (persistent memory), Knowledge (ontology),
 Research (bibliographic), and Decision (architectural conclusions).
 
 Replaces the former living.py, knowledge.py, and research.py templates.
-See BRANCHES.md knowledge_v1 section and issue #622/#620.
+See BRANCHES.md knowledge_v1 section and issue (private reference removed)/(private reference removed).
 
 
 <trl>
@@ -24,7 +24,7 @@ def generate_knowledge_v1_minimal() -> Dict[str, Any]:
     """Generate minimal knowledge_v1 TRUG (4 nodes).
 
     Demonstrates the merge: KNOWLEDGE_GRAPH root, QUERY (Living origin),
-    ENTITY (shared), DECISION (from #620).
+    ENTITY (shared), DECISION (from (private reference removed)).
 
     Returns:
         Valid TRUG dictionary for knowledge_v1 branch

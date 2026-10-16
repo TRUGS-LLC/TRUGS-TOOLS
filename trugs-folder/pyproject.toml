@@ -12,7 +12,7 @@ requires-python = ">=3.11"
 authors = [{ name = "TRUGS LLC" }]
 keywords = ["trugs", "cli", "graph", "cartography", "folder", "architecture"]
 classifiers = [
-    # A18 decision (AAA #2416, HITM 2026-06-11): 2.0 launches as Beta.
+    # A18 decision (AAA (private reference removed), HITM 2026-06-11): 2.0 launches as Beta.
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: Apache Software License",
@@ -24,7 +24,7 @@ classifiers = [
 ]
 # T2 sits ABOVE T1: depends on the language core (trugs-tools) + the graph store
 # (trugs-store). It NEVER depends on any T3 system package (trugs-start) — the
-# A1/c2 tier-discipline invariant the AAA #2373 cleave exists to establish.
+# A1/c2 tier-discipline invariant the AAA (private reference removed) cleave exists to establish.
 #
 # The tier siblings carry MAJOR CAPS, and the lower bound on trugs-tools is a
 # floor rather than a nicety. This package re-exports the language core's
@@ -62,7 +62,7 @@ Changelog = "https://github.com/TRUGS-LLC/TRUGS-TOOLS/blob/main/trugs-folder/CHA
 
 [tool.setuptools]
 package-dir = { "" = "src" }
-# e8 (AAA #2416): dists carry the license + patent notice explicitly.
+# e8 (AAA (private reference removed)): dists carry the license + patent notice explicitly.
 license-files = ["LICENSE", "NOTICE"]
 
 [tool.setuptools.packages.find]

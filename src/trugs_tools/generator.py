@@ -31,7 +31,7 @@ from trugs_tools.templates.nested import (
 from trugs_tools.schemas import validate_branch_schema
 
 
-# Branches merged into knowledge_v1 (issue #622). Kept here for migration errors.
+# Branches merged into knowledge_v1 (issue (private reference removed)). Kept here for migration errors.
 _MERGED_BRANCHES = {
     "living": "knowledge_v1",
     "knowledge": "knowledge_v1",
@@ -70,7 +70,7 @@ def _normalize_core7(trug: Dict[str, Any]) -> Dict[str, Any]:
     the canonical validator (validate.py rule_6) additionally requires `contains`
     (the bidirectional inverse of parent_id) and `dimension` (the node's declared
     dimension). This fills both deterministically so generated TRUGs are
-    CORE-7-conformant — ASSERT generator SHALL EMIT core_7 'per node (#2189 SP2).
+    CORE-7-conformant — ASSERT generator SHALL EMIT core_7 'per node ((private reference removed) SP2).
     """
     nodes = trug.get("nodes", [])
     # contains = children ids, in node order (inverse of parent_id)

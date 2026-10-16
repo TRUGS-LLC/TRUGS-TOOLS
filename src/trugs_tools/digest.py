@@ -1,7 +1,7 @@
 # Copyright 2026 TRUGS LLC
 # SPDX-License-Identifier: Apache-2.0
 
-"""Content-identity digest for TRUGs — AAA #65, sub-phase 1 (the all-consumer floor).
+"""Content-identity digest for TRUGs — AAA (private reference removed), sub-phase 1 (the all-consumer floor).
 
 A stdlib-only RFC-8785 (JCS) canonical encoding plus a layered, content-addressed
 tree digest that yields a self-describing ``tci1-sha256-<hex>`` identifier — the

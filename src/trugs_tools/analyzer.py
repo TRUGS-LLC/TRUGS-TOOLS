@@ -14,7 +14,7 @@ Provides 8 static analysis methods over TrugGraph:
 
 All methods are stateless static methods. No mutation of TrugGraph.
 
-Issue: #618
+Issue: (private reference removed)
 
 <trl>
 PROCESS analyzer SHALL COMPUTE DATA metrics FROM RECORD graph AND SHALL RETURN RESULT TO COMPONENT truganalyzer.

@@ -150,7 +150,7 @@ def _scan_directory(dirpath: Path, trug: Dict[str, Any], root_id: str) -> None:
         trug["nodes"].append(node)
         root_node["contains"].append(node_id)
         # Bidirectional invariant: every contains-array entry needs its
-        # matching 'contains' edge or the graph fails folder_check (#53).
+        # matching 'contains' edge or the graph fails folder_check ((private reference removed)).
         trug["edges"].append(
             {
                 "from_id": root_id,

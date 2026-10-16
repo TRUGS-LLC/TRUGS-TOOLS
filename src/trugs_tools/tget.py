@@ -12,7 +12,7 @@ Note: this is the explicit-TRUG-file CRUD command (the live ``tg get`` verb,
 operating on a named ``*.trug.json``). It is distinct from the namesake
 ``trugs_folder.tget``, which is the folder-graph operation over a
 directory's ``folder.trug.json``. The two are intentionally separate command
-families, not duplicates (AAA #2190 SP1 disposition: retained).
+families, not duplicates (AAA (private reference removed) SP1 disposition: retained).
 
 <trl>
 PROCESS tget SHALL LOAD FILE trug_json THEN RETURN DATA node SUBJECT_TO node_id MATCH.

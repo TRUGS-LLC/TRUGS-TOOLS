@@ -206,7 +206,7 @@ def infer_node_type(filepath: Union[str, Path]) -> str:
     """Infer TRUG node type from file extension.
 
     Emits only governance-valid types (folder_check.VALID_NODE_TYPES is
-    the canonical vocabulary, #56): code files are COMPONENT, prose and
+    the canonical vocabulary, (private reference removed)): code files are COMPONENT, prose and
     structured-data files are DOCUMENT, test-suffixed files are TEST_SUITE.
     SCHEMA is reserved for *.schema.json — a generic .json is not a schema.
 

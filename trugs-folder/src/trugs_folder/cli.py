@@ -3,7 +3,7 @@
 
 """trug-a-folder — the TRUGS cartography CLI (trugs_folder, T2).
 
-AAA #2373 commons cleave: the cartography command handlers, re-homed onto their
+AAA (private reference removed) commons cleave: the cartography command handlers, re-homed onto their
 owning package. This module imports only T1 (trugs_tools) + T2 (trugs_folder) +
 trugs_store — NEVER any T3 system module (trugs_start), so the published
 trugs-folder wheel carries zero AGPL system code (invariant: folder_cli
@@ -191,7 +191,7 @@ exit codes:
 
 # ---------------------------------------------------------------------------
 # Cartography command handlers (extracted from the monolithic dispatcher,
-# AAA #2373 SP2 — owned by trugs_folder, the cartography tier).
+# AAA (private reference removed) SP2 — owned by trugs_folder, the cartography tier).
 # ---------------------------------------------------------------------------
 
 # AGENT claude SHALL DEFINE FUNCTION info_command.
@@ -1815,7 +1815,7 @@ def folder_import_command(args: Optional[list] = None) -> int:
             return 1
 
 # ---------------------------------------------------------------------------
-# trug-a-folder dispatch — the commons cartography verb set (manifest #2358).
+# trug-a-folder dispatch — the commons cartography verb set (manifest (private reference removed)).
 # render is restricted to the `architecture` target; agent/claude/aaa renders
 # are T3 system verbs and live on the `tg` binary, not here.
 # ---------------------------------------------------------------------------

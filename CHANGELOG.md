@@ -180,7 +180,7 @@ only the two verdict-neutral warning checks it was actually wired for.
 
 ## [2.0.0] — 2026-06-12
 
-The TRUGS 2.0 commons release. Bundles AAA #1976 Phase 7 four-repo polish work +
+The TRUGS 2.0 commons release. Bundles AAA (private reference removed) Phase 7 four-repo polish work +
 cross-repo sub-phase deliverables per the bundled-release policy (`mem-98505a37`).
 Published to PyPI together with `trugs-folder` 2.0.0 and `trugs-store` 2.0.0 — the
 three-package Apache commons kit (dependency order `trugs-store` < `trugs-tools` <
@@ -217,10 +217,10 @@ files are data and are untouched by any of this.
 
 ## Added
 
-### L2 shared release infrastructure (AAA #2190 SP3)
+### L2 shared release infrastructure (AAA (private reference removed) SP3)
 
-Repo-wide Tier-1 release-polish infrastructure, owned solely by sub-AAA S2 (#2190)
-and consumed by S3 (#2191) / S4 (#2192):
+Repo-wide Tier-1 release-polish infrastructure, owned solely by sub-AAA S2 ((private reference removed))
+and consumed by S3 ((private reference removed)) / S4 ((private reference removed)):
 
 - **`folder.trug.json`** — the repo's self-describing structure TRUG (root + top-level
   documents + `src/trugs_tools` core/subpackage components + tests/examples/reference),
@@ -237,11 +237,11 @@ and consumed by S3 (#2191) / S4 (#2192):
   staging fragment into Keep-a-Changelog format (the `[Unreleased]` section is now the
   accumulator later sub-phases append to).
 
-### `tg derive` CLI verb (AAA #2004 sub-phase 1)
+### `tg derive` CLI verb (AAA (private reference removed) sub-phase 1)
 
 New top-level verb for invoking registered "producer" functions that emit
 derived TRUG artifacts from the canonical memory TRUG. Producer pattern is
-the load-bearing primitive of AAA #2004: pure functions read the canonical
+the load-bearing primitive of AAA (private reference removed): pure functions read the canonical
 and emit purpose-shaped derived TRUGs (LLM glance-load, audit-context,
 onboarding, debug — each a separate follow-on AAA). The canonical is never
 modified.
@@ -256,7 +256,7 @@ tg derive <producer_name> --out PATH              # custom output path
 tg derive <producer_name> --canonical CANONICAL   # override canonical path
 ```
 
-### `trugs_tools.memory.producers` package (AAA #2004 sub-phase 1)
+### `trugs_tools.memory.producers` package (AAA (private reference removed) sub-phase 1)
 
 New public package providing:
 
@@ -270,7 +270,7 @@ Sub-phase 1 ships the scaffolding only; sub-phase 2 will register
 `producer_llm_glance_load` (USER-pinned + ELIGIBLE-ranked + ≤200 entries +
 SI-prefix-grouped per ADR-003).
 
-### Recall-aware `ranking_signal` + `citation_scan` (AAA #2004 sub-phase 3, Flavor-2)
+### Recall-aware `ranking_signal` + `citation_scan` (AAA (private reference removed) sub-phase 3, Flavor-2)
 
 `ranking_signal` now reflects organic chat-citation recall in addition to edge
 recency. Two pieces:
@@ -282,7 +282,7 @@ recency. Two pieces:
   the canonical TRUG. `memory.cultivation.scan_transcript_to_trl(...)` is the
   close-time boundary that appends those events to the TRL; the reorganizer's
   existing `_handle_memory_recalled` then sets `last_recall_close_count` on
-  consume — so the AAA #1814 sole-mutator invariant is preserved (not just
+  consume — so the AAA (private reference removed) sole-mutator invariant is preserved (not just
   aspirational).
 - `compute_ranking_signal_with_recency` (in `memory.reorganizer`) gains a
   **recall term** `(MENTION_WEIGHT / EDGE_WEIGHT) × recency_decay(close_count −
@@ -293,11 +293,11 @@ recency. Two pieces:
   `ranking_signal` degrades **exactly** to the prior edge-only value — zero
   regression for never-cited memories.
 
-The inherited AAA #2001 `edge_update_recognition` interface is satisfied by the
+The inherited AAA (private reference removed) `edge_update_recognition` interface is satisfied by the
 reorganizer's existing `_handle_edge_created` (which already maintains
 `last_edge_close_count`); no separate updater is shipped.
 
-### `tg audit vocab` + `tg audit markdown --all-errors` (AAA #2018 SP1+SP2)
+### `tg audit vocab` + `tg audit markdown --all-errors` (AAA (private reference removed) SP1+SP2)
 
 De-masked per-class TRL drift measurement. The default `tg audit markdown`
 delegates each `<trl>` block to the full parser, which raises on the **first**
@@ -329,18 +329,18 @@ unchanged and still raises on the first error (the contract `tg validate`,
 and a vocab error) is an accepted limitation, fully covered for vocabulary by
 the position-independent `tg audit vocab` pass.
 
-### `directive` memory_type + `tg memory migrate-directive` (AAA #2033 SP1)
+### `directive` memory_type + `tg memory migrate-directive` (AAA (private reference removed) SP1)
 
 New `directive` memory_type for HITM-authored standing rules — separating them
 from emergent `meta` centroids so `meta` again means exactly one thing (a
 centroid over ≥2 constituents). `directive` inherits the above-BASE, KILO-floored,
-non-decaying placement of the old `--type user`→`meta` path (AAA #1926 ADR-003)
+non-decaying placement of the old `--type user`→`meta` path (AAA (private reference removed) ADR-003)
 but carries **no** centroid obligation, so the `meta_under_two_constituents`
 validator rule no longer fires on a zero-constituent authored rule.
 
 - **`--type user` is now an input alias for `directive`+KILO** at *both* ingest
   surfaces — the `tg memory remember` argparse alias AND the live `MemoryWritten`
-  event path (`_handle_memory_written`, the AAA #1870 `/remember` path). No raw
+  event path (`_handle_memory_written`, the AAA (private reference removed) `/remember` path). No raw
   `user`-typed node is ever persisted. The public `--type user` CLI surface is
   unchanged.
 - **Reorganizer** elevation gains a `directive` arm: `level = max(computed,
@@ -353,7 +353,7 @@ validator rule no longer fires on a zero-constituent authored rule.
   rule-scoped migration converting authored metas (`type=meta` AND
   `floor_level=KILO` AND `constituent_count < 2`) → `directive`, keyed on a
   distinct `_migration_2033_original_type` marker for byte-for-byte reversibility.
-  Metas with ≥2 constituents (real centroids) are never touched. The AAA #1926
+  Metas with ≥2 constituents (real centroids) are never touched. The AAA (private reference removed)
   `migrate-elevation` `user→meta` transform is redirected to `user→directive` so
   no legacy/reverse path re-mints a `meta` from a `user` input.
 

@@ -3,7 +3,7 @@
 
 """trug — the TRUGS language CLI (trugs_tools, T1).
 
-AAA #2373 commons cleave: the language-core entry point. Operates the TRUG/TRL
+AAA (private reference removed) commons cleave: the language-core entry point. Operates the TRUG/TRL
 language only — validate, compile/lint (trl), graph-node CRUD (get/update/
 delete/unlink), Dark Code compliance, and the corpus-side audit bridges
 (markdown/vocab). Imports only T1 modules (+ trugs_store transitively); NEVER
@@ -93,7 +93,7 @@ def _dispatch_audit(argv) -> int:
     return 2
 
 
-# The language verb set (#2358 manifest: validate, trl, get, update, delete,
+# The language verb set ((private reference removed) manifest: validate, trl, get, update, delete,
 # unlink, compliance, audit). get/update/delete/unlink bind to the T1 graph-node
 # CRUD modules (tget/tupdate/tdelete/tunlink), NOT their T2 filesystem namesakes.
 _TRUG_DISPATCH = {

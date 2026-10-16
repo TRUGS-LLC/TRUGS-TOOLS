@@ -14,7 +14,7 @@ Note: this is the explicit-TRUG-file edge command (the live ``tg unlink`` verb,
 operating on a named ``*.trug.json``). It is distinct from the namesake
 ``trugs_folder.tunlink``, which is the folder-graph operation over a
 directory's ``folder.trug.json``. The two are intentionally separate command
-families, not duplicates (AAA #2190 SP1 disposition: retained).
+families, not duplicates (AAA (private reference removed) SP1 disposition: retained).
 
 <trl>
 PROCESS tunlink SHALL FILTER RECORD edge FROM FILE trug_file THEN WRITE RECORD graph TO FILE trug_file.

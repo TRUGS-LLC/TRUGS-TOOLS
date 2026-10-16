@@ -1,10 +1,10 @@
 # Copyright 2026 TRUGS LLC
 # SPDX-License-Identifier: Apache-2.0
 
-"""Regression tests for #56 — infer_node_type emits governance-valid types.
+"""Regression tests for (private reference removed) — infer_node_type emits governance-valid types.
 
 The governance vocabulary (folder_check.VALID_NODE_TYPES) is canonical
-(AAA #2416 ADR-002). Scan/add/sync output must pass folder_check clean:
+(AAA (private reference removed) ADR-002). Scan/add/sync output must pass folder_check clean:
 node types in-vocabulary AND metric_levels matching (rule 4 + rule 5).
 Lands at tests/ root; relocates to trugs-folder/tests/ in SP2.
 """
@@ -47,7 +47,7 @@ class TestGovernanceVocabulary:
 
     # AGENT SHALL VALIDATE PROCESS test_component_metric_is_deka_not_base.
     def test_component_metric_is_deka_not_base(self):
-        # The defect class behind #56: BASE_<type> derivation breaks on
+        # The defect class behind (private reference removed): BASE_<type> derivation breaks on
         # COMPONENT, whose governance level is DEKA_COMPONENT.
         assert infer_metric_level("COMPONENT") == "DEKA_COMPONENT"
 
@@ -68,9 +68,9 @@ class TestScanPassesOwnCheck:
         result = check_folder_trug(tmp_path / "folder.trug.json")
         assert result.errors == []
 
-    # tadd/tsync still omit the bidirectional 'contains' edge (the #53
+    # tadd/tsync still omit the bidirectional 'contains' edge (the (private reference removed)
     # class — its fix covered tinit only), so their checks below assert
-    # only the #56 error class: no invalid-type / wrong-metric errors.
+    # only the (private reference removed) error class: no invalid-type / wrong-metric errors.
     _VOCAB_ERROR_MARKERS = ("invalid type", "metric_level")
 
     def _vocab_errors(self, result):

@@ -899,12 +899,12 @@ class TestNodeFileExists:
 
 
 # ---------------------------------------------------------------------------
-# Integration: stale detection with file property (Issue #427)
+# Integration: stale detection with file property (Issue (private reference removed))
 # ---------------------------------------------------------------------------
 
 # AGENT claude SHALL DEFINE RECORD teststaledetectionwithfileproperty AS A RECORD test_suite.
 class TestStaleDetectionWithFileProperty:
-    """Integration tests for the fix to Issue #427 — per-file component nodes."""
+    """Integration tests for the fix to Issue (private reference removed) — per-file component nodes."""
 
     # AGENT SHALL VALIDATE PROCESS test_per_file_component_not_marked_stale.
     def test_per_file_component_not_marked_stale(self, tmp_path):
@@ -1025,7 +1025,7 @@ class TestStaleDetectionWithFileProperty:
 
 
 # ---------------------------------------------------------------------------
-# VG-2: Component status auto-advance (Fix 2 — #453)
+# VG-2: Component status auto-advance (Fix 2 — (private reference removed))
 # ---------------------------------------------------------------------------
 
 # AGENT claude SHALL DEFINE RECORD teststatusautoadvance AS A RECORD test_suite.
@@ -1130,7 +1130,7 @@ class TestStatusAutoAdvance:
 
 
 # ---------------------------------------------------------------------------
-# VG-4: Ghost node pruning (Fix 3 — #453)
+# VG-4: Ghost node pruning (Fix 3 — (private reference removed))
 # ---------------------------------------------------------------------------
 
 # AGENT claude SHALL DEFINE RECORD testghostnodepruning AS A RECORD test_suite.
@@ -1281,7 +1281,7 @@ class TestGhostNodePruning:
 
 
 # ---------------------------------------------------------------------------
-# VG-5: Prose/factual divergence warning (Fix 4 — #453)
+# VG-5: Prose/factual divergence warning (Fix 4 — (private reference removed))
 # ---------------------------------------------------------------------------
 
 # AGENT claude SHALL DEFINE RECORD testprosefactualdivergence AS A RECORD test_suite.

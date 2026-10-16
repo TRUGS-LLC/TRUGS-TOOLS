@@ -25,7 +25,7 @@ def _init_project(tmp_path):
 
 
 def _non_contains(result):
-    """Edges excluding the scan-created 'contains' baseline (#53) —
+    """Edges excluding the scan-created 'contains' baseline ((private reference removed)) —
     the mechanical edges tinit now correctly emits per child."""
     return [e for e in result["edges"] if e["relation"] != "contains"]
 
