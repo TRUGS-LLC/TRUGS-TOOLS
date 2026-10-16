@@ -22,7 +22,8 @@ def generate_web_minimal() -> Dict[str, Any]:
     - 1 SECTION
     
     Returns:
-        Valid TRUG dictionary for web navigation
+        Unnormalized TRUG scaffold for web navigation.
+        Use generate_trug for CORE normalization.
     """
     return {
         "name": "Web Minimal Example",
@@ -80,7 +81,8 @@ def generate_web_complete() -> Dict[str, Any]:
     """Generate complete Web TRUG with navigation.
     
     Returns:
-        Valid TRUG dictionary for web with multiple pages and links
+        Unnormalized TRUG scaffold for web with multiple pages and links.
+        Use generate_trug for CORE normalization.
     """
     return {
         "name": "Web Complete Example",

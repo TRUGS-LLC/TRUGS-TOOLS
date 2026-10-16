@@ -27,7 +27,8 @@ def generate_knowledge_v1_minimal() -> Dict[str, Any]:
     ENTITY (shared), DECISION (from (private reference removed)).
 
     Returns:
-        Valid TRUG dictionary for knowledge_v1 branch
+        Unnormalized TRUG scaffold for knowledge_v1 branch.
+        Use generate_trug for CORE normalization.
     """
     return {
         "name": "Knowledge_v1 Minimal Example",
@@ -118,7 +119,8 @@ def generate_knowledge_v1_complete() -> Dict[str, Any]:
     rejects/supersedes/invalidates edges).
 
     Returns:
-        Valid TRUG dictionary for knowledge_v1 branch with full vocabulary
+        Unnormalized TRUG scaffold for knowledge_v1 branch with full vocabulary.
+        Use generate_trug for CORE normalization.
     """
     return {
         "name": "Knowledge_v1 Complete Example",

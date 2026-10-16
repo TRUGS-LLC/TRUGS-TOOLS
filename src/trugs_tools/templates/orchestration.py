@@ -26,7 +26,8 @@ def generate_orchestration_minimal() -> Dict[str, Any]:
     - 1 ESCALATION (child of task)
 
     Returns:
-        Valid TRUG dictionary for multi-agent coordination
+        Unnormalized TRUG scaffold for multi-agent coordination.
+        Use generate_trug for CORE normalization.
     """
     return {
         "name": "Orchestration Minimal Example",
@@ -88,8 +89,9 @@ def generate_orchestration_complete() -> Dict[str, Any]:
     """Generate complete Orchestration TRUG with delegation and escalation.
 
     Returns:
-        Valid TRUG dictionary for multi-agent coordination with
-        principals, agents, tasks, resources, permissions, and escalation
+        Unnormalized TRUG scaffold for multi-agent coordination with
+        principals, agents, tasks, resources, permissions, and escalation.
+        Use generate_trug for CORE normalization.
     """
     return {
         "name": "Orchestration Complete Example",

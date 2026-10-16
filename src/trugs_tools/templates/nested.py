@@ -26,7 +26,8 @@ def generate_nested_minimal() -> Dict[str, Any]:
     - 2 SUBGRAPH (child references)
 
     Returns:
-        Valid TRUG dictionary for hierarchical graph composition
+        Unnormalized TRUG scaffold for hierarchical graph composition.
+        Use generate_trug for CORE normalization.
     """
     return {
         "name": "Nested Minimal Example",
@@ -88,8 +89,9 @@ def generate_nested_complete() -> Dict[str, Any]:
     """Generate complete Nested TRUG with tasks, subgraphs, and results (7 nodes).
 
     Returns:
-        Valid TRUG dictionary for hierarchical graph composition with
-        tasks, subgraph references, and result outcomes
+        Unnormalized TRUG scaffold for hierarchical graph composition with
+        tasks, subgraph references, and result outcomes.
+        Use generate_trug for CORE normalization.
     """
     return {
         "name": "Nested Complete Example",

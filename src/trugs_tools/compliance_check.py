@@ -878,8 +878,9 @@ def main(argv: Optional[list[str]] = None) -> int:
   trug compliance --json --strict
 
 exit codes:
-  0  compliant
-  1  findings present
+  0  default: no baseline or no compliance decrease; strict: no violations
+     also returned after a successful --baseline-update
+  1  default: compliance decreased from baseline; strict: violations present
   2  usage error (bad flags or arguments)""",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )

@@ -87,8 +87,9 @@ def tmove(
 ) -> Dict[str, Any]:
     """Move/rename a node in the TRUG graph atomically.
 
-    Moves the physical file and updates the graph. On any failure,
-    both filesystem and graph are rolled back to the previous state.
+    Renames the physical file when it exists and updates the graph even if it
+    does not. On any failure, both filesystem and graph are rolled back to the
+    previous state.
 
     Args:
         directory: Directory containing folder.trug.json
@@ -100,7 +101,7 @@ def tmove(
         Updated TRUG dictionary
 
     Raises:
-        FileNotFoundError: If folder.trug.json or source file doesn't exist
+        FileNotFoundError: If folder.trug.json doesn't exist
         ValueError: If node or new parent not found, or if the new parent is
             the node itself or one of its descendants (that would build a
             parent_id cycle)

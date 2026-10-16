@@ -183,9 +183,9 @@ def _project_content(obj: Any) -> Any:
     """Represent content references by their address; never resolve them.
 
     A single-key ``{"$content_address": "<tci label>"}`` dict is replaced by a
-    stable token carrying just the address, so the digest is identical whether the
-    value is inlined or externalized, and a reference to a missing target still
-    digests (no I/O).
+    stable token carrying just the address. Inline values remain inline, so
+    externalizing a value can change the digest. A reference to a missing target
+    still digests (no I/O).
     """
     if isinstance(obj, dict):
         if len(obj) == 1 and isinstance(obj.get(REF_KEY), str):
@@ -342,9 +342,8 @@ def verify(
 ) -> Dict[str, Any]:
     """Recompute the content identity and compare it to ``declared_identity``.
 
-    Pure comparator — returns ``{"match", "declared", "recomputed", "layer"}``. The
-    capability-gated ``validate()`` hook (sub-phase 2) surfaces a ``match == False``
-    as a verdict-neutral ``CONTENT_DIGEST_MISMATCH`` warning.
+    Pure comparator — returns ``{"match", "declared", "recomputed", "layer"}``.
+    Validator integration is not implemented.
     """
     recomputed = digest(trug, layer=layer, dimension=dimension)
     return {
