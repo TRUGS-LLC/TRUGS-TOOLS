@@ -67,7 +67,7 @@ __all__ = [
     "audit_file",
     "audit_path",
     "MARKDOWN_SUFFIXES",
-    # --all-errors path (AAA #2018 SP2) — additive; default path is unchanged
+    # --all-errors path (AAA (private reference removed) SP2) — additive; default path is unchanged
     "BlockErrors",
     "FileErrors",
     "audit_file_all_errors",
@@ -312,7 +312,7 @@ def _format_json(results: Iterable[FileResult]) -> str:
     return json.dumps(payload, indent=2)
 
 
-# ─── --all-errors path (AAA #2018 SP2) ────────────────────────────────────
+# ─── --all-errors path (AAA (private reference removed) SP2) ────────────────────────────────────
 # Opt-in error-recovery reporting: instead of the first error per block, list
 # EVERY statement-level error tagged by class (vocab / grammar / syntax). This
 # is a SEPARATE code path from the default audit above so the default output is
@@ -447,7 +447,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     Default mode reports the first error per block (the canonical first-error
     contract). ``--all-errors`` switches to the error-recovery path: every
     statement-level error per block, tagged by class — the de-masked
-    grammar/syntax measurement for AAA #2018.
+    grammar/syntax measurement for AAA (private reference removed).
 
     Exit codes:
         0 — every block passed (no errors)

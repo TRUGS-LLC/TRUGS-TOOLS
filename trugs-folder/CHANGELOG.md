@@ -18,7 +18,7 @@ lockstep with `trugs-tools` 2.0).
 
 `trugs-folder` descends from the folder-cartography half of **trugs-tools 1.0.0**
 (PyPI, 2026-04-18), where these verbs lived under the unified `tg` binary. The
-TRUGS 2.0 commons cleave (AAA #2373) split the cartography tier onto its own
+TRUGS 2.0 commons cleave (AAA (private reference removed)) split the cartography tier onto its own
 wheel with its own binary, `trug-a-folder`. The v1 → 2.0 verb migration table
 is in the [trugs-tools CHANGELOG](https://github.com/TRUGS-LLC/TRUGS-TOOLS/blob/main/CHANGELOG.md).
 
@@ -36,5 +36,5 @@ is in the [trugs-tools CHANGELOG](https://github.com/TRUGS-LLC/TRUGS-TOOLS/blob/
 
 - `init --scan` output now passes its own `check`: scanned nodes carry
   governance-valid types (code → `COMPONENT`, prose/structured-data →
-  `DOCUMENT`) and matching metric levels (#56), and contains-edges are
-  emitted bidirectionally (#53).
+  `DOCUMENT`) and matching metric levels ((private reference removed)), and contains-edges are
+  emitted bidirectionally ((private reference removed)).

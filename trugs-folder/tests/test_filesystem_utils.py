@@ -155,7 +155,7 @@ class TestGraphQueries:
 
 # AGENT claude SHALL DEFINE RECORD testinfernodetype AS A RECORD test_suite.
 class TestInferNodeType:
-    # Governance vocabulary only (folder_check.VALID_NODE_TYPES, #56) —
+    # Governance vocabulary only (folder_check.VALID_NODE_TYPES, (private reference removed)) —
     # code is COMPONENT, prose/structured-data is DOCUMENT, tests are TEST_SUITE.
 
     # AGENT SHALL VALIDATE PROCESS test_python_component.

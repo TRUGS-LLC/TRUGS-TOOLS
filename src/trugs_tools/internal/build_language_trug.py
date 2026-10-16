@@ -30,7 +30,7 @@ from pathlib import Path
 from typing import Optional
 
 # Widened from `(\w+)` to `([\w ]+?)` (non-greedy) to match the multi-word
-# heading "Level Prefixes" added for TRUGS 2.0 (TRUGS-DEVELOPMENT#1719).
+# heading "Level Prefixes" added for TRUGS 2.0 ((private reference removed)).
 PART_HEADING_RE = re.compile(r"^## (\d+)\.\s+([\w ]+?)(?:\s+—\s+([^()]+))?\s*\((\d+)\)\s*$")
 SUBCAT_HEADING_RE = re.compile(r"^### ([\w/ ]+?)\s*\((\d+)\)(?:\s+—\s+(.+))?\s*$")
 ROW_RE = re.compile(r"^\|\s*(\d+)\s*\|")

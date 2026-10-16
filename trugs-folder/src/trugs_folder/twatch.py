@@ -85,7 +85,7 @@ def twatch(
             if once:
                 raise
             # Surface the failure instead of spinning silently forever on a
-            # persistently-broken TRUG (audit #25); keep watching — the next
+            # persistently-broken TRUG (audit (private reference removed)); keep watching — the next
             # edit may fix it.
             print(
                 f"twatch: render cycle failed ({e.__class__.__name__}: {e}) — "

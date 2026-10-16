@@ -12,7 +12,7 @@ requires-python = ">=3.11"
 authors = [{ name = "TRUGS LLC" }]
 keywords = ["trugs", "cli", "graph", "spec", "tg"]
 classifiers = [
-    # A18 decision (AAA #2416, HITM 2026-06-11): 2.0 launches as Beta.
+    # A18 decision (AAA (private reference removed), HITM 2026-06-11): 2.0 launches as Beta.
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: Apache Software License",
@@ -34,12 +34,12 @@ dependencies = [
 test = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
-    # AAA #65 SP1: RFC-8785 byte-oracles for the content-identity digest — TEST-ONLY.
+    # AAA (private reference removed) SP1: RFC-8785 byte-oracles for the content-identity digest — TEST-ONLY.
     "jcs>=0.2.1",
     "rfc8785>=0.1.4",
 ]
 
-# AAA #2373 commons cleave: this T1 package now ships the language CLI `trug`
+# AAA (private reference removed) commons cleave: this T1 package now ships the language CLI `trug`
 # (validate/trl/graph-CRUD/compliance/audit). The unified `tg` god-binary moved
 # to the trugs_start seed (trugs-start/pyproject.toml); cartography `trug-a-folder`
 # lives in trugs-folder/pyproject.toml.
@@ -54,7 +54,7 @@ Changelog = "https://github.com/TRUGS-LLC/TRUGS-TOOLS/blob/main/CHANGELOG.md"
 
 [tool.setuptools]
 package-dir = { "" = "src" }
-# e8 (AAA #2416): dists carry the license + patent notice explicitly.
+# e8 (AAA (private reference removed)): dists carry the license + patent notice explicitly.
 license-files = ["LICENSE", "NOTICE"]
 
 [tool.setuptools.packages.find]
@@ -71,7 +71,7 @@ python_classes = ["Test*"]
 python_functions = ["test_*"]
 
 [tool.mypy]
-# L1 industry baseline (AAA #2190 SP2): default-mode mypy, no strictness flags —
+# L1 industry baseline (AAA (private reference removed) SP2): default-mode mypy, no strictness flags —
 # establish a clean baseline first; opt-in strictness is out of scope here.
 python_version = "3.11"
 

@@ -13,7 +13,7 @@ Note: this is the explicit-TRUG-file CRUD command (the live ``tg delete`` verb,
 operating on a named ``*.trug.json``). It is distinct from the namesake
 ``trugs_folder.tdelete``, which is the folder-graph operation over a
 directory's ``folder.trug.json``. The two are intentionally separate command
-families, not duplicates (AAA #2190 SP1 disposition: retained).
+families, not duplicates (AAA (private reference removed) SP1 disposition: retained).
 
 Note: deleting a node repairs the hierarchy on both sides of the link. Stripping
 the deleted ids from every surviving ``contains[]`` is only half of it — the

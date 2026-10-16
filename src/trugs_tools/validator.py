@@ -19,7 +19,7 @@ from trugs_tools.errors import ValidationResult
 def validate_trug(trug: Union[Dict[str, Any], str, Path]) -> ValidationResult:
     """Validate a TRUG against the canonical CORE validator.
 
-    AAA #2189 (SP3): this is now a thin **delegator** to the single canonical
+    AAA (private reference removed) (SP3): this is now a thin **delegator** to the single canonical
     validator (`trugs_tools.validate.validate` — the spec's CORE-16 reference,
     which is exactly what `tg validate` runs). The previous lenient 9-rule fork
     is removed so the library API, the `tg` CLI, and the test suite all agree on

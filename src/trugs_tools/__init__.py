@@ -22,7 +22,7 @@ from trugs_tools.generator import generate_trug
 from trugs_tools.trug_graph import TrugGraph
 from trugs_tools.analyzer import TrugAnalyzer, TrugComplexityMetrics
 
-# Single version source is pyproject.toml (A17, AAA #2416) — no duplicated
+# Single version source is pyproject.toml (A17, AAA (private reference removed)) — no duplicated
 # literal here; the installed distribution metadata is the runtime carrier.
 try:
     __version__ = _dist_version("trugs-tools")

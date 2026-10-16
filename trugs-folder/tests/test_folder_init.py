@@ -680,7 +680,7 @@ class TestIntegrationTrugsTools:
     def trugs_tools_path(self):
         # Find the TRUGS_TOOLS folder relative to this test
         here = Path(__file__).resolve().parent
-        trugs_tools = here.parent.parent  # repo root (tests moved into trugs-folder/tests, #2416 SP2)
+        trugs_tools = here.parent.parent  # repo root (tests moved into trugs-folder/tests, (private reference removed) SP2)
         if not (trugs_tools / "pyproject.toml").exists():
             pytest.skip("TRUGS_TOOLS folder not found")
         return trugs_tools
@@ -742,7 +742,7 @@ class TestFindFoldersWithoutTrug:
 
 
 # ---------------------------------------------------------------------------
-# VG-1: test_count_source tracking (Fix 1 — #453)
+# VG-1: test_count_source tracking (Fix 1 — (private reference removed))
 # ---------------------------------------------------------------------------
 
 # AGENT claude SHALL DEFINE RECORD testtestcountsource AS A RECORD test_suite.

@@ -125,7 +125,7 @@ def sync_folder_trug(
     # Step 1: Load existing TRUG — via the store-aware read so a Postgres
     # deployment (PORT_DSN set) reads the same backend the Step-6 dual_write
     # writes to; a raw json.load here read stale JSON under Postgres and could
-    # reintroduce or drop nodes (audit #21). Without PORT_DSN this is exactly
+    # reintroduce or drop nodes (audit (private reference removed)). Without PORT_DSN this is exactly
     # the old json.load. Local import mirrors the write site: trugs_folder
     # depends on trugs_store only at sync time.
     from trugs_store.persistence.dual_write import read_trug

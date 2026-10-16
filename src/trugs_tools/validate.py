@@ -323,7 +323,7 @@ def _op_class(operation: str) -> Optional[str]:
 CORE_VOCABULARY = "core_v2.0.0"
 # v1 is retired, not grandfathered (HITM no-back-compat ruling 2026-07-13):
 # declaring it must fail loud, never pass silently — a graph asking for
-# validation and being quietly told yes is the defect class of #3071.
+# validation and being quietly told yes is the defect class of (private reference removed).
 RETIRED_VOCABULARIES = frozenset({"core_v1.0.0"})
 
 
@@ -344,7 +344,7 @@ def _vocabularies_shape_error(trug: Dict[str, Any]) -> Optional[str]:
     # A malformed declaration must fail LOUD: coercing a mistyped
     # capabilities.vocabularies to "no declaration" would let a string-form
     # declaration of the retired core_v1.0.0 pass silently — the exact
-    # defect class of #3071. (A non-dict capabilities block is already
+    # defect class of (private reference removed). (A non-dict capabilities block is already
     # rejected by rule_8.)
     caps = trug.get("capabilities", {})
     if not isinstance(caps, dict) or "vocabularies" not in caps:
@@ -736,7 +736,7 @@ def rule_9_metric_level_format(trug: Dict[str, Any], r: ValidationResult):
     FUNCTION rule_9_metric_level_format SHALL VALIDATE RECORD metric_level AND SHALL REJECT RECORD node SUBJECT_TO RECORD si_prefix EQUALS RECORD invalid.
     </trl>
     """
-    # AAA #1926 SP1 — accept both canonical bare-prefix (`BASE`, `KILO`) and
+    # AAA (private reference removed) SP1 — accept both canonical bare-prefix (`BASE`, `KILO`) and
     # legacy PREFIX_NAME (`BASE_MEMORY`, `KILO_STORE`) forms. The bare-prefix
     # form is the post-migration target per SC-18; the underscored form stays
     # valid for non-memory stores that use `PREFIX_STORE`-style semantics.
@@ -809,7 +809,7 @@ def rule_11_operation_object(trug: Dict[str, Any], r: ValidationResult):
         # Modal bindings (actor→operation) are rule_14's jurisdiction, not the
         # verb-object table — SPEC_grammar scopes this rule to operation-to-target
         # edges, and SHALL's dual listing in OP_OBLIGATE would otherwise sweep the
-        # modal edge into this scan (#3061).
+        # modal edge into this scan ((private reference removed)).
         if rel in MODALS:
             continue
         if rel not in ALL_OPERATIONS:
@@ -1038,14 +1038,14 @@ def validate(trug: Dict[str, Any]) -> ValidationResult:
     rule_9_metric_level_format(trug, r)
 
     # A malformed vocabularies field fails loud before any gate decision —
-    # it must never silently degrade to "no declaration" (#3071 audit F1).
+    # it must never silently degrade to "no declaration" ((private reference removed) audit F1).
     shape_err = _vocabularies_shape_error(trug)
     if shape_err:
         r.error("INVALID_FIELD_TYPE", shape_err, "capabilities.vocabularies")
 
     # A retired vocabulary short-circuits the compositional tier: structural
     # verdicts above stand, the tier does not arm, and exactly one
-    # RETIRED_VOCABULARY error is emitted — never a warning (#3071).
+    # RETIRED_VOCABULARY error is emitted — never a warning ((private reference removed)).
     retired = RETIRED_VOCABULARIES.intersection(_declared_vocabularies(trug))
     if retired:
         r.error(

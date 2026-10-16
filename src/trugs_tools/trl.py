@@ -6,11 +6,11 @@ r"""TRL compiler — deterministic TRL ↔ TRUG round-trip.
 TRL (TRUGS Language) is a closed 233-word subset of English (across 9 parts
 of speech). Every valid sentence round-trips through a TRUG graph with no
 information loss beyond sugar tokens and presentation-only level directives
-(per ADR-002 / TRUGS-DEVELOPMENT#1719). This module implements that round-trip.
+(per ADR-002 / (private reference removed)). This module implements that round-trip.
 
 ## What's implemented
 
-Incrementally, toward #1539 full v0.1 (round-trip all 30 canonical
+Incrementally, toward (private reference removed) full v0.1 (round-trip all 30 canonical
 examples in SPEC_examples.md):
 
 1. **v0.1a** — minimum valid sentence: `SUBJ_NOUN id VERB .`
@@ -41,7 +41,7 @@ object/prep lists (e.g. `AGENT a AND AGENT b`).
 PROCESS trl SHALL COMPILE DATA source TO RECORD graph THEN DECOMPILE RECORD graph TO DATA source.
 </trl>
 
-## Not yet implemented (tracked in TRUGS-DEVELOPMENT#1539 / #1540)
+## Not yet implemented (tracked in (private reference removed) / (private reference removed))
 
 - Modals (SHALL / MAY / SHALL_NOT)
 - Articles, adjectives, adverbs
@@ -93,7 +93,7 @@ __all__ = [
     "validate",
     "load_language",
     "classify",
-    # Opt-in error-recovery parse (AAA #2018) — additive; parse() is unchanged
+    # Opt-in error-recovery parse (AAA (private reference removed)) — additive; parse() is unchanged
     "ParseError",
     "collect_errors",
     # AST types
@@ -132,7 +132,7 @@ DURATION_RE = re.compile(r"\d+(?:ms|us|ns|s|m|h|d)\b")
 INTEGER_RE = re.compile(r"\d+")
 STRING_RE = re.compile(r'"([^"\\]*(?:\\.[^"\\]*)*)"')
 
-# LEVEL_PREFIX (TRUGS 2.0 / TRUGS-DEVELOPMENT#1719): the closed set of 21 SI
+# LEVEL_PREFIX (TRUGS 2.0 / (private reference removed)): the closed set of 21 SI
 # prefixes used to compose `metric_level` identifiers. Per ADR-005 the marker
 # uses the full metric_level form `<PREFIX>_<UPPERCASE_NAME>`, e.g.
 # `KILO_REPOSITORY`, `BASE_FUNCTION`, `DECI_STATEMENT`.
@@ -468,7 +468,7 @@ class Sentence:
     )
 
 
-# TRUGS 2.0 / TRUGS-DEVELOPMENT#1719 / ADR-002: a `level_directive` is a bare
+# TRUGS 2.0 / (private reference removed) / ADR-002: a `level_directive` is a bare
 # METRIC_LEVEL_NAME token on its own line, marking a hierarchy transition for
 # an LLM consumer reading the source. Compiles to nothing (presentation-only
 # affordance), but the compiler tracks `current_metric_level` state and
@@ -671,13 +671,13 @@ def parse(src: str, lang: Optional[dict] = None) -> list:
     return nodes
 
 
-# ─── Opt-in error-recovery parse (AAA #2018) ──────────────────────────
+# ─── Opt-in error-recovery parse (AAA (private reference removed)) ──────────────────────────
 # This is an ADDITIVE companion to `parse()`. `parse()` itself is NOT
 # changed — it still raises on the first error, which every existing
 # consumer (`tg validate`, `tg audit markdown` without `--all-errors`,
 # `compile`) depends on (INVARIANT default_parse SHALL_NOT CHANGE). Use
 # `collect_errors()` only when you explicitly want the full per-block
-# error set (the de-masked grammar/syntax measurement for AAA #2018).
+# error set (the de-masked grammar/syntax measurement for AAA (private reference removed)).
 
 
 @dataclass(frozen=True)
@@ -1165,7 +1165,7 @@ def _parse_sentence(tokens: list[Token], pos: int, lang: dict) -> tuple[Sentence
 
 # The CORE vocabulary the completion pass declares so a compiled graph exercises
 # the full CORE-16 tier (structural rules 1-9 + compositional rules 10-16), not
-# just the structural floor. Mirrors validate.CORE_VOCABULARY (AAA #3071); kept
+# just the structural floor. Mirrors validate.CORE_VOCABULARY (AAA (private reference removed)); kept
 # as a local literal so trl.py imports no validator internals.
 CORE_VOCABULARY = "core_v2.0.0"
 
@@ -1174,7 +1174,7 @@ _DEFAULT_GRAPH_NAME = "trug_graph"
 
 
 def _complete_graph(nodes: list, edges: list, name: str) -> dict:
-    """Turn a compiled fragment into a complete, `tg validate`-VALID TRUG (AAA #3062).
+    """Turn a compiled fragment into a complete, `tg validate`-VALID TRUG (AAA (private reference removed)).
 
     Deterministic post-pass (option-1 ruling): fills every fragment node's 7 CORE
     fields, appends a synthetic ``type: PROJECT`` root at ``BASE_PROJECT`` that
@@ -1241,7 +1241,7 @@ def compile(
     Accepts a string or a pre-parsed list[Sentence]. Returns a complete graph:
     the CORE envelope (name/version/type/dimension/dimensions + a ``core_v2.0.0``
     capability declaration), every node carrying its 7 CORE fields, and a synthetic
-    ``PROJECT`` root containing the compiled nodes (AAA #3062 — the taught
+    ``PROJECT`` root containing the compiled nodes (AAA (private reference removed) — the taught
     author->compile->validate loop closes with no manual envelope step).
     Deterministic — the same input always produces the same graph. ``name`` sets the
     graph name (the CLI passes the input file's stem; default ``trug_graph``).
@@ -1563,7 +1563,7 @@ def compile(
             sentence, _node_count_before, first_op_id=first_op
         )
 
-    # AAA #3062: complete the fragment into a VALID TRUG. Runs as a post-pass
+    # AAA (private reference removed): complete the fragment into a VALID TRUG. Runs as a post-pass
     # (appends the root; never prepends) so the per-sentence node indexing above
     # is untouched. `name` defaults deterministically when the caller gives none.
     return _complete_graph(nodes, edges, name or _DEFAULT_GRAPH_NAME)
@@ -2105,7 +2105,7 @@ _NEGATIVE_ARTICLES = {"NO", "NONE"}
 
 # Node types that are STRUCTURAL rather than TRL nouns, and so are exempt from
 # the Rule-1 noun-vocabulary check. TRANSFORM is the operation-node type the
-# compiler emits; PROJECT is the synthetic completion root (AAA #3062 / ADR-003)
+# compiler emits; PROJECT is the synthetic completion root (AAA (private reference removed) / ADR-003)
 # — every completed graph now carries one, and the fleet convention already
 # roots hand-authored graphs at a `type: PROJECT` node. Neither is one of the
 # 26 TRL nouns, so both are whitelisted here rather than added to the vocabulary.
@@ -2125,7 +2125,7 @@ def validate(graph: dict, lang: Optional[dict] = None) -> list[str]:
 
     Rules 4 (verb-object), 5 (adj-noun), 6 (adv-verb), 8 (pronoun resolution),
     9 (SUPERSEDES/EXTENDS type match), 10 (orphan nodes), 12 (pronoun scope)
-    are deferred — see TRUGS-DEVELOPMENT issues for tracking.
+    are deferred — see (private reference removed) issues for tracking.
 
     <trl>
     FUNCTION validate SHALL VALIDATE RECORD graph SUBJECT_TO RECORD vocabulary THEN RETURN ALL DATA error.

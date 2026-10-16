@@ -5,7 +5,7 @@
 a 'contains' edge for every contains-array entry (bidirectional invariant).
 
 Fixtures use only .md files (DOCUMENT) and subdirectories (FOLDER) so the
-governance-vocabulary divergence tracked separately in #56 cannot mask or
+governance-vocabulary divergence tracked separately in (private reference removed) cannot mask or
 entangle these assertions.
 """
 
