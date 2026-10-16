@@ -122,7 +122,7 @@ def render_aaa(trug: Any, render_date: Optional[str] = None) -> str:
     Produces the 9-phase AAA.md format with header, phases, and metadata.
 
     Args:
-        trug: TRUG dict, file path, or JSON string
+        trug: TRUG dict or path to a JSON file (str or Path)
         render_date: Fixed date string for deterministic output. Defaults to today.
 
     <trl>
@@ -309,7 +309,7 @@ def render_readme(trug: Any, render_date: Optional[str] = None) -> str:
     Produces a human-friendly orientation document.
 
     Args:
-        trug: TRUG dict, file path, or JSON string
+        trug: TRUG dict or path to a JSON file (str or Path)
         render_date: Fixed date string for deterministic output. Defaults to today.
 
     <trl>
@@ -490,7 +490,7 @@ def render_architecture(
     Produces a dense technical reference document for LLMs and architects.
 
     Args:
-        trug: TRUG dict, file path, or JSON string
+        trug: TRUG dict or path to a JSON file (str or Path)
         render_date: Fixed date string for deterministic output. Defaults to today.
         repo_root: Optional repository root used to load PROSE zone files.
 
@@ -906,7 +906,7 @@ def render_all(
     """Render all three markdown files from a TRUG.
 
     Args:
-        trug: TRUG dict, file path, or JSON string
+        trug: TRUG dict or path to a JSON file (str or Path)
         output_dir: Directory to write files. If None, returns content only.
         render_date: Fixed date string for deterministic output. Defaults to today.
         repo_root: Optional repository root used to load PROSE zone files.

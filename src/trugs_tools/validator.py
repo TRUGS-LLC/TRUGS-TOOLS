@@ -31,7 +31,7 @@ def validate_trug(trug: Union[Dict[str, Any], str, Path]) -> ValidationResult:
     `__init__` export are unchanged.
 
     Args:
-        trug: Either a TRUG dictionary, JSON string, or path to JSON file
+        trug: TRUG dictionary or path to a JSON file (str or Path)
 
     Returns:
         ValidationResult with errors and warnings

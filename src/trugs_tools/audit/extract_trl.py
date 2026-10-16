@@ -501,7 +501,7 @@ exit codes:
     parser.add_argument(
         "--language",
         default=None,
-        help="Path to an alternate language.trug.json (default: packaged vocabulary)",
+        help="Alternate vocabulary path (--all-errors only; default: packaged vocabulary)",
     )
 
     args = parser.parse_args(argv)
