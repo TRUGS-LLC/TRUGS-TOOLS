@@ -29,6 +29,6 @@ spec questions belong there, tooling questions here.
 
 This project is licensed under **Apache-2.0** (see `LICENSE` and `NOTICE`).
 By submitting a contribution you agree it is provided under the same license
-(inbound = outbound). Note the patent carve-out in `NOTICE`: self-developing
+(inbound = outbound). Note the scope note in the README: self-developing
 graph systems are out of scope for this commons and are licensed separately
 by Arek Starr LLC.

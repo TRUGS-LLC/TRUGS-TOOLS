@@ -71,6 +71,11 @@ make check    # the Tier-1 gate — the bundled trugs-folder tests + self-valida
 The last `make check` step is Layer-4 self-description: the engine validates
 the repo's own `folder.trug.json` against the TRUGS CORE rules it implements.
 
+## Scope
+
+This software does not include self-modifying TRUGS: graphs that change their
+own structure while they run.
+
 ## License
 
 Apache-2.0 — see [LICENSE](./LICENSE) and [NOTICE](./NOTICE).

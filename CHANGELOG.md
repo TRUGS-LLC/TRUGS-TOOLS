@@ -7,7 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Nothing yet.
+### Changed
+- `LICENSE` and `trugs-folder/LICENSE` are the official Apache License 2.0 text; `NOTICE` and
+  `trugs-folder/NOTICE` carry the attribution only, their patent paragraphs and the provenance section removed;
+  both READMEs gain a Scope section.
 
 ## [2.2.0] — 2026-08-11
 
