@@ -19,7 +19,8 @@ Implements the checks specified in `REFERENCE/STANDARD_dark_code_compliance.md`:
   edge to a FUNCTION / PROCESS / CLASS / STAGE / SPEC node.
 - **C6** — every declared invariant (TRUG node property matching `invariant_*`)
   has at least one assertion in code and one test.
-- **C7** — every `.trug.json` file passes `trugs-folder-check` (delegated).
+- **C7** — every `.trug.json` file passes CORE validation via
+  `trugs_tools.validate.validate_file` on the normal in-process path.
 
 Usage:
 

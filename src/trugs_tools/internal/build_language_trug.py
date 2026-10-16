@@ -10,7 +10,7 @@ Re-run this whenever SPEC_vocabulary.md changes. The output file is a
 deterministic function of the spec.
 
 Usage:
-    python3 tools/build_language_trug.py \\
+    python3 src/trugs_tools/internal/build_language_trug.py \\
         TRUGS_LANGUAGE/SPEC_vocabulary.md \\
         TRUGS_LANGUAGE/language.trug.json
 
@@ -262,11 +262,11 @@ def build_trug(records: list[dict]) -> dict:
         "name": "TRUGS Language Vocabulary",
         "version": "2.0.0",
         "type": "NAMESPACE",
-        "description": "Canonical TRL vocabulary — 233 words across 9 parts of speech. Generated from SPEC_vocabulary.md by tools/build_language_trug.py. v2.0.0 adds 21 SI level prefixes for hierarchy transition markers (TRUGS-DEVELOPMENT#1719).",
+        "description": "Canonical TRL vocabulary — 233 words across 9 parts of speech. Generated from SPEC_vocabulary.md by src/trugs_tools/internal/build_language_trug.py. v2.0.0 adds 21 SI level prefixes for hierarchy transition markers (private reference removed).",
         "dimensions": {},
         "capabilities": {"vocabularies": ["trl_v2"]},
         "meta": {
-            "generated_by": "tools/build_language_trug.py",
+            "generated_by": "src/trugs_tools/internal/build_language_trug.py",
             "source": "TRUGS_LANGUAGE/SPEC_vocabulary.md",
             "word_count": len(records),
             "part_counts": {p: sum(1 for r in records if r["part_of_speech"] == p) for p in parts_order},

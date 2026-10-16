@@ -116,7 +116,7 @@ def main(argv: Optional[list] = None) -> int:
         description="Read full content of a specific node from a TRUG file.",
         epilog="""examples:
   trug get graph.trug.json my_node
-  trug get graph.trug.json my_node --edges -f json
+  trug get graph.trug.json my_node --edges --format json
 
 exit codes:
   0  success

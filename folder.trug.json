@@ -100,7 +100,7 @@
       "type": "DOCUMENT",
       "properties": {
         "name": "CHANGELOG.md",
-        "purpose": "Keep-a-Changelog \u2014 notable changes; [Unreleased] accumulates toward the v2.0 PyPI publish."
+        "purpose": "Keep-a-Changelog \u2014 notable changes through 2.2.0; [Unreleased] accumulates subsequent changes."
       },
       "parent_id": "root",
       "contains": [],
@@ -112,7 +112,7 @@
       "type": "DOCUMENT",
       "properties": {
         "name": "pyproject.toml",
-        "purpose": "Python package metadata: name=trugs-tools, version=2.0.0, Apache-2.0, the `trug` console script + mypy config."
+        "purpose": "Python package metadata: name=trugs-tools, version=2.2.0, Apache-2.0, the `trug` console script + mypy config."
       },
       "parent_id": "root",
       "contains": [],
@@ -246,7 +246,7 @@
       "type": "COMPONENT",
       "properties": {
         "name": "trugs-folder",
-        "purpose": "Co-published sibling package \u2014 TRUGS cartography (`trug-a-folder` binary): keep a directory tree and its folder.trug.json in sync, validate folder governance, render ARCHITECTURE.md. Own pyproject/LICENSE/NOTICE/src/tests; ships to PyPI as trugs-folder 2.0.0.",
+        "purpose": "Co-published sibling package \u2014 TRUGS cartography (`trug-a-folder` binary): keep a directory tree and its folder.trug.json in sync, validate folder governance, render ARCHITECTURE.md. Own pyproject/LICENSE/NOTICE/src/tests; ships to PyPI as trugs-folder 2.2.0.",
         "file_count": 46
       },
       "parent_id": "root",

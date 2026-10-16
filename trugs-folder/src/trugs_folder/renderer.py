@@ -8,7 +8,9 @@ Renders three views from a single TRUG source of truth:
   - README.md:       Human-friendly orientation and quickstart
   - ARCHITECTURE.md: Dense technical reference for LLMs
 
-All output is deterministic: same TRUG input → byte-identical output.
+Output is deterministic when the TRUG, rendering options, prose inputs, and
+render_date are fixed. Without an explicit render_date, the current date is used
+and can change the output.
 
 <trl>
 PROCESS renderer SHALL READ RECORD trug_graph THEN RENDER DATA markdown SUBJECT_TO ALL OUTPUT BEING DETERMINISTIC.

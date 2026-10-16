@@ -11,7 +11,8 @@ Design rules:
   1. Never modify individual folder TRUGs (read-only).
   2. Resolve cross-folder edges (alias:node_id) by verifying targets exist.
   3. Deterministic output — same input produces byte-identical JSON.
-  4. Zero runtime dependencies beyond stdlib.
+  4. Uses trugs_folder.folder_check and the package dependencies, including
+     trugs-store and trugs-tools; not a standalone stdlib-only module.
 
 <trl>
 PROCESS folder_map SHALL SCAN FILE folder_trug_json UNDER DATA root_directory THEN BUILD RECORD root_graph FROM RECORD cross_folder_edge.

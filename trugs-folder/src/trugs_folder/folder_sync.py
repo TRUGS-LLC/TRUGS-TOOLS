@@ -8,8 +8,9 @@ factual properties (counts, LOC, phase) on existing nodes while preserving
 all human-curated edges and properties.
 
 Hard Rules:
-  1. Never touch edges (except adding contains/tests for NEW nodes).
-  2. Never remove nodes (mark stale instead).
+  1. Preserve edges except additions for NEW nodes and incident edges of pruned nodes.
+  2. Mark stale nodes by default; opt-in prune_after removes stale nodes and their
+     incident edges, and reparents surviving children.
   3. Preserve human-curated properties (purpose, verified, custom).
   4. Only update factual/scannable properties.
 

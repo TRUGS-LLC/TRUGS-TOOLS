@@ -121,8 +121,8 @@ exit codes:
   2  usage error (bad flags or arguments)""",
     "link": """\
 examples:
-  trug-a-folder link main_py utils_py -r uses
-  trug-a-folder link main_py utils_py -r uses --remove
+  trug-a-folder link main_py utils_py -r DEPENDS_ON
+  trug-a-folder link main_py utils_py -r DEPENDS_ON --remove
 
 exit codes:
   0  success
@@ -1227,7 +1227,7 @@ def folder_render_command(args: Optional[list] = None) -> int:
     </trl>
     """
     parser = argparse.ArgumentParser(
-        prog="trug-a-folder render",
+        prog="trug-a-folder render architecture",
         description="Render ARCHITECTURE.md from folder.trug.json files",
         epilog=_EPILOGS["render"],
         formatter_class=argparse.RawDescriptionHelpFormatter,

@@ -198,11 +198,13 @@ is exactly two packages:
 - **`trugs-tools`** — the language CLI, `trug` (this package);
 - **`trugs-folder`** — folder cartography, `trug-a-folder`.
 
-The system tier — self-developing graph workflows — is not part of the Apache
-commons. Per the [NOTICE](./NOTICE), such systems are the subject of U.S.
-patent application 19/575,491, owned by William E. Leigh III, and are
-separately licensed from Arek Starr LLC under license from the owner
-(AGPL 3.0 and commercial licensing: hello@arekstarr.ai).
+Correction, 2026-10-16: The package count above omitted `trugs-store` (graph
+persistence). The Apache commons kit has three packages: `trugs-tools`,
+`trugs-folder`, and `trugs-store`, as stated in the release introduction.
+
+Correction, 2026-10-16: The NOTICE accompanying the 2.0.0 release contained a
+patent paragraph, removed on 2026-10-16. NOTICE now carries Apache attribution
+only; see the [README Scope section](./README.md#scope) for the current scope note.
 
 `trugs-tools` 1.0.0 remains available on PyPI unchanged; existing v1 graph
 files are data and are untouched by any of this.
@@ -239,6 +241,12 @@ and consumed by S3 ((private reference removed)) / S4 ((private reference remove
 - **`CHANGELOG.md`** — this file, finalized from the prior `CHANGELOG_TRUGS_2.0_pending.md`
   staging fragment into Keep-a-Changelog format (the `[Unreleased]` section is now the
   accumulator later sub-phases append to).
+
+Correction, 2026-10-16: The infrastructure list above describes historical staging.
+The shipped tree has no root `tests/`, `examples/`, `REFERENCE/`, or
+`ci-proposed/check.yml`. Its `make check` runs `pytest trugs-folder/tests/` and
+`trug validate folder.trug.json`; it does not run the other gates listed above.
+The packaged NOTICE now contains Apache attribution only.
 
 ### `tg derive` CLI verb (AAA (private reference removed) sub-phase 1)
 

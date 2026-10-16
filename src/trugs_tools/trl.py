@@ -33,9 +33,9 @@ examples in SPEC_examples.md):
      declared as context-only.
    - Decompile restores the DEFINE / WHEREAS form verbatim.
 
-Still not implemented: DATE literals, AND-chained prep phrases,
-cross-sentence back-references (SAID), noun conjunction in
-object/prep lists (e.g. `AGENT a AND AGENT b`).
+Also implemented: AND-chained noun lists in objects and prepositional phrases,
+and the article-like `SAID NOUN` syntax. The latter preserves the wording; it
+does not resolve references across sentences.
 
 <trl>
 PROCESS trl SHALL COMPILE DATA source TO RECORD graph THEN DECOMPILE RECORD graph TO DATA source.
@@ -43,13 +43,8 @@ PROCESS trl SHALL COMPILE DATA source TO RECORD graph THEN DECOMPILE RECORD grap
 
 ## Not yet implemented (tracked in (private reference removed) / (private reference removed))
 
-- Modals (SHALL / MAY / SHALL_NOT)
-- Articles, adjectives, adverbs
-- Object phrases and prepositions
-- Conjunctions (THEN / AND / OR / UNLESS / etc.)
-- Pronouns (RESULT / SELF / etc.)
-- Literal values (INTEGER_LITERAL / STRING_LITERAL / DURATION_LITERAL / DATE_LITERAL)
-- WHEREAS preambles, DEFINE definitions
+- DATE literals
+- Cross-sentence reference resolution
 
 ## Spec decisions for v0.1
 

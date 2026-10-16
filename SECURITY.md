@@ -17,8 +17,9 @@ Only the **latest released version** of each package (`trugs-tools`,
 
 ## Scope notes
 
-These are local CLI tools operating on files you supply. They make no network
-calls during normal operation and execute no code from the graphs they
-process. Reports about malicious `.trug.json` / TRL inputs causing unexpected
+These CLI tools operate on local files when PORT_DSN is unset. When PORT_DSN
+is set, supported database operations read and write PostgreSQL and may make
+network calls. The tools execute no code from the graphs they process.
+Reports about malicious `.trug.json` / TRL inputs causing unexpected
 code execution, path traversal outside the target directory, or resource
 exhaustion are explicitly in scope.
