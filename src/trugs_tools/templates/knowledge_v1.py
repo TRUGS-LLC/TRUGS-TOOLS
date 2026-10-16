@@ -7,7 +7,7 @@ Unified vocabulary merging Living (persistent memory), Knowledge (ontology),
 Research (bibliographic), and Decision (architectural conclusions).
 
 Replaces the former living.py, knowledge.py, and research.py templates.
-See BRANCHES.md knowledge_v1 section and issue (private reference removed)/#620.
+See BRANCHES.md knowledge_v1 section and issue (private reference removed)/(private reference removed).
 
 
 <trl>

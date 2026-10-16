@@ -1,7 +1,7 @@
 # Copyright 2026 TRUGS LLC
 # SPDX-License-Identifier: Apache-2.0
 
-"""Regression tests for TRUGS-LLC/TRUGS-TOOLS-dev#53 — tinit --scan must emit
+"""Regression tests for (private reference removed) — tinit --scan must emit
 a 'contains' edge for every contains-array entry (bidirectional invariant).
 
 Fixtures use only .md files (DOCUMENT) and subdirectories (FOLDER) so the
