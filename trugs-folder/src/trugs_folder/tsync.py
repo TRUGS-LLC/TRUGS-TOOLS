@@ -177,7 +177,6 @@ def _infer_edges(
     Currently supports:
       - Python imports (from X import Y, import X)
       - Markdown links ([text](file.md))
-      - JSON references to other files
     """
     all_nodes = trug.get("nodes", []) + new_nodes
     node_name_map: Dict[str, str] = {}

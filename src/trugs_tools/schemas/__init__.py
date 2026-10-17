@@ -51,7 +51,7 @@ def load_branch_schema(branch: str) -> dict:
     """Load a branch schema by name.
 
     Args:
-        branch: Branch name (e.g. "web", "writer", "knowledge").
+        branch: Branch name (e.g. "web", "writer", "knowledge_v1").
 
     Returns:
         The schema dict for the given branch.

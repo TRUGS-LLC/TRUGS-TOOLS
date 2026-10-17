@@ -1,13 +1,14 @@
 # Changelog
 
-All notable changes to `trugs-folder` are documented here.
+Current changes and coordinated releases are documented in the
+[root changelog](../CHANGELOG.md). The standalone release history is retained below.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-Nothing yet.
+See the [root Unreleased section](../CHANGELOG.md#unreleased) for current changes.
 
 ## [2.0.0] — 2026-06-12
 

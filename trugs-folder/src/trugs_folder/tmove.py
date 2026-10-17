@@ -1,10 +1,12 @@
 # Copyright 2026 TRUGS LLC
 # SPDX-License-Identifier: Apache-2.0
 
-"""tmove - Atomic file move with graph update.
+"""tmove - File move with graph update and attempted rollback.
 
-Moves a file and updates all references in folder.trug.json atomically.
-On failure, rolls back both the filesystem and graph changes.
+Moves a file when present and updates its node in folder.trug.json.
+Reparenting updates parent_id and contains[]; edges are unchanged.
+On failure, attempts to restore the graph backup and undo the rename.
+Rollback is not atomic and cannot recover overwritten destination contents.
 
 <trl>
 PROCESS tmove SHALL MOVE FILE node AND SHALL UPDATE RECORD graph THEN RESTORE FILE node SUBJECT_TO failure.
@@ -85,10 +87,12 @@ def tmove(
     new_name: Optional[str] = None,
     new_parent_id: Optional[str] = None,
 ) -> Dict[str, Any]:
-    """Move/rename a node in the TRUG graph atomically.
+    """Move/rename a node in the TRUG graph with attempted rollback.
 
-    Moves the physical file and updates the graph. On any failure,
-    both filesystem and graph are rolled back to the previous state.
+    Renames the physical file when it exists and updates the graph even if it
+    does not. On failure, attempts to restore the graph backup and undo the
+    rename. Rollback is not atomic and cannot recover overwritten destination
+    contents.
 
     Args:
         directory: Directory containing folder.trug.json
@@ -100,7 +104,7 @@ def tmove(
         Updated TRUG dictionary
 
     Raises:
-        FileNotFoundError: If folder.trug.json or source file doesn't exist
+        FileNotFoundError: If folder.trug.json doesn't exist
         ValueError: If node or new parent not found, or if the new parent is
             the node itself or one of its descendants (that would build a
             parent_id cycle)

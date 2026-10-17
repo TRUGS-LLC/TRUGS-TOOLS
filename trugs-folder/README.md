@@ -60,6 +60,11 @@ This package descends from the cartography half of `trugs-tools` 1.0.0; the
 2.0 release split it onto its own wheel. History is in
 [CHANGELOG.md](CHANGELOG.md).
 
+## Scope
+
+This software does not include self-modifying TRUGS: graphs that change their
+own structure while they run.
+
 ## License
 
 Apache-2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE).

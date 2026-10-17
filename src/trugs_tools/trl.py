@@ -33,9 +33,9 @@ examples in SPEC_examples.md):
      declared as context-only.
    - Decompile restores the DEFINE / WHEREAS form verbatim.
 
-Still not implemented: DATE literals, AND-chained prep phrases,
-cross-sentence back-references (SAID), noun conjunction in
-object/prep lists (e.g. `AGENT a AND AGENT b`).
+Also implemented: AND-chained noun lists in objects and prepositional phrases,
+and the article-like `SAID NOUN` syntax. The latter preserves the wording; it
+does not resolve references across sentences.
 
 <trl>
 PROCESS trl SHALL COMPILE DATA source TO RECORD graph THEN DECOMPILE RECORD graph TO DATA source.
@@ -43,13 +43,8 @@ PROCESS trl SHALL COMPILE DATA source TO RECORD graph THEN DECOMPILE RECORD grap
 
 ## Not yet implemented (tracked in (private reference removed) / (private reference removed))
 
-- Modals (SHALL / MAY / SHALL_NOT)
-- Articles, adjectives, adverbs
-- Object phrases and prepositions
-- Conjunctions (THEN / AND / OR / UNLESS / etc.)
-- Pronouns (RESULT / SELF / etc.)
-- Literal values (INTEGER_LITERAL / STRING_LITERAL / DURATION_LITERAL / DATE_LITERAL)
-- WHEREAS preambles, DEFINE definitions
+- DATE literals
+- Cross-sentence reference resolution
 
 ## Spec decisions for v0.1
 
@@ -69,8 +64,8 @@ as spec-clarification issues against SPEC_grammar.md.
 
 3. **Node IDs for identified subjects/objects** — the identifier is the
    node id (e.g. `PARTY system` → id "system"). For anonymous nouns
-   (bare `RECORD` with no identifier), no node is emitted in v0.1 —
-   those appear with articles/adjectives in later grammar subsets.
+   (bare `RECORD` with no identifier), the compiler emits a node with
+   an id formed from the lowercase noun and a per-noun counter.
 """
 
 from __future__ import annotations
@@ -1174,7 +1169,11 @@ _DEFAULT_GRAPH_NAME = "trug_graph"
 
 
 def _complete_graph(nodes: list, edges: list, name: str) -> dict:
-    """Turn a compiled fragment into a complete, `tg validate`-VALID TRUG (AAA (private reference removed)).
+    """Add the CORE envelope and node fields to a compiled fragment.
+
+    This does not guarantee validator-VALID output: duplicate fragment IDs
+    survive, including authored IDs colliding with generated operation IDs
+    and repeated DEFINE IDs. Validate the resulting graph separately.
 
     Deterministic post-pass (option-1 ruling): fills every fragment node's 7 CORE
     fields, appends a synthetic ``type: PROJECT`` root at ``BASE_PROJECT`` that
@@ -1236,13 +1235,16 @@ def _complete_graph(nodes: list, edges: list, name: str) -> dict:
 def compile(
     src_or_sentences, lang: Optional[dict] = None, name: Optional[str] = None
 ) -> dict:
-    """Compile TRUG/L into a complete, `tg validate`-VALID TRUG graph.
+    """Compile TRUG/L into a TRUG graph with the CORE envelope and node fields.
 
     Accepts a string or a pre-parsed list[Sentence]. Returns a complete graph:
     the CORE envelope (name/version/type/dimension/dimensions + a ``core_v2.0.0``
     capability declaration), every node carrying its 7 CORE fields, and a synthetic
     ``PROJECT`` root containing the compiled nodes (AAA (private reference removed) — the taught
     author->compile->validate loop closes with no manual envelope step).
+    Validator-VALID output is not guaranteed: authored IDs can collide with
+    generated operation IDs, and repeated DEFINE IDs can remain duplicated.
+    Validate the resulting graph separately, even when TRL validation passes.
     Deterministic — the same input always produces the same graph. ``name`` sets the
     graph name (the CLI passes the input file's stem; default ``trug_graph``).
 
@@ -2227,7 +2229,7 @@ def validate(graph: dict, lang: Optional[dict] = None) -> list[str]:
 
 # AGENT claude SHALL READ DATA argv THEN RETURN INTEGER DATA exit_code.
 def main(argv: Optional[list] = None) -> int:
-    """CLI entry point for `trugs-trl` (compile / decompile / validate).
+    """CLI entry point for `trug trl` (compile / decompile / validate).
 
     Exit codes:
       0 — success
@@ -2248,8 +2250,8 @@ def main(argv: Optional[list] = None) -> int:
 
 exit codes:
   0  success / valid
-  1  parse or validation failure
-  2  usage error (bad flags or arguments)""",
+  1  validation failure
+  2  input or usage error (including TRL syntax/grammar errors)""",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     sub = parser.add_subparsers(dest="command", required=True)

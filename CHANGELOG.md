@@ -7,7 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Nothing yet.
+### Changed
+- `LICENSE` and `trugs-folder/LICENSE` are the official Apache License 2.0 text; `NOTICE` and
+  `trugs-folder/NOTICE` carry the attribution only, their patent paragraphs and the provenance section removed;
+  both READMEs gain a Scope section.
 
 ## [2.2.0] — 2026-08-11
 
@@ -73,6 +76,15 @@ the containment edge. `trug update --parent` previously moved the first two and 
 pointing at the parent the node had left. A graph that expressed containment only through
 `contains[]` acquires no edge: these commands repair the links they move and do not author structure
 that was never written.
+
+Correction, 2026-10-16: The containment-edge update described above applies to
+`trug update --parent`. `trug-a-folder mv --parent` updates `parent_id` and the
+parents' `contains[]` arrays but leaves edges unchanged, including any existing
+containment edge to the old parent.
+
+Correction, 2026-10-16: `trug update --parent null` clears `parent_id` and
+removes the node from the old parent's `contains[]`, but leaves containment
+edges unchanged; the edge update above requires a non-null parent.
 
 ### Fixed — packaging
 
@@ -145,6 +157,11 @@ Released together with `trugs-folder` 2.1.0.
   it now returns a full TRUG that `trug validate` accepts — CORE envelope, every node carrying its
   seven CORE fields, a synthetic `PROJECT` root containing the compiled nodes, and a
   `capabilities.vocabularies: ["core_v2.0.0"]` declaration.
+
+  Correction, 2026-10-16: the envelope and node fields do not guarantee validator-VALID
+  output. Authored IDs can collide with generated operation IDs, and repeated DEFINE
+  IDs can remain duplicated; validate the emitted graph separately even when TRL
+  validation passes.
 - **The compositional tier is armed by `core_v2.0.0`.** Rules 10–16 were previously armed only by
   `core_v1.0.0`, so a graph declaring the current vocabulary received the nine structural rules and
   nothing else.
@@ -195,11 +212,13 @@ is exactly two packages:
 - **`trugs-tools`** — the language CLI, `trug` (this package);
 - **`trugs-folder`** — folder cartography, `trug-a-folder`.
 
-The system tier — self-developing graph workflows — is not part of the Apache
-commons. Per the [NOTICE](./NOTICE), such systems are the subject of U.S.
-patent application 19/575,491, owned by William E. Leigh III, and are
-separately licensed from Arek Starr LLC under license from the owner
-(AGPL 3.0 and commercial licensing: hello@arekstarr.ai).
+Correction, 2026-10-16: The package count above omitted `trugs-store` (graph
+persistence). The Apache commons kit has three packages: `trugs-tools`,
+`trugs-folder`, and `trugs-store`, as stated in the release introduction.
+
+Correction, 2026-10-16: The NOTICE accompanying the 2.0.0 release contained a
+patent paragraph, removed on 2026-10-16. NOTICE now carries Apache attribution
+only; see the [README Scope section](./README.md#scope) for the current scope note.
 
 `trugs-tools` 1.0.0 remains available on PyPI unchanged; existing v1 graph
 files are data and are untouched by any of this.
@@ -237,6 +256,12 @@ and consumed by S3 ((private reference removed)) / S4 ((private reference remove
   staging fragment into Keep-a-Changelog format (the `[Unreleased]` section is now the
   accumulator later sub-phases append to).
 
+Correction, 2026-10-16: The infrastructure list above describes historical staging.
+The shipped tree has no root `tests/`, `examples/`, `REFERENCE/`, or
+`ci-proposed/check.yml`. Its `make check` runs `pytest trugs-folder/tests/` and
+`trug validate folder.trug.json`; it does not run the other gates listed above.
+The packaged NOTICE now contains Apache attribution only.
+
 ### `tg derive` CLI verb (AAA (private reference removed) sub-phase 1)
 
 New top-level verb for invoking registered "producer" functions that emit
@@ -256,6 +281,9 @@ tg derive <producer_name> --out PATH              # custom output path
 tg derive <producer_name> --canonical CANONICAL   # override canonical path
 ```
 
+Correction, 2026-10-16: The `tg derive` section above records historical system-tier staging.
+This public language package does not ship that verb.
+
 ### `trugs_tools.memory.producers` package (AAA (private reference removed) sub-phase 1)
 
 New public package providing:
@@ -269,6 +297,10 @@ New public package providing:
 Sub-phase 1 ships the scaffolding only; sub-phase 2 will register
 `producer_llm_glance_load` (USER-pinned + ELIGIBLE-ranked + ≤200 entries +
 SI-prefix-grouped per ADR-003).
+
+Correction, 2026-10-16: The `trugs_tools.memory.producers` section above records historical
+system-tier staging. This public language package has no `trugs_tools.memory`
+package and does not ship those producer APIs.
 
 ### Recall-aware `ranking_signal` + `citation_scan` (AAA (private reference removed) sub-phase 3, Flavor-2)
 
@@ -296,6 +328,10 @@ recency. Two pieces:
 The inherited AAA (private reference removed) `edge_update_recognition` interface is satisfied by the
 reorganizer's existing `_handle_edge_created` (which already maintains
 `last_edge_close_count`); no separate updater is shipped.
+
+Correction, 2026-10-16: The recall-aware ranking and citation-scan section above records historical
+system-tier staging. This public language package does not ship those memory
+APIs or the reorganizer.
 
 ### `tg audit vocab` + `tg audit markdown --all-errors` (AAA (private reference removed) SP1+SP2)
 
@@ -359,3 +395,7 @@ validator rule no longer fires on a zero-constituent authored rule.
 
 Additive + backward-compatible: pre-migration stores still validate under the new
 `tg` (old `meta` nodes are untouched; the migration is opt-in and reversible).
+
+Correction, 2026-10-16: The directive-memory section above records historical
+system-tier staging. This public language package does not ship memory, the
+reorganizer, or `tg memory migrate-directive`.

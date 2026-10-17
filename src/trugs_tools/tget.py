@@ -4,11 +4,11 @@
 """tget — Read full content of a specific node from a TRUG file.
 
 Usage:
-    trugs-tget graph.trug.json node_id
-    trugs-tget graph.trug.json node_id --format json
-    trugs-tget graph.trug.json node_id --edges
+    trug get graph.trug.json node_id
+    trug get graph.trug.json node_id --format json
+    trug get graph.trug.json node_id --edges
 
-Note: this is the explicit-TRUG-file CRUD command (the live ``tg get`` verb,
+Note: this is the explicit-TRUG-file CRUD command (the live ``trug get`` verb,
 operating on a named ``*.trug.json``). It is distinct from the namesake
 ``trugs_folder.tget``, which is the folder-graph operation over a
 directory's ``folder.trug.json``. The two are intentionally separate command
@@ -116,7 +116,7 @@ def main(argv: Optional[list] = None) -> int:
         description="Read full content of a specific node from a TRUG file.",
         epilog="""examples:
   trug get graph.trug.json my_node
-  trug get graph.trug.json my_node --edges -f json
+  trug get graph.trug.json my_node --edges --format json
 
 exit codes:
   0  success

@@ -9,7 +9,7 @@ Provides 8 static analysis methods over TrugGraph:
   - dominator_tree: iterative dataflow from hierarchy roots
   - impact_set / dependency_set: forward/reverse BFS via semantic edges
   - complexity: cyclomatic + structural metrics
-  - critical_path: longest root→leaf via semantic edges
+  - critical_path: longest hierarchy-root→leaf path via acyclic semantic edges
   - find_stale_propagation: transitively affected nodes from stale sources
 
 All methods are stateless static methods. No mutation of TrugGraph.
@@ -169,7 +169,9 @@ class TrugAnalyzer:
 
         Uses root_nodes() as entry points. Iterative dataflow algorithm
         (Cooper, Harvey, Kennedy 2001). Root nodes map to None.
-        Complexity: O(V^2) worst case.
+        Semantic joins reached from distinct hierarchy roots can hang, even
+        on a CORE-valid graph; there is no termination or complexity bound
+        for those inputs.
         """
         all_ids = graph.node_ids()
         if not all_ids:
@@ -267,7 +269,8 @@ class TrugAnalyzer:
         """All nodes transitively downstream of node_id via semantic edges.
 
         Forward BFS through non-contains edges only.
-        Excludes node_id itself. Empty set for non-existent node.
+        Excludes node_id itself unless a semantic cycle leads back to it.
+        Empty set for non-existent node.
         Complexity: O(V+E).
         """
         if node_id not in graph.node_ids():
@@ -297,7 +300,8 @@ class TrugAnalyzer:
         """All nodes transitively upstream of node_id via semantic edges.
 
         Reverse BFS through non-contains edges only.
-        Excludes node_id itself. Empty set for non-existent node.
+        Excludes node_id itself unless a semantic cycle leads back to it.
+        Empty set for non-existent node.
         Complexity: O(V+E).
         """
         if node_id not in graph.node_ids():
@@ -381,9 +385,12 @@ class TrugAnalyzer:
     # AGENT claude SHALL DEFINE FUNCTION critical_path.
     @staticmethod
     def critical_path(graph: TrugGraph) -> list[str]:
-        """Longest path from any root to any leaf via semantic edges.
+        """Longest hierarchy-root-to-leaf path via acyclic semantic edges.
 
-        Topological traversal, track max distance + predecessor.
+        Requires a directed acyclic semantic graph; cycles are not detected
+        and results on cyclic inputs need not be a longest path.
+        Roots and leaves follow parent_id and contains[], respectively.
+        Uses topological traversal, tracking max distance + predecessor.
         Returns ordered list of node IDs. Empty if no roots or leaves.
         Complexity: O(V+E).
         """

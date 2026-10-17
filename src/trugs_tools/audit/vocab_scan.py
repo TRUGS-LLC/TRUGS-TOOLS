@@ -3,7 +3,7 @@
 
 """Position-independent vocabulary scanner — de-masked TRL vocab drift.
 
-Companion to :mod:`trugs_tools.audit.extract_trl`. Where ``tg audit markdown``
+Companion to :mod:`trugs_tools.audit.extract_trl`. Where ``trug audit markdown``
 delegates each ``<trl>`` block to the full TRL parser (which raises on the
 *first* error per block and stops — so a grammar or syntax error on an early
 statement masks any out-of-vocabulary word on a later one), this module does
@@ -256,7 +256,7 @@ def _format_json(results: Iterable[FileVocab]) -> str:
 # ─── CLI ─────────────────────────────────────────────────────────────────
 
 def main(argv: Optional[list[str]] = None) -> int:
-    """``tg audit vocab PATH [--format text|json] [--language PATH]``.
+    """``trug audit vocab PATH [--format text|json] [--language PATH]``.
 
     Position-independent vocabulary scan: collects every out-of-vocabulary
     ``WORD`` token across all ``<trl>`` blocks under PATH, with no parse, so
@@ -312,7 +312,7 @@ exit codes:
     args = parser.parse_args(argv)
     root = Path(args.path)
     if not root.exists():
-        print(f"tg audit vocab: path does not exist: {root}", file=sys.stderr)
+        print(f"trug audit vocab: path does not exist: {root}", file=sys.stderr)
         return 2
 
     lang = load_language(args.language)

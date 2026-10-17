@@ -21,8 +21,8 @@ def validate_trug(trug: Union[Dict[str, Any], str, Path]) -> ValidationResult:
 
     AAA (private reference removed) (SP3): this is now a thin **delegator** to the single canonical
     validator (`trugs_tools.validate.validate` — the spec's CORE-16 reference,
-    which is exactly what `tg validate` runs). The previous lenient 9-rule fork
-    is removed so the library API, the `tg` CLI, and the test suite all agree on
+    which is exactly what `trug validate` runs). The previous lenient 9-rule fork
+    is removed so the library API, the `trug` CLI, and the test suite all agree on
     one verdict (ASSERT validate_trug SHALL DELEGATE TO canonical_validator;
     INVARIANT validator_self_coherence SHALL HOLD).
 
@@ -31,7 +31,7 @@ def validate_trug(trug: Union[Dict[str, Any], str, Path]) -> ValidationResult:
     `__init__` export are unchanged.
 
     Args:
-        trug: Either a TRUG dictionary, JSON string, or path to JSON file
+        trug: TRUG dictionary or path to a JSON file (str or Path)
 
     Returns:
         ValidationResult with errors and warnings

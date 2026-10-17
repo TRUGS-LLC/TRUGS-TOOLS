@@ -442,7 +442,7 @@ def _format_json_all_errors(results: Iterable[FileErrors]) -> str:
 # ─── CLI ─────────────────────────────────────────────────────────────────
 
 def main(argv: Optional[list[str]] = None) -> int:
-    """``tg audit markdown PATH [--format text|json] [--verbose] [--all-errors]``.
+    """``trug audit markdown PATH [--format text|json] [--verbose] [--all-errors]``.
 
     Default mode reports the first error per block (the canonical first-error
     contract). ``--all-errors`` switches to the error-recovery path: every
@@ -501,13 +501,13 @@ exit codes:
     parser.add_argument(
         "--language",
         default=None,
-        help="Path to an alternate language.trug.json (default: packaged vocabulary)",
+        help="Alternate vocabulary path (--all-errors only; default: packaged vocabulary)",
     )
 
     args = parser.parse_args(argv)
     root = Path(args.path)
     if not root.exists():
-        print(f"tg audit markdown: path does not exist: {root}", file=sys.stderr)
+        print(f"trug audit markdown: path does not exist: {root}", file=sys.stderr)
         return 2
 
     if args.all_errors:

@@ -3,7 +3,7 @@
 
 """tfind - Graph query engine for TRUG nodes.
 
-Filters nodes by type, branch, edge type, dimensions, and name patterns.
+Filters nodes by type, edge type, dimensions, and name patterns.
 
 <trl>
 PROCESS tfind SHALL FILTER RECORD node FROM DATA graph SUBJECT_TO RECORD predicate THEN RETURN DATA result.

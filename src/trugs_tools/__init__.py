@@ -1,11 +1,12 @@
 # Copyright 2026 TRUGS LLC
 # SPDX-License-Identifier: Apache-2.0
 
-"""TRUGS Tools — TRUGS 2.0 staging (alpha).
+"""TRUGS Tools — version 2.2.0 (Beta).
 
-Validation, generation, analysis, memory, and AAA tooling for TRUGS.
-Provides the `tg` CLI and the public Python API for building, parsing,
-compiling, decompiling, and validating TRUG graphs.
+Language validation, generation, analysis, graph-node CRUD, compliance,
+and corpus audit tooling for TRUGS. Provides the `trug` CLI and the public
+Python API for building, parsing, compiling, decompiling, and validating
+TRUG graphs.
 
 
 <trl>

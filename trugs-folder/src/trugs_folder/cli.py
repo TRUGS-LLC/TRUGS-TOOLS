@@ -121,8 +121,8 @@ exit codes:
   2  usage error (bad flags or arguments)""",
     "link": """\
 examples:
-  trug-a-folder link main_py utils_py -r uses
-  trug-a-folder link main_py utils_py -r uses --remove
+  trug-a-folder link main_py utils_py -r DEPENDS_ON
+  trug-a-folder link main_py utils_py -r DEPENDS_ON --remove
 
 exit codes:
   0  success
@@ -171,8 +171,8 @@ examples:
   trug-a-folder export --all --root .
 
 exit codes:
-  0  success
-  1  graph not in database / error
+  0  single-folder success / --all completed, even with item errors or no transfers
+  1  single-folder graph not in database / error
   2  usage error (bad flags or arguments)""",
     "import": """\
 examples:
@@ -180,8 +180,8 @@ examples:
   trug-a-folder import --all --root .
 
 exit codes:
-  0  success
-  1  import error
+  0  single-folder success / --all completed, even with item errors or no transfers
+  1  single-folder import error
   2  usage error (bad flags or arguments)""",
 }
 
@@ -1227,7 +1227,7 @@ def folder_render_command(args: Optional[list] = None) -> int:
     </trl>
     """
     parser = argparse.ArgumentParser(
-        prog="trug-a-folder render",
+        prog="trug-a-folder render architecture",
         description="Render ARCHITECTURE.md from folder.trug.json files",
         epilog=_EPILOGS["render"],
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -1254,7 +1254,7 @@ def folder_render_command(args: Optional[list] = None) -> int:
         "--output",
         default=None,
         dest="output",
-        help="Write to custom path instead of ARCHITECTURE.md",
+        help="Write to custom path (single-folder only; ignored with --all)",
     )
     parser.add_argument(
         "--root",
@@ -1678,7 +1678,8 @@ def folder_export_command(args: Optional[list] = None) -> int:
     """Export folder.trug.json from PostgreSQL database.
 
     Returns:
-        Exit code (0 = success, 1 = error)
+        Exit code (0 = single-folder success or completed --all scan, even with
+        transfer errors or no transfers; 1 = single-folder error)
 
     <trl>
     FUNCTION folder_export_command SHALL READ DATA database THEN WRITE FILE folder_trug.
@@ -1752,7 +1753,8 @@ def folder_import_command(args: Optional[list] = None) -> int:
     """Import folder.trug.json into PostgreSQL database.
 
     Returns:
-        Exit code (0 = success, 1 = error)
+        Exit code (0 = single-folder success or completed --all scan, even with
+        transfer errors or no transfers; 1 = single-folder error)
 
     <trl>
     FUNCTION folder_import_command SHALL READ FILE folder_trug THEN WRITE DATA database.
@@ -1857,7 +1859,7 @@ _FOLDER_DISPATCH = {
 }
 
 # One-line verb summaries for the top-level banner (A4, STANDARD_cli_help.md).
-# Keys MUST mirror _FOLDER_DISPATCH — test_help_bar.py asserts the two agree.
+# Keys MUST mirror _FOLDER_DISPATCH.
 _FOLDER_SUMMARIES = {
     "init": "Initialize folder.trug.json in a directory",
     "check": "Validate folder.trug.json against the governance rules",

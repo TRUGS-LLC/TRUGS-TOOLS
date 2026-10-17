@@ -62,7 +62,7 @@ Changelog = "https://github.com/TRUGS-LLC/TRUGS-TOOLS/blob/main/trugs-folder/CHA
 
 [tool.setuptools]
 package-dir = { "" = "src" }
-# e8 (AAA (private reference removed)): dists carry the license + patent notice explicitly.
+# e8 (AAA (private reference removed)): dists carry the license + Apache attribution notice explicitly.
 license-files = ["LICENSE", "NOTICE"]
 
 [tool.setuptools.packages.find]

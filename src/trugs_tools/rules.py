@@ -4,7 +4,7 @@
 """Supplementary structural-analysis checks (unreachable / dead nodes).
 
 Post AAA (private reference removed) the canonical validator is `trugs_tools.validate` (CORE-16 — exactly
-what `tg validate` runs). This module is NOT a verdict authority: it holds only
+what `trug validate` runs). This module is NOT a verdict authority: it holds only
 `validate_rule_10_unreachable_nodes` and `validate_rule_11_dead_nodes`, called by
 `validate_trug` as verdict-NEUTRAL warnings. The legacy `validate_rule_1..9` +
 `validate_required_root_fields` (~500 lines of a second, drift-prone copy of the

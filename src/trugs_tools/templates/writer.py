@@ -23,7 +23,8 @@ def generate_writer_minimal() -> Dict[str, Any]:
     - 1 PARAGRAPH
     
     Returns:
-        Valid TRUG dictionary for written content
+        Unnormalized TRUG scaffold for written content.
+        Use generate_trug for CORE normalization.
     """
     return {
         "name": "Writer Minimal Example",
@@ -90,7 +91,8 @@ def generate_writer_complete() -> Dict[str, Any]:
     """Generate complete Writer TRUG with citations.
     
     Returns:
-        Valid TRUG dictionary for written content with citations
+        Unnormalized TRUG scaffold for written content with citations.
+        Use generate_trug for CORE normalization.
     """
     return {
         "name": "Writer Complete Example",

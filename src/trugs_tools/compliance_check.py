@@ -1,32 +1,35 @@
 # Copyright 2026 TRUGS LLC
 # SPDX-License-Identifier: Apache-2.0
 
-"""trugs-compliance-check — mechanical Dark Code compliance verifier.
+"""trug compliance — mechanical Dark Code compliance verifier.
 
 # PROCESS compliance_check SHALL VALIDATE ALL FILE AGAINST DATA standard_dark_code_compliance
 #   THEN SEND RECORD report TO PARTY developer.
 
-Implements the checks specified in `REFERENCE/STANDARD_dark_code_compliance.md`:
+Implements checks from the public TRUGS-LLC/TRUGS standard:
+https://github.com/TRUGS-LLC/TRUGS/blob/main/STANDARD_dark_code_compliance.md
 
 - **C1** — every public `def` / `class` in `*.py` has a function-level TRUG/L
-  comment immediately above it that parses via `tools/trl.py`.
-- **C2** — every public `def` / `class` has a corresponding FUNCTION / PROCESS
-  / CLASS / METHOD / STAGE node in the folder's `.trug.json`.
-- **C3** — every TRUG node with a `trl` property parses via `tools/trl.py`.
+  comment immediately above it that parses via `src/trugs_tools/trl.py`.
+- **C2** — existing FUNCTION / PROCESS / CLASS / METHOD / STAGE nodes must
+  match a public Python name in the same folder when Python names are supplied.
+  Public `def` / `class` declarations without graph nodes are not detected.
+- **C3** — every TRUG node with a `trl` property parses via `src/trugs_tools/trl.py`.
 - **C4** — every test function has a comment starting with
   `AGENT SHALL VALIDATE` that parses.
 - **C5** — every TEST node in the TRUG has at least one outbound `VALIDATES`
-  edge to a FUNCTION / PROCESS / CLASS / STAGE / SPEC node.
+  edge. This check does not enforce the target's type.
 - **C6** — every declared invariant (TRUG node property matching `invariant_*`)
   has at least one assertion in code and one test.
-- **C7** — every `.trug.json` file passes `trugs-folder-check` (delegated).
+- **C7** — every `.trug.json` file passes CORE validation via
+  `trugs_tools.validate.validate_file` on the normal in-process path.
 
 Usage:
 
-    trugs-compliance-check [PATH]                 # audit a repo or subtree
-    trugs-compliance-check --json [PATH]          # machine-readable output
-    trugs-compliance-check --strict [PATH]        # exit 1 on ANY violation
-    trugs-compliance-check --baseline-update [PATH]
+    trug compliance [PATH]                 # audit a repo or subtree
+    trug compliance --json [PATH]          # machine-readable output
+    trug compliance --strict [PATH]        # exit 1 on ANY violation
+    trug compliance --baseline-update [PATH]
         # rewrite .github/compliance-baseline.json with current numbers
 
 Exit codes:
@@ -34,7 +37,7 @@ Exit codes:
 - 0 — compliance % ≥ baseline (or baseline does not exist)
 - 1 — compliance % < baseline, or `--strict` and any violation found
 
-See: REFERENCE/STANDARD_dark_code_compliance.md §6 (CI gate)
+See the public standard linked above, §6 (CI gate).
 
 <trl>
 PROCESS compliance_check SHALL SCAN ALL FILE IN RECORD root THEN VALIDATE DATA compliance AGAINST DATA standard AND RETURN RECORD report.
@@ -60,7 +63,7 @@ from typing import Any, Optional
 try:
     from trugs_tools import trl as _trl
 except ImportError:
-    # Support running as `python tools/compliance_check.py ...` from repo root.
+    # Add the source root to the import path when running this module directly.
     sys.path.insert(0, str(Path(__file__).parent.parent))
     from trugs_tools import trl as _trl  # type: ignore
 
@@ -137,13 +140,16 @@ class Report:
     # AGENT claude SHALL AGGREGATE EACH RECORD violation TO INTEGER DATA percent.
     @property
     def compliance_percent(self) -> float:
-        """Compliance ratio. Denominator = total check opportunities.
+        """Heuristic compliance score, not a fraction of all checks passed.
 
-        We count one potential violation per function (C1, C4) + one per test
-        (C4) + one per node with trl (C3) + one per TEST node (C5). This gives
-        us a sensible denominator: the % of checks that passed.
+        Denominator = ``functions_checked * 2 + tests_checked + nodes_checked + trug_files_checked``.
+        Counts functions twice, tests, nodes with a nonempty ``trl`` property,
+        and graph files. No separate C2, C5 or C6 opportunities are counted,
+        although their violations are subtracted along with all others.
 
-        Returns a number in [0.0, 100.0].
+        Returns full compliance when the denominator is zero. Otherwise,
+        subtracts all violations, clamps the passed count at zero, converts
+        to a percentage and rounds to 2 decimal places.
         """
         opportunities = (
             self.functions_checked * 2  # C1 + C4 per function
@@ -546,7 +552,7 @@ def check_trug_file(
         )
         return
 
-    # C7: delegate to trugs-folder-check
+    # C7: validate CORE rules via _run_folder_check
     _run_folder_check(path, report)
 
     # C3: every node with trl property must parse via trl.py
@@ -605,12 +611,12 @@ def check_trug_file(
 def _run_folder_check(trug_path: Path, report: Report) -> None:
     """C7 — validate a TRUG file against CORE rules.
 
-    Preferred: in-process import of tools.validate (always available in TRUGS itself
-    and in any repo that installs the `trugs` package). Falls back to subprocess
-    `trugs-validate` for resilience, and `trugs-folder-check` if that's the tool
-    available in the environment.
+    Preferred: in-process import of `trugs_tools.validate`, supplied by
+    `trugs-tools`. On import failure, tries the legacy subprocess commands
+    `trugs-validate` and `trugs-folder-check` if separately available in the
+    environment; neither is an entry point of the bundled packages.
     """
-    # Preferred: in-process validator from the trugs package
+    # Preferred: in-process validator from the trugs-tools package
     try:
         from trugs_tools import validate as _validate_mod
 
@@ -664,7 +670,7 @@ def _run_folder_check(trug_path: Path, report: Report) -> None:
             path=trug_path,
             line=None,
             symbol=None,
-            message="no validator available — install trugs (tools.validate) or trugs-tools (trugs-folder-check)",
+            message="no validator available — install trugs-tools for trugs_tools.validate",
         )
     )
 
@@ -835,7 +841,7 @@ def render_text(report: Report, root: Path) -> str:
     </trl>
     """
     lines: list[str] = []
-    lines.append(f"trugs-compliance-check — {root}")
+    lines.append(f"trug compliance — {root}")
     lines.append("")
     lines.append(f"  Files checked:       {report.files_checked}")
     lines.append(f"  Functions checked:   {report.functions_checked}")
@@ -876,8 +882,9 @@ def main(argv: Optional[list[str]] = None) -> int:
   trug compliance --json --strict
 
 exit codes:
-  0  compliant
-  1  findings present
+  0  default: no baseline or no compliance decrease; strict: no violations
+     also returned after a successful --baseline-update
+  1  default: compliance decreased from baseline; strict: violations present
   2  usage error (bad flags or arguments)""",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
