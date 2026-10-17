@@ -9,7 +9,7 @@ Provides 8 static analysis methods over TrugGraph:
   - dominator_tree: iterative dataflow from hierarchy roots
   - impact_set / dependency_set: forward/reverse BFS via semantic edges
   - complexity: cyclomatic + structural metrics
-  - critical_path: longest root→leaf via semantic edges
+  - critical_path: longest hierarchy-root→leaf path via acyclic semantic edges
   - find_stale_propagation: transitively affected nodes from stale sources
 
 All methods are stateless static methods. No mutation of TrugGraph.
@@ -381,9 +381,12 @@ class TrugAnalyzer:
     # AGENT claude SHALL DEFINE FUNCTION critical_path.
     @staticmethod
     def critical_path(graph: TrugGraph) -> list[str]:
-        """Longest path from any root to any leaf via semantic edges.
+        """Longest hierarchy-root-to-leaf path via acyclic semantic edges.
 
-        Topological traversal, track max distance + predecessor.
+        Requires a directed acyclic semantic graph; cycles are not detected
+        and results on cyclic inputs need not be a longest path.
+        Roots and leaves follow parent_id and contains[], respectively.
+        Uses topological traversal, tracking max distance + predecessor.
         Returns ordered list of node IDs. Empty if no roots or leaves.
         Complexity: O(V+E).
         """

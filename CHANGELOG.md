@@ -77,6 +77,11 @@ pointing at the parent the node had left. A graph that expressed containment onl
 `contains[]` acquires no edge: these commands repair the links they move and do not author structure
 that was never written.
 
+Correction, 2026-10-16: The containment-edge update described above applies to
+`trug update --parent`. `trug-a-folder mv --parent` updates `parent_id` and the
+parents' `contains[]` arrays but leaves edges unchanged, including any existing
+containment edge to the old parent.
+
 ### Fixed — packaging
 
 `LICENSE`, `NOTICE` and `README.md` are back in the sdist and the wheel, and the PyPI project page

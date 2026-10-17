@@ -4,10 +4,12 @@
 and decompile TRL, graph-node CRUD, Dark Code compliance, and corpus audit.
 Implements TRUGS 2.0 (`core_v2.0.0`).
 
-TRUG/L (TRL) is a constrained subset of English: every valid sentence compiles
-to a graph and every graph decompiles back to the sentence, losslessly. You
-write TRL when communicating; you store and validate TRUGS (the JSON graph)
-when executing. The sentence is the graph.
+TRUG/L (TRL) is a constrained subset of English. For the syntax this compiler
+supports, it compiles sentence structure to a TRUG graph and decompiles that
+representation to canonical TRL. Sugar tokens and original formatting are not
+preserved. Decompiling arbitrary valid TRUG graphs does not guarantee
+recompilable TRL or preservation of JSON properties. Write TRL when
+communicating; store and validate TRUGS (the JSON graph) when executing.
 
 ## Install
 
