@@ -157,6 +157,11 @@ Released together with `trugs-folder` 2.1.0.
   it now returns a full TRUG that `trug validate` accepts — CORE envelope, every node carrying its
   seven CORE fields, a synthetic `PROJECT` root containing the compiled nodes, and a
   `capabilities.vocabularies: ["core_v2.0.0"]` declaration.
+
+  Correction, 2026-10-16: the envelope and node fields do not guarantee validator-VALID
+  output. Authored IDs can collide with generated operation IDs, and repeated DEFINE
+  IDs can remain duplicated; validate the emitted graph separately even when TRL
+  validation passes.
 - **The compositional tier is armed by `core_v2.0.0`.** Rules 10–16 were previously armed only by
   `core_v1.0.0`, so a graph declaring the current vocabulary received the nine structural rules and
   nothing else.

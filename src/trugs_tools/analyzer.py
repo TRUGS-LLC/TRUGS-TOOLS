@@ -169,7 +169,9 @@ class TrugAnalyzer:
 
         Uses root_nodes() as entry points. Iterative dataflow algorithm
         (Cooper, Harvey, Kennedy 2001). Root nodes map to None.
-        Complexity: O(V^2) worst case.
+        Semantic joins reached from distinct hierarchy roots can hang, even
+        on a CORE-valid graph; there is no termination or complexity bound
+        for those inputs.
         """
         all_ids = graph.node_ids()
         if not all_ids:

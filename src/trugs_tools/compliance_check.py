@@ -11,13 +11,14 @@ https://github.com/TRUGS-LLC/TRUGS/blob/main/STANDARD_dark_code_compliance.md
 
 - **C1** — every public `def` / `class` in `*.py` has a function-level TRUG/L
   comment immediately above it that parses via `src/trugs_tools/trl.py`.
-- **C2** — every public `def` / `class` has a corresponding FUNCTION / PROCESS
-  / CLASS / METHOD / STAGE node in the folder's `.trug.json`.
+- **C2** — existing FUNCTION / PROCESS / CLASS / METHOD / STAGE nodes must
+  match a public Python name in the same folder when Python names are supplied.
+  Public `def` / `class` declarations without graph nodes are not detected.
 - **C3** — every TRUG node with a `trl` property parses via `src/trugs_tools/trl.py`.
 - **C4** — every test function has a comment starting with
   `AGENT SHALL VALIDATE` that parses.
 - **C5** — every TEST node in the TRUG has at least one outbound `VALIDATES`
-  edge to a FUNCTION / PROCESS / CLASS / STAGE / SPEC node.
+  edge. This check does not enforce the target's type.
 - **C6** — every declared invariant (TRUG node property matching `invariant_*`)
   has at least one assertion in code and one test.
 - **C7** — every `.trug.json` file passes CORE validation via
@@ -139,13 +140,16 @@ class Report:
     # AGENT claude SHALL AGGREGATE EACH RECORD violation TO INTEGER DATA percent.
     @property
     def compliance_percent(self) -> float:
-        """Compliance ratio. Denominator = total check opportunities.
+        """Heuristic compliance score, not a fraction of all checks passed.
 
-        We count one potential violation per function (C1, C4) + one per test
-        (C4) + one per node with trl (C3) + one per TEST node (C5). This gives
-        us a sensible denominator: the % of checks that passed.
+        Denominator = ``functions_checked * 2 + tests_checked + nodes_checked + trug_files_checked``.
+        Counts functions twice, tests, nodes with a nonempty ``trl`` property,
+        and graph files. No separate C2, C5 or C6 opportunities are counted,
+        although their violations are subtracted along with all others.
 
-        Returns a number in [0.0, 100.0].
+        Returns full compliance when the denominator is zero. Otherwise,
+        subtracts all violations, clamps the passed count at zero, converts
+        to a percentage and rounds to 2 decimal places.
         """
         opportunities = (
             self.functions_checked * 2  # C1 + C4 per function

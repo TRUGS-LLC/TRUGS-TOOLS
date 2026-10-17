@@ -1169,7 +1169,11 @@ _DEFAULT_GRAPH_NAME = "trug_graph"
 
 
 def _complete_graph(nodes: list, edges: list, name: str) -> dict:
-    """Turn a compiled fragment into a complete, `tg validate`-VALID TRUG (AAA (private reference removed)).
+    """Add the CORE envelope and node fields to a compiled fragment.
+
+    This does not guarantee validator-VALID output: duplicate fragment IDs
+    survive, including authored IDs colliding with generated operation IDs
+    and repeated DEFINE IDs. Validate the resulting graph separately.
 
     Deterministic post-pass (option-1 ruling): fills every fragment node's 7 CORE
     fields, appends a synthetic ``type: PROJECT`` root at ``BASE_PROJECT`` that
@@ -1231,13 +1235,16 @@ def _complete_graph(nodes: list, edges: list, name: str) -> dict:
 def compile(
     src_or_sentences, lang: Optional[dict] = None, name: Optional[str] = None
 ) -> dict:
-    """Compile TRUG/L into a complete, `tg validate`-VALID TRUG graph.
+    """Compile TRUG/L into a TRUG graph with the CORE envelope and node fields.
 
     Accepts a string or a pre-parsed list[Sentence]. Returns a complete graph:
     the CORE envelope (name/version/type/dimension/dimensions + a ``core_v2.0.0``
     capability declaration), every node carrying its 7 CORE fields, and a synthetic
     ``PROJECT`` root containing the compiled nodes (AAA (private reference removed) — the taught
     author->compile->validate loop closes with no manual envelope step).
+    Validator-VALID output is not guaranteed: authored IDs can collide with
+    generated operation IDs, and repeated DEFINE IDs can remain duplicated.
+    Validate the resulting graph separately, even when TRL validation passes.
     Deterministic — the same input always produces the same graph. ``name`` sets the
     graph name (the CLI passes the input file's stem; default ``trug_graph``).
 
