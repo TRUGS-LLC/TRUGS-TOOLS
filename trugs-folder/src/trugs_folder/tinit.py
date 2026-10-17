@@ -3,8 +3,10 @@
 
 """tinit - Initialize folder.trug.json in a directory.
 
-Creates a valid folder.trug.json with a FOLDER root node and optionally
-scans the directory to add existing files as child nodes.
+Creates a folder.trug.json with a FOLDER root node and optionally
+scans the directory to add existing files as child nodes. Scanning does not
+check for node ID collisions: distinct filenames can normalize to the same
+ID and produce an invalid graph.
 
 <trl>
 PROCESS tinit SHALL BUILD RECORD trug_graph THEN WRITE FILE folder_trug_json TO DATA directory.

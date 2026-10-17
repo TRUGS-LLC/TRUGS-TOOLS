@@ -82,6 +82,10 @@ Correction, 2026-10-16: The containment-edge update described above applies to
 parents' `contains[]` arrays but leaves edges unchanged, including any existing
 containment edge to the old parent.
 
+Correction, 2026-10-16: `trug update --parent null` clears `parent_id` and
+removes the node from the old parent's `contains[]`, but leaves containment
+edges unchanged; the edge update above requires a non-null parent.
+
 ### Fixed — packaging
 
 `LICENSE`, `NOTICE` and `README.md` are back in the sdist and the wheel, and the PyPI project page

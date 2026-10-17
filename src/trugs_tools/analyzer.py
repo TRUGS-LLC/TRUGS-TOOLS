@@ -267,7 +267,8 @@ class TrugAnalyzer:
         """All nodes transitively downstream of node_id via semantic edges.
 
         Forward BFS through non-contains edges only.
-        Excludes node_id itself. Empty set for non-existent node.
+        Excludes node_id itself unless a semantic cycle leads back to it.
+        Empty set for non-existent node.
         Complexity: O(V+E).
         """
         if node_id not in graph.node_ids():
@@ -297,7 +298,8 @@ class TrugAnalyzer:
         """All nodes transitively upstream of node_id via semantic edges.
 
         Reverse BFS through non-contains edges only.
-        Excludes node_id itself. Empty set for non-existent node.
+        Excludes node_id itself unless a semantic cycle leads back to it.
+        Empty set for non-existent node.
         Complexity: O(V+E).
         """
         if node_id not in graph.node_ids():
