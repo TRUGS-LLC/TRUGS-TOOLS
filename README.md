@@ -6,8 +6,9 @@ Implements TRUGS 2.0 (`core_v2.0.0`).
 
 TRUG/L (TRL) is a constrained subset of English. For the syntax this compiler
 supports, compilation returns a CORE-valid TRUG graph or fails. Decompilation
-adds generated-looking identifiers only when needed for graph identity and
-retains sentences about defined terms. Node type checks apply only to edge
+adds generated-looking identifiers only when needed for graph identity. For
+compiled sources, defined-term stative clauses follow their definitions and
+retain stative and conjunction edge occurrences. Node type checks apply only to edge
 endpoints or operation nodes, independently of hierarchy fields. Every edge
 relation is checked; unsupported rendered words or uncompilable output cause
 failure. Successful decompilation returns canonical TRL that compiles.

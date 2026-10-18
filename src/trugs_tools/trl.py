@@ -5,8 +5,9 @@ r"""TRL compiler — deterministic TRL ↔ TRUG round-trip.
 
 TRL (TRUGS Language) is a closed 233-word subset of English (across 9 parts
 of speech). Decompilation adds generated-looking noun identifiers only when
-needed to retain graph identity and retains stative sentences about defined
-terms. This repository's compilable source contracts and hello.trl round-trip
+needed to retain graph identity. For compiled sources, defined-term stative
+clauses follow their definitions and retain stative and conjunction edge
+occurrences. This repository's compilable source contracts and hello.trl round-trip
 with the same node identifiers, node types and edge triples. Sugar
 and original formatting are not preserved; arbitrary JSON properties need not
 be preserved. Compilation returns a CORE-valid graph or raises TRLError;
@@ -1921,27 +1922,43 @@ def _render_graph(graph: dict, lang: dict, explicit_ids: frozenset[str]) -> str:
     }
     edges = graph["edges"]
 
-    # Index conjunction edges: op_from -> (conjunction_word, target_id).
-    # Target may be an op (regular conjunction) or a non-op subject node
-    # (stative continuation: ... THEN <stative-clause>).
-    conj_next: dict[str, tuple[str, str]] = {}
-    conj_targets: set[str] = set()
-    for e in edges:
-        rel = e.get("relation")
-        if rel in CONJUNCTIONS and e["from_id"] in op_nodes:
-            conj_next[e["from_id"]] = (rel, e["to_id"])
-            conj_targets.add(e["to_id"])
-
     preposition_words_set = {
         w for w, ent in lang.items() if ent["speech"] == "preposition"
     }
-    # Stative edges: source is NOT an op-node, relation is a preposition.
-    # Render a defined term's stative edges once, standalone or in its chain.
     stative_edges: list[dict] = [
         e
         for e in edges
         if e["from_id"] not in op_nodes and e.get("relation") in preposition_words_set
     ]
+    defined_stative = any(
+        nodes_by_id[e["from_id"]].get("properties", {}).get("defined") is True
+        for e in stative_edges
+    )
+    if defined_stative:
+        # Scheduling can change first mentions. Spell each node's stored type
+        # so a later mention's noun shape cannot change its recompiled type.
+        stative_nodes = {e[key] for e in stative_edges for key in ("from_id", "to_id")}
+        rendered_edges = []
+        for edge in edges:
+            props = dict(edge.get("properties") or {})
+            for key in ("np_shape", "subject_np_shape"):
+                if key not in props:
+                    continue
+                endpoint = "from_id" if key == "subject_np_shape" or edge["relation"] in MODALS | {"EXECUTES"} else "to_id"
+                if edge[endpoint] in stative_nodes:
+                    props[key] = dict(props[key], noun_type=nodes_by_id[edge[endpoint]]["type"])
+            rendered_edges.append(dict(edge, properties=props))
+        edges = rendered_edges
+        stative_edges = [e for e in edges if e["from_id"] not in op_nodes and e.get("relation") in preposition_words_set]
+    # Defined statives share occurrence accounting across all chain visits.
+    # Other graphs retain their existing operation-only continuation policy.
+    conj_next: dict[str, list[int]] = {}
+    conj_targets: set[str] = set()
+    for i, e in enumerate(edges):
+        if e.get("relation") in CONJUNCTIONS and e["from_id"] in op_nodes:
+            conj_next[e["from_id"]] = [i]
+            conj_targets.add(e["to_id"])
+    pending_visits: dict[str, int] = {}
     rendered_stative: set[int] = set()  # by edge index
 
     sentences_out: list[str] = []
@@ -1953,8 +1970,7 @@ def _render_graph(graph: dict, lang: dict, explicit_ids: frozenset[str]) -> str:
     # produce directives".
     prev_metric_level: Optional[str] = None
 
-    # Interleave standalone stative edges and operation chains in node order.
-    # A defined term used as a conjunction target leaves its edges to that chain.
+    # Defined-term paths share occurrence accounting with standalone edges.
     def _emit_stative(e: dict) -> str:
         subj = nodes_by_id.get(e["from_id"])
         tgt = nodes_by_id.get(e["to_id"])
@@ -1974,10 +1990,6 @@ def _render_graph(graph: dict, lang: dict, explicit_ids: frozenset[str]) -> str:
             + "."
         )
 
-    # Walk nodes in graph order. DEFINED_TERM nodes emit as DEFINE sentences.
-    # Operation nodes that are not conjunction-targets start a sentence chain.
-    # Stative edges are flushed at their source node, except defined terms
-    # whose stative edges belong to a conjunction chain.
     def _flush_stative_at(node_id: str) -> None:
         for i, e in enumerate(stative_edges):
             if i in rendered_stative:
@@ -1993,94 +2005,168 @@ def _render_graph(graph: dict, lang: dict, explicit_ids: frozenset[str]) -> str:
     def _maybe_blank_prefix(node: dict) -> str:
         return "\n" if node.get("properties", {}).get("preceded_by_blank_line") else ""
 
-    for node in graph["nodes"]:
-        if node.get("properties", {}).get("defined") is True:
-            sentences_out.append(_maybe_blank_prefix(node) + _render_define(node, lang))
-            if node["id"] not in conj_targets:
+    def _stative_clause(node_id: str, include_preamble: bool = False) -> str:
+        available = [
+            i for i, e in enumerate(stative_edges)
+            if e["from_id"] == node_id and (not defined_stative or i not in rendered_stative)
+        ]
+        # One preposition edge is needed for each remaining stative visit.
+        reserve = pending_visits.get(node_id, 1) - 1 if defined_stative else 0
+        if defined_stative:
+            pending_visits[node_id] -= 1
+        selected = available[:max(0, len(available) - reserve)]
+        if not selected:
+            raise TRLGrammarError(f"cannot render stative continuation at {node_id!r}")
+        first = stative_edges[selected[0]]
+        text = _emit_stative(first)[:-1]
+        if not include_preamble and text.startswith("WHEREAS "):
+            text = text[len("WHEREAS "):]
+        rendered_stative.add(selected[0])
+        for i in selected[1:]:
+            e = stative_edges[i]
+            target = nodes_by_id[e["to_id"]]
+            shape = (e.get("properties") or {}).get("np_shape")
+            text += " " + e["relation"] + " " + _render_noun_phrase(
+                target, lang=lang, shape=shape, explicit_ids=explicit_ids
+            )
+            rendered_stative.add(i)
+        return text
+
+    # Definitions precede references when their stative edges are scheduled.
+    if defined_stative:
+        for node in graph["nodes"]:
+            if node.get("properties", {}).get("defined") is True:
+                sentences_out.append(_maybe_blank_prefix(node) + _render_define(node, lang))
+
+    def _chain_starts():
+        if not defined_stative:
+            for node in graph["nodes"]:
+                if node.get("properties", {}).get("defined") is True:
+                    sentences_out.append(_maybe_blank_prefix(node) + _render_define(node, lang))
+                    continue
                 _flush_stative_at(node["id"])
-            continue
-        _flush_stative_at(node["id"])
-        if node.get("type") != "TRANSFORM":
-            continue
-        if node.get("properties", {}).get("operation") is None:
-            continue
+                if node["id"] in op_nodes and node["id"] not in conj_targets:
+                    yield node
+            return
+        # Compilation appends each sentence's conjunctions after its clauses.
+        # Fix the paths before allocating edges so branches and closed walks
+        # have a known number of visits, rather than a greedy traversal.
+        runs: list[list[int]] = []
+        for i, e in enumerate(edges):
+            if e.get("relation") in CONJUNCTIONS:
+                if i == 0 or edges[i - 1].get("relation") not in CONJUNCTIONS:
+                    runs.append([])
+                runs[-1].append(i)
+
+        def subjects(run):
+            return [edges[run[0]]["from_id"]] + [edges[i]["to_id"] for i in run]
+
+        used_ops = [n for run in runs for n in subjects(run) if n in op_nodes]
+        if len(used_ops) != len(set(used_ops)) or any(
+            edges[a]["to_id"] != edges[b]["from_id"]
+            for run in runs for a, b in zip(run, run[1:])
+        ):
+            # Edge order need not come from compilation. Preserve operation
+            # paths on such graphs by following their explicit endpoints.
+            remaining = {i for i, e in enumerate(edges) if e.get("relation") in CONJUNCTIONS}
+            runs = []
+            targets = {edges[i]["to_id"] for i in remaining}
+            for node_id in op_nodes.keys() - targets:
+                run = []
+                cur = node_id
+                while True:
+                    index = next((i for i in sorted(remaining) if edges[i]["from_id"] == cur), None)
+                    if index is None:
+                        break
+                    remaining.remove(index)
+                    run.append(index)
+                    cur = edges[index]["to_id"]
+                if run:
+                    runs.append(run)
+        paths = [(subjects(run), run) for run in runs]
+        participants = {n for path, _ in paths for n in path}
+        for node_id in op_nodes.keys() - participants:
+            paths.append(([node_id], []))
+        for path, _ in paths:
+            for node_id in path:
+                if node_id not in op_nodes:
+                    pending_visits[node_id] = pending_visits.get(node_id, 0) + 1
+        # Edges with no chain visit retain their standalone sentence form.
+        for node in graph["nodes"]:
+            if node["id"] not in participants:
+                _flush_stative_at(node["id"])
+        node_order = {node["id"]: i for i, node in enumerate(graph["nodes"])}
+
+        def path_order(item):
+            path, _ = item
+            operations = [node_order[n] for n in path if n in op_nodes]
+            return min(operations) if operations else -1
+
+        for path, run in sorted(paths, key=path_order):
+            conj_next.clear()
+            for i in run:
+                conj_next.setdefault(edges[i]["from_id"], []).append(i)
+            yield nodes_by_id[path[0]]
+
+    for node in _chain_starts():
         op_id = node["id"]
-        if op_id in visited_ops or op_id in conj_targets:
+        if op_id in visited_ops:
             continue
+        if op_id not in op_nodes:
+            first_clause_text = _stative_clause(op_id, include_preamble=True)
+            prev_subject_id = op_id
+            leading = None
+        else:
+            preamble = bool(node["properties"].get("preamble"))
+            leading = node["properties"].get("leading_conjunction")
+            modality = node["properties"].get("modality")
+            # Track clauses and inter-clause conjunctions so multi-clause sentences
+            # can be re-broken at canonical SPEC_examples.md formatting (one clause
+            # per line, 2-space indented continuation per §1.2 examples).
+            first_clause_text = _render_clause(
+                op_id, op_nodes, edges, nodes_by_id, lang, include_subject=True,
+                explicit_ids=explicit_ids
+            )
+            if preamble:
+                first_clause_text = "WHEREAS " + first_clause_text
+            elif leading:
+                first_clause_text = leading + " " + first_clause_text
+            elif modality:
+                first_clause_text = modality + " " + first_clause_text
 
-        preamble = bool(node["properties"].get("preamble"))
-        leading = node["properties"].get("leading_conjunction")
-        modality = node["properties"].get("modality")
-        # Track clauses and inter-clause conjunctions so multi-clause sentences
-        # can be re-broken at canonical SPEC_examples.md formatting (one clause
-        # per line, 2-space indented continuation per §1.2 examples).
-        first_clause_text = _render_clause(
-            op_id, op_nodes, edges, nodes_by_id, lang, include_subject=True,
-            explicit_ids=explicit_ids
-        )
-        if preamble:
-            first_clause_text = "WHEREAS " + first_clause_text
-        elif leading:
-            first_clause_text = leading + " " + first_clause_text
-        elif modality:
-            first_clause_text = modality + " " + first_clause_text
-
+            prev_subject_id = next(
+                e["from_id"]
+                for e in edges
+                if e["to_id"] == op_id and e.get("relation") in MODALS | {"EXECUTES"}
+            )
         clause_texts: list[str] = [first_clause_text]
         clause_conjunctions: list[str] = []  # length = len(clause_texts) - 1
         clause_depths: list[int] = [0]  # depth of each clause; 0 = top-level
-        visited_ops.add(op_id)
+        if op_id in op_nodes:
+            visited_ops.add(op_id)
         cur = op_id
-        prev_subject_id = next(
-            e["from_id"]
-            for e in edges
-            if e["to_id"] == cur and e.get("relation") in MODALS | {"EXECUTES"}
-        )
         # Per SPEC §1 examples (e.g. #8): when the parent clause has a
         # leading conjunction (IF / WHEN), the FIRST coordinated clause
         # repeats its subject regardless of inheritance — the gate
         # creates a scope boundary that suppresses elision once.
         clauses_seen_after_leading = 0
         leading_conj_active = leading is not None
-        while cur in conj_next:
-            conj, nxt = conj_next[cur]
-            # Stative continuation
+        while conj_next.get(cur):
+            edge_index = conj_next[cur].pop(0) if defined_stative else conj_next[cur][0]
+            edge = edges[edge_index]
+            conj, nxt = edge["relation"], edge["to_id"]
             if nxt not in op_nodes:
-                stative_subj = nodes_by_id.get(nxt)
-                first_stative = next(
-                    (e for e in stative_edges if e["from_id"] == nxt), None
-                )
-                subj_shape_for_stative = (
-                    (first_stative.get("properties") or {}).get("subject_np_shape")
-                    if first_stative
-                    else None
-                )
-                stative_parts: list[str] = []
-                if stative_subj is not None:
-                    stative_parts.append(
-                        _render_noun_phrase(
-                            stative_subj, lang=lang, shape=subj_shape_for_stative,
-                            explicit_ids=explicit_ids
-                        )
-                    )
-                for i, e in enumerate(stative_edges):
-                    if e["from_id"] == nxt:
-                        rendered_stative.add(i)
-                        target = nodes_by_id.get(e["to_id"])
-                        stative_parts.append(e["relation"])
-                        if target is not None:
-                            shape = (e.get("properties") or {}).get("np_shape")
-                            stative_parts.append(
-                                _render_noun_phrase(target, lang=lang, shape=shape, explicit_ids=explicit_ids)
-                            )
                 clause_conjunctions.append(conj)
-                clause_texts.append(" ".join(stative_parts))
-                # Stative continuations don't carry their own op; use parent depth + 1
-                # if conjunction is subordinating, else parent depth.
+                clause_texts.append(_stative_clause(nxt))
                 stative_depth = clause_depths[-1] + (
                     1 if conj in SUBORDINATING_CONJUNCTIONS else 0
                 )
                 clause_depths.append(stative_depth)
-                break
+                if not defined_stative:
+                    break
+                prev_subject_id = nxt
+                cur = nxt
+                continue
             nxt_subject_edge = next(
                 e
                 for e in edges

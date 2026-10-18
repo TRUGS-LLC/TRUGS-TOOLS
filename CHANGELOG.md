@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed — 2026-10-18
 - TRL decompilation adds generated-looking identifiers only when needed to retain
   node identifiers, node types and edge triples.
-- Stative sentences about defined terms retain their edges through the round trip.
+- Compiled defined-term stative clauses follow their definitions and retain each
+  stative and conjunction edge occurrence through the round trip.
 - Generated identifiers avoid authored names; repeated definitions fail naming the
   term, and compilation checks CORE validity before returning a graph.
 - Decompilation checks node types only at edge endpoints or on operation nodes,
