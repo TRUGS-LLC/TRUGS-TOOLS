@@ -4,9 +4,12 @@
 r"""TRL compiler — deterministic TRL ↔ TRUG round-trip.
 
 TRL (TRUGS Language) is a closed 233-word subset of English (across 9 parts
-of speech). Every valid sentence round-trips through a TRUG graph with no
-information loss beyond sugar tokens and presentation-only level directives
-(per ADR-002 / (private reference removed)). This module implements that round-trip.
+of speech). Decompilation renders noun identifiers explicitly and retains
+stative sentences about defined terms. This repository's compilable source
+contracts and hello.trl round-trip with the same node identifiers, node types and edge triples. Sugar
+and original formatting are not preserved; arbitrary JSON properties need not
+be preserved. Compilation returns a CORE-valid graph or raises TRLError;
+decompilation returns compilable TRL or raises TRLError.
 
 ## What's implemented
 
@@ -1160,8 +1163,8 @@ def _parse_sentence(tokens: list[Token], pos: int, lang: dict) -> tuple[Sentence
 
 # The CORE vocabulary the completion pass declares so a compiled graph exercises
 # the full CORE-16 tier (structural rules 1-9 + compositional rules 10-16), not
-# just the structural floor. Mirrors validate.CORE_VOCABULARY (AAA (private reference removed)); kept
-# as a local literal so trl.py imports no validator internals.
+# just the structural floor. The compiler checks its completed output with the
+# canonical CORE validator before returning it.
 CORE_VOCABULARY = "core_v2.0.0"
 
 # Default graph name when the caller supplies none (e.g. stdin input). Deterministic.
@@ -1171,9 +1174,8 @@ _DEFAULT_GRAPH_NAME = "trug_graph"
 def _complete_graph(nodes: list, edges: list, name: str) -> dict:
     """Add the CORE envelope and node fields to a compiled fragment.
 
-    This does not guarantee validator-VALID output: duplicate fragment IDs
-    survive, including authored IDs colliding with generated operation IDs
-    and repeated DEFINE IDs. Validate the resulting graph separately.
+    The compiler checks the completed graph with the canonical CORE validator
+    and raises TRLGrammarError if it is invalid.
 
     Deterministic post-pass (option-1 ruling): fills every fragment node's 7 CORE
     fields, appends a synthetic ``type: PROJECT`` root at ``BASE_PROJECT`` that
@@ -1242,9 +1244,9 @@ def compile(
     capability declaration), every node carrying its 7 CORE fields, and a synthetic
     ``PROJECT`` root containing the compiled nodes (AAA (private reference removed) — the taught
     author->compile->validate loop closes with no manual envelope step).
-    Validator-VALID output is not guaranteed: authored IDs can collide with
-    generated operation IDs, and repeated DEFINE IDs can remain duplicated.
-    Validate the resulting graph separately, even when TRL validation passes.
+    Generated identifiers avoid every authored identifier. Repeated DEFINE names
+    raise TRLGrammarError. The completed graph passes canonical CORE validation
+    before it is returned; invalid output raises TRLGrammarError.
     Deterministic — the same input always produces the same graph. ``name`` sets the
     graph name (the CLI passes the input file's stem; default ``trug_graph``).
 
@@ -1260,8 +1262,28 @@ def compile(
         else src_or_sentences
     )
 
+    # Reserve identifiers from the whole source, including later sentences.
+    sentences = list(sentences)
+    authored_ids: set[str] = set()
+    defined_names: set[str] = set()
+    for sentence in sentences:
+        if isinstance(sentence, LevelDirective):
+            continue
+        if sentence.definition is not None:
+            term = sentence.definition.name
+            if term in defined_names:
+                raise TRLGrammarError(f"term {term!r} is defined more than once")
+            defined_names.add(term)
+            authored_ids.add(term)
+        for clause in sentence.clauses:
+            phrases = [clause.subject, clause.object, *clause.extra_objects]
+            for pp in clause.prep_phrases:
+                phrases.extend([pp.target, *pp.extra_targets])
+            authored_ids.update(np.identifier for np in phrases if np and np.identifier)
+
     nodes: list[dict] = []
     edges: list[dict] = []
+    used_ids = set(authored_ids)
     op_counter = 0
     anon_counters: dict[str, int] = {}
 
@@ -1299,8 +1321,12 @@ def compile(
         if np.identifier:
             node_id = np.identifier
         else:
-            anon_counters[np.noun] = anon_counters.get(np.noun, 0) + 1
-            node_id = f"{np.noun.lower()}-{anon_counters[np.noun]}"
+            while True:
+                anon_counters[np.noun] = anon_counters.get(np.noun, 0) + 1
+                node_id = f"{np.noun.lower()}-{anon_counters[np.noun]}"
+                if node_id not in used_ids:
+                    break
+            used_ids.add(node_id)
         if not any(n["id"] == node_id for n in nodes):
             nodes.append({"id": node_id, "type": np.noun})
         return node_id
@@ -1353,6 +1379,8 @@ def compile(
                 attrs.setdefault(sub, adj)
             if attrs:
                 def_props["defined_attributes"] = attrs
+            if any(n["id"] == d.name for n in nodes):
+                raise TRLGrammarError(f"term {d.name!r} already names a node")
             nodes.append(
                 {
                     "id": d.name,
@@ -1454,8 +1482,12 @@ def compile(
                 )
             inherited_verb_phrase = effective_vp
 
-            op_counter += 1
-            op_id = f"op-{op_counter}"
+            while True:
+                op_counter += 1
+                op_id = f"op-{op_counter}"
+                if op_id not in used_ids:
+                    break
+            used_ids.add(op_id)
             op_props: dict = {
                 "operation": effective_vp.verb,
                 "verb_subcategory": classify(effective_vp.verb, lang)["subcategory"],
@@ -1565,30 +1597,19 @@ def compile(
             sentence, _node_count_before, first_op_id=first_op
         )
 
-    # AAA (private reference removed): complete the fragment into a VALID TRUG. Runs as a post-pass
-    # (appends the root; never prepends) so the per-sentence node indexing above
-    # is untouched. `name` defaults deterministically when the caller gives none.
-    return _complete_graph(nodes, edges, name or _DEFAULT_GRAPH_NAME)
+    # Complete and check the graph against the same rules as trug validate.
+    from trugs_tools.validate import validate as core_validate
+
+    graph = _complete_graph(nodes, edges, name or _DEFAULT_GRAPH_NAME)
+    result = core_validate(graph)
+    if not result.valid:
+        raise TRLGrammarError("compiled graph is invalid: " + "; ".join(
+            f"{error.code}: {error.message}" for error in result.errors
+        ))
+    return graph
 
 
 # ─── Decompile (TRUG → TRL) ───────────────────────────────────────────
-
-
-def _is_anonymous_id(node: dict, mention_type: Optional[str] = None) -> bool:
-    """Auto-generated IDs follow `{type_lower}-N`. Skip them on render.
-
-    `mention_type` is the per-mention noun type from the edge shape; when
-    a node is referenced via a different type than its node["type"], the
-    auto-id pattern is anchored on the node's first-mention type, so we
-    check against that.
-    """
-    base = (mention_type or node["type"]).lower()
-    if re.fullmatch(rf"{re.escape(base)}-\d+", node["id"]) is not None:
-        return True
-    # Also catch the case where node["type"] differs from mention_type
-    return (
-        re.fullmatch(rf"{re.escape(node['type'].lower())}-\d+", node["id"]) is not None
-    )
 
 
 def _render_noun_phrase(node: dict, lang: dict, shape: Optional[dict] = None) -> str:
@@ -1625,8 +1646,8 @@ def _render_noun_phrase(node: dict, lang: dict, shape: Optional[dict] = None) ->
 
     noun_type = shape.get("noun_type") or node["type"]
     parts.append(noun_type)
-    if not _is_anonymous_id(node, noun_type):
-        parts.append(node["id"])
+    # Spelling cannot distinguish an authored identifier from a generated one.
+    parts.append(node["id"])
     return " ".join(parts)
 
 
@@ -1791,7 +1812,10 @@ def _render_define(node: dict, lang: dict) -> str:
 
 # PROCESS decompiler SHALL MAP RECORD graph TO STRING DATA source.
 def decompile(graph: dict, lang: Optional[dict] = None) -> str:
-    """Turn a TRUG graph fragment back into canonical TRUG/L source.
+    """Render canonical TRUG/L, raising TRLError if the result cannot compile.
+
+    Noun identifiers are explicit, including those that resemble generated IDs.
+    JSON properties and original formatting are not guaranteed to be preserved.
 
     <trl>
     FUNCTION decompile SHALL RENDER RECORD graph THEN RETURN DATA source.
@@ -1799,6 +1823,29 @@ def decompile(graph: dict, lang: Optional[dict] = None) -> str:
     """
     if lang is None:
         lang = load_language()
+
+    # Only the completion root is structural; semantic nodes must be renderable.
+    for node in graph["nodes"]:
+        node_type = node["type"]
+        synthetic_root = (
+            node_type == "PROJECT"
+            and node.get("parent_id") is None
+            and node.get("metric_level") == "BASE_PROJECT"
+            and node.get("properties") == {}
+            and node.get("contains") == [
+                n["id"] for n in graph["nodes"] if n is not node
+            ]
+            and not any(node["id"] in (e["from_id"], e["to_id"])
+                        for e in graph["edges"])
+        )
+        operation = node_type == "TRANSFORM" and node.get("properties", {}).get("operation")
+        if not synthetic_root and not operation and lang.get(node_type, {}).get("speech") != "noun":
+            raise TRLVocabularyError(f"cannot render node {node['id']!r}: type {node_type!r} is not a TRL noun")
+    relations = {w for w, entry in lang.items() if entry["speech"] == "preposition"}
+    relations |= MODALS | CONJUNCTIONS | {"EXECUTES", "ACTS_ON"}
+    for edge in graph["edges"]:
+        if edge.get("relation") not in relations:
+            raise TRLVocabularyError(f"cannot render relation {edge.get('relation')!r}")
 
     nodes_by_id = {n["id"]: n for n in graph["nodes"]}
     op_nodes = {
@@ -1885,6 +1932,7 @@ def decompile(graph: dict, lang: Optional[dict] = None) -> str:
     for node in graph["nodes"]:
         if node.get("properties", {}).get("defined") is True:
             sentences_out.append(_maybe_blank_prefix(node) + _render_define(node, lang))
+            _flush_stative_at(node["id"])
             continue
         _flush_stative_at(node["id"])
         if node.get("type") != "TRANSFORM":
@@ -2074,6 +2122,10 @@ def decompile(graph: dict, lang: Optional[dict] = None) -> str:
             "with an internal formatting sentinel. Reject the input graph or "
             "sanitize string properties before decompiling."
         )
+    try:
+        compile(output, lang=lang)
+    except TRLError as exc:
+        raise TRLGrammarError(f"cannot render graph as compilable TRL: {exc}") from exc
     return output
 
 

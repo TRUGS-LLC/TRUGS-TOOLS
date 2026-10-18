@@ -194,7 +194,7 @@ def extract_blocks(source: str) -> list[Block]:
     return blocks
 
 
-def _validate_block(block: Block) -> BlockResult:
+def _validate_block(block: Block, lang: Optional[dict] = None) -> BlockResult:
     src = block.content.strip()
     if not src:
         # An empty block is treated as a pass (no TRL to validate). The
@@ -202,7 +202,7 @@ def _validate_block(block: Block) -> BlockResult:
         # an empty block carries no claims and so cannot fail.
         return BlockResult(block=block, ok=True)
     try:
-        trl_compile(src)
+        trl_compile(src, lang=lang)
     except TRLError as exc:
         return BlockResult(
             block=block,
@@ -213,13 +213,13 @@ def _validate_block(block: Block) -> BlockResult:
     return BlockResult(block=block, ok=True)
 
 
-def audit_file(path: Path) -> FileResult:
-    """Extract and validate every ``<trl>`` block in one markdown file."""
+def audit_file(path: Path, lang: Optional[dict] = None) -> FileResult:
+    """Extract and validate every ``<trl>`` block using ``lang`` or the packaged vocabulary."""
     source = path.read_text(encoding="utf-8")
     blocks = extract_blocks(source)
     return FileResult(
         path=str(path),
-        blocks=[_validate_block(b) for b in blocks],
+        blocks=[_validate_block(b, lang) for b in blocks],
     )
 
 
@@ -232,13 +232,14 @@ def _iter_markdown(root: Path) -> Iterator[Path]:
         yield from sorted(root.rglob(f"*{suffix}"))
 
 
-def audit_path(root: Path) -> list[FileResult]:
+def audit_path(root: Path, lang: Optional[dict] = None) -> list[FileResult]:
     """Audit every markdown file under ``root`` (or ``root`` itself if a file).
 
     Files with zero ``<trl>`` blocks are still represented in the result so
     callers can distinguish "no blocks found" from "file not scanned".
+    ``lang`` defaults to the packaged vocabulary.
     """
-    return [audit_file(p) for p in _iter_markdown(root)]
+    return [audit_file(p, lang) for p in _iter_markdown(root)]
 
 
 # ─── Output formatting ──────────────────────────────────────────────────
@@ -501,7 +502,7 @@ exit codes:
     parser.add_argument(
         "--language",
         default=None,
-        help="Alternate vocabulary path (--all-errors only; default: packaged vocabulary)",
+        help="Alternate vocabulary path (both modes; default: packaged vocabulary)",
     )
 
     args = parser.parse_args(argv)
@@ -510,8 +511,8 @@ exit codes:
         print(f"trug audit markdown: path does not exist: {root}", file=sys.stderr)
         return 2
 
+    lang = load_language(args.language)
     if args.all_errors:
-        lang = load_language(args.language)
         results = audit_path_all_errors(root, lang)
         if args.format == "json":
             print(_format_json_all_errors(results))
@@ -520,7 +521,7 @@ exit codes:
         error_count = sum(r.error_count for r in results)
         return 1 if error_count > 0 else 0
 
-    results = audit_path(root)
+    results = audit_path(root, lang)
     if args.format == "json":
         print(_format_json(results))
     else:
