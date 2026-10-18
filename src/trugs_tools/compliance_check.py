@@ -41,11 +41,13 @@ Exit codes:
 - 0 — default: compliance % ≥ baseline or no baseline; strict: no violations;
   also returned after a successful `--baseline-update`
 - 1 — default: compliance % < baseline; strict: any violation found
-- 2 — usage error, missing input path, or unreadable/invalid baseline in default mode
+- 2 — usage error, missing input path, or baseline inspection/read error or invalid
+  baseline in default mode
 
 Default mode requires an existing baseline to be a JSON object with a numeric
-compliance_percent (excluding booleans). `--strict` skips reading the baseline;
-`--baseline-update` replaces it.
+compliance_percent (excluding booleans and non-JSON constants). Missing baselines
+are allowed; inspection and read errors return 2. `--strict` skips reading the
+baseline; `--baseline-update` replaces it.
 
 See the public standard linked above, §6 (CI gate).
 
@@ -789,11 +791,17 @@ def check_invariants_across_repo(
 _BASELINE_PATH = Path(".github/compliance-baseline.json")
 
 
+def _reject_baseline_constant(value: str) -> None:
+    raise ValueError(f"non-JSON constant: {value}")
+
+
 def _load_baseline(root: Path) -> Optional[dict]:
     bp = root / _BASELINE_PATH
-    if not bp.exists():
+    try:
+        text = bp.read_text(encoding="utf-8")
+    except FileNotFoundError:
         return None
-    baseline = json.loads(bp.read_text(encoding="utf-8"))
+    baseline = json.loads(text, parse_constant=_reject_baseline_constant)
     if not isinstance(baseline, dict):
         raise ValueError("expected a JSON object")
     percent = baseline.get("compliance_percent")
@@ -867,6 +875,8 @@ def audit(root: Path, strict: bool = False) -> Report:
         classes = folder_classes.setdefault(t.parent, set())
         for node in graph.get("nodes", []):
             name = _node_name(node)
+            if not isinstance(name, str):
+                continue
             if node.get("type") in _CODE_ARTIFACT_NODE_TYPES | {"STAGE"} and name:
                 names.add(name)
             if node.get("type") == "CLASS" and name:
@@ -965,7 +975,8 @@ exit codes:
   0  default: no baseline or no compliance decrease; strict: no violations
      also returned after a successful --baseline-update
   1  default: compliance decreased from baseline; strict: violations present
-  2  usage error, missing input path, or unreadable/invalid baseline in default mode""",
+  2  usage error, missing input path, or baseline inspection/read error or invalid
+     baseline in default mode""",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(

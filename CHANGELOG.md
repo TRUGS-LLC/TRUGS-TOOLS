@@ -14,9 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   allowing methods to use their class's CLASS node. C5 requires a VALIDATES edge
   to a FUNCTION, PROCESS, CLASS, METHOD, STAGE or SPECIFICATION in the same graph.
   Reports include C1–C7 opportunity counts and score the share of checks passed.
-  Default mode exits 2 and names the baseline file on stderr when an existing
-  baseline is unreadable or lacks a numeric compliance_percent; booleans are
-  rejected. Strict mode ignores the baseline; baseline update replaces it.
+  Default mode exits 2 and names the baseline file on stderr on inspection/read
+  errors or when an existing baseline is not a JSON object with a numeric
+  compliance_percent; booleans and non-JSON constants are rejected. Missing
+  baselines are allowed. Strict mode ignores the baseline; baseline update
+  replaces it.
 
 ### Fixed — 2026-10-18
 - TRL decompilation adds generated-looking identifiers only when needed to retain
