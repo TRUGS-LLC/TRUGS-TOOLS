@@ -4,9 +4,10 @@
 r"""TRL compiler — deterministic TRL ↔ TRUG round-trip.
 
 TRL (TRUGS Language) is a closed 233-word subset of English (across 9 parts
-of speech). Decompilation renders noun identifiers explicitly and retains
-stative sentences about defined terms. This repository's compilable source
-contracts and hello.trl round-trip with the same node identifiers, node types and edge triples. Sugar
+of speech). Decompilation adds generated-looking noun identifiers only when
+needed to retain graph identity and retains stative sentences about defined
+terms. This repository's compilable source contracts and hello.trl round-trip
+with the same node identifiers, node types and edge triples. Sugar
 and original formatting are not preserved; arbitrary JSON properties need not
 be preserved. Compilation returns a CORE-valid graph or raises TRLError;
 decompilation returns compilable TRL or raises TRLError.
@@ -1612,7 +1613,21 @@ def compile(
 # ─── Decompile (TRUG → TRL) ───────────────────────────────────────────
 
 
-def _render_noun_phrase(node: dict, lang: dict, shape: Optional[dict] = None) -> str:
+def _is_anonymous_id(node: dict, mention_type: Optional[str] = None) -> bool:
+    """Whether concise rendering would omit this mention's identifier."""
+    base = (mention_type or node["type"]).lower()
+    if re.fullmatch(rf"{re.escape(base)}-\d+", node["id"]) is not None:
+        return True
+    # Also catch the case where node["type"] differs from mention_type
+    return (
+        re.fullmatch(rf"{re.escape(node['type'].lower())}-\d+", node["id"]) is not None
+    )
+
+
+def _render_noun_phrase(
+    node: dict, lang: dict, shape: Optional[dict] = None,
+    explicit_ids: frozenset[str] = frozenset(),
+) -> str:
     """Render a noun node back to its TRL form: [article] [adj]* NOUN [id].
 
     `shape` is per-mention attributes (noun_type + article + adjectives)
@@ -1646,8 +1661,9 @@ def _render_noun_phrase(node: dict, lang: dict, shape: Optional[dict] = None) ->
 
     noun_type = shape.get("noun_type") or node["type"]
     parts.append(noun_type)
-    # Spelling cannot distinguish an authored identifier from a generated one.
-    parts.append(node["id"])
+    # Omit generated-looking IDs unless recompilation needs them for identity.
+    if node["id"] in explicit_ids or not _is_anonymous_id(node, noun_type):
+        parts.append(node["id"])
     return " ".join(parts)
 
 
@@ -1658,6 +1674,7 @@ def _render_clause(
     nodes_by_id: dict,
     lang: dict,
     include_subject: bool,
+    explicit_ids: frozenset[str],
 ) -> str:
     """Render a single clause (subject + modal + verb + object)."""
     op = op_nodes[op_id]
@@ -1678,7 +1695,7 @@ def _render_clause(
     parts: list[str] = []
     if include_subject:
         subj_shape = (subj_edge.get("properties") or {}).get("np_shape")
-        parts.append(_render_noun_phrase(subj_node, lang=lang, shape=subj_shape))
+        parts.append(_render_noun_phrase(subj_node, lang=lang, shape=subj_shape, explicit_ids=explicit_ids))
     elided = op["properties"].get("verb_elided")
     if modal in MODALS and not elided:
         parts.append(modal)
@@ -1708,7 +1725,7 @@ def _render_clause(
         if node is None:
             return ""
         shape = props.get("np_shape")
-        return _render_noun_phrase(node, lang=lang, shape=shape)
+        return _render_noun_phrase(node, lang=lang, shape=shape, explicit_ids=explicit_ids)
 
     # 1. Direct object(s) — possibly AND-chained via chain_id.
     # AND-chains stay inline. SPEC examples disagree on when to break
@@ -1814,7 +1831,12 @@ def _render_define(node: dict, lang: dict) -> str:
 def decompile(graph: dict, lang: Optional[dict] = None) -> str:
     """Render canonical TRUG/L, raising TRLError if the result cannot compile.
 
-    Noun identifiers are explicit, including those that resemble generated IDs.
+    Start with concise noun phrases, omitting generated-looking identifiers.
+    If recompilation changes node ID/type pairs or edge triples, try explicit
+    identifiers. If they restore identity, remove them in graph node order
+    until no single removal retains identity; otherwise keep the concise text.
+    Interacting identifiers can have several minimal spellings; this chooses
+    one deterministically, rather than a shortest possible text.
     JSON properties and original formatting are not guaranteed to be preserved.
 
     <trl>
@@ -1824,17 +1846,62 @@ def decompile(graph: dict, lang: Optional[dict] = None) -> str:
     if lang is None:
         lang = load_language()
 
-    # Only the completion root is structural; semantic nodes must be renderable.
+    def identity(value: dict) -> tuple:
+        return (
+            sorted((n["id"], n["type"]) for n in value["nodes"]),
+            sorted((e["from_id"], e["to_id"], e["relation"]) for e in value["edges"]),
+        )
+
+    expected = identity(graph)
+
+    def render(explicit_ids: frozenset[str]) -> tuple[str, bool]:
+        output = _render_graph(graph, lang, explicit_ids)
+        try:
+            restored = compile(output, lang=lang)
+        except TRLError as exc:
+            raise TRLGrammarError(f"cannot render graph as compilable TRL: {exc}") from exc
+        return output, identity(restored) == expected
+
+    output, same = render(frozenset())
+    if same:
+        return output
+    explicit_ids = frozenset(n["id"] for n in graph["nodes"])
+    expanded, same = render(explicit_ids)
+    if not same:
+        return output
+    output = expanded
+    # Each successful removal shrinks the set; a final pass proves necessity.
+    while True:
+        removed = False
+        for node in graph["nodes"]:
+            node_id = node["id"]
+            if node_id not in explicit_ids:
+                continue
+            trial_ids = explicit_ids - {node_id}
+            try:
+                trial, same = render(trial_ids)
+            except TRLError:
+                continue
+            if same:
+                explicit_ids = trial_ids
+                output = trial
+                removed = True
+        if not removed:
+            return output
+
+
+def _render_graph(graph: dict, lang: dict, explicit_ids: frozenset[str]) -> str:
+    """Render with the selected noun identifiers, before checking compilation."""
+    # A parentless PROJECT containing every other node with no semantic edges
+    # is structural, regardless of node/list order, properties or metric level.
     for node in graph["nodes"]:
         node_type = node["type"]
         synthetic_root = (
             node_type == "PROJECT"
             and node.get("parent_id") is None
-            and node.get("metric_level") == "BASE_PROJECT"
-            and node.get("properties") == {}
-            and node.get("contains") == [
+            and set(node.get("contains", [])) == {
                 n["id"] for n in graph["nodes"] if n is not node
-            ]
+            }
             and not any(node["id"] in (e["from_id"], e["to_id"])
                         for e in graph["edges"])
         )
@@ -1902,11 +1969,11 @@ def decompile(graph: dict, lang: Optional[dict] = None) -> str:
         tgt_shape = props.get("np_shape")
         return (
             prefix
-            + _render_noun_phrase(subj, lang=lang, shape=subj_shape)
+            + _render_noun_phrase(subj, lang=lang, shape=subj_shape, explicit_ids=explicit_ids)
             + " "
             + e["relation"]
             + " "
-            + _render_noun_phrase(tgt, lang=lang, shape=tgt_shape)
+            + _render_noun_phrase(tgt, lang=lang, shape=tgt_shape, explicit_ids=explicit_ids)
             + "."
         )
 
@@ -1950,7 +2017,8 @@ def decompile(graph: dict, lang: Optional[dict] = None) -> str:
         # can be re-broken at canonical SPEC_examples.md formatting (one clause
         # per line, 2-space indented continuation per §1.2 examples).
         first_clause_text = _render_clause(
-            op_id, op_nodes, edges, nodes_by_id, lang, include_subject=True
+            op_id, op_nodes, edges, nodes_by_id, lang, include_subject=True,
+            explicit_ids=explicit_ids
         )
         if preamble:
             first_clause_text = "WHEREAS " + first_clause_text
@@ -1992,7 +2060,8 @@ def decompile(graph: dict, lang: Optional[dict] = None) -> str:
                 if stative_subj is not None:
                     stative_parts.append(
                         _render_noun_phrase(
-                            stative_subj, lang=lang, shape=subj_shape_for_stative
+                            stative_subj, lang=lang, shape=subj_shape_for_stative,
+                            explicit_ids=explicit_ids
                         )
                     )
                 for i, e in enumerate(stative_edges):
@@ -2003,7 +2072,7 @@ def decompile(graph: dict, lang: Optional[dict] = None) -> str:
                         if target is not None:
                             shape = (e.get("properties") or {}).get("np_shape")
                             stative_parts.append(
-                                _render_noun_phrase(target, lang=lang, shape=shape)
+                                _render_noun_phrase(target, lang=lang, shape=shape, explicit_ids=explicit_ids)
                             )
                 clause_conjunctions.append(conj)
                 clause_texts.append(" ".join(stative_parts))
@@ -2044,6 +2113,7 @@ def decompile(graph: dict, lang: Optional[dict] = None) -> str:
                     nodes_by_id,
                     lang,
                     include_subject=include_subject,
+                    explicit_ids=explicit_ids,
                 )
             )
             # Read depth from the next op's properties (set by compile per
@@ -2122,10 +2192,6 @@ def decompile(graph: dict, lang: Optional[dict] = None) -> str:
             "with an internal formatting sentinel. Reject the input graph or "
             "sanitize string properties before decompiling."
         )
-    try:
-        compile(output, lang=lang)
-    except TRLError as exc:
-        raise TRLGrammarError(f"cannot render graph as compilable TRL: {exc}") from exc
     return output
 
 

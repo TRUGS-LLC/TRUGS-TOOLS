@@ -4,8 +4,9 @@
 """Markdown <trl> block extractor — bridge from markdown corpus to TRL parser.
 
 Walks a path of markdown files, extracts every ``<trl>...</trl>`` fenced block,
-and delegates each block to the canonical TRL parser at
-:mod:`trugs_tools.trl`. Aggregates per-file / per-block results into a report
+and delegates each block to :mod:`trugs_tools.trl`: compilation with CORE
+validation by default, or parser-only recovery with ``--all-errors``.
+Aggregates per-file / per-block results into a report
 with both human-readable and JSON formats.
 
 Reporting only — never edits the source markdown. Failures are aggregated for
@@ -31,12 +32,13 @@ Block extraction:
 - Nested ``<trl>`` blocks are not part of the spec — the first ``</trl>``
   after an opening ``<trl>`` closes the block.
 
-Parser delegation:
-- Uses :func:`trugs_tools.trl.compile`. Compile is the strongest validation
-  gate available (parse + classify + grammar + graph emission). A block
-  that compiles cleanly is valid TRL.
-- :class:`trugs_tools.trl.TRLError` and subclasses are caught and reported
-  per block; the audit never raises on a malformed block.
+Validation modes:
+- Default: :func:`trugs_tools.trl.compile` parses, emits a graph and checks
+  CORE validity. The first :class:`trugs_tools.trl.TRLError` is reported
+  per block.
+- ``--all-errors``: :func:`trugs_tools.trl.collect_errors` recovers parser
+  errors per statement, tagged vocab/grammar/syntax. It does not emit or
+  validate a graph, so it can miss errors caught by default compilation.
 
 Line numbers in :class:`Block` and :class:`BlockResult` are 1-based and refer
 to the source markdown file (the line containing ``<trl>`` is ``open_line``;
@@ -67,7 +69,7 @@ __all__ = [
     "audit_file",
     "audit_path",
     "MARKDOWN_SUFFIXES",
-    # --all-errors path (AAA (private reference removed) SP2) — additive; default path is unchanged
+    # Parser-only recovery with --all-errors.
     "BlockErrors",
     "FileErrors",
     "audit_file_all_errors",
@@ -214,7 +216,7 @@ def _validate_block(block: Block, lang: Optional[dict] = None) -> BlockResult:
 
 
 def audit_file(path: Path, lang: Optional[dict] = None) -> FileResult:
-    """Extract and validate every ``<trl>`` block using ``lang`` or the packaged vocabulary."""
+    """Compile each block with CORE validation and the selected vocabulary."""
     source = path.read_text(encoding="utf-8")
     blocks = extract_blocks(source)
     return FileResult(
@@ -233,7 +235,7 @@ def _iter_markdown(root: Path) -> Iterator[Path]:
 
 
 def audit_path(root: Path, lang: Optional[dict] = None) -> list[FileResult]:
-    """Audit every markdown file under ``root`` (or ``root`` itself if a file).
+    """Compile blocks with CORE validation under ``root`` (or one file).
 
     Files with zero ``<trl>`` blocks are still represented in the result so
     callers can distinguish "no blocks found" from "file not scanned".
@@ -313,11 +315,8 @@ def _format_json(results: Iterable[FileResult]) -> str:
     return json.dumps(payload, indent=2)
 
 
-# ─── --all-errors path (AAA (private reference removed) SP2) ────────────────────────────────────
-# Opt-in error-recovery reporting: instead of the first error per block, list
-# EVERY statement-level error tagged by class (vocab / grammar / syntax). This
-# is a SEPARATE code path from the default audit above so the default output is
-# byte-identical (INVARIANT default_parse SHALL_NOT CHANGE).
+# ─── --all-errors: parser-only recovery ──────────────────────────────────
+# Collect recovered statement errors without graph emission or CORE checks.
 
 @dataclass(frozen=True)
 class BlockErrors:
@@ -344,7 +343,7 @@ class FileErrors:
 
 
 def audit_file_all_errors(path: Path, lang: dict) -> FileErrors:
-    """Extract every block and collect ALL statement-level errors per block."""
+    """Collect recovered parser errors per block without CORE validation."""
     source = path.read_text(encoding="utf-8")
     blocks = extract_blocks(source)
     return FileErrors(
@@ -354,7 +353,7 @@ def audit_file_all_errors(path: Path, lang: dict) -> FileErrors:
 
 
 def audit_path_all_errors(root: Path, lang: dict) -> list[FileErrors]:
-    """All-errors audit of every markdown file under ``root``."""
+    """Collect parser errors under ``root`` without graph emission or CORE checks."""
     return [audit_file_all_errors(p, lang) for p in _iter_markdown(root)]
 
 
@@ -445,14 +444,14 @@ def _format_json_all_errors(results: Iterable[FileErrors]) -> str:
 def main(argv: Optional[list[str]] = None) -> int:
     """``trug audit markdown PATH [--format text|json] [--verbose] [--all-errors]``.
 
-    Default mode reports the first error per block (the canonical first-error
-    contract). ``--all-errors`` switches to the error-recovery path: every
-    statement-level error per block, tagged by class — the de-masked
-    grammar/syntax measurement for AAA (private reference removed).
+    Default mode compiles each block, including CORE validation, and reports
+    its first error. ``--all-errors`` collects recovered parser errors tagged
+    vocab/grammar/syntax, without graph emission or CORE validation. It can
+    miss errors detected by default compilation. Both use the selected vocabulary.
 
     Exit codes:
-        0 — every block passed (no errors)
-        1 — one or more blocks failed
+        0 — no errors detected by the selected mode
+        1 — one or more errors detected by the selected mode
         2 — invocation error (bad path, bad args)
     """
     import argparse
@@ -462,16 +461,17 @@ def main(argv: Optional[list[str]] = None) -> int:
         prog="trug audit markdown",
         description=(
             "Extract every <trl>...</trl> block from markdown files under PATH "
-            "and validate each against the canonical TRL parser. Reporting only — "
-            "never modifies source files."
+            "and compile each with CORE validation by default. --all-errors uses "
+            "parser-only recovery without graph emission or CORE validation. "
+            "Both modes use the selected vocabulary; neither modifies source files."
         ),
         epilog="""examples:
   trug audit markdown AAA/AAA_1234_plan.md
   trug audit markdown docs/ -f json
 
 exit codes:
-  0  all blocks parse
-  1  parse failures present
+  0  no errors detected by the selected mode
+  1  errors detected by the selected mode
   2  usage error (bad flags or arguments)""",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -494,9 +494,9 @@ exit codes:
         "--all-errors",
         action="store_true",
         help=(
-            "Error-recovery mode: report EVERY statement-level error per block "
-            "(tagged vocab/grammar/syntax), not just the first. Does not change "
-            "the default first-error parser behavior."
+            "Parser-only recovery: collect statement errors tagged vocab/grammar/syntax. "
+            "Does not emit graphs or check CORE validity; can miss errors detected "
+            "by default compilation."
         ),
     )
     parser.add_argument(

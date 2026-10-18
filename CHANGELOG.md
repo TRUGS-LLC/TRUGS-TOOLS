@@ -8,13 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed — 2026-10-18
-- TRL decompilation keeps identifiers explicit so repeated actors retain their identity.
+- TRL decompilation adds generated-looking identifiers only when needed to retain
+  node identifiers, node types and edge triples.
 - Stative sentences about defined terms retain their edges through the round trip.
 - Generated identifiers avoid authored names; repeated definitions fail naming the
   term, and compilation checks CORE validity before returning a graph.
-- Decompilation rejects unrenderable node types and relations and checks that its
-  output compiles before returning text.
-- `trug audit markdown --language` applies the named vocabulary in both modes.
+- Decompilation recognizes structural completion roots regardless of ordering,
+  properties or metric level, rejects unsupported semantic node types and
+  relations, and checks that its output compiles before returning text.
+- `trug audit markdown --language` applies the named vocabulary in both modes;
+  help distinguishes compilation with CORE validation from parser-only recovery.
 
 ## [2.3.0] — 2026-10-18
 
