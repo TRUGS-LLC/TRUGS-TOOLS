@@ -12,8 +12,7 @@ a reproduction (the TRUG/TRL input and the command run) where possible.
 
 ## Supported versions
 
-Only the **latest released version** of each package (`trugs-tools`,
-`trugs-folder`) receives security fixes.
+Only the **latest released version** of `trugs-tools` receives security fixes.
 
 ## Scope notes
 

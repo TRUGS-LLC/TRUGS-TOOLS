@@ -3,13 +3,10 @@
 
 """trug — the TRUGS language CLI (trugs_tools, T1).
 
-AAA (private reference removed) commons cleave: the language-core entry point. Operates the TRUG/TRL
-language only — validate, compile/lint (trl), graph-node CRUD (get/update/
-delete/unlink), Dark Code compliance, and the corpus-side audit bridges
-(markdown/vocab). Imports only T1 modules (+ trugs_store transitively); NEVER
-any T2 (trugs_folder) or T3 (trugs_start) module, so `import trugs_tools.lang_cli`
-pulls zero cartography/system code (invariant: tools_cli SHALL_NOT LOAD ANY
-system_tier).
+The language-core entry point. Operates the TRUG/TRL language — validate,
+compile/lint (trl), graph-node CRUD (get/update/delete/unlink), Dark Code
+compliance, and the corpus-side `trug audit` bridges (markdown/vocab).
+Imports the language toolchain modules (+ trugs_store transitively).
 
 Entry point: ``trug <verb> [args...]``. The unified `tg` god-binary (which adds
 cartography + memory/aaa/epic system verbs) lives in the trugs_start seed.

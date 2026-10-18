@@ -46,16 +46,14 @@ Eight verbs on the `trug` binary:
 | `audit` | Corpus-side audit bridges (markdown / vocab) |
 
 Every verb documents examples and exit codes: `trug <verb> --help`.
-
-Folder cartography — keeping a directory tree and its TRUG graph in sync and
-rendering `ARCHITECTURE.md` — is the sibling package
-[`trugs-folder`](./trugs-folder/) (binary: `trug-a-folder`).
+For `trug trl`, content syntax, grammar, vocabulary and validation failures exit 1;
+usage errors (bad arguments, missing or unreadable files, or expected JSON) exit 2.
 
 ## Role in the TRUGS-LLC portfolio
 
 - **[TRUGS](https://github.com/TRUGS-LLC/TRUGS)** — the specification (CORE + TRL + reference papers) and the [getting-started guide](https://github.com/TRUGS-LLC/TRUGS/blob/main/GETTING_STARTED.md).
-- **TRUGS-TOOLS** (this repo) — the language CLI `trug` (this package) + the cartography tool `trug-a-folder` ([trugs-folder/](./trugs-folder/)).
-- **[TRUGS-STORE](https://github.com/TRUGS-LLC/TRUGS-STORE)** — the swappable graph-storage backend both tools sit on.
+- **TRUGS-TOOLS** (this repo) — the language CLI `trug` (this package).
+- **[TRUGS-STORE](https://github.com/TRUGS-LLC/TRUGS-STORE)** — the swappable graph-storage backend used by the language CLI.
 
 ## Documentation
 
@@ -66,8 +64,8 @@ rendering `ARCHITECTURE.md` — is the sibling package
 ## Development
 
 ```bash
-make dev      # editable installs: the trug CLI + the bundled trugs-folder suite
-make check    # the Tier-1 gate — the bundled trugs-folder tests + self-validation
+make dev      # editable install of the trug CLI with test dependencies (.[test])
+make check    # pytest tests/, then trug validate folder.trug.json
 ```
 
 The last `make check` step is Layer-4 self-description: the engine validates

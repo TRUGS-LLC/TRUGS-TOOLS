@@ -8,11 +8,8 @@ Usage:
     trug get graph.trug.json node_id --format json
     trug get graph.trug.json node_id --edges
 
-Note: this is the explicit-TRUG-file CRUD command (the live ``trug get`` verb,
-operating on a named ``*.trug.json``). It is distinct from the namesake
-``trugs_folder.tget``, which is the folder-graph operation over a
-directory's ``folder.trug.json``. The two are intentionally separate command
-families, not duplicates (AAA (private reference removed) SP1 disposition: retained).
+Note: this is the explicit-TRUG-file CRUD command (the ``trug get`` verb),
+operating on a named ``*.trug.json``.
 
 <trl>
 PROCESS tget SHALL LOAD FILE trug_json THEN RETURN DATA node SUBJECT_TO node_id MATCH.

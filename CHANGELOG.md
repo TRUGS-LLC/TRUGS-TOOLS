@@ -7,10 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed — 2026-10-18
+- Dominator analysis terminates for semantic joins from multiple hierarchy roots,
+  and handles deep paths without recursive traversal.
+- TRL content syntax, grammar and vocabulary failures exit 1; usage errors retain
+  exit 2 (#10).
+- Compliance C2 excludes STAGE nodes, which can describe pipeline groupings
+  without naming Python symbols (#18).
+
+### Added — 2026-10-18
+- Continuous integration on pushes to main and pull requests runs `pytest tests/`
+  and validates `folder.trug.json` on Python 3.11 and 3.12.
+
+### Removed — 2026-10-18
+- The folder package (`trugs-folder`, `trug-a-folder`) is no longer part of this
+  repository. Its published releases remain on the package index and are not
+  maintained here.
+
 ### Changed
-- `LICENSE` and `trugs-folder/LICENSE` are the official Apache License 2.0 text; `NOTICE` and
-  `trugs-folder/NOTICE` carry the attribution only, their patent paragraphs and the provenance section removed;
-  both READMEs gain a Scope section.
+- `LICENSE` is the official Apache License 2.0 text; `NOTICE` carries the attribution
+  only, with its patent paragraphs and provenance section removed. `README.md` gains
+  a Scope section.
 
 ## [2.2.0] — 2026-08-11
 

@@ -5,7 +5,7 @@
   "description": "TRUGS language CLI \u2014 validate TRUG graphs, compile and decompile TRL, graph-node CRUD, Dark Code compliance, and corpus audit. The `trug` binary; implements TRUGS 2.0 (core_v2.0.0).",
   "dimensions": {
     "folder_structure": {
-      "description": "Top-level repo structure \u2014 package source, the bundled trugs-folder cartography package, and project docs",
+      "description": "Top-level repo structure \u2014 package source and project docs",
       "base_level": "BASE"
     },
     "build": {
@@ -26,7 +26,7 @@
       "type": "FOLDER",
       "properties": {
         "name": "trugs-tools",
-        "purpose": "The TRUGS language CLI (the `trug` binary) \u2014 TRUG graph validation against the 16 CORE rules, TRL compile/decompile, graph-node CRUD, Dark Code compliance, and corpus audit. Co-publishes the trugs-folder cartography package (`trug-a-folder`)."
+        "purpose": "The TRUGS language CLI (the `trug` binary) \u2014 TRUG graph validation against the 16 CORE rules, TRL compile/decompile, graph-node CRUD, Dark Code compliance, and corpus audit."
       },
       "parent_id": null,
       "contains": [
@@ -39,7 +39,6 @@
         "comp_src",
         "doc_contributing",
         "doc_security",
-        "comp_trugs_folder",
         "doc_makefile",
         "doc_fixture_trug",
         "doc_fixture_trl"
@@ -64,7 +63,7 @@
       "type": "DOCUMENT",
       "properties": {
         "name": "AGENT.md",
-        "purpose": "Agent instructions \u2014 TRL vocabulary primer, repo navigation, validation commands."
+        "purpose": "Agent orientation \u2014 package identity, command surface, repo navigation, and specification links."
       },
       "parent_id": "root",
       "contains": [],
@@ -242,24 +241,11 @@
       "dimension": "folder_structure"
     },
     {
-      "id": "comp_trugs_folder",
-      "type": "COMPONENT",
-      "properties": {
-        "name": "trugs-folder",
-        "purpose": "Co-published sibling package \u2014 TRUGS cartography (`trug-a-folder` binary): keep a directory tree and its folder.trug.json in sync, validate folder governance, render ARCHITECTURE.md. Own pyproject/LICENSE/NOTICE/src/tests; ships to PyPI as trugs-folder 2.2.0.",
-        "file_count": 46
-      },
-      "parent_id": "root",
-      "contains": [],
-      "metric_level": "DEKA_COMPONENT",
-      "dimension": "folder_structure"
-    },
-    {
       "id": "doc_makefile",
       "type": "DOCUMENT",
       "properties": {
         "name": "Makefile",
-        "purpose": "GNU Makefile \u2014 `make dev` (editable installs of the trug CLI + the bundled trugs-folder suite) and `make check` (the bundled trugs-folder suite + Layer-4 self-validation of folder.trug.json)."
+        "purpose": "GNU Makefile \u2014 `make dev` installs the language CLI editable with test dependencies (.[test]); `make check` runs pytest tests/ then trug validate folder.trug.json."
       },
       "parent_id": "root",
       "contains": [],
@@ -425,12 +411,6 @@
     {
       "from_id": "root",
       "to_id": "doc_security",
-      "relation": "contains",
-      "properties": {}
-    },
-    {
-      "from_id": "root",
-      "to_id": "comp_trugs_folder",
       "relation": "contains",
       "properties": {}
     },

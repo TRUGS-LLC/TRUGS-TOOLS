@@ -9,11 +9,8 @@ Usage:
     trug delete graph.trug.json node_id1 node_id2 node_id3
     trug delete graph.trug.json node_id --force
 
-Note: this is the explicit-TRUG-file CRUD command (the live ``trug delete`` verb,
-operating on a named ``*.trug.json``). It is distinct from the namesake
-``trugs_folder.tdelete``, which is the folder-graph operation over a
-directory's ``folder.trug.json``. The two are intentionally separate command
-families, not duplicates (AAA (private reference removed) SP1 disposition: retained).
+Note: this is the explicit-TRUG-file CRUD command (the ``trug delete`` verb),
+operating on a named ``*.trug.json``.
 
 Note: deleting a node repairs the hierarchy on both sides of the link. Stripping
 the deleted ids from every surviving ``contains[]`` is only half of it — the
@@ -145,13 +142,10 @@ def format_reparent_target(new_parent: Optional[str]) -> str:
 def _readopt_edge(edges: list, removed: list, orphan_id: str, new_parent: str) -> None:
     """Re-issue the orphan's containment edge from its adopter.
 
-    ``contains[]`` and the containment EDGE are two halves of one fact. Repairing
-    only the array leaves a graph the CORE validator calls VALID while
-    ``trug-a-folder check`` rejects it — "Contains-array lists 'x' but no
-    'contains' edge from 'y' to 'x' exists" — which is the same shape of
-    half-maintained link this whole repair exists to close, reintroduced one
-    layer down. The sibling repair in ``trugs_folder.folder_sync`` writes both;
-    these two must not disagree about what adoption means.
+    When a graph expresses containment through both ``contains[]`` and an EDGE,
+    adoption repairs both links. The CORE validator permits containment without
+    an edge, so validation alone does not ensure an existing containment edge
+    has followed the orphan to its new parent.
 
     The re-issued edge is a COPY OF THE ONE JUST REMOVED with its ``from_id``
     moved to the adopter, rather than a freshly minted literal. Edge shape is a

@@ -165,23 +165,20 @@ class TrugAnalyzer:
     # AGENT claude SHALL DEFINE FUNCTION dominator_tree.
     @staticmethod
     def dominator_tree(graph: TrugGraph) -> dict[str, str | None]:
-        """Immediate dominator for each reachable node via semantic edges.
+        """Immediate dominators of nodes reachable via semantic edges from roots.
 
-        Uses root_nodes() as entry points. Iterative dataflow algorithm
-        (Cooper, Harvey, Kennedy 2001). Root nodes map to None.
-        Semantic joins reached from distinct hierarchy roots can hang, even
-        on a CORE-valid graph; there is no termination or complexity bound
-        for those inputs.
+        A virtual entry precedes every hierarchy root. None means the node is
+        a root or has no strict dominator other than that entry; unreachable nodes
+        are omitted. Iterative DFS and monotonically shrinking dominator sets
+        handle joins and cycles without recursion. For V nodes and E semantic
+        edges, at most (V + 1)^2 + 1 dataflow scans take O(V^3 * (V + E)) time
+        in total, using O(V^2 + E) space.
         """
         all_ids = graph.node_ids()
-        if not all_ids:
-            return {}
-
         roots = graph.root_nodes()
-        if not roots:
+        if not all_ids or not roots:
             return {}
 
-        # Build forward adjacency from semantic edges
         adj: dict[str, list[str]] = {}
         rev: dict[str, list[str]] = {}
         for e in graph.get_semantic_edges():
@@ -193,50 +190,29 @@ class TrugAnalyzer:
                 adj.setdefault(frm, []).append(to)
                 rev.setdefault(to, []).append(frm)
 
-        # Compute RPO via DFS from roots
         visited: set[str] = set()
         postorder: list[str] = []
-
-        # AGENT claude SHALL DEFINE FUNCTION dfs.
-        def dfs(node: str) -> None:
-            visited.add(node)
-            for succ in adj.get(node, []):
-                if succ not in visited:
-                    dfs(succ)
-            postorder.append(node)
-
         for root in roots:
-            if root not in visited:
-                dfs(root)
-
+            stack = [(root, False)]
+            while stack:
+                node, expanded = stack.pop()
+                if expanded:
+                    postorder.append(node)
+                elif node not in visited:
+                    visited.add(node)
+                    stack.append((node, True))
+                    stack.extend((succ, False) for succ in reversed(adj.get(node, [])))
         rpo = list(reversed(postorder))
-        rpo_index = {node: i for i, node in enumerate(rpo)}
 
+        entry = "__entry__"
+        while entry in all_ids:
+            entry += "_"
+        universe = visited | {entry}
         root_set = set(roots)
-        idom: dict[str, str | None] = {}
+        dominators = {node: set(universe) for node in rpo}
+        dominators[entry] = {entry}
         for root in roots:
-            if root in rpo_index:
-                idom[root] = root
-
-        # AGENT claude SHALL DEFINE FUNCTION intersect.
-        def intersect(b1: str, b2: str) -> str:
-            finger1, finger2 = b1, b2
-            while finger1 != finger2:
-                while rpo_index.get(finger1, len(rpo)) > rpo_index.get(
-                    finger2, len(rpo)
-                ):
-                    parent = idom.get(finger1)
-                    if parent is None:
-                        break
-                    finger1 = parent
-                while rpo_index.get(finger2, len(rpo)) > rpo_index.get(
-                    finger1, len(rpo)
-                ):
-                    parent = idom.get(finger2)
-                    if parent is None:
-                        break
-                    finger2 = parent
-            return finger1
+            dominators[root] = {entry, root}
 
         changed = True
         while changed:
@@ -244,23 +220,17 @@ class TrugAnalyzer:
             for node in rpo:
                 if node in root_set:
                     continue
-                preds = [p for p in rev.get(node, []) if p in idom]
-                if not preds:
-                    continue
-                new_idom = preds[0]
-                for p in preds[1:]:
-                    new_idom = intersect(new_idom, p)
-                if idom.get(node) != new_idom:
-                    idom[node] = new_idom
+                preds = [p for p in rev.get(node, []) if p in visited]
+                common = set.intersection(*(dominators[p] for p in preds))
+                updated = common | {node}
+                if updated != dominators[node]:
+                    dominators[node] = updated
                     changed = True
 
         result: dict[str, str | None] = {}
         for node in rpo:
-            if node in root_set:
-                result[node] = None
-            else:
-                result[node] = idom.get(node)
-
+            strict = dominators[node] - {entry, node}
+            result[node] = max(strict, key=lambda p: len(dominators[p])) if strict else None
         return result
 
     # AGENT claude SHALL DEFINE FUNCTION impact_set.
