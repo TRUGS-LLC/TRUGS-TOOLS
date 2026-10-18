@@ -99,7 +99,7 @@
       "type": "DOCUMENT",
       "properties": {
         "name": "CHANGELOG.md",
-        "purpose": "Keep-a-Changelog \u2014 notable changes through 2.2.0; [Unreleased] accumulates subsequent changes."
+        "purpose": "Keep-a-Changelog \u2014 notable changes through 2.3.0; [Unreleased] accumulates subsequent changes."
       },
       "parent_id": "root",
       "contains": [],
@@ -111,7 +111,7 @@
       "type": "DOCUMENT",
       "properties": {
         "name": "pyproject.toml",
-        "purpose": "Python package metadata: name=trugs-tools, version=2.2.0, Apache-2.0, the `trug` console script + mypy config."
+        "purpose": "Python package metadata: name=trugs-tools, version=2.3.0, Apache-2.0, the `trug` console script + mypy config."
       },
       "parent_id": "root",
       "contains": [],

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.0] — 2026-10-18
+
 ### Fixed — 2026-10-18
 - Dominator analysis terminates for semantic joins from multiple hierarchy roots,
   and handles deep paths without recursive traversal.

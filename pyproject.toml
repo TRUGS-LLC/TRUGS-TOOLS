@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "trugs-tools"
-version = "2.2.0"
+version = "2.3.0"
 description = "TRUGS language CLI — validate TRUG graphs, compile and lint TRL, graph-node CRUD, compliance and corpus audit. Single `trug` binary. Implements TRUGS 2.0 (core_v2.0.0)."
 readme = "README.md"
 license = { text = "Apache-2.0" }
