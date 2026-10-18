@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed — 2026-10-18
+- `trug compliance` C6 requires real assertions outside test functions and real
+  test function comments, matching whole invariant names. C2 also checks that
+  public declarations have code nodes in parsed graphs in their own folder,
+  allowing methods to use their class's CLASS node. C5 requires a VALIDATES edge
+  to a FUNCTION, PROCESS, CLASS, METHOD, STAGE or SPECIFICATION in the same graph.
+  Reports include C1–C7 opportunity counts and score the share of checks passed.
+  Default mode exits 2 and names the baseline file on stderr when an existing
+  baseline is unreadable or lacks a numeric compliance_percent; booleans are
+  rejected. Strict mode ignores the baseline; baseline update replaces it.
+
+### Fixed — 2026-10-18
 - TRL decompilation adds generated-looking identifiers only when needed to retain
   node identifiers, node types and edge triples.
 - Compiled defined-term stative clauses follow their definitions and retain each
