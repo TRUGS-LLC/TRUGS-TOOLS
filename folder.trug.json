@@ -269,7 +269,7 @@
       "type": "DOCUMENT",
       "properties": {
         "name": "hello.trl",
-        "purpose": "Quickstart fixture \u2014 a TRL sentence the quickstart compiles to a graph and decompiles back, losslessly."
+        "purpose": "Quickstart fixture \u2014 TRL that compiles to a CORE-valid graph and round-trips with the same node identifiers, node types and edge triples."
       },
       "parent_id": "root",
       "contains": [],

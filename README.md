@@ -5,11 +5,17 @@ and decompile TRL, graph-node CRUD, Dark Code compliance, and corpus audit.
 Implements TRUGS 2.0 (`core_v2.0.0`).
 
 TRUG/L (TRL) is a constrained subset of English. For the syntax this compiler
-supports, it compiles sentence structure to a TRUG graph and decompiles that
-representation to canonical TRL. Sugar tokens and original formatting are not
-preserved. Decompiling arbitrary valid TRUG graphs does not guarantee
-recompilable TRL or preservation of JSON properties. Write TRL when
-communicating; store and validate TRUGS (the JSON graph) when executing.
+supports, compilation returns a CORE-valid TRUG graph or fails. Decompilation
+adds generated-looking identifiers only when needed for graph identity. For
+compiled sources, defined-term stative clauses follow their definitions and
+retain stative and conjunction edge occurrences. Node type checks apply only to edge
+endpoints or operation nodes, independently of hierarchy fields. Every edge
+relation is checked; unsupported rendered words or uncompilable output cause
+failure. Successful decompilation returns canonical TRL that compiles.
+The compilable source contracts and `hello.trl` preserve node identifiers, node
+types and edge triples in the round trip. Sugar, original formatting and arbitrary
+JSON properties need not be preserved. Write TRL when communicating; store and
+validate TRUGS (the JSON graph) when executing.
 
 ## Install
 
@@ -23,7 +29,7 @@ pip install trugs-tools
 trug --help                          # the verb list, one summary per verb
 trug validate first.trug.json        # the 16 CORE rules -> VALID / INVALID
 trug trl compile hello.trl > hello.trug.json   # TRL sentence -> TRUG graph (saved to file)
-trug trl decompile hello.trug.json             # graph -> the sentence, losslessly
+trug trl decompile hello.trug.json             # graph -> compilable canonical TRL, or an error
 trug compliance src/                 # Dark Code compliance scan
 ```
 
