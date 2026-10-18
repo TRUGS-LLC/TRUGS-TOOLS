@@ -124,7 +124,7 @@
       "properties": {
         "name": "src",
         "purpose": "The Python package source tree (src/trugs_tools) \u2014 the `trug` CLI engine plus the audit/internal/templates/schemas/data subpackages.",
-        "file_count": 37
+        "file_count": 36
       },
       "parent_id": "root",
       "contains": [
@@ -196,7 +196,7 @@
       "properties": {
         "name": "trugs_tools/schemas",
         "purpose": "JSON schema definitions for TRUG validation.",
-        "file_count": 9
+        "file_count": 8
       },
       "parent_id": "comp_src",
       "contains": [],
