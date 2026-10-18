@@ -13,9 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Stative sentences about defined terms retain their edges through the round trip.
 - Generated identifiers avoid authored names; repeated definitions fail naming the
   term, and compilation checks CORE validity before returning a graph.
-- Decompilation recognizes structural completion roots regardless of ordering,
-  properties or metric level, rejects unsupported semantic node types and
-  relations, and checks that its output compiles before returning text.
+- Decompilation checks node types only at edge endpoints or on operation nodes,
+  independently of hierarchy fields, and checks every edge relation. Unsupported
+  rendered words or uncompilable output fail before text is returned.
 - `trug audit markdown --language` applies the named vocabulary in both modes;
   help distinguishes compilation with CORE validation from parser-only recovery.
 

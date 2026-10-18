@@ -10,7 +10,9 @@ terms. This repository's compilable source contracts and hello.trl round-trip
 with the same node identifiers, node types and edge triples. Sugar
 and original formatting are not preserved; arbitrary JSON properties need not
 be preserved. Compilation returns a CORE-valid graph or raises TRLError;
-decompilation returns compilable TRL or raises TRLError.
+decompilation checks node types only at edge endpoints or on operation nodes,
+checks every edge relation, and returns compilable TRL or raises TRLError.
+Hierarchy alone does not require a node type to be a TRL noun.
 
 ## What's implemented
 
@@ -1837,6 +1839,9 @@ def decompile(graph: dict, lang: Optional[dict] = None) -> str:
     until no single removal retains identity; otherwise keep the concise text.
     Interacting identifiers can have several minimal spellings; this chooses
     one deterministically, rather than a shortest possible text.
+    Node types are checked only at edge endpoints or on operation nodes;
+    hierarchy fields do not affect this check. Every edge relation is checked,
+    and unsupported rendered words or uncompilable text raise TRLError.
     JSON properties and original formatting are not guaranteed to be preserved.
 
     <trl>
@@ -1892,21 +1897,15 @@ def decompile(graph: dict, lang: Optional[dict] = None) -> str:
 
 def _render_graph(graph: dict, lang: dict, explicit_ids: frozenset[str]) -> str:
     """Render with the selected noun identifiers, before checking compilation."""
-    # A parentless PROJECT containing every other node with no semantic edges
-    # is structural, regardless of node/list order, properties or metric level.
+    # Hierarchy alone requires no noun spelling; check only edge participants
+    # and operation nodes, independently of containment or other metadata.
+    edge_nodes = {e[key] for e in graph["edges"] for key in ("from_id", "to_id")}
     for node in graph["nodes"]:
         node_type = node["type"]
-        synthetic_root = (
-            node_type == "PROJECT"
-            and node.get("parent_id") is None
-            and set(node.get("contains", [])) == {
-                n["id"] for n in graph["nodes"] if n is not node
-            }
-            and not any(node["id"] in (e["from_id"], e["to_id"])
-                        for e in graph["edges"])
-        )
         operation = node_type == "TRANSFORM" and node.get("properties", {}).get("operation")
-        if not synthetic_root and not operation and lang.get(node_type, {}).get("speech") != "noun":
+        if node["id"] not in edge_nodes and not operation:
+            continue
+        if not operation and lang.get(node_type, {}).get("speech") != "noun":
             raise TRLVocabularyError(f"cannot render node {node['id']!r}: type {node_type!r} is not a TRL noun")
     relations = {w for w, entry in lang.items() if entry["speech"] == "preposition"}
     relations |= MODALS | CONJUNCTIONS | {"EXECUTES", "ACTS_ON"}
