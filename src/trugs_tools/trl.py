@@ -1936,7 +1936,7 @@ def _render_graph(graph: dict, lang: dict, explicit_ids: frozenset[str]) -> str:
         w for w, ent in lang.items() if ent["speech"] == "preposition"
     }
     # Stative edges: source is NOT an op-node, relation is a preposition.
-    # Emit one stative sentence per such edge, in graph edge order.
+    # Render a defined term's stative edges once, standalone or in its chain.
     stative_edges: list[dict] = [
         e
         for e in edges
@@ -1953,10 +1953,8 @@ def _render_graph(graph: dict, lang: dict, explicit_ids: frozenset[str]) -> str:
     # produce directives".
     prev_metric_level: Optional[str] = None
 
-    # Track which graph element we should emit next, by walking nodes + edges
-    # in source order. Stative edges are interleaved with op-rooted sentences
-    # using a simple heuristic: emit stative for any edge whose target node
-    # appears in the graph before the next op.
+    # Interleave standalone stative edges and operation chains in node order.
+    # A defined term used as a conjunction target leaves its edges to that chain.
     def _emit_stative(e: dict) -> str:
         subj = nodes_by_id.get(e["from_id"])
         tgt = nodes_by_id.get(e["to_id"])
@@ -1978,8 +1976,8 @@ def _render_graph(graph: dict, lang: dict, explicit_ids: frozenset[str]) -> str:
 
     # Walk nodes in graph order. DEFINED_TERM nodes emit as DEFINE sentences.
     # Operation nodes that are not conjunction-targets start a sentence chain.
-    # Stative edges are flushed when we hit a node that appears as either
-    # endpoint of an unrendered stative edge.
+    # Stative edges are flushed at their source node, except defined terms
+    # whose stative edges belong to a conjunction chain.
     def _flush_stative_at(node_id: str) -> None:
         for i, e in enumerate(stative_edges):
             if i in rendered_stative:
@@ -1998,7 +1996,8 @@ def _render_graph(graph: dict, lang: dict, explicit_ids: frozenset[str]) -> str:
     for node in graph["nodes"]:
         if node.get("properties", {}).get("defined") is True:
             sentences_out.append(_maybe_blank_prefix(node) + _render_define(node, lang))
-            _flush_stative_at(node["id"])
+            if node["id"] not in conj_targets:
+                _flush_stative_at(node["id"])
             continue
         _flush_stative_at(node["id"])
         if node.get("type") != "TRANSFORM":
