@@ -11,11 +11,8 @@ Usage:
     trug update graph.trug.json node_id --parent null
     trug update graph.trug.json node_id --set key=value --dry-run
 
-Note: this is the explicit-TRUG-file CRUD command (the live ``trug update`` verb,
-operating on a named ``*.trug.json``). It is distinct from the namesake
-``trugs_folder.tupdate``, which is the folder-graph operation over a
-directory's ``folder.trug.json``. The two are intentionally separate command
-families, not duplicates (AAA (private reference removed) SP1 disposition: retained).
+Note: this is the explicit-TRUG-file CRUD command (the ``trug update`` verb),
+operating on a named ``*.trug.json``.
 
 <trl>
 PROCESS tupdate SHALL LOAD RECORD graph FROM FILE trug_json THEN WRITE DATA property TO RECORD node SUBJECT_TO VALID RECORD parent_id AND SAVE FILE trug_json.

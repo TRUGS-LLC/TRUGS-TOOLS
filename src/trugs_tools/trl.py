@@ -2232,9 +2232,9 @@ def main(argv: Optional[list] = None) -> int:
     """CLI entry point for `trug trl` (compile / decompile / validate).
 
     Exit codes:
-      0 — success
-      1 — validation errors
-      2 — input error (file not found, malformed JSON, TRUG/L syntax/grammar error)
+      0  success / valid
+      1  input syntax, grammar, vocabulary or validation failure
+      2  usage error (bad flags/arguments, missing/unreadable file, expected JSON)
 
     <trl>
     FUNCTION main SHALL READ DATA argv THEN EMIT RESULT TO DATA stdout THEN RETURN DATA exit_code.
@@ -2250,8 +2250,8 @@ def main(argv: Optional[list] = None) -> int:
 
 exit codes:
   0  success / valid
-  1  validation failure
-  2  input or usage error (including TRL syntax/grammar errors)""",
+  1  input syntax, grammar, vocabulary or validation failure
+  2  usage error (bad flags/arguments, missing/unreadable file, expected JSON)""",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     sub = parser.add_subparsers(dest="command", required=True)
@@ -2270,7 +2270,7 @@ exit codes:
     except FileNotFoundError as e:
         print(f"error: input file not found: {e.filename}", file=sys.stderr)
         return 2
-    except OSError as e:
+    except (OSError, UnicodeError) as e:
         print(f"error: could not read input: {e}", file=sys.stderr)
         return 2
 
@@ -2302,7 +2302,7 @@ exit codes:
             print("valid")
     except TRLError as e:
         print(f"{type(e).__name__}: {e}", file=sys.stderr)
-        return 2
+        return 1
     return 0
 
 

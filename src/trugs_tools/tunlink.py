@@ -10,11 +10,8 @@ Usage:
     trug unlink graph.trug.json --to target_id --all
     trug unlink graph.trug.json --from source_id --to target_id --dry-run
 
-Note: this is the explicit-TRUG-file edge command (the live ``trug unlink`` verb,
-operating on a named ``*.trug.json``). It is distinct from the namesake
-``trugs_folder.tunlink``, which is the folder-graph operation over a
-directory's ``folder.trug.json``. The two are intentionally separate command
-families, not duplicates (AAA (private reference removed) SP1 disposition: retained).
+Note: this is the explicit-TRUG-file edge command (the ``trug unlink`` verb),
+operating on a named ``*.trug.json``.
 
 <trl>
 PROCESS tunlink SHALL FILTER RECORD edge FROM FILE trug_file THEN WRITE RECORD graph TO FILE trug_file.

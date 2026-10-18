@@ -39,10 +39,8 @@ test = [
     "rfc8785>=0.1.4",
 ]
 
-# AAA (private reference removed) commons cleave: this T1 package now ships the language CLI `trug`
-# (validate/trl/graph-CRUD/compliance/audit). The unified `tg` god-binary moved
-# to the trugs_start seed (trugs-start/pyproject.toml); cartography `trug-a-folder`
-# lives in trugs-folder/pyproject.toml.
+# This package ships the language CLI `trug`: validate, trl, get, update,
+# delete, unlink, compliance, and `trug audit`.
 [project.scripts]
 trug = "trugs_tools.lang_cli:main"
 

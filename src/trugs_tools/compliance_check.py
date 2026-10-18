@@ -11,8 +11,9 @@ https://github.com/TRUGS-LLC/TRUGS/blob/main/STANDARD_dark_code_compliance.md
 
 - **C1** — every public `def` / `class` in `*.py` has a function-level TRUG/L
   comment immediately above it that parses via `src/trugs_tools/trl.py`.
-- **C2** — existing FUNCTION / PROCESS / CLASS / METHOD / STAGE nodes must
+- **C2** — existing FUNCTION / PROCESS / CLASS / METHOD nodes must
   match a public Python name in the same folder when Python names are supplied.
+  STAGE nodes describe pipeline groupings and are excluded.
   Public `def` / `class` declarations without graph nodes are not detected.
 - **C3** — every TRUG node with a `trl` property parses via `src/trugs_tools/trl.py`.
 - **C4** — every test function has a comment starting with
@@ -391,9 +392,9 @@ def _walk_python(path: Path) -> list[_FunctionRecord]:
 
 
 # Node types that count as a public-code-artifact node for C2.
-# Only function-like types — SPECIFICATION and DOCUMENT nodes name files, not Python symbols,
-# so C2 does not apply to them.
-_CODE_ARTIFACT_NODE_TYPES = {"FUNCTION", "PROCESS", "CLASS", "METHOD", "STAGE"}
+# Only function-like types; STAGE describes a pipeline grouping, not a Python symbol.
+# SPECIFICATION and DOCUMENT nodes name files and are also excluded.
+_CODE_ARTIFACT_NODE_TYPES = {"FUNCTION", "PROCESS", "CLASS", "METHOD"}
 _TEST_NODE_TYPE = "TEST"
 
 
@@ -614,7 +615,7 @@ def _run_folder_check(trug_path: Path, report: Report) -> None:
     Preferred: in-process import of `trugs_tools.validate`, supplied by
     `trugs-tools`. On import failure, tries the legacy subprocess commands
     `trugs-validate` and `trugs-folder-check` if separately available in the
-    environment; neither is an entry point of the bundled packages.
+    environment; neither is an entry point of this package.
     """
     # Preferred: in-process validator from the trugs-tools package
     try:

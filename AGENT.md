@@ -40,7 +40,7 @@ Run `trug <verb> --help` for verb-specific usage, examples, and exit codes.
 
 - `src/trugs_tools/` — the `trug` CLI + CORE validator implementation
 - `src/trugs_tools/internal/` — maintainer utilities (not `trug` subcommands; invoke via `python -m ...`)
-- `trugs-folder/` — the sibling cartography package (binary: `trug-a-folder`) and its bundled suite
+- `tests/` — the language CLI regression tests
 
 ## Spec dependencies
 
