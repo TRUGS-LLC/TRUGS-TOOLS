@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.0] — 2026-10-18
+
 ### Fixed — 2026-10-18
 - Dominator analysis terminates for semantic joins from multiple hierarchy roots,
   and handles deep paths without recursive traversal.
@@ -23,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The folder package (`trugs-folder`, `trug-a-folder`) is no longer part of this
   repository. Its published releases remain on the package index and are not
   maintained here.
+- The AAA branch schema (`schemas/aaa.schema.json`) is no longer shipped. A graph of
+  type AAA therefore gets no branch-schema check.
 
 ### Changed
 - `LICENSE` is the official Apache License 2.0 text; `NOTICE` carries the attribution

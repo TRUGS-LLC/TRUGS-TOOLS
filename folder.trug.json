@@ -99,7 +99,7 @@
       "type": "DOCUMENT",
       "properties": {
         "name": "CHANGELOG.md",
-        "purpose": "Keep-a-Changelog \u2014 notable changes through 2.2.0; [Unreleased] accumulates subsequent changes."
+        "purpose": "Keep-a-Changelog \u2014 notable changes through 2.3.0; [Unreleased] accumulates subsequent changes."
       },
       "parent_id": "root",
       "contains": [],
@@ -111,7 +111,7 @@
       "type": "DOCUMENT",
       "properties": {
         "name": "pyproject.toml",
-        "purpose": "Python package metadata: name=trugs-tools, version=2.2.0, Apache-2.0, the `trug` console script + mypy config."
+        "purpose": "Python package metadata: name=trugs-tools, version=2.3.0, Apache-2.0, the `trug` console script + mypy config."
       },
       "parent_id": "root",
       "contains": [],
@@ -124,7 +124,7 @@
       "properties": {
         "name": "src",
         "purpose": "The Python package source tree (src/trugs_tools) \u2014 the `trug` CLI engine plus the audit/internal/templates/schemas/data subpackages.",
-        "file_count": 37
+        "file_count": 36
       },
       "parent_id": "root",
       "contains": [
@@ -196,7 +196,7 @@
       "properties": {
         "name": "trugs_tools/schemas",
         "purpose": "JSON schema definitions for TRUG validation.",
-        "file_count": 9
+        "file_count": 8
       },
       "parent_id": "comp_src",
       "contains": [],
