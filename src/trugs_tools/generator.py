@@ -64,13 +64,12 @@ SUPPORTED_BRANCHES = {
 
 # AGENT claude SHALL DEFINE FUNCTION normalize_core7.
 def _normalize_core7(trug: Dict[str, Any]) -> Dict[str, Any]:
-    """Ensure every node carries the full CORE-7 field set.
+    """Fill missing CORE contains and dimension fields deterministically.
 
-    Templates emit nodes with [id, type, properties, parent_id, metric_level];
-    the canonical validator (validate.py rule_6) additionally requires `contains`
-    (the bidirectional inverse of parent_id) and `dimension` (the node's declared
-    dimension). This fills both deterministically so generated TRUGs are
-    CORE-7-conformant — ASSERT generator SHALL EMIT core_7 'per node ((private reference removed) SP2).
+    Template functions already return CORE-valid graphs. This idempotent step
+    preserves their content and key order. Missing contains receives the inverse
+    of parent_id in node order; a missing dimension uses the lone declared dimension.
+    Existing contains and dimension fields are retained.
     """
     nodes = trug.get("nodes", [])
     # contains = children ids, in node order (inverse of parent_id)
@@ -156,8 +155,7 @@ def generate_trug(
 
         trug = branch_templates[template]()
 
-    # Normalize to CORE-7 before any validation (SP2): templates emit 5-field
-    # nodes; the canonical validator requires contains + dimension.
+    # Retain idempotent CORE normalization before validation of template graphs.
     trug = _normalize_core7(trug)
 
     # Validate if requested

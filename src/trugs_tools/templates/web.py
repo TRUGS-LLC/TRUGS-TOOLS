@@ -22,10 +22,12 @@ def generate_web_minimal() -> Dict[str, Any]:
     - 1 SECTION
     
     Returns:
-        Unnormalized TRUG scaffold for web navigation.
-        Use generate_trug for CORE normalization.
+        A fresh CORE-valid TRUG dictionary matching generate_trug for this
+        branch and template, with no branch-schema errors.
     """
-    return {
+    from trugs_tools.generator import _normalize_core7
+
+    return _normalize_core7({
         "name": "Web Minimal Example",
         "version": "1.0.0",
         "type": "WEB",
@@ -73,7 +75,7 @@ def generate_web_minimal() -> Dict[str, Any]:
                 "levels": ["SITE", "PAGE", "SECTION"]
             }
         ]
-    }
+    })
 
 
 # AGENT claude SHALL DEFINE FUNCTION generate_web_complete.
@@ -81,10 +83,12 @@ def generate_web_complete() -> Dict[str, Any]:
     """Generate complete Web TRUG with navigation.
     
     Returns:
-        Unnormalized TRUG scaffold for web with multiple pages and links.
-        Use generate_trug for CORE normalization.
+        A fresh CORE-valid TRUG dictionary matching generate_trug for this
+        branch and template, with no branch-schema errors.
     """
-    return {
+    from trugs_tools.generator import _normalize_core7
+
+    return _normalize_core7({
         "name": "Web Complete Example",
         "version": "1.0.0",
         "type": "WEB",
@@ -174,4 +178,4 @@ def generate_web_complete() -> Dict[str, Any]:
                 "levels": ["SITE", "PAGE", "SECTION"]
             }
         ]
-    }
+    })

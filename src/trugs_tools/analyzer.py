@@ -7,9 +7,9 @@ Provides 8 static analysis methods over TrugGraph:
   - find_unreachable_nodes: BFS from roots via hierarchy + semantic edges
   - find_dead_nodes: nodes not referenced by any edge to_id or contains[]
   - dominator_tree: iterative dataflow from hierarchy roots
-  - impact_set / dependency_set: forward/reverse BFS via semantic edges
+  - impact_set / dependency_set: semantic reachability excluding the start node
   - complexity: cyclomatic + structural metrics
-  - critical_path: longest hierarchy-root→leaf path via acyclic semantic edges
+  - critical_path: longest root-to-leaf semantic path; root-reachable cycles raise
   - find_stale_propagation: transitively affected nodes from stale sources
 
 All methods are stateless static methods. No mutation of TrugGraph.
@@ -236,12 +236,12 @@ class TrugAnalyzer:
     # AGENT claude SHALL DEFINE FUNCTION impact_set.
     @staticmethod
     def impact_set(graph: TrugGraph, node_id: str) -> set[str]:
-        """All nodes transitively downstream of node_id via semantic edges.
+        """All other nodes reachable from node_id via semantic edges.
 
         Forward BFS through non-contains edges only.
-        Excludes node_id itself unless a semantic cycle leads back to it.
+        Excludes node_id itself, including when a cycle leads back to it.
         Empty set for non-existent node.
-        Complexity: O(V+E).
+        Complexity: O(V+E) time and space.
         """
         if node_id not in graph.node_ids():
             return set()
@@ -262,17 +262,17 @@ class TrugAnalyzer:
                     visited.add(nxt)
                     queue.append(nxt)
 
-        return visited
+        return visited - {node_id}
 
     # AGENT claude SHALL DEFINE FUNCTION dependency_set.
     @staticmethod
     def dependency_set(graph: TrugGraph, node_id: str) -> set[str]:
-        """All nodes transitively upstream of node_id via semantic edges.
+        """All other nodes from which node_id is reachable via semantic edges.
 
         Reverse BFS through non-contains edges only.
-        Excludes node_id itself unless a semantic cycle leads back to it.
+        Excludes node_id itself, including when a cycle leads back to it.
         Empty set for non-existent node.
-        Complexity: O(V+E).
+        Complexity: O(V+E) time and space.
         """
         if node_id not in graph.node_ids():
             return set()
@@ -293,7 +293,7 @@ class TrugAnalyzer:
                     visited.add(prev)
                     queue.append(prev)
 
-        return visited
+        return visited - {node_id}
 
     # AGENT claude SHALL DEFINE FUNCTION complexity.
     @staticmethod
@@ -355,84 +355,70 @@ class TrugAnalyzer:
     # AGENT claude SHALL DEFINE FUNCTION critical_path.
     @staticmethod
     def critical_path(graph: TrugGraph) -> list[str]:
-        """Longest hierarchy-root-to-leaf path via acyclic semantic edges.
+        """Longest semantic path from a hierarchy root to a hierarchy leaf.
 
-        Requires a directed acyclic semantic graph; cycles are not detected
-        and results on cyclic inputs need not be a longest path.
-        Roots and leaves follow parent_id and contains[], respectively.
-        Uses topological traversal, tracking max distance + predecessor.
-        Returns ordered list of node IDs. Empty if no roots or leaves.
-        Complexity: O(V+E).
+        Roots have null or missing parent_id; leaves have empty or missing
+        contains. A root that is also a leaf is a one-node path. Among longest
+        paths, return the smallest list in Python's ordering of lists of strings,
+        or [] if no root-to-leaf path exists.
+
+        Raise ValueError naming a cycle node with repr if a semantic cycle
+        (including a self-loop) is reachable from any root, even if no leaf is
+        reachable. Cycles no root reaches have no effect.
+
+        Iterative DFS checks cycles and builds postorder; suffix lengths and
+        next hops select the path without storing every suffix. For V nodes
+        and E edges, O(V+E) graph operations and O(V+E) space, excluding the
+        cost of comparing node identifier strings.
         """
         roots = graph.root_nodes()
         leaves = set(graph.leaf_nodes())
-        if not roots or not leaves:
-            return []
-
         adj = _build_semantic_forward_adj(graph)
-        all_ids = graph.node_ids()
 
-        # Topological order via Kahn's algorithm on semantic edges
-        in_degree: dict[str, int] = {nid: 0 for nid in all_ids}
-        for e in graph.get_semantic_edges():
-            to = TrugGraph.edge_to(e)
-            if ":" not in to and to in in_degree:
-                in_degree[to] += 1
-
-        topo_queue: deque[str] = deque()
-        for nid in all_ids:
-            if in_degree[nid] == 0:
-                topo_queue.append(nid)
-
-        topo_order: list[str] = []
-        while topo_queue:
-            curr = topo_queue.popleft()
-            topo_order.append(curr)
-            for nxt in adj.get(curr, []):
-                in_degree[nxt] -= 1
-                if in_degree[nxt] == 0:
-                    topo_queue.append(nxt)
-
-        # Longest path from roots
-        dist: dict[str, int] = {}
-        pred: dict[str, str | None] = {}
-
+        # Active DFS nodes form a path; an edge back to one closes a cycle.
+        state: dict[str, int] = {}
+        postorder: list[str] = []
         for root in roots:
-            if root in all_ids:
-                dist[root] = 1
-                pred[root] = None
-
-        for node in topo_order:
-            if node not in dist:
+            if root in state:
                 continue
+            state[root] = 1
+            stack = [(root, iter(adj.get(root, [])))]
+            while stack:
+                node, successors = stack[-1]
+                nxt = next(successors, None)
+                if nxt is None:
+                    stack.pop()
+                    state[node] = 2
+                    postorder.append(node)
+                elif state.get(nxt) == 1:
+                    raise ValueError(f"Semantic cycle reachable from a root at {nxt!r}")
+                elif nxt not in state:
+                    state[nxt] = 1
+                    stack.append((nxt, iter(adj.get(nxt, []))))
+
+        # A tied suffix is ordered by its first differing node, the next hop.
+        length: dict[str, int] = {}
+        next_hop: dict[str, str] = {}
+        for node in postorder:
+            length[node] = 1 if node in leaves else 0
             for nxt in adj.get(node, []):
-                new_dist = dist[node] + 1
-                if new_dist > dist.get(nxt, 0):
-                    dist[nxt] = new_dist
-                    pred[nxt] = node
+                if not length[nxt]:
+                    continue
+                size = 1 + length[nxt]
+                if size > length[node] or (
+                    size == length[node] and nxt < next_hop[node]
+                ):
+                    length[node] = size
+                    next_hop[node] = nxt
 
-        # Find leaf with max distance
-        best_leaf = None
-        best_dist = 0
-        for leaf in leaves:
-            if leaf in dist and dist[leaf] > best_dist:
-                best_dist = dist[leaf]
-                best_leaf = leaf
-
-        if best_leaf is None:
-            # No leaf reachable from roots via semantic edges — try single root+leaf node
-            for root in roots:
-                if root in leaves:
-                    return [root]
+        starts = [root for root in roots if length[root]]
+        if not starts:
             return []
-
-        # Backtrack
-        path: list[str] = []
-        cursor: str | None = best_leaf
-        while cursor is not None:
-            path.append(cursor)
-            cursor = pred.get(cursor)
-        path.reverse()
+        node = min(starts, key=lambda root: (-length[root], root))
+        path = [node]
+        while node in next_hop:
+            node = next_hop[node]
+            path.append(node)
         return path
 
     # AGENT claude SHALL DEFINE FUNCTION find_stale_propagation.
