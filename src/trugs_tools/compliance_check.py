@@ -13,15 +13,20 @@ https://github.com/TRUGS-LLC/TRUGS/blob/main/STANDARD_dark_code_compliance.md
   comment immediately above it that parses via `src/trugs_tools/trl.py`.
 - **C2** — existing FUNCTION / PROCESS / CLASS / METHOD nodes must
   match a public Python name in the same folder when Python names are supplied.
-  STAGE nodes describe pipeline groupings and are excluded.
-  Public `def` / `class` declarations without graph nodes are not detected.
+  Every C1 declaration needs a FUNCTION / PROCESS / CLASS / METHOD / STAGE node
+  with its name in a parsed graph in its own folder; a method may use its CLASS
+  node instead. STAGE nodes are excluded from the graph-to-code direction.
 - **C3** — every TRUG node with a `trl` property parses via `src/trugs_tools/trl.py`.
 - **C4** — every test function has a comment starting with
   `AGENT SHALL VALIDATE` that parses.
 - **C5** — every TEST node in the TRUG has at least one outbound `VALIDATES`
-  edge. This check does not enforce the target's type.
+  edge to a FUNCTION / PROCESS / CLASS / METHOD / STAGE / SPECIFICATION node
+  in the same graph.
 - **C6** — every declared invariant (TRUG node property matching `invariant_*`)
-  has at least one assertion in code and one test.
+  is named as a whole name on a physical line an assert statement spans outside
+  test functions (or its immediately preceding comment-only line) and in the
+  function-level comment C4 reads for a test function. Assertion lines follow
+  Python's line numbering, including when strings or comments contain separators.
 - **C7** — every `.trug.json` file passes CORE validation via
   `trugs_tools.validate.validate_file` on the normal in-process path.
 
@@ -35,8 +40,17 @@ Usage:
 
 Exit codes:
 
-- 0 — compliance % ≥ baseline (or baseline does not exist)
-- 1 — compliance % < baseline, or `--strict` and any violation found
+- 0 — default: compliance % ≥ baseline or no baseline; strict: no violations;
+  also returned after a successful `--baseline-update`
+- 1 — default: compliance % < baseline; strict: any violation found
+- 2 — usage error, missing input path, or other baseline inspection/read error or
+  invalid baseline in default mode
+
+Default mode requires an existing baseline to be a JSON object with a numeric
+compliance_percent (excluding booleans and non-JSON constants). A missing baseline
+path, a non-directory path component or a symlink loop means no baseline; other
+inspection and read errors return 2. `--strict` skips reading the baseline;
+`--baseline-update` replaces it.
 
 See the public standard linked above, §6 (CI gate).
 
@@ -52,10 +66,13 @@ from __future__ import annotations
 
 import argparse
 import ast
+import errno
+import io
 import json
 import re
 import subprocess
 import sys
+import tokenize
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Optional
@@ -124,6 +141,9 @@ class Report:
     nodes_checked: int = 0
     trug_files_checked: int = 0
     violations: list[Violation] = field(default_factory=list)
+    opportunities: dict[str, int] = field(
+        default_factory=lambda: {f"C{i}": 0 for i in range(1, 8)}
+    )
 
     # AGENT claude SHALL AGGREGATE EACH RECORD violation TO INTEGER DATA count.
     @property
@@ -141,32 +161,27 @@ class Report:
     # AGENT claude SHALL AGGREGATE EACH RECORD violation TO INTEGER DATA percent.
     @property
     def compliance_percent(self) -> float:
-        """Heuristic compliance score, not a fraction of all checks passed.
+        """Percentage of C1–C7 check opportunities that passed.
 
-        Denominator = ``functions_checked * 2 + tests_checked + nodes_checked + trug_files_checked``.
-        Counts functions twice, tests, nodes with a nonempty ``trl`` property,
-        and graph files. No separate C2, C5 or C6 opportunities are counted,
-        although their violations are subtracted along with all others.
+        C1 counts public declarations; C2 counts those declarations plus named
+        FUNCTION / PROCESS / CLASS / METHOD nodes in parsed graphs; C3 counts
+        nodes with nonempty trl; C4 counts test functions; C5 counts TEST nodes;
+        C6 counts two checks per invariant; C7 counts graph files.
 
-        Returns full compliance when the denominator is zero. Otherwise,
-        subtracts all violations, clamps the passed count at zero, converts
-        to a percentage and rounds to 2 decimal places.
+        Returns 100.0 for zero opportunities, otherwise rounds
+        100 * (total opportunities - violations) / total opportunities to 2 places.
         """
-        opportunities = (
-            self.functions_checked * 2  # C1 + C4 per function
-            + self.tests_checked  # C4 per test
-            + self.nodes_checked  # C3 per TRUG node with trl
-            + self.trug_files_checked  # C7 per TRUG file
-        )
+        opportunities = sum(self.opportunities.values())
         if opportunities == 0:
             return 100.0
         passed = opportunities - self.violation_count
-        return round(100.0 * max(passed, 0) / opportunities, 2)
+        return round(100.0 * passed / opportunities, 2)
 
     # AGENT claude SHALL MAP RECORD report TO RECORD dict.
     def to_dict(self) -> dict[str, Any]:
         return {
             "compliance_percent": self.compliance_percent,
+            "opportunities": dict(self.opportunities),
             "files_checked": self.files_checked,
             "functions_checked": self.functions_checked,
             "tests_checked": self.tests_checked,
@@ -317,6 +332,7 @@ class _FunctionRecord:
     is_class: bool
     comment_block: str
     comment_start_line: int
+    class_name: Optional[str] = None
 
 
 def _walk_python(path: Path) -> list[_FunctionRecord]:
@@ -358,6 +374,7 @@ def _walk_python(path: Path) -> list[_FunctionRecord]:
                             is_class=False,
                             comment_block=comment,
                             comment_start_line=clstart,
+                            class_name=parent.name if parent is not None else None,
                         )
                     )
                 # Recurse into function body — now we ARE inside a function, so nested defs won't be reported
@@ -391,8 +408,8 @@ def _walk_python(path: Path) -> list[_FunctionRecord]:
 # =============================================================================
 
 
-# Node types that count as a public-code-artifact node for C2.
-# Only function-like types; STAGE describes a pipeline grouping, not a Python symbol.
+# Node types checked from graph to code by C2.
+# STAGE is accepted only in the code-to-graph direction.
 # SPECIFICATION and DOCUMENT nodes name files and are also excluded.
 _CODE_ARTIFACT_NODE_TYPES = {"FUNCTION", "PROCESS", "CLASS", "METHOD"}
 _TEST_NODE_TYPE = "TEST"
@@ -427,11 +444,16 @@ def _test_nodes(graph: dict) -> list[dict]:
 
 
 def _has_validates_edge(graph: dict, test_node_id: str) -> bool:
+    targets = {
+        n.get("id")
+        for n in graph.get("nodes", [])
+        if n.get("type") in _CODE_ARTIFACT_NODE_TYPES | {"STAGE", "SPECIFICATION"}
+    }
     for e in graph.get("edges", []):
         if e.get("from_id") != test_node_id:
             continue
         rel = (e.get("relation") or "").upper()
-        if rel == "VALIDATES":
+        if rel == "VALIDATES" and e.get("to_id") in targets:
             return True
     return False
 
@@ -464,6 +486,7 @@ def check_python_file(path: Path, report: Report, root: Path) -> None:
     for rec in records:
         if rec.is_test:
             report.tests_checked += 1
+            report.opportunities["C4"] += 1
             # C4: test function comment must start with AGENT SHALL VALIDATE
             if not rec.comment_block:
                 report.violations.append(
@@ -500,6 +523,7 @@ def check_python_file(path: Path, report: Report, root: Path) -> None:
                 )
         else:
             report.functions_checked += 1
+            report.opportunities["C1"] += 1
             # C1: public def/class must have a function-level TRUG/L comment that parses
             if not rec.comment_block:
                 report.violations.append(
@@ -540,6 +564,7 @@ def check_trug_file(
     </trl>
     """
     report.trug_files_checked += 1
+    report.opportunities["C7"] += 1
     graph = _load_trug(path)
     if graph is None:
         report.violations.append(
@@ -556,12 +581,19 @@ def check_trug_file(
     # C7: validate CORE rules via _run_folder_check
     _run_folder_check(path, report)
 
+    report.opportunities["C2"] += sum(
+        1
+        for n in graph.get("nodes", [])
+        if n.get("type") in _CODE_ARTIFACT_NODE_TYPES and _node_name(n)
+    )
+
     # C3: every node with trl property must parse via trl.py
     for node in graph.get("nodes", []):
         props = node.get("properties", {}) or {}
         trl_sentence = props.get("trl")
         if trl_sentence:
             report.nodes_checked += 1
+            report.opportunities["C3"] += 1
             ok, err = _try_parse_trl(trl_sentence)
             if not ok:
                 report.violations.append(
@@ -574,8 +606,9 @@ def check_trug_file(
                     )
                 )
 
-    # C5: every TEST node must have at least one outbound VALIDATES edge
+    # C5: each TEST needs an outbound VALIDATES edge to a supported target type.
     for test_node in _test_nodes(graph):
+        report.opportunities["C5"] += 1
         if not _has_validates_edge(graph, test_node.get("id", "")):
             report.violations.append(
                 Violation(
@@ -583,7 +616,7 @@ def check_trug_file(
                     path=path,
                     line=None,
                     symbol=test_node.get("id"),
-                    message=f"TEST node '{test_node.get('id')}' has no outbound VALIDATES edge",
+                    message=f"TEST node '{test_node.get('id')}' has no outbound VALIDATES edge to a FUNCTION, PROCESS, CLASS, METHOD, STAGE or SPECIFICATION node",
                 )
             )
 
@@ -680,48 +713,69 @@ def _run_folder_check(trug_path: Path, report: Report) -> None:
 def check_invariants_across_repo(
     root: Path, report: Report, py_files: list[Path], trug_files: list[Path]
 ) -> None:
-    """C6 — invariants in TRUG must have matching assertions and tests.
+    """C6 — check assertion and test coverage for every invariant_* property.
 
-    Heuristic:
-    - Find every invariant_* property across all trug files.
-    - For each, scan py_files for a substring match of the invariant key
-      in an assert statement (approximate — good enough for v1).
-    - For each, scan py_files for a test function whose comment mentions
-      the invariant name.
-    - Report missing assertions and missing tests as separate findings.
+    Match the whole key, with no letter, digit or underscore adjacent to it.
+    Assertion coverage requires an AST assert outside any C4-classified test
+    function, with the key on a line it spans or a comment-only line directly above
+    it. The preceding line must be a Python comment, not text inside a string.
+    Assertion spans and preceding comments use Python physical lines: LF, CRLF
+    or CR ends a line; other separators inside strings or comments do not.
+    Test coverage requires the key in the function-level comment C4 reads for
+    a test function. Missing assertions and tests are separate violations.
 
     <trl>
     FUNCTION check_invariants_across_repo SHALL SCAN ALL FILE IN RECORD trug_files THEN CHECK EACH DATA invariant_key AGAINST RECORD py_files AND APPEND RECORD Violation TO RECORD report SUBJECT_TO DATA c6.
     </trl>
     """
-    all_py_text: dict[Path, str] = {}
+    assertions: list[str] = []
+    test_comments: list[str] = []
     for p in py_files:
         try:
-            all_py_text[p] = p.read_text(encoding="utf-8")
+            source = p.read_text(encoding="utf-8")
+            tree = ast.parse(source)
+        except SyntaxError:
+            continue
         except (OSError, UnicodeDecodeError):
             continue
+        # read_text normalizes CRLF and CR; AST and tokenizer rows count only LF.
+        lines = source.split("\n")
+        comment_lines = {
+            item.start[0]
+            for item in tokenize.generate_tokens(io.StringIO(source).readline)
+            if item.type == tokenize.COMMENT and not item.line[: item.start[1]].strip()
+        }
+        test_comments.extend(rec.comment_block for rec in _walk_python(p) if rec.is_test)
+
+        def visit(
+            node: ast.AST,
+            parent: Optional[ast.ClassDef] = None,
+            inside_test: bool = False,
+        ) -> None:
+            for child in ast.iter_child_nodes(node):
+                if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    visit(child, None, inside_test or _is_test_function(child, parent))
+                elif isinstance(child, ast.ClassDef):
+                    visit(child, child, inside_test)
+                else:
+                    if isinstance(child, ast.Assert) and not inside_test:
+                        start = child.lineno - 1
+                        if start in comment_lines:
+                            start -= 1
+                        assertions.append("\n".join(lines[start : child.end_lineno]))
+                    visit(child, parent, inside_test)
+
+        visit(tree)
 
     for trug_path in trug_files:
         graph = _load_trug(trug_path)
         if graph is None:
             continue
         for node, inv_key in _invariant_properties(graph):
-            # Look for the invariant mentioned in any assert line or any test comment
-            found_assertion = False
-            found_test = False
-            for py_path, src in all_py_text.items():
-                if inv_key in src:
-                    # Does it appear in an assert statement?
-                    if re.search(rf"\bassert\b.*{re.escape(inv_key)}", src):
-                        found_assertion = True
-                    # Does it appear in a test function comment?
-                    # Find test function comments: `# AGENT SHALL VALIDATE ... invariant_key ...`
-                    if re.search(
-                        rf"#\s*AGENT\s+SHALL\s+VALIDATE[^\n]*{re.escape(inv_key)}",
-                        src,
-                        re.IGNORECASE,
-                    ):
-                        found_test = True
+            report.opportunities["C6"] += 2
+            whole_name = re.compile(rf"(?<!\w){re.escape(inv_key)}(?!\w)")
+            found_assertion = any(whole_name.search(text) for text in assertions)
+            found_test = any(whole_name.search(text) for text in test_comments)
             if not found_assertion:
                 report.violations.append(
                     Violation(
@@ -752,14 +806,27 @@ def check_invariants_across_repo(
 _BASELINE_PATH = Path(".github/compliance-baseline.json")
 
 
+def _reject_baseline_constant(value: str) -> None:
+    raise ValueError(f"non-JSON constant: {value}")
+
+
 def _load_baseline(root: Path) -> Optional[dict]:
     bp = root / _BASELINE_PATH
-    if not bp.exists():
-        return None
     try:
-        return json.loads(bp.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
+        text = bp.read_text(encoding="utf-8")
+    except (FileNotFoundError, NotADirectoryError):
         return None
+    except OSError as exc:
+        if exc.errno == errno.ELOOP:
+            return None
+        raise
+    baseline = json.loads(text, parse_constant=_reject_baseline_constant)
+    if not isinstance(baseline, dict):
+        raise ValueError("expected a JSON object")
+    percent = baseline.get("compliance_percent")
+    if isinstance(percent, bool) or not isinstance(percent, (int, float)):
+        raise ValueError("compliance_percent must be a number")
+    return baseline
 
 
 def _write_baseline(root: Path, report: Report) -> None:
@@ -816,6 +883,44 @@ def audit(root: Path, strict: bool = False) -> Report:
     for p in py_files:
         check_python_file(p, report, root)
 
+    # C2: match each C1 declaration to a node in a parsed graph in its own folder.
+    folder_nodes: dict[Path, set[str]] = {}
+    folder_classes: dict[Path, set[str]] = {}
+    for t in trug_files:
+        graph = _load_trug(t)
+        if graph is None:
+            continue
+        names = folder_nodes.setdefault(t.parent, set())
+        classes = folder_classes.setdefault(t.parent, set())
+        for node in graph.get("nodes", []):
+            name = _node_name(node)
+            if not isinstance(name, str):
+                continue
+            if node.get("type") in _CODE_ARTIFACT_NODE_TYPES | {"STAGE"} and name:
+                names.add(name)
+            if node.get("type") == "CLASS" and name:
+                classes.add(name)
+    for p in py_files:
+        for rec in _walk_python(p):
+            if rec.is_test:
+                continue
+            report.opportunities["C2"] += 1
+            if rec.name in folder_nodes.get(p.parent, set()):
+                continue
+            if rec.class_name is not None and rec.class_name in folder_classes.get(
+                p.parent, set()
+            ):
+                continue
+            report.violations.append(
+                Violation(
+                    rule="C2",
+                    path=p,
+                    line=rec.line,
+                    symbol=rec.name,
+                    message=f"public declaration '{rec.name}' has no matching code node in a parsed graph in its folder",
+                )
+            )
+
     # C2 + C3 + C5 + C7 — TRUG files
     for t in trug_files:
         folder = t.parent
@@ -850,6 +955,9 @@ def render_text(report: Report, root: Path) -> str:
     lines.append(f"  TRUG nodes checked:  {report.nodes_checked}")
     lines.append(f"  TRUG files checked:  {report.trug_files_checked}")
     lines.append(f"  Violations:          {report.violation_count}")
+    lines.append("  Check opportunities:")
+    for rule, count in report.opportunities.items():
+        lines.append(f"  {rule}: {count}")
     if report.violations:
         lines.append("")
         for rule in sorted(report.violations_by_rule):
@@ -886,7 +994,11 @@ exit codes:
   0  default: no baseline or no compliance decrease; strict: no violations
      also returned after a successful --baseline-update
   1  default: compliance decreased from baseline; strict: violations present
-  2  usage error (bad flags or arguments)""",
+  2  usage error, missing input path, or other baseline inspection/read error or
+     invalid baseline in default mode
+
+Missing baseline paths, non-directory path components and symlink loops mean no
+baseline; other inspection and read errors return 2 in default mode.""",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
@@ -927,7 +1039,11 @@ exit codes:
     # Exit logic
     if args.strict:
         return 1 if report.violation_count > 0 else 0
-    baseline = _load_baseline(root)
+    try:
+        baseline = _load_baseline(root)
+    except (OSError, UnicodeDecodeError, ValueError) as exc:
+        print(f"error: cannot read baseline {root / _BASELINE_PATH}: {exc}", file=sys.stderr)
+        return 2
     if baseline is None:
         # No baseline yet — any compliance is acceptable (record the first baseline manually).
         return 0
