@@ -31,7 +31,7 @@ from trugs_tools.templates.nested import (
 from trugs_tools.schemas import validate_branch_schema
 
 
-# Branches merged into knowledge_v1 (issue (private reference removed)). Kept here for migration errors.
+# Branches merged into knowledge_v1. Kept here for migration errors.
 _MERGED_BRANCHES = {
     "living": "knowledge_v1",
     "knowledge": "knowledge_v1",

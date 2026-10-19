@@ -1,15 +1,14 @@
 # Copyright 2026 TRUGS LLC
 # SPDX-License-Identifier: Apache-2.0
 
-"""trug — the TRUGS language CLI (trugs_tools, T1).
+"""trug — the TRUGS language CLI (trugs_tools).
 
 The language-core entry point. Operates the TRUG/TRL language — validate,
 compile/lint (trl), graph-node CRUD (get/update/delete/unlink), Dark Code
 compliance, and the corpus-side `trug audit` bridges (markdown/vocab).
 Imports the language toolchain modules (+ trugs_store transitively).
 
-Entry point: ``trug <verb> [args...]``. The unified `tg` god-binary (which adds
-cartography + memory/aaa/epic system verbs) lives in the trugs_start seed.
+Entry point: ``trug <verb> [args...]``.
 """
 import importlib
 import inspect
@@ -22,7 +21,7 @@ def _accepts_positional(fn) -> bool:
     Signature inspection replaces the old call-then-catch-TypeError dance: a
     TypeError raised INSIDE a handler must propagate as the handler's own bug,
     never be misread as a signature mismatch and silently re-run with mutated
-    sys.argv (double side effects, masked traceback — audit #16).
+    sys.argv (double side effects, masked traceback).
     """
     try:
         params = inspect.signature(fn).parameters.values()
@@ -35,7 +34,7 @@ def _accepts_positional(fn) -> bool:
 
 
 def _invoke(module: str, args) -> int:
-    """Delegate to a T1 module's main(); tolerate argv-reading legacy handlers."""
+    """Delegate to a module's main(); tolerate argv-reading legacy handlers."""
     mod = importlib.import_module(f"trugs_tools.{module}")
     fn = mod.main
     if _accepts_positional(fn):
@@ -59,7 +58,7 @@ subcommands:
   vocab      Scan files for out-of-vocabulary TRL verbs
 
 examples:
-  trug audit markdown AAA/AAA_1234_plan.md
+  trug audit markdown docs/plan.md
   trug audit vocab src/
 
 exit codes:
@@ -69,7 +68,7 @@ exit codes:
 
 
 def _dispatch_audit(argv) -> int:
-    """trug audit <markdown|vocab> — corpus-side audit bridges (T1 audit/ package)."""
+    """trug audit <markdown|vocab> — corpus-side bridges."""
     if not argv:
         print("trug audit: expected subcommand (markdown|vocab)", flush=True)
         return 2
@@ -90,9 +89,9 @@ def _dispatch_audit(argv) -> int:
     return 2
 
 
-# The language verb set ((private reference removed) manifest: validate, trl, get, update, delete,
-# unlink, compliance, audit). get/update/delete/unlink bind to the T1 graph-node
-# CRUD modules (tget/tupdate/tdelete/tunlink), NOT their T2 filesystem namesakes.
+# The language verb set: validate, trl, get, update, delete,
+# unlink, compliance, and trug audit. get/update/delete/unlink bind to the graph-node
+# CRUD modules (tget/tupdate/tdelete/tunlink), rather than filesystem modules.
 _TRUG_DISPATCH = {
     "validate": lambda argv: _invoke("validate", argv),
     "trl": lambda argv: _invoke("trl", argv),
@@ -119,7 +118,7 @@ _TRUG_SUMMARIES = {
 
 
 def main(argv=None) -> int:
-    """trug entry point — language verbs only (T2/T3-free)."""
+    """trug entry point — language verbs only."""
     if argv is None:
         argv = sys.argv[1:]
     if not argv or argv[0] in ("-h", "--help", "help"):

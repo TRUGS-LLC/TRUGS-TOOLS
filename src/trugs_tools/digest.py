@@ -1,7 +1,7 @@
 # Copyright 2026 TRUGS LLC
 # SPDX-License-Identifier: Apache-2.0
 
-"""Content-identity digest for TRUGs — AAA (private reference removed), sub-phase 1 (the all-consumer floor).
+"""Content-identity digest for TRUGs.
 
 A stdlib-only RFC-8785 (JCS) canonical encoding plus a layered, content-addressed
 tree digest that yields a self-describing ``tci1-sha256-<hex>`` identifier — the
@@ -32,8 +32,8 @@ Invariants honoured:
 * The persisted ``.trug.json`` form, the CORE VALID/INVALID verdict, and every
   digest-less graph are left byte-for-byte untouched — this module only reads.
 
-Imports only the standard library (``json`` + ``hashlib``), so it stays inside the
-T1 tier and adds no new runtime dependency to the commons.
+Imports only the standard library (``json`` + ``hashlib``), so it
+adds no new runtime dependency to the commons.
 
 <trl>
 FUNCTION digest SHALL READ RECORD trug THEN RETURN RECORD content_identity.

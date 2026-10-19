@@ -30,7 +30,7 @@ from pathlib import Path
 from typing import Optional
 
 # Widened from `(\w+)` to `([\w ]+?)` (non-greedy) to match the multi-word
-# heading "Level Prefixes" added for TRUGS 2.0 ((private reference removed)).
+# heading "Level Prefixes" added for TRUGS 2.0.
 PART_HEADING_RE = re.compile(r"^## (\d+)\.\s+([\w ]+?)(?:\s+—\s+([^()]+))?\s*\((\d+)\)\s*$")
 SUBCAT_HEADING_RE = re.compile(r"^### ([\w/ ]+?)\s*\((\d+)\)(?:\s+—\s+(.+))?\s*$")
 ROW_RE = re.compile(r"^\|\s*(\d+)\s*\|")
@@ -262,7 +262,7 @@ def build_trug(records: list[dict]) -> dict:
         "name": "TRUGS Language Vocabulary",
         "version": "2.0.0",
         "type": "NAMESPACE",
-        "description": "Canonical TRL vocabulary — 233 words across 9 parts of speech. Generated from SPEC_vocabulary.md by src/trugs_tools/internal/build_language_trug.py. v2.0.0 adds 21 SI level prefixes for hierarchy transition markers (private reference removed).",
+        "description": "Canonical TRL vocabulary — 233 words across 9 parts of speech. Generated from SPEC_vocabulary.md by src/trugs_tools/internal/build_language_trug.py. v2.0.0 adds 21 SI level prefixes for hierarchy transition markers.",
         "dimensions": {},
         "capabilities": {"vocabularies": ["trl_v2"]},
         "meta": {

@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed — 2026-10-19
+
+- Remove internal provenance from comments, docstrings, metadata descriptions, and
+  released notes while preserving their technical content.
+- Remove the package codename attribute and its public export.
+- Remove an unused Markdown name from the generated-file exclusions; compliance
+  results are unchanged.
+- Use `trug audit markdown docs/plan.md` in both help examples.
+- Describe the canonical vocabulary and its builder without internal references.
+- Point the compliance module to the standard under `REFERENCE/` in TRUGS.
+
 ### Fixed — 2026-10-19
 - Critical paths raise `ValueError` for semantic cycles reachable from roots,
   ignore unreachable cycles, and select the smallest tied longest path by
@@ -257,8 +268,8 @@ only the two verdict-neutral warning checks it was actually wired for.
 
 ## [2.0.0] — 2026-06-12
 
-The TRUGS 2.0 commons release. Bundles AAA (private reference removed) Phase 7 four-repo polish work +
-cross-repo sub-phase deliverables per the bundled-release policy (`mem-98505a37`).
+The TRUGS 2.0 commons release. Bundles polish work across four repositories +
+cross-repository deliverables.
 Published to PyPI together with `trugs-folder` 2.0.0 and `trugs-store` 2.0.0 — the
 three-package Apache commons kit (dependency order `trugs-store` < `trugs-tools` <
 `trugs-folder`).
@@ -296,10 +307,10 @@ files are data and are untouched by any of this.
 
 ## Added
 
-### L2 shared release infrastructure (AAA (private reference removed) SP3)
+### Shared release infrastructure
 
-Repo-wide Tier-1 release-polish infrastructure, owned solely by sub-AAA S2 ((private reference removed))
-and consumed by S3 ((private reference removed)) / S4 ((private reference removed)):
+Repo-wide release-polish infrastructure maintained in one place
+and shared by its consumers:
 
 - **`folder.trug.json`** — the repo's self-describing structure TRUG (root + top-level
   documents + `src/trugs_tools` core/subpackage components + tests/examples/reference),
@@ -307,14 +318,14 @@ and consumed by S3 ((private reference removed)) / S4 ((private reference remove
   folder-render check (`tg check`).
 - **`LICENSE` + `NOTICE`** — Apache-2.0 + the patent/provenance notice, mirrored from the
   published `trugs-tools` face so dev and public agree.
-- **`Makefile`** — single-command `make check` Tier-1 gate (gitleaks / ruff format / ruff
-  lint / mypy / pytest / `tg validate`), scoped to the current Tier-1-green set (core +
-  filesystem); the scope widens as S3/S4 baselines land and is closed end-to-end in SP5.
+- **`Makefile`** — single-command `make check` gate (gitleaks / ruff format / ruff
+  lint / mypy / pytest / `tg validate`), initially scoped to core + filesystem;
+  the scope widens as more baselines land and is later closed end-to-end.
 - **`ci-proposed/check.yml`** — staged GitHub Actions workflow running `make check`, held
   out of `.github/workflows/` until a maintainer with `workflow` scope activates it.
 - **`CHANGELOG.md`** — this file, finalized from the prior `CHANGELOG_TRUGS_2.0_pending.md`
   staging fragment into Keep-a-Changelog format (the `[Unreleased]` section is now the
-  accumulator later sub-phases append to).
+  accumulator for subsequent changes).
 
 Correction, 2026-10-16: The infrastructure list above describes historical staging.
 The shipped tree has no root `tests/`, `examples/`, `REFERENCE/`, or
@@ -322,13 +333,13 @@ The shipped tree has no root `tests/`, `examples/`, `REFERENCE/`, or
 `trug validate folder.trug.json`; it does not run the other gates listed above.
 The packaged NOTICE now contains Apache attribution only.
 
-### `tg derive` CLI verb (AAA (private reference removed) sub-phase 1)
+### `tg derive` CLI verb
 
 New top-level verb for invoking registered "producer" functions that emit
 derived TRUG artifacts from the canonical memory TRUG. Producer pattern is
-the load-bearing primitive of AAA (private reference removed): pure functions read the canonical
-and emit purpose-shaped derived TRUGs (LLM glance-load, audit-context,
-onboarding, debug — each a separate follow-on AAA). The canonical is never
+the load-bearing primitive for derived views: pure functions read the canonical
+and emit purpose-shaped derived TRUGs (LLM glance-load, inspection context,
+onboarding, debug — each a separate extension). The canonical is never
 modified.
 
 CLI signature (ADR-004): positional `producer_name` + optional `--out PATH`
@@ -344,7 +355,7 @@ tg derive <producer_name> --canonical CANONICAL   # override canonical path
 Correction, 2026-10-16: The `tg derive` section above records historical system-tier staging.
 This public language package does not ship that verb.
 
-### `trugs_tools.memory.producers` package (AAA (private reference removed) sub-phase 1)
+### `trugs_tools.memory.producers` package
 
 New public package providing:
 
@@ -354,7 +365,7 @@ New public package providing:
   entry point (read canonical via `trugs_store.read_trug` → invoke producer →
   write derived via `trugs_store.write_trug`).
 
-Sub-phase 1 ships the scaffolding only; sub-phase 2 will register
+The package initially provides scaffolding only; a later addition will register
 `producer_llm_glance_load` (USER-pinned + ELIGIBLE-ranked + ≤200 entries +
 SI-prefix-grouped per ADR-003).
 
@@ -362,19 +373,19 @@ Correction, 2026-10-16: The `trugs_tools.memory.producers` section above records
 system-tier staging. This public language package has no `trugs_tools.memory`
 package and does not ship those producer APIs.
 
-### Recall-aware `ranking_signal` + `citation_scan` (AAA (private reference removed) sub-phase 3, Flavor-2)
+### Recall-aware `ranking_signal` + `citation_scan`
 
 `ranking_signal` now reflects organic chat-citation recall in addition to edge
 recency. Two pieces:
 
 - `trugs_tools.memory.derived_field_updaters.citation_scan(chat_text, close_count)`
   — a **pure** function that scans session chat text for memory-id citations
-  (both hash-form `mem-0595983f` and slug-form `mem-drift-as-evidence-epistemics`)
+  (both hash-form and slug-form)
   and returns one `MemoryRecalled` event per distinct cited id. It never writes
   the canonical TRUG. `memory.cultivation.scan_transcript_to_trl(...)` is the
   close-time boundary that appends those events to the TRL; the reorganizer's
   existing `_handle_memory_recalled` then sets `last_recall_close_count` on
-  consume — so the AAA (private reference removed) sole-mutator invariant is preserved (not just
+  consume — so the sole-mutator invariant is preserved (not just
   aspirational).
 - `compute_ranking_signal_with_recency` (in `memory.reorganizer`) gains a
   **recall term** `(MENTION_WEIGHT / EDGE_WEIGHT) × recency_decay(close_count −
@@ -385,7 +396,7 @@ recency. Two pieces:
   `ranking_signal` degrades **exactly** to the prior edge-only value — zero
   regression for never-cited memories.
 
-The inherited AAA (private reference removed) `edge_update_recognition` interface is satisfied by the
+The inherited `edge_update_recognition` interface is satisfied by the
 reorganizer's existing `_handle_edge_created` (which already maintains
 `last_edge_close_count`); no separate updater is shipped.
 
@@ -393,7 +404,7 @@ Correction, 2026-10-16: The recall-aware ranking and citation-scan section above
 system-tier staging. This public language package does not ship those memory
 APIs or the reorganizer.
 
-### `tg audit vocab` + `tg audit markdown --all-errors` (AAA (private reference removed) SP1+SP2)
+### `tg audit vocab` + `tg audit markdown --all-errors`
 
 De-masked per-class TRL drift measurement. The default `tg audit markdown`
 delegates each `<trl>` block to the full parser, which raises on the **first**
@@ -425,18 +436,18 @@ unchanged and still raises on the first error (the contract `tg validate`,
 and a vocab error) is an accepted limitation, fully covered for vocabulary by
 the position-independent `tg audit vocab` pass.
 
-### `directive` memory_type + `tg memory migrate-directive` (AAA (private reference removed) SP1)
+### `directive` memory_type + `tg memory migrate-directive`
 
-New `directive` memory_type for HITM-authored standing rules — separating them
+New `directive` memory_type for human-authored standing rules — separating them
 from emergent `meta` centroids so `meta` again means exactly one thing (a
 centroid over ≥2 constituents). `directive` inherits the above-BASE, KILO-floored,
-non-decaying placement of the old `--type user`→`meta` path (AAA (private reference removed) ADR-003)
+non-decaying placement of the old `--type user`→`meta` path (ADR-003)
 but carries **no** centroid obligation, so the `meta_under_two_constituents`
 validator rule no longer fires on a zero-constituent authored rule.
 
 - **`--type user` is now an input alias for `directive`+KILO** at *both* ingest
   surfaces — the `tg memory remember` argparse alias AND the live `MemoryWritten`
-  event path (`_handle_memory_written`, the AAA (private reference removed) `/remember` path). No raw
+  event path (`_handle_memory_written`, the `/remember` path). No raw
   `user`-typed node is ever persisted. The public `--type user` CLI surface is
   unchanged.
 - **Reorganizer** elevation gains a `directive` arm: `level = max(computed,
@@ -449,7 +460,7 @@ validator rule no longer fires on a zero-constituent authored rule.
   rule-scoped migration converting authored metas (`type=meta` AND
   `floor_level=KILO` AND `constituent_count < 2`) → `directive`, keyed on a
   distinct `_migration_2033_original_type` marker for byte-for-byte reversibility.
-  Metas with ≥2 constituents (real centroids) are never touched. The AAA (private reference removed)
+  Metas with ≥2 constituents (real centroids) are never touched. The
   `migrate-elevation` `user→meta` transform is redirected to `user→directive` so
   no legacy/reverse path re-mints a `meta` from a `user` input.
 

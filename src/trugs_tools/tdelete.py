@@ -15,7 +15,7 @@ operating on a named ``*.trug.json``.
 Note: deleting a node repairs the hierarchy on both sides of the link. Stripping
 the deleted ids from every surviving ``contains[]`` is only half of it — the
 deleted node's children still carry ``parent_id`` pointing at a node that no
-longer exists, which rule_3 reports as ``DANGLING_PARENT_ID`` ((private reference removed)).
+longer exists, which rule_3 reports as ``DANGLING_PARENT_ID``.
 Each orphan is therefore re-attached to its nearest surviving ancestor, and
 added to that ancestor's ``contains[]``; an orphan with no surviving ancestor
 becomes a root (``parent_id: null``, in no ``contains[]``). A delete that
@@ -215,7 +215,7 @@ exit codes:
     # This command has never prompted, so there is no confirmation to skip. The
     # flag is still accepted — non-interactive callers pass it today and must keep
     # exiting 0 — but it is documented as the no-op it is rather than advertising
-    # a prompt that does not exist ((private reference removed)). Adding the prompt instead
+    # a prompt that does not exist. Adding the prompt instead
     # would silently change the exit behaviour of every scripted caller.
     parser.add_argument(
         "--force",

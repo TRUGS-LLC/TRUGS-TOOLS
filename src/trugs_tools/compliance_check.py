@@ -7,7 +7,7 @@
 #   THEN SEND RECORD report TO PARTY developer.
 
 Implements checks from the public TRUGS-LLC/TRUGS standard:
-https://github.com/TRUGS-LLC/TRUGS/blob/main/STANDARD_dark_code_compliance.md
+https://github.com/TRUGS-LLC/TRUGS/blob/main/REFERENCE/STANDARD_dark_code_compliance.md
 
 - **C1** — every public `def` / `class` in `*.py` has a function-level TRUG/L
   comment immediately above it that parses via `src/trugs_tools/trl.py`.
@@ -209,7 +209,7 @@ _EXCLUDED_DIR_PREFIXES = (
     "dist",
     "build",
 )
-_AUTO_GENERATED_FILES = {"ARCHITECTURE.md", "AAA.md", "CLAUDE.md"}
+_AUTO_GENERATED_FILES = {"ARCHITECTURE.md", "CLAUDE.md"}
 
 
 def _iter_files(root: Path, suffix: str) -> list[Path]:
