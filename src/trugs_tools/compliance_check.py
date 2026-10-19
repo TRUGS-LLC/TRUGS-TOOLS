@@ -23,9 +23,10 @@ https://github.com/TRUGS-LLC/TRUGS/blob/main/STANDARD_dark_code_compliance.md
   edge to a FUNCTION / PROCESS / CLASS / METHOD / STAGE / SPECIFICATION node
   in the same graph.
 - **C6** — every declared invariant (TRUG node property matching `invariant_*`)
-  is named as a whole name in an assert statement outside test functions (or its
-  immediately preceding comment-only line) and in a test function's function-level
-  comment.
+  is named as a whole name on a physical line an assert statement spans outside
+  test functions (or its immediately preceding comment-only line) and in the
+  function-level comment C4 reads for a test function. Assertion lines follow
+  Python's line numbering, including when strings or comments contain separators.
 - **C7** — every `.trug.json` file passes CORE validation via
   `trugs_tools.validate.validate_file` on the normal in-process path.
 
@@ -718,6 +719,8 @@ def check_invariants_across_repo(
     Assertion coverage requires an AST assert outside any C4-classified test
     function, with the key on a line it spans or a comment-only line directly above
     it. The preceding line must be a Python comment, not text inside a string.
+    Assertion spans and preceding comments use Python physical lines: LF, CRLF
+    or CR ends a line; other separators inside strings or comments do not.
     Test coverage requires the key in the function-level comment C4 reads for
     a test function. Missing assertions and tests are separate violations.
 
@@ -735,7 +738,8 @@ def check_invariants_across_repo(
             continue
         except (OSError, UnicodeDecodeError):
             continue
-        lines = source.splitlines()
+        # read_text normalizes CRLF and CR; AST and tokenizer rows count only LF.
+        lines = source.split("\n")
         comment_lines = {
             item.start[0]
             for item in tokenize.generate_tokens(io.StringIO(source).readline)

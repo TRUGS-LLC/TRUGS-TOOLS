@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `trug compliance` C6 requires real assertions outside test functions and real
   test function comments, matching whole invariant names. Assertion evidence may
   include the preceding comment-only line, excluding string contents on that line.
+  Assertion spans and preceding comments follow Python's physical line numbering,
+  even with separators inside strings, comments or assertion messages; test
+  function comments remain the blocks C4 reads.
   C2 also checks that
   public declarations have code nodes in parsed graphs in their own folder,
   allowing methods to use their class's CLASS node. C5 requires a VALIDATES edge
