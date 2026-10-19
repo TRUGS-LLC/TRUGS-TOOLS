@@ -1,7 +1,7 @@
 # Copyright 2026 TRUGS LLC
 # SPDX-License-Identifier: Apache-2.0
 
-"""TRUGS Tools — version 2.3.0 (Beta).
+"""TRUGS Tools — version 2.4.0 (Beta).
 
 Language validation, generation, analysis, graph-node CRUD, compliance,
 and corpus audit tooling for TRUGS. Provides the `trug` CLI and the public
