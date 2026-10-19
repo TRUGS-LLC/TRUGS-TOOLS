@@ -9,13 +9,13 @@ from trugs_tools.compliance_check import Report, check_invariants_across_repo
 from trugs_tools.validate import validate_file
 
 
-@pytest.fixture(params=("\x0b", "\x0c", "\x1c", "\x1d", "\x1e", "\x85", "\u2028", "\u2029"),
+@ pytest.fixture(params=("\x0b", "\x0c", "\x1c", "\x1d", "\x1e", "\x85", "\u2028", "\u2029"),
                 ids=("vt", "ff", "fs", "gs", "rs", "nel", "ls", "ps"))
 def separator(request):
     return request.param
 
 
-@pytest.fixture(params=("\n", "\r\n", "\r"), ids=("lf", "crlf", "cr"))
+@ pytest.fixture(params=("\n", "\r\n", "\r"), ids=("lf", "crlf", "cr"))
 def newline(request):
     return request.param
 
