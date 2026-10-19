@@ -12,8 +12,8 @@ membership check :func:`trugs_tools.trl.classify` on every ``WORD`` token,
 collecting *every* out-of-vocabulary token regardless of the block's
 syntactic or grammatical validity.
 
-This is the SP1 instrument for AAA (private reference removed) (de-masked per-class TRL drift
-re-measurement). Vocabulary membership is position-independent, so no parser
+This measures de-masked per-class TRL drift.
+Vocabulary membership is position-independent, so no parser
 change is required — only tokenize + classify, reusing existing
 ``trugs_tools.trl`` primitives.
 
@@ -29,8 +29,8 @@ Why this de-masks:
   line(s), so a single malformed line cannot mask vocab misses elsewhere in
   the block. Such recovery is flagged per block (``tokenize_recovered``).
 
-Reporting only — never edits source markdown. JSON output feeds the AAA (private reference removed)
-de-masking extraction (SP3): each miss occurrence carries its source file +
+Reporting only — never edits source markdown. JSON output supports
+de-masking extraction: each miss occurrence carries its source file +
 block so downstream tooling can emit ``DRIFT_EVENT`` nodes and compute
 evidential burden (events × distinct files).
 """

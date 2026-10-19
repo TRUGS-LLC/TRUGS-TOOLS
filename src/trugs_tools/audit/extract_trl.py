@@ -10,12 +10,11 @@ Aggregates per-file / per-block results into a report
 with both human-readable and JSON formats.
 
 Reporting only — never edits the source markdown. Failures are aggregated for
-downstream tooling (the v2.0 vocabulary RFC pass uses the JSON output to
-classify drift per `mem-drift-as-evidence-epistemics`).
+downstream tooling to classify vocabulary drift using the JSON output.
 
 Block extraction:
 - Two recognized forms (matching the "fenced block" convention used
-  throughout AGENT/, AAA/, REFERENCE/STANDARD_*.md):
+  throughout AGENT/, REFERENCE/STANDARD_*.md):
 
   1. **Multi-line** — ``<trl>`` alone on a line (whitespace allowed),
      content on following lines, ``</trl>`` alone on a closing line.
@@ -466,7 +465,7 @@ def main(argv: Optional[list[str]] = None) -> int:
             "Both modes use the selected vocabulary; neither modifies source files."
         ),
         epilog="""examples:
-  trug audit markdown AAA/AAA_1234_plan.md
+  trug audit markdown docs/plan.md
   trug audit markdown docs/ -f json
 
 exit codes:

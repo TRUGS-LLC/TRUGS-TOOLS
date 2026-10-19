@@ -17,7 +17,7 @@ Hierarchy alone does not require a node type to be a TRL noun.
 
 ## What's implemented
 
-Incrementally, toward (private reference removed) full v0.1 (round-trip all 30 canonical
+Incrementally, toward full v0.1 (round-trip all 30 canonical
 examples in SPEC_examples.md):
 
 1. **v0.1a** — minimum valid sentence: `SUBJ_NOUN id VERB .`
@@ -48,7 +48,7 @@ does not resolve references across sentences.
 PROCESS trl SHALL COMPILE DATA source TO RECORD graph THEN DECOMPILE RECORD graph TO DATA source.
 </trl>
 
-## Not yet implemented (tracked in (private reference removed) / (private reference removed))
+## Not yet implemented
 
 - DATE literals
 - Cross-sentence reference resolution
@@ -95,7 +95,7 @@ __all__ = [
     "validate",
     "load_language",
     "classify",
-    # Opt-in error-recovery parse (AAA (private reference removed)) — additive; parse() is unchanged
+    # Opt-in error-recovery parse — additive; parse() is unchanged
     "ParseError",
     "collect_errors",
     # AST types
@@ -134,7 +134,7 @@ DURATION_RE = re.compile(r"\d+(?:ms|us|ns|s|m|h|d)\b")
 INTEGER_RE = re.compile(r"\d+")
 STRING_RE = re.compile(r'"([^"\\]*(?:\\.[^"\\]*)*)"')
 
-# LEVEL_PREFIX (TRUGS 2.0 / (private reference removed)): the closed set of 21 SI
+# LEVEL_PREFIX (TRUGS 2.0): the closed set of 21 SI
 # prefixes used to compose `metric_level` identifiers. Per ADR-005 the marker
 # uses the full metric_level form `<PREFIX>_<UPPERCASE_NAME>`, e.g.
 # `KILO_REPOSITORY`, `BASE_FUNCTION`, `DECI_STATEMENT`.
@@ -470,12 +470,11 @@ class Sentence:
     )
 
 
-# TRUGS 2.0 / (private reference removed) / ADR-002: a `level_directive` is a bare
+# TRUGS 2.0 / ADR-002: a `level_directive` is a bare
 # METRIC_LEVEL_NAME token on its own line, marking a hierarchy transition for
 # an LLM consumer reading the source. Compiles to nothing (presentation-only
 # affordance), but the compiler tracks `current_metric_level` state and
-# stamps subsequent op-nodes' `properties.metric_level` with that value
-# (Q3 inheritance per Phase 6 Tooling Addendum).
+# stamps subsequent op-nodes' `properties.metric_level` with that value.
 @dataclass
 class LevelDirective:
     """Presentation-only metric_level boundary marker; compiles to nothing.
@@ -538,10 +537,10 @@ SUBORDINATING_CONJUNCTIONS = {
 # Set narrowed to only those EMPIRICALLY proven by SPEC examples to break:
 #   SUBJECT_TO — #7, #12, #24, #25, #26, #28
 #   CONTAINS   — #5
-# The Phase 5 plan approved a wider set, but #6 disproved ON_BEHALF_OF
-# (used inline) and the other "structural" preps don't appear in tail
-# position with an object in the 28 examples — leave them inline by
-# default; expand the set if a future SPEC example breaks on one.
+# Example #6 uses ON_BEHALF_OF inline, and the other "structural"
+# preps don't appear in tail position with an object in the 28 examples
+# — leave them inline by default; expand the set if a future SPEC
+# example breaks on one.
 STRUCTURAL_PREPOSITIONS = {"SUBJECT_TO", "CONTAINS"}
 # Pronouns supported in v0.1e+ (object / prep-target positions).
 # SAID and cross-sentence "THE <noun>" back-references land later.
@@ -617,7 +616,7 @@ def parse(src: str, lang: Optional[dict] = None) -> list:
 
     Detects blank lines between sentences (line gap ≥ 2) and tags the
     next sentence with `preceded_by_blank_line=True` so decompile can
-    reproduce paragraph breaks (Cat G — SPEC examples #27, #28).
+    reproduce paragraph breaks (SPEC examples #27, #28).
 
     A `level_directive` is a bare METRIC_LEVEL_NAME token on its own
     line (no terminator '.'); it parses as a LevelDirective node peer
@@ -673,13 +672,13 @@ def parse(src: str, lang: Optional[dict] = None) -> list:
     return nodes
 
 
-# ─── Opt-in error-recovery parse (AAA (private reference removed)) ──────────────────────────
+# ─── Opt-in error-recovery parse ──────────────────────────
 # This is an ADDITIVE companion to `parse()`. `parse()` itself is NOT
-# changed — it still raises on the first error, which every existing
-# consumer (`tg validate`, `tg audit markdown` without `--all-errors`,
-# `compile`) depends on (INVARIANT default_parse SHALL_NOT CHANGE). Use
+# changed — it still raises on the first error for existing callers,
+# including `trug audit markdown` without `--all-errors` and
+# `compile` (INVARIANT default_parse SHALL_NOT CHANGE). Use
 # `collect_errors()` only when you explicitly want the full per-block
-# error set (the de-masked grammar/syntax measurement for AAA (private reference removed)).
+# error set for de-masked grammar/syntax measurement.
 
 
 @dataclass(frozen=True)
@@ -1181,7 +1180,7 @@ def _complete_graph(nodes: list, edges: list, name: str) -> dict:
     The compiler checks the completed graph with the canonical CORE validator
     and raises TRLGrammarError if it is invalid.
 
-    Deterministic post-pass (option-1 ruling): fills every fragment node's 7 CORE
+    Deterministic post-pass: fills every fragment node's 7 CORE
     fields, appends a synthetic ``type: PROJECT`` root at ``BASE_PROJECT`` that
     contains all fragment nodes as ``DECI_<TYPE>`` leaves, and wraps the whole in
     the CORE envelope declaring ``core_v2.0.0``.
@@ -1246,8 +1245,8 @@ def compile(
     Accepts a string or a pre-parsed list[Sentence]. Returns a complete graph:
     the CORE envelope (name/version/type/dimension/dimensions + a ``core_v2.0.0``
     capability declaration), every node carrying its 7 CORE fields, and a synthetic
-    ``PROJECT`` root containing the compiled nodes (AAA (private reference removed) — the taught
-    author->compile->validate loop closes with no manual envelope step).
+    ``PROJECT`` root containing the compiled nodes — the taught
+    author->compile->validate loop closes with no manual envelope step.
     Generated identifiers avoid every authored identifier. Repeated DEFINE names
     raise TRLGrammarError. The completed graph passes canonical CORE validation
     before it is returned; invalid output raises TRLGrammarError.
@@ -1594,7 +1593,7 @@ def compile(
             )
 
         # Mark the FIRST node emitted during this sentence with the
-        # preceded_by_blank_line flag (Cat G — paragraph break). For
+        # preceded_by_blank_line flag (paragraph break). For
         # operative sentences we tag the first op (anchors decompile walk).
         first_op = clause_op_ids[0] if clause_op_ids else None
         _mark_first_node_for_sentence(
@@ -1784,7 +1783,7 @@ def _render_clause(
 
     # 3. Adverbs (after preps so #28's `... FROM STREAM raw-events WITHIN 100ms` round-trips).
     # When the clause has prep phrases AND adverbs, the SPEC convention
-    # breaks before each adverb (Cat F refinement, #28). When there are no
+    # breaks before each adverb (#28). When there are no
     # prep phrases, adverbs stay inline (#3, #15, #18).
     has_preps = any(
         e.get("relation") in preposition_words for e in edges if e["from_id"] == op_id
@@ -2309,9 +2308,9 @@ _NEGATIVE_ARTICLES = {"NO", "NONE"}
 
 # Node types that are STRUCTURAL rather than TRL nouns, and so are exempt from
 # the Rule-1 noun-vocabulary check. TRANSFORM is the operation-node type the
-# compiler emits; PROJECT is the synthetic completion root (AAA (private reference removed) / ADR-003)
-# — every completed graph now carries one, and the fleet convention already
-# roots hand-authored graphs at a `type: PROJECT` node. Neither is one of the
+# compiler emits; PROJECT is the synthetic completion root (ADR-003)
+# — every completed graph now carries one, and hand-authored graphs
+# are also rooted at a `type: PROJECT` node. Neither is one of the
 # 26 TRL nouns, so both are whitelisted here rather than added to the vocabulary.
 _STRUCTURAL_NODE_TYPES = {"TRANSFORM", "PROJECT"}
 
@@ -2329,7 +2328,7 @@ def validate(graph: dict, lang: Optional[dict] = None) -> list[str]:
 
     Rules 4 (verb-object), 5 (adj-noun), 6 (adv-verb), 8 (pronoun resolution),
     9 (SUPERSEDES/EXTENDS type match), 10 (orphan nodes), 12 (pronoun scope)
-    are deferred — see (private reference removed) issues for tracking.
+    are deferred.
 
     <trl>
     FUNCTION validate SHALL VALIDATE RECORD graph SUBJECT_TO RECORD vocabulary THEN RETURN ALL DATA error.

@@ -23,13 +23,12 @@ from trugs_tools.generator import generate_trug
 from trugs_tools.trug_graph import TrugGraph
 from trugs_tools.analyzer import TrugAnalyzer, TrugComplexityMetrics
 
-# Single version source is pyproject.toml (A17, AAA (private reference removed)) — no duplicated
+# Single version source is pyproject.toml — no duplicated
 # literal here; the installed distribution metadata is the runtime carrier.
 try:
     __version__ = _dist_version("trugs-tools")
 except PackageNotFoundError:  # uninstalled source tree (e.g. vendored checkout)
     __version__ = "0.0.0+uninstalled"
-__codename__ = "AAA_AARDVARK"  # tool codename preserved through 2.0; spec is the version that bumps.
 
 __all__ = [
     "validate_trug",
@@ -39,5 +38,4 @@ __all__ = [
     "TrugAnalyzer",
     "TrugComplexityMetrics",
     "__version__",
-    "__codename__",
 ]

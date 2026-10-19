@@ -13,9 +13,6 @@ Provides 8 static analysis methods over TrugGraph:
   - find_stale_propagation: transitively affected nodes from stale sources
 
 All methods are stateless static methods. No mutation of TrugGraph.
-
-Issue: (private reference removed)
-
 <trl>
 PROCESS analyzer SHALL COMPUTE DATA metrics FROM RECORD graph AND SHALL RETURN RESULT TO COMPONENT truganalyzer.
 </trl>

@@ -19,7 +19,7 @@ from trugs_tools.errors import ValidationResult
 def validate_trug(trug: Union[Dict[str, Any], str, Path]) -> ValidationResult:
     """Validate a TRUG against the canonical CORE validator.
 
-    AAA (private reference removed) (SP3): this is now a thin **delegator** to the single canonical
+    This is a thin **delegator** to the single canonical
     validator (`trugs_tools.validate.validate` — the spec's CORE-16 reference,
     which is exactly what `trug validate` runs). The previous lenient 9-rule fork
     is removed so the library API, the `trug` CLI, and the test suite all agree on
@@ -73,7 +73,7 @@ def validate_trug(trug: Union[Dict[str, Any], str, Path]) -> ValidationResult:
 
     # Delegate the VERDICT to the canonical validator, adapting its result into
     # the public type. validator_self_coherence is about the valid/invalid verdict
-    # — which is now 100% canonical and agrees with `tg validate`.
+    # — which is now 100% canonical and agrees with `trug validate`.
     canon = _canonical_validate(trug_data)
     for err in canon.errors:
         result.add_error(

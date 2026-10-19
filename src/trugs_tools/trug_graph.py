@@ -6,9 +6,6 @@
 Extends BaseGraph with hierarchy-aware accessors for roots, leaves,
 ancestors, descendants, and edge traversal. Works on any TRUG regardless
 of branch vocabulary.
-
-Issue: (private reference removed)
-
 <trl>
 PROCESS trug_graph SHALL EXPOSE RECORD TrugGraph TO PROVIDE DATA hierarchy AND DATA edge ACROSS ALL TRUG.
 </trl>
