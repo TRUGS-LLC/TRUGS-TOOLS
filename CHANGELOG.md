@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed — 2026-10-19
+- Critical paths raise `ValueError` for semantic cycles reachable from roots,
+  ignore unreachable cycles, and select the smallest tied longest path by
+  Python list ordering.
+- Impact and dependency sets exclude their starting node, including on cycles.
+- All ten branch template functions return fresh CORE-valid graphs matching
+  `generate_trug` in content and key order, with no branch-schema errors.
+
 ### Fixed — 2026-10-18
 - `trug compliance` C6 requires real assertions outside test functions and real
   test function comments, matching whole invariant names. Assertion evidence may

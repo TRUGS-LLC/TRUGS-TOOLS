@@ -23,10 +23,12 @@ def generate_writer_minimal() -> Dict[str, Any]:
     - 1 PARAGRAPH
     
     Returns:
-        Unnormalized TRUG scaffold for written content.
-        Use generate_trug for CORE normalization.
+        A fresh CORE-valid TRUG dictionary matching generate_trug for this
+        branch and template, with no branch-schema errors.
     """
-    return {
+    from trugs_tools.generator import _normalize_core7
+
+    return _normalize_core7({
         "name": "Writer Minimal Example",
         "version": "1.0.0",
         "type": "WRITER",
@@ -83,7 +85,7 @@ def generate_writer_minimal() -> Dict[str, Any]:
                 "levels": ["BOOK", "CHAPTER", "SECTION", "PARAGRAPH"]
             }
         ]
-    }
+    })
 
 
 # AGENT claude SHALL DEFINE FUNCTION generate_writer_complete.
@@ -91,10 +93,12 @@ def generate_writer_complete() -> Dict[str, Any]:
     """Generate complete Writer TRUG with citations.
     
     Returns:
-        Unnormalized TRUG scaffold for written content with citations.
-        Use generate_trug for CORE normalization.
+        A fresh CORE-valid TRUG dictionary matching generate_trug for this
+        branch and template, with no branch-schema errors.
     """
-    return {
+    from trugs_tools.generator import _normalize_core7
+
+    return _normalize_core7({
         "name": "Writer Complete Example",
         "version": "1.0.0",
         "type": "WRITER",
@@ -225,4 +229,4 @@ def generate_writer_complete() -> Dict[str, Any]:
                 "levels": ["BOOK", "CHAPTER", "SECTION", "PARAGRAPH", "CITATION", "REFERENCE"]
             }
         ]
-    }
+    })

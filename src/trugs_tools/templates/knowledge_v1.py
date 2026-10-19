@@ -27,10 +27,12 @@ def generate_knowledge_v1_minimal() -> Dict[str, Any]:
     ENTITY (shared), DECISION (from (private reference removed)).
 
     Returns:
-        Unnormalized TRUG scaffold for knowledge_v1 branch.
-        Use generate_trug for CORE normalization.
+        A fresh CORE-valid TRUG dictionary matching generate_trug for this
+        branch and template, with no branch-schema errors.
     """
-    return {
+    from trugs_tools.generator import _normalize_core7
+
+    return _normalize_core7({
         "name": "Knowledge_v1 Minimal Example",
         "version": "1.0.0",
         "type": "KNOWLEDGE",
@@ -106,7 +108,7 @@ def generate_knowledge_v1_minimal() -> Dict[str, Any]:
             {"from_id": "query_1", "to_id": "entity_1", "relation": "produces"},
             {"from_id": "decision_1", "to_id": "entity_1", "relation": "rejects", "weight": 0.8}
         ]
-    }
+    })
 
 
 # AGENT claude SHALL DEFINE FUNCTION generate_knowledge_v1_complete.
@@ -119,10 +121,12 @@ def generate_knowledge_v1_complete() -> Dict[str, Any]:
     rejects/supersedes/invalidates edges).
 
     Returns:
-        Unnormalized TRUG scaffold for knowledge_v1 branch with full vocabulary.
-        Use generate_trug for CORE normalization.
+        A fresh CORE-valid TRUG dictionary matching generate_trug for this
+        branch and template, with no branch-schema errors.
     """
-    return {
+    from trugs_tools.generator import _normalize_core7
+
+    return _normalize_core7({
         "name": "Knowledge_v1 Complete Example",
         "version": "1.0.0",
         "type": "KNOWLEDGE",
@@ -375,4 +379,4 @@ def generate_knowledge_v1_complete() -> Dict[str, Any]:
             {"from_id": "decision_architecture", "to_id": "proposal_rejected", "relation": "rejects"},
             {"from_id": "decision_architecture", "to_id": "synthesis_comparison", "relation": "supersedes"}
         ]
-    }
+    })

@@ -26,10 +26,12 @@ def generate_nested_minimal() -> Dict[str, Any]:
     - 2 SUBGRAPH (child references)
 
     Returns:
-        Unnormalized TRUG scaffold for hierarchical graph composition.
-        Use generate_trug for CORE normalization.
+        A fresh CORE-valid TRUG dictionary matching generate_trug for this
+        branch and template, with no branch-schema errors.
     """
-    return {
+    from trugs_tools.generator import _normalize_core7
+
+    return _normalize_core7({
         "name": "Nested Minimal Example",
         "version": "1.0.0",
         "type": "NESTED",
@@ -81,7 +83,7 @@ def generate_nested_minimal() -> Dict[str, Any]:
                 "levels": ["TASK", "SUBGRAPH"]
             }
         ]
-    }
+    })
 
 
 # AGENT claude SHALL DEFINE FUNCTION generate_nested_complete.
@@ -89,11 +91,12 @@ def generate_nested_complete() -> Dict[str, Any]:
     """Generate complete Nested TRUG with tasks, subgraphs, and results (7 nodes).
 
     Returns:
-        Unnormalized TRUG scaffold for hierarchical graph composition with
-        tasks, subgraph references, and result outcomes.
-        Use generate_trug for CORE normalization.
+        A fresh CORE-valid TRUG dictionary matching generate_trug for this
+        branch and template, with no branch-schema errors.
     """
-    return {
+    from trugs_tools.generator import _normalize_core7
+
+    return _normalize_core7({
         "name": "Nested Complete Example",
         "version": "1.0.0",
         "type": "NESTED",
@@ -199,4 +202,4 @@ def generate_nested_complete() -> Dict[str, Any]:
                 "levels": ["TASK", "SUBGRAPH", "RESULT"]
             }
         ]
-    }
+    })

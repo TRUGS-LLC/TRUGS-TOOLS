@@ -26,10 +26,12 @@ def generate_orchestration_minimal() -> Dict[str, Any]:
     - 1 ESCALATION (child of task)
 
     Returns:
-        Unnormalized TRUG scaffold for multi-agent coordination.
-        Use generate_trug for CORE normalization.
+        A fresh CORE-valid TRUG dictionary matching generate_trug for this
+        branch and template, with no branch-schema errors.
     """
-    return {
+    from trugs_tools.generator import _normalize_core7
+
+    return _normalize_core7({
         "name": "Orchestration Minimal Example",
         "version": "1.0.0",
         "type": "ORCHESTRATION",
@@ -81,7 +83,7 @@ def generate_orchestration_minimal() -> Dict[str, Any]:
                 "levels": ["PRINCIPAL", "AGENT", "TASK"]
             }
         ]
-    }
+    })
 
 
 # AGENT claude SHALL DEFINE FUNCTION generate_orchestration_complete.
@@ -89,11 +91,12 @@ def generate_orchestration_complete() -> Dict[str, Any]:
     """Generate complete Orchestration TRUG with delegation and escalation.
 
     Returns:
-        Unnormalized TRUG scaffold for multi-agent coordination with
-        principals, agents, tasks, resources, permissions, and escalation.
-        Use generate_trug for CORE normalization.
+        A fresh CORE-valid TRUG dictionary matching generate_trug for this
+        branch and template, with no branch-schema errors.
     """
-    return {
+    from trugs_tools.generator import _normalize_core7
+
+    return _normalize_core7({
         "name": "Orchestration Complete Example",
         "version": "1.0.0",
         "type": "ORCHESTRATION",
@@ -215,4 +218,4 @@ def generate_orchestration_complete() -> Dict[str, Any]:
                 "levels": ["PRINCIPAL", "AGENT", "TASK"]
             }
         ]
-    }
+    })
