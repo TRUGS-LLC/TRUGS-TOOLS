@@ -75,10 +75,32 @@ def test_default_rejects_unsearchable_baseline_parent(tmp_path, capsys):
     baseline.unlink()
     baseline.parent.rmdir()
     baseline.parent.write_text("regular file", encoding="utf-8")
-    assert main([str(tmp_path)]) == 2
-    assert str(baseline) in capsys.readouterr().err
+    assert main([str(tmp_path)]) == 0
+    assert capsys.readouterr().err == ""
     assert main(["--strict", str(tmp_path)]) == 0
     assert capsys.readouterr().err == ""
+
+
+# AGENT SHALL VALIDATE RECORD absent_baseline_paths.
+def test_default_allows_absent_baseline_paths(tmp_path, capsys):
+    results = {}
+    for kind in ("regular", "symlink_file", "file_root", "symlink_loop"):
+        root = tmp_path / kind
+        root.mkdir()
+        if kind == "regular":
+            (root / ".github").write_text("regular file", encoding="utf-8")
+        elif kind == "symlink_file":
+            (root / "target.txt").write_text("regular file", encoding="utf-8")
+            (root / ".github").symlink_to("target.txt")
+        elif kind == "file_root":
+            root = root / "module.py"
+            root.write_text("x = 1\n", encoding="utf-8")
+        else:
+            (root / ".github").symlink_to(".github")
+        for options in ([], ["--json"], ["--strict"]):
+            code = main([*options, str(root)])
+            results[kind, tuple(options)] = (code, capsys.readouterr().err)
+    assert results == {key: (0, "") for key in results}
 
 
 # AGENT SHALL VALIDATE RECORD baseline_json_numbers.

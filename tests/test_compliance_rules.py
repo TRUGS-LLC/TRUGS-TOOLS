@@ -81,6 +81,34 @@ def test_c6_requires_real_assertion_and_test(tmp_path):
         } for v in report.violations)
 
 
+# AGENT SHALL VALIDATE RECORD assertion_comment_lines.
+def test_c6_requires_comment_line_above_assertion(tmp_path):
+    graph = tmp_path / "folder.trug.json"
+    source = tmp_path / "module.py"
+    _write_graph(graph, [("ledger", "RECORD", {"invariant_probe": True})])
+    test = "\n# AGENT SHALL VALIDATE RECORD invariant_probe.\ndef test_case():\n    pass\n"
+    cases = [
+        ('text = """\n# invariant_probe\n"""; assert True\n', 1),
+        ('def ordinary():\n    text = """\n# invariant_probe\n"""; assert True\n', 1),
+        ("# invariant_probe\nassert True\n", 0),
+        ("def ordinary():\n    # invariant_probe\n    assert True\n", 0),
+        ('assert True, """\n# invariant_probe\n"""\n', 0),
+        ("x = 1  # invariant_probe\nassert True\n", 1),
+        ("assert True  # invariant_probe\n", 0),
+    ]
+    counts = []
+    for text, expected in cases:
+        source.write_text(text + test, encoding="utf-8")
+        report = Report()
+        check_invariants_across_repo(tmp_path, report, [source], [graph])
+        counts.append(report.violation_count)
+        assert report.opportunities["C6"] == 2
+        assert all(v.rule == "C6" and v.symbol == "ledger" and v.message ==
+                   "invariant 'invariant_probe' on node 'ledger' has no matching assertion in code"
+                   for v in report.violations)
+    assert counts == [expected for _, expected in cases]
+
+
 # AGENT SHALL VALIDATE RECORD declaration_coverage.
 def test_c2_requires_graph_node_for_public_declarations(tmp_path):
     source = tmp_path / "module.py"

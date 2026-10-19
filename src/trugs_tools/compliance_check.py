@@ -24,7 +24,8 @@ https://github.com/TRUGS-LLC/TRUGS/blob/main/STANDARD_dark_code_compliance.md
   in the same graph.
 - **C6** — every declared invariant (TRUG node property matching `invariant_*`)
   is named as a whole name in an assert statement outside test functions (or its
-  immediately preceding comment) and in a test function's function-level comment.
+  immediately preceding comment-only line) and in a test function's function-level
+  comment.
 - **C7** — every `.trug.json` file passes CORE validation via
   `trugs_tools.validate.validate_file` on the normal in-process path.
 
@@ -41,13 +42,14 @@ Exit codes:
 - 0 — default: compliance % ≥ baseline or no baseline; strict: no violations;
   also returned after a successful `--baseline-update`
 - 1 — default: compliance % < baseline; strict: any violation found
-- 2 — usage error, missing input path, or baseline inspection/read error or invalid
-  baseline in default mode
+- 2 — usage error, missing input path, or other baseline inspection/read error or
+  invalid baseline in default mode
 
 Default mode requires an existing baseline to be a JSON object with a numeric
-compliance_percent (excluding booleans and non-JSON constants). Missing baselines
-are allowed; inspection and read errors return 2. `--strict` skips reading the
-baseline; `--baseline-update` replaces it.
+compliance_percent (excluding booleans and non-JSON constants). A missing baseline
+path, a non-directory path component or a symlink loop means no baseline; other
+inspection and read errors return 2. `--strict` skips reading the baseline;
+`--baseline-update` replaces it.
 
 See the public standard linked above, §6 (CI gate).
 
@@ -63,10 +65,13 @@ from __future__ import annotations
 
 import argparse
 import ast
+import errno
+import io
 import json
 import re
 import subprocess
 import sys
+import tokenize
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Optional
@@ -711,7 +716,8 @@ def check_invariants_across_repo(
 
     Match the whole key, with no letter, digit or underscore adjacent to it.
     Assertion coverage requires an AST assert outside any C4-classified test
-    function, with the key on a line it spans or a comment directly above it.
+    function, with the key on a line it spans or a comment-only line directly above
+    it. The preceding line must be a Python comment, not text inside a string.
     Test coverage requires the key in the function-level comment C4 reads for
     a test function. Missing assertions and tests are separate violations.
 
@@ -730,6 +736,11 @@ def check_invariants_across_repo(
         except (OSError, UnicodeDecodeError):
             continue
         lines = source.splitlines()
+        comment_lines = {
+            item.start[0]
+            for item in tokenize.generate_tokens(io.StringIO(source).readline)
+            if item.type == tokenize.COMMENT and not item.line[: item.start[1]].strip()
+        }
         test_comments.extend(rec.comment_block for rec in _walk_python(p) if rec.is_test)
 
         def visit(
@@ -745,7 +756,7 @@ def check_invariants_across_repo(
                 else:
                     if isinstance(child, ast.Assert) and not inside_test:
                         start = child.lineno - 1
-                        if start > 0 and lines[start - 1].strip().startswith("#"):
+                        if start in comment_lines:
                             start -= 1
                         assertions.append("\n".join(lines[start : child.end_lineno]))
                     visit(child, parent, inside_test)
@@ -799,8 +810,12 @@ def _load_baseline(root: Path) -> Optional[dict]:
     bp = root / _BASELINE_PATH
     try:
         text = bp.read_text(encoding="utf-8")
-    except FileNotFoundError:
+    except (FileNotFoundError, NotADirectoryError):
         return None
+    except OSError as exc:
+        if exc.errno == errno.ELOOP:
+            return None
+        raise
     baseline = json.loads(text, parse_constant=_reject_baseline_constant)
     if not isinstance(baseline, dict):
         raise ValueError("expected a JSON object")
@@ -975,8 +990,11 @@ exit codes:
   0  default: no baseline or no compliance decrease; strict: no violations
      also returned after a successful --baseline-update
   1  default: compliance decreased from baseline; strict: violations present
-  2  usage error, missing input path, or baseline inspection/read error or invalid
-     baseline in default mode""",
+  2  usage error, missing input path, or other baseline inspection/read error or
+     invalid baseline in default mode
+
+Missing baseline paths, non-directory path components and symlink loops mean no
+baseline; other inspection and read errors return 2 in default mode.""",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
